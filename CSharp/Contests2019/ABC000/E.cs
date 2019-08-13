@@ -8,5 +8,7 @@ class E
 		Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
 		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
+
+		Console.WriteLine(string.Join(" ", a));
 	}
 }
