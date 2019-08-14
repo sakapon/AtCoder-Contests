@@ -8,12 +8,7 @@ public class BasicTest
 {
 	// Tab for indentation.
 
-	static int Gcd(int x, int y)
-	{
-		int r;
-		while ((r = x % y) != 0) { x = y; y = r; }
-		return y;
-	}
+	static int Gcd(int x, int y) { for (int r; (r = x % y) > 0; x = y, y = r) ; return y; }
 
 	static int Lcm(int x, int y) => x / Gcd(x, y) * y;
 
