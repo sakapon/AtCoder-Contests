@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 // using static
 using static System.Console;
@@ -19,7 +20,15 @@ class A
 		// String Interpolation
 		WriteLine($"{v.X} {v.Y} {v.Norm:F3}");
 
+		var d1 = new Dictionary<int, string>
+		{
+			[123] = "123",
+			[456] = "456",
+		};
+		var d2 = new Dictionary<int, string> { 123, 456 };
+
 		// C# 7
+		//var M = 1_000_000_007;
 		//WriteLine((0, 1));
 		//string ToText(int i) => $"{i}";
 	}
@@ -41,4 +50,9 @@ class C
 	// String Interpolation
 	// nameof Operator
 	public string GetName() => $"{nameof(Id)}: {Id}";
+}
+
+static class E
+{
+	public static void Add(this Dictionary<int, string> d, int i) => d[i] = $"{i}";
 }
