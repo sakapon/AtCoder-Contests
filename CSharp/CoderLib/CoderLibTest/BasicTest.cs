@@ -22,14 +22,11 @@ public class BasicTest
 
 	static long Pow(long b, int i)
 	{
-		var t = b;
-		var r = (i & 1) != 0 ? b : 1;
-		for (var j = 2; j <= i; j *= 2)
-		{
-			t *= t;
-			if ((i & j) != 0) r *= t;
-		}
-		return r;
+		if (i == 0) return 1;
+		if (i == 1) return b;
+
+		var t = Pow(b, i / 2);
+		return t * t * Pow(b, i % 2);
 	}
 
 	#region Test
