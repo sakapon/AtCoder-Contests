@@ -10,16 +10,18 @@ class A
 	static void Main()
 	{
 		var a = ReadLine().Split().Select(int.Parse).ToArray();
+		WriteLine(string.Join(" ", a));
+		WriteLine(Environment.CurrentDirectory);
 
 		Func<int, string> ToText = i => $"{i}";
 		// ?. Operator
 		var length = a.Select(ToText).FirstOrDefault()?.Length ?? 0;
-		WriteLine(Environment.CurrentDirectory);
 
-		var v = new V(2, 3);
+		var v = new V(a[0], a[1]);
 		// String Interpolation
 		WriteLine($"{v.X} {v.Y} {v.Norm:F3}");
 
+		// Index Initializer
 		var d1 = new Dictionary<int, string>
 		{
 			[123] = "123",
@@ -29,7 +31,9 @@ class A
 
 		// C# 7
 		//var M = 1_000_000_007;
-		//WriteLine((0, 1));
+		//WriteLine((2, -3));
+		//if (int.TryParse("-234", out var r)) WriteLine(r);
+		//if (Enumerable.Empty<int>() is int[] c) WriteLine(c.Length % M);
 		//string ToText(int i) => $"{i}";
 	}
 }
@@ -47,12 +51,12 @@ class C
 	// Property Initializer
 	public int Id { get; } = 1;
 	// Expression-bodied Method
-	// String Interpolation
 	// nameof Operator
 	public string GetName() => $"{nameof(Id)}: {Id}";
 }
 
 static class E
 {
+	// Collection Initializer by Extension
 	public static void Add(this Dictionary<int, string> d, int i) => d[i] = $"{i}";
 }
