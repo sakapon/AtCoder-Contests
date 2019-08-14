@@ -5,7 +5,7 @@ using System.Linq;
 using static System.Console;
 using static System.Math;
 
-class A
+static class A
 {
 	static void Main()
 	{
@@ -36,6 +36,9 @@ class A
 		//if (Enumerable.Empty<int>() is int[] c) WriteLine(c.Length % M);
 		//string ToText(int i) => $"{i}";
 	}
+
+	// Collection Initializer by Extension
+	static void Add(this Dictionary<int, string> d, int i) => d[i] = $"{i}";
 }
 
 struct V
@@ -53,10 +56,4 @@ class C
 	// Expression-bodied Method
 	// nameof Operator
 	public string GetName() => $"{nameof(Id)}: {Id}";
-}
-
-static class E
-{
-	// Collection Initializer by Extension
-	public static void Add(this Dictionary<int, string> d, int i) => d[i] = $"{i}";
 }
