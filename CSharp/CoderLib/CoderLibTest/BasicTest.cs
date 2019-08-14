@@ -20,6 +20,20 @@ public class BasicTest
 	// For negative integers.
 	static int Mod(int v, int mod) => (v %= mod) < 0 ? v + mod : v;
 
+	static long Pow(long b, int i)
+	{
+		var t = b;
+		var r = (i & 1) != 0 ? b : 1;
+		for (var j = 2; j <= i; j *= 2)
+		{
+			t *= t;
+			if ((i & j) != 0) r *= t;
+		}
+		return r;
+	}
+
+	#region Test
+
 	[TestMethod]
 	public void Gcd()
 	{
@@ -51,4 +65,16 @@ public class BasicTest
 		for (var i = -1; i >= -3 * mod; i--)
 			Assert.AreEqual((i + 4 * mod) % mod, Mod(i, mod));
 	}
+
+	[TestMethod]
+	public void Pow()
+	{
+		var b = 2;
+		for (var i = 0; i <= 62; i++)
+			Assert.AreEqual((long)Math.Pow(b, i), Pow(b, i));
+		b = 3;
+		for (var i = 0; i <= 30; i++)
+			Assert.AreEqual((long)Math.Pow(b, i), Pow(b, i));
+	}
+	#endregion
 }
