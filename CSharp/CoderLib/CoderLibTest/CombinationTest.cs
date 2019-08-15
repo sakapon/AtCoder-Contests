@@ -21,20 +21,30 @@ public class CombinationTest
 					yield return new[] { i, j, k };
 	}
 
-	public static IEnumerable<int[]> Perm2(int n)
+	static IEnumerable<int[]> Perm2(int n)
 	{
 		for (var i = 0; i < n; i++)
 			for (var j = 0; j < n; j++)
 				if (i != j) yield return new[] { i, j };
 	}
 
-	public static IEnumerable<int[]> Perm3(int n)
+	static IEnumerable<int[]> Perm3(int n)
 	{
 		for (var i = 0; i < n; i++)
 			for (var j = 0; j < n; j++)
 				if (i != j)
 					for (var k = 0; k < n; k++)
 						if (i != k && j != k) yield return new[] { i, j, k };
+	}
+
+	static IEnumerable<int[]> Comb(int n, int r) => Comb(n, r, 0, r);
+	// s: 開始番号, k: 元の r
+	static IEnumerable<int[]> Comb(int n, int r, int s, int k)
+	{
+		if (r == 0) return new[] { new int[k] };
+		if (r == 1) return Enumerable.Range(s, n).Select(i => { var a = new int[k]; a[k - 1] = i; return a; });
+
+		return Enumerable.Range(s, n - r + 1).SelectMany(i => Comb(s + n - i - 1, r - 1, i + 1, k).Select(a => { a[k - r] = i; return a; }));
 	}
 
 	#region Test Methods
@@ -77,6 +87,17 @@ public class CombinationTest
 			Console.WriteLine(string.Join(" ", a));
 		foreach (var a in Perm3(6))
 			Console.WriteLine(string.Join(" ", a));
+	}
+
+	[TestMethod]
+	public void Comb()
+	{
+		for (var i = 0; i <= 5; i++)
+		{
+			foreach (var a in Comb(5, i))
+				Console.WriteLine(string.Join(" ", a));
+			Console.WriteLine();
+		}
 	}
 	#endregion
 }
