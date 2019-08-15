@@ -36,7 +36,7 @@ public class ModuloTest
 	static int ModNpr(int n, int r, int mod) => Enumerable.Range(n - r + 1, r).Aggregate((x, y) => x * y % mod);
 
 	// nCr
-	static int ModNcr(int n, int r, int p) => ModNpr(n, r, p) * ModInv(ModFactorial(r, p), p) % p;
+	static int ModNcr(int n, int r, int p) => n - r < r ? ModNcr(n, n - r, p) : ModNpr(n, r, p) * ModInv(ModFactorial(r, p), p) % p;
 
 	#region Test Methods
 
