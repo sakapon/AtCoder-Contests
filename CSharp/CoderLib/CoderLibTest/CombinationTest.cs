@@ -37,6 +37,7 @@ public class CombinationTest
 						if (i != k && j != k) yield return new[] { i, j, k };
 	}
 
+	static IEnumerable<int[]> Comb(int[] a, int r) => Comb(a.Length, r).Select(x => x.Select(i => a[i]).ToArray());
 	static IEnumerable<int[]> Comb(int n, int r) => Comb(n, r, 0, r);
 	// s: 開始番号, k: 元の r
 	static IEnumerable<int[]> Comb(int n, int r, int s, int k)
@@ -98,6 +99,9 @@ public class CombinationTest
 				Console.WriteLine(string.Join(" ", a));
 			Console.WriteLine();
 		}
+
+		foreach (var a in Comb(new[] { 3, 5, 7, 9, 11 }, 3))
+			Console.WriteLine(string.Join(" ", a));
 	}
 	#endregion
 }
