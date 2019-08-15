@@ -19,9 +19,17 @@ public class BasicTest
 	{
 		if (i == 0) return 1;
 		if (i == 1) return b;
-
 		var t = Pow(b, i / 2);
 		return t * t * Pow(b, i % 2);
+	}
+
+	static long Pow2(long b, int i)
+	{
+		for (var r = 1L; ; b *= b)
+		{
+			if (i % 2 > 0) r *= b;
+			if ((i /= 2) < 1) return r;
+		}
 	}
 
 	// b < mod
@@ -29,7 +37,6 @@ public class BasicTest
 	{
 		if (i == 0) return 1;
 		if (i == 1) return b;
-
 		var t = ModPow(b, i / 2, mod);
 		return (int)((long)t * t % mod * ModPow(b, i % 2, mod) % mod);
 	}
