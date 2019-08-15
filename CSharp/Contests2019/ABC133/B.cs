@@ -1,19 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 class B
 {
-    static void Main()
-    {
-        var a = Console.ReadLine().Split(' ').Select(int.Parse).ToArray();
-        var ps = Enumerable.Range(0, a[0]).Select(i => Console.ReadLine().Split(' ').Select(int.Parse).ToArray()).ToArray();
+	static void Main()
+	{
+		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
+		var a = read();
+		var ps = Enumerable.Range(0, a[0]).Select(i => read()).ToArray();
 
-        var c = Enumerable.Range(0, a[0]).SelectMany(i => Enumerable.Range(i + 1, a[0] - i - 1).Select(j => new { i, j }))
-            .Count(_ =>
-            {
-                var d = Math.Sqrt(Enumerable.Range(0, a[1]).Sum(k => Math.Pow(ps[_.i][k] - ps[_.j][k], 2)));
-                return d == (int)d;
-            });
-        Console.WriteLine(c);
-    }
+		Console.WriteLine(Comb2(a[0]).Select(i => Math.Sqrt(Enumerable.Range(0, a[1]).Sum(k => Math.Pow(ps[i[0]][k] - ps[i[1]][k], 2)))).Count(d => d == (int)d));
+	}
+
+	static IEnumerable<int[]> Comb2(int n) { for (var i = 0; i < n; i++) for (var j = i + 1; j < n; j++) yield return new[] { i, j }; }
 }
