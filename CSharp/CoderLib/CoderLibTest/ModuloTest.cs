@@ -16,6 +16,16 @@ public class ModuloTest
 		return (int)((long)t * t % mod * ModPow(b, i % 2, mod) % mod);
 	}
 
+	// b < mod
+	static int ModPow2(int b, int i, int mod)
+	{
+		for (var r = 1; ; b = (int)((long)b * b % mod))
+		{
+			if (i % 2 > 0) r = (int)((long)r * b % mod);
+			if ((i /= 2) < 1) return r;
+		}
+	}
+
 	// x < p
 	static int ModInv(int x, int p) => ModPow(x, p - 2, p);
 

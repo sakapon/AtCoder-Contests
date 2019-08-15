@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 [TestClass]
 public class BasicTest
 {
-	// Tab for indentation.
+	// Tabs for indentation.
 
 	static int Gcd(int x, int y) { for (int r; (r = x % y) > 0; x = y, y = r) ; return y; }
 
