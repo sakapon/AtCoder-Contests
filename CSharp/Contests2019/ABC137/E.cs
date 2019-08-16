@@ -11,29 +11,34 @@ class E
 		var rs = Enumerable.Range(0, h[1]).Select(i => read()).Select(r => new R { A = r[0], B = r[1], C = r[2] - h[2] }).ToArray();
 		var map = rs.GroupBy(r => r.A).ToDictionary(g => g.Key, g => g.ToArray());
 
-		var d = new Dictionary<int, int> { [1] = 0 };
-		var pq = new HashSet<int> { 1 };
+		var d = new Dictionary<int, long> { [1] = 0 };
 
-		while (pq.Any())
-		{
-			var p = pq.First();
-			pq.Remove(p);
-
-			if (!map.ContainsKey(p)) continue;
-			foreach (var r in map[p])
+		for (var i = 1; i < h[0]; i++)
+			foreach (var p in d.Keys.ToArray())
 			{
-				if (d.ContainsKey(r.B))
+				if (!map.ContainsKey(p)) continue;
+				foreach (var r in map[p])
 				{
-					// TODO
-				}
-				else
-				{
-					d[r.B] = d[p] + r.C;
-					pq.Add(r.B);
+					var c = d[p] + r.C;
+					if (!d.ContainsKey(r.B) || d[r.B] < c) d[r.B] = c;
 				}
 			}
-		}
-		Console.WriteLine(d[h[0]]);
+		var M = d[h[0]];
+		if (d.Keys.Where(p => map.ContainsKey(p)).SelectMany(p => map[p]).All(r => d[r.B] >= d[r.A] + r.C)) { Console.WriteLine(M < 0 ? 0 : M); return; }
+
+		for (var i = 1; i < h[0]; i++)
+			foreach (var p in d.Keys.ToArray())
+			{
+				if (!map.ContainsKey(p)) continue;
+				foreach (var r in map[p])
+				{
+					var c = d[p] + r.C;
+					if (!d.ContainsKey(r.B) || d[r.B] < c)
+						if (r.B == h[0]) { Console.WriteLine(-1); return; }
+						else d[r.B] = c;
+				}
+			}
+		Console.WriteLine(M < 0 ? 0 : M);
 	}
 }
 
