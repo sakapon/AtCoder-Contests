@@ -9,7 +9,7 @@ class D
 
 		var M = 1000000007;
 		for (int i = 1; i <= a[1]; i++)
-			Console.WriteLine((long)ModNcr(a[0] - a[1] + 1, i, M) * ModNcr(a[1] - 1, i - 1, M) % M);
+			Console.WriteLine(i > a[0] - a[1] + 1 ? 0 : (long)ModNcr(a[0] - a[1] + 1, i, M) * ModNcr(a[1] - 1, i - 1, M) % M);
 	}
 
 	static int ModPow(int b, int i, int mod)
