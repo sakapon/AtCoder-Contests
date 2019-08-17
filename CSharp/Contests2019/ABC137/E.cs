@@ -13,7 +13,7 @@ class E
 
 		var d = new Dictionary<int, long> { [1] = 0 };
 
-		for (var i = 1; i < h[0]; i++)
+		for (var i = 0; i < h[0]; i++)
 			foreach (var p in d.Keys.ToArray())
 			{
 				if (!map.ContainsKey(p)) continue;
@@ -26,7 +26,7 @@ class E
 		var M = d[h[0]];
 		if (d.Keys.Where(p => map.ContainsKey(p)).SelectMany(p => map[p]).All(r => d[r.B] >= d[r.A] + r.C)) { Console.WriteLine(M < 0 ? 0 : M); return; }
 
-		for (var i = 1; i < h[0]; i++)
+		for (var i = 0; i < h[0]; i++)
 			foreach (var p in d.Keys.ToArray())
 			{
 				if (!map.ContainsKey(p)) continue;
