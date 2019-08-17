@@ -6,9 +6,8 @@ class B
 	static void Main()
 	{
 		Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
+		var p = Console.ReadLine().Split().Select(int.Parse).ToArray();
 
-		Console.WriteLine(string.Join(" ", a));
+		Console.WriteLine(Enumerable.Range(1, p.Length - 2).Count(i => new[] { p[i - 1], p[i], p[i + 1] }.OrderBy(x => x).ElementAt(1) == p[i]));
 	}
 }

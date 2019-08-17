@@ -5,10 +5,9 @@ class C
 {
 	static void Main()
 	{
-		Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
+		var d = Console.ReadLine().Split().Select(int.Parse).OrderBy(x => x).ToArray();
 
-		Console.WriteLine(string.Join(" ", a));
+		Console.WriteLine(d[n / 2] - d[n / 2 - 1]);
 	}
 }
