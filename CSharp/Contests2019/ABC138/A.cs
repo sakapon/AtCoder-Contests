@@ -2,11 +2,5 @@
 
 class A
 {
-	static void Main()
-	{
-		var a = int.Parse(Console.ReadLine());
-		var s = Console.ReadLine();
-
-		Console.WriteLine(a >= 3200 ? s : "red");
-	}
+	static void Main() => Console.WriteLine(int.Parse(Console.ReadLine()) >= 3200 ? Console.ReadLine() : "red");
 }
