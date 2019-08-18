@@ -28,6 +28,9 @@ public class BasicTest
 		}
 	}
 
+	// n >= 0
+	static long Factorial(int n) { for (long r = 1, i = 1; ; r *= ++i) if (i >= n) return r; }
+
 	#region Test Methods
 
 	[TestMethod]
@@ -61,6 +64,17 @@ public class BasicTest
 		b = 3;
 		for (var i = 0; i <= 30; i++)
 			Assert.AreEqual((long)Math.Pow(b, i), Pow(b, i));
+	}
+
+	[TestMethod]
+	public void Factorial()
+	{
+		Assert.AreEqual(1, Factorial(0));
+		Assert.AreEqual(1, Factorial(1));
+		Assert.AreEqual(2, Factorial(2));
+		Assert.AreEqual(6, Factorial(3));
+		Assert.AreEqual(24, Factorial(4));
+		Assert.AreEqual(2432902008176640000, Factorial(20));
 	}
 	#endregion
 }
