@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Linq;
 
 class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
+		var a = int.Parse(Console.ReadLine());
+		var s = Console.ReadLine();
 
-		Console.WriteLine(string.Join(" ", a));
+		Console.WriteLine(a >= 3200 ? s : "red");
 	}
 }

@@ -6,9 +6,6 @@ class B
 	static void Main()
 	{
 		Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
+		Console.WriteLine(1 / Console.ReadLine().Split().Select(int.Parse).Sum(x => 1.0 / x));
 	}
 }

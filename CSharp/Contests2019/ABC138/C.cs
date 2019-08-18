@@ -6,9 +6,6 @@ class C
 	static void Main()
 	{
 		Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
+		Console.WriteLine(Console.ReadLine().Split().Select(double.Parse).OrderBy(x => x).Aggregate((x, y) => (x + y) / 2));
 	}
 }
