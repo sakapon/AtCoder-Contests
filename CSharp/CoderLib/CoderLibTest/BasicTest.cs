@@ -9,18 +9,17 @@ public class BasicTest
 	// Tabs for indentation.
 
 	static int Gcd(int x, int y) { for (int r; (r = x % y) > 0; x = y, y = r) ; return y; }
-
 	static int Lcm(int x, int y) => x / Gcd(x, y) * y;
 
-	static long Pow(long b, int i)
+	static long PowR(long b, int i)
 	{
 		if (i == 0) return 1;
 		if (i == 1) return b;
-		var t = Pow(b, i / 2);
-		return t * t * Pow(b, i % 2);
+		var t = PowR(b, i / 2);
+		return t * t * PowR(b, i % 2);
 	}
 
-	static long Pow2(long b, int i)
+	static long Pow(long b, int i)
 	{
 		for (var r = 1L; ; b *= b)
 		{
