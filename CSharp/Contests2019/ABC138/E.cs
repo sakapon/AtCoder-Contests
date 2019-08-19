@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 class E
 {
@@ -7,26 +9,30 @@ class E
 		var s = Console.ReadLine();
 		var t = Console.ReadLine();
 
-		var i = 0L;
-		var ti = 0;
-		for (; i < s.Length; i++)
-		{
-			if (s[(int)(i % s.Length)] == t[ti])
-			{
-				ti++;
-				if (ti == t.Length) { Console.WriteLine(i + 1); return; }
-			}
-		}
-		if (ti == 0) { Console.WriteLine(-1); return; }
+		var d = Enumerable.Range('a', 26).ToDictionary(x => (char)x, x => new HashSet<int>());
+		for (var i = 0; i < s.Length; i++) d[s[i]].Add(i);
 
-		for (; i < int.MaxValue; i++)
+		int turn = 0, si = -1;
+		foreach (var c in t)
 		{
-			if (s[(int)(i % s.Length)] == t[ti])
+			if (d[c].Count == 0) { Console.WriteLine(-1); return; }
+
+			var found = false;
+			foreach (var ci in d[c])
 			{
-				ti++;
-				if (ti == t.Length) { Console.WriteLine(i + 1); return; }
+				if (si < ci)
+				{
+					si = ci;
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+			{
+				turn++;
+				si = d[c].First();
 			}
 		}
-		Console.WriteLine(-1);
+		Console.WriteLine((long)s.Length * turn + si + 1);
 	}
 }
