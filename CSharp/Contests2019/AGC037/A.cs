@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 class A
 {
@@ -7,10 +6,11 @@ class A
 	{
 		var s = Console.ReadLine();
 
-		var r = 1;
-		var c = s[0];
+		var r = 0;
+		var c = ' ';
 		var is2 = false;
-		for (var i = 1; i < s.Length; i++)
+		var i = 0;
+		for (; i < s.Length; i++)
 		{
 			if (is2 || c != s[i])
 			{
@@ -24,7 +24,7 @@ class A
 			}
 			r++;
 		}
-		if (is2 && s[s.Length - 2] == s[s.Length - 1]) r--;
+		if (i > s.Length) r--;
 		Console.WriteLine(r);
 	}
 }
