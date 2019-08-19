@@ -26,7 +26,7 @@ class D
 	{
 		if (ops.ContainsKey(p)) sum += ops[p];
 		c[p - 1] = sum;
-		if (map.ContainsKey(p)) foreach (var q in map[p].Where(q => q != p0)) FindPoints(q, p);
+		if (map.ContainsKey(p)) foreach (var q in map[p]) if (q != p0) FindPoints(q, p);
 		if (ops.ContainsKey(p)) sum -= ops[p];
 	}
 }
