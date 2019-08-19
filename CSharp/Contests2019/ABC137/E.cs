@@ -20,23 +20,19 @@ class E
 
 		foreach (var r in rs)
 		{
-			if (outs.Contains(r.B)) continue;
-			if (cs[r.A] == long.MinValue || cs[r.B] >= cs[r.A] + r.C) continue;
-
+			if (ups.Contains(r.B) || cs[r.A] == long.MinValue || cs[r.B] >= cs[r.A] + r.C) continue;
 			FindPath(r.B);
-			if (outs.Contains(h[0])) { Console.WriteLine(-1); return; }
+			if (ups.Contains(h[0])) { Console.WriteLine(-1); return; }
 		}
 		Console.WriteLine(Math.Max(cs[h[0]], 0));
 	}
 
 	static Dictionary<int, R[]> map;
-	static HashSet<int> outs = new HashSet<int>();
+	static HashSet<int> ups = new HashSet<int>();
 
 	static void FindPath(int p)
 	{
-		if (!outs.Add(p)) return;
-		if (!map.ContainsKey(p)) return;
-		foreach (var r in map[p]) FindPath(r.B);
+		if (ups.Add(p) && map.ContainsKey(p)) foreach (var r in map[p]) FindPath(r.B);
 	}
 }
 
