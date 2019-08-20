@@ -10,6 +10,7 @@ class E
 		var h = read();
 		var rs = Enumerable.Range(0, h[1]).Select(i => read()).Select(r => new R { A = r[0], B = r[1], C = r[2] - h[2] }).ToArray();
 		map = rs.GroupBy(r => r.A).ToDictionary(g => g.Key, g => g.ToArray());
+		ups = new HashSet<int>();
 
 		var cs = Enumerable.Repeat(long.MinValue, h[0] + 1).ToArray();
 		cs[1] = 0;
@@ -28,7 +29,7 @@ class E
 	}
 
 	static Dictionary<int, R[]> map;
-	static HashSet<int> ups = new HashSet<int>();
+	static HashSet<int> ups;
 
 	static void FindPath(int p)
 	{
