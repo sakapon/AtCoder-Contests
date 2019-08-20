@@ -14,31 +14,33 @@ namespace UnitTest
 		static readonly Dictionary<string, MainMethodMap> TargetDlls = new Dictionary<string, MainMethodMap>();
 		static readonly Dictionary<string, TestCaseMap> TestCases = new Dictionary<string, TestCaseMap>();
 
-		public static void LoadTestClass(TestContext context)
+		static void LoadDll(string contestName)
 		{
-			var testClassName = Type.GetType(context.FullyQualifiedTestClassName).Name;
-
 			var thisDll = Assembly.GetExecutingAssembly();
-			var targetDll = Assembly.LoadFile(thisDll.Location.Replace(thisDll.GetName().Name, testClassName));
-			TargetDlls[testClassName] = targetDll.DefinedTypes
+			var path = thisDll.Location.Replace(thisDll.GetName().Name, contestName);
+			if (!File.Exists(path)) throw new InvalidOperationException("The target DLL is not found.");
+
+			var targetDll = Assembly.LoadFile(path);
+			TargetDlls[contestName] = targetDll.DefinedTypes
 				.Where(t => t.Name.Length == 1 && 'A' <= t.Name[0] && t.Name[0] <= 'F')
 				.ToDictionary(t => t.Name, t => t.GetMethod("Main", BindingFlags.NonPublic | BindingFlags.Static));
+		}
 
-			TestCases[testClassName] = File.ReadAllText($@"..\..\..\..\{testClassName}\TestCases.txt")
+		static void LoadTestCases(string contestName)
+		{
+			var path = $@"..\..\..\..\{contestName}\TestCases.txt";
+			if (!File.Exists(path)) throw new InvalidOperationException("TestCases.txt is not found.");
+
+			TestCases[contestName] = File.ReadAllText(path)
 				.Split("---").Select(s => s.Split('/'))
 				.Select(a => new TestCase { Name = a[0].Trim(), Input = a[1].Trim(), Output = a[2].Trim() })
 				.ToDictionary(t => t.Name);
 		}
 
-		public static void TestAll(TestContext context)
+		static void TestOne(string contestName, string testName)
 		{
-		}
-
-		public static void TestOne(TestContext context)
-		{
-			var testClassName = Type.GetType(context.FullyQualifiedTestClassName).Name;
-			var mainMethod = TargetDlls[testClassName][context.TestName.Split('_')[0]];
-			var testCase = TestCases[testClassName][context.TestName];
+			var mainMethod = TargetDlls[contestName][testName.Split('_')[0]];
+			var testCase = TestCases[contestName][testName];
 
 			using (var reader = new StringReader(testCase.Input))
 			using (var writer = new StringWriter())
@@ -50,6 +52,23 @@ namespace UnitTest
 
 				Assert.AreEqual(testCase.Output, writer.ToString().Trim());
 			}
+		}
+
+		public static void LoadTestClass(TestContext context)
+		{
+			var contestName = Type.GetType(context.FullyQualifiedTestClassName).Name;
+			LoadDll(contestName);
+			LoadTestCases(contestName);
+		}
+
+		public static void TestAll(TestContext context)
+		{
+		}
+
+		public static void TestOne(TestContext context)
+		{
+			var contestName = Type.GetType(context.FullyQualifiedTestClassName).Name;
+			TestOne(contestName, context.TestName);
 		}
 	}
 
