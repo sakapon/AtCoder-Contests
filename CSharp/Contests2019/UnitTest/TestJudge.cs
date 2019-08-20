@@ -63,6 +63,9 @@ namespace UnitTest
 
 		public static void TestAll(TestContext context)
 		{
+			var contestName = Type.GetType(context.FullyQualifiedTestClassName).Name;
+			foreach (var test in TestCases[contestName].Values)
+				TestOne(contestName, test.Name);
 		}
 
 		public static void TestOne(TestContext context)
