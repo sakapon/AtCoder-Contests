@@ -9,7 +9,7 @@ using TestCaseMap = System.Collections.Generic.Dictionary<string, UnitTest.TestC
 
 namespace UnitTest
 {
-	public static class TestJudge
+	public static class UnitJudge
 	{
 		static readonly Dictionary<string, MainMethodMap> TargetDlls = new Dictionary<string, MainMethodMap>();
 		static readonly Dictionary<string, TestCaseMap> TestCases = new Dictionary<string, TestCaseMap>();
