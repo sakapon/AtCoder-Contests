@@ -26,13 +26,13 @@ class F
 			if (p2r < L) continue;
 			if (L <= p2l && p2r <= R) { c += pow3[i]; continue; }
 
-			if (p2l < L)
+			if (p2r <= R)
 			{
 				for (var x = L; x <= p2r; c += pow2[CountBit0(x, i - 1)], x++) ;
 			}
 			else
 			{
-				for (var x = p2l; x <= R; x++)
+				for (var x = Math.Max(L, p2l); x <= R; x++)
 					for (var y = x; y <= R; y++)
 						if (y - x == (y ^ x)) c++;
 			}
