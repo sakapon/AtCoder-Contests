@@ -28,11 +28,11 @@ class F
 
 			if (p2r <= R)
 			{
-				for (var x = L; x <= p2r; c += pow2[CountBit(x, false, i - 1)], x++) ;
+				c += SumCount(p2r - L + 1, i);
 			}
 			else if (L <= p2l)
 			{
-				c += SumCount(R - p2l + 1, i - 1);
+				c += SumCount(R - p2l + 1, i);
 			}
 			else
 			{
