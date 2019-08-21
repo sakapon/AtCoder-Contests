@@ -10,6 +10,7 @@ namespace UnitTest
 		[TestMethod] public void F_1() => TestOne();
 		[TestMethod] public void F_2() => TestOne();
 		[TestMethod] public void F_3() => TestOne();
+		[TestMethod] public void F_4() => TestOne();
 
 		#region Common Part
 
