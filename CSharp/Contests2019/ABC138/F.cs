@@ -11,8 +11,8 @@ class F
 		long L = a[0], R = a[1];
 
 		BigInteger c = 0;
-		var pow2 = new long[61];
-		var pow3 = new BigInteger[61];
+		pow2 = new long[61];
+		pow3 = new BigInteger[61];
 		pow2[0] = 1;
 		pow3[0] = 1;
 		for (var i = 1; i <= 60; pow2[i] = 2 * pow2[i - 1], pow3[i] = 3 * pow3[i - 1], i++) ;
@@ -32,7 +32,7 @@ class F
 			}
 			else if (L <= p2l)
 			{
-				for (var x = p2l; x <= R; c += pow2[CountBit(x, true, i - 1)], x++) ;
+				c += SumCount(R - p2l + 1, i - 1);
 			}
 			else
 			{
@@ -44,11 +44,22 @@ class F
 		Console.WriteLine(c % 1000000007);
 	}
 
-	static int CountBit(long v, bool flag, int maxBit)
+	static long[] pow2;
+	static BigInteger[] pow3;
+
+	static int CountBit(long v, bool f, int maxBit)
 	{
 		var c = 0;
 		var b = new BitArray(new[] { (int)v, (int)(v >> 32) });
-		for (var i = 0; i <= maxBit; i++) if (b[i] == flag) c++;
+		for (var i = 0; i <= maxBit; i++) if (b[i] == f) c++;
+		return c;
+	}
+
+	static BigInteger SumCount(long max, int maxBit)
+	{
+		BigInteger c = 0;
+		var b = new BitArray(new[] { (int)max, (int)(max >> 32) });
+		for (int c2 = 0, i = maxBit; i >= 0; i--) if (b[i]) c += pow2[c2++] * pow3[i];
 		return c;
 	}
 }
