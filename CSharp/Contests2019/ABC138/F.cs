@@ -28,11 +28,15 @@ class F
 
 			if (p2r <= R)
 			{
-				for (var x = L; x <= p2r; c += pow2[CountBit0(x, i - 1)], x++) ;
+				for (var x = L; x <= p2r; c += pow2[CountBit(x, false, i - 1)], x++) ;
+			}
+			else if (L <= p2l)
+			{
+				for (var x = p2l; x <= R; c += pow2[CountBit(x, true, i - 1)], x++) ;
 			}
 			else
 			{
-				for (var x = Math.Max(L, p2l); x <= R; x++)
+				for (var x = L; x <= R; x++)
 					for (var y = x; y <= R; y++)
 						if (y - x == (y ^ x)) c++;
 			}
@@ -40,11 +44,11 @@ class F
 		Console.WriteLine(c % 1000000007);
 	}
 
-	static int CountBit0(long v, int maxBit)
+	static int CountBit(long v, bool flag, int maxBit)
 	{
 		var c = 0;
 		var b = new BitArray(new[] { (int)v, (int)(v >> 32) });
-		for (var i = 0; i <= maxBit; i++) if (!b[i]) c++;
+		for (var i = 0; i <= maxBit; i++) if (b[i] == flag) c++;
 		return c;
 	}
 }
