@@ -1,26 +1,27 @@
 ﻿using System;
 using System.Linq;
+using System.Numerics;
 
 class F
 {
 	static void Main()
 	{
-		var M = 1000000007;
 		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
 		int n = a[0], k = a[1];
 
-		var c = new int[n + 1];
-		int j = 1, m = n / 2;
-		for (; j <= m; j++) c[j] = n / j;
-		for (; j <= n; j++) c[j] = 1;
+		var w = Enumerable.Range(1, n).GroupBy(i => n / i).Select(g => g.Count()).ToArray();
+		var vl = w.Length;
 
-		var v = c.ToArray();
-		var d = new int[n + 1];
-		for (var i = 3; i <= k; i++)
+		Func<BigInteger[], BigInteger[]> next = x =>
 		{
-			for (j = 1; j <= n; j++) d[j] = (d[j - 1] + v[j]) % M;
-			for (j = 1; j <= n; j++) v[j] = d[c[j]];
-		}
-		Console.WriteLine(v.Aggregate((x, y) => (x + y) % M));
+			var t = new BigInteger[vl];
+			t[vl - 1] = x[0];
+			for (int i = 1; i < vl; i++) t[vl - 1 - i] = t[vl - i] + w[i] * x[i];
+			return t;
+		};
+
+		var v = Enumerable.Repeat(BigInteger.One, vl).ToArray();
+		for (var i = 0; i < k; i++) v = next(v);
+		Console.WriteLine(v[0] % 1000000007);
 	}
 }
