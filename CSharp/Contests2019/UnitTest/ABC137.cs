@@ -7,9 +7,15 @@ namespace UnitTest
 	public class ABC137
 	{
 		[TestMethod] public void All() => TestAll();
+		[TestMethod] public void D_1() => TestOne();
+		[TestMethod] public void D_2() => TestOne();
+		[TestMethod] public void D_3() => TestOne();
 		[TestMethod] public void E_1() => TestOne();
 		[TestMethod] public void E_2() => TestOne();
 		[TestMethod] public void E_3() => TestOne();
+		[TestMethod] public void F_1() => TestOne();
+		[TestMethod] public void F_2() => TestOne();
+		[TestMethod] public void F_3() => TestOne();
 
 		#region Common Part
 
