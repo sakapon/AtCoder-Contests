@@ -11,6 +11,8 @@ public class ArrayTest
 		return r;
 	}
 
+	static int DotProduct2(int[] a, int[] b) { for (int r = 0, i = -1; ; r += a[i] * b[i]) if (++i >= a.Length) return r; }
+
 	#region Test Methods
 
 	[TestMethod]
