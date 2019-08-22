@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Numerics;
 
 class F
 {
@@ -14,16 +13,16 @@ class F
 		for (int i = 0; i < n1; i++) w[i] = 1;
 		for (int i = 1, s = n; i <= n2; i++) s -= (w[vl - i] = s - n / (i + 1));
 
-		Func<BigInteger[], BigInteger[]> next = x =>
+		Func<long[], long[]> next = x =>
 		{
-			var t = new BigInteger[vl];
+			var t = new long[vl];
 			t[vl - 1] = x[0];
-			for (var i = 1; i < vl; i++) t[vl - 1 - i] = t[vl - i] + w[i] * x[i];
+			for (var i = 1; i < vl; i++) t[vl - 1 - i] = (t[vl - i] + w[i] * x[i]) % 1000000007;
 			return t;
 		};
 
-		var v = Enumerable.Repeat(BigInteger.One, vl).ToArray();
+		var v = Enumerable.Repeat(1L, vl).ToArray();
 		for (var i = 0; i < k; i++) v = next(v);
-		Console.WriteLine(v[0] % 1000000007);
+		Console.WriteLine(v[0]);
 	}
 }
