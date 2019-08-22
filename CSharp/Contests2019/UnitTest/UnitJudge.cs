@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +10,7 @@ using TestCaseMap = System.Collections.Generic.Dictionary<string, UnitTest.TestC
 
 namespace UnitTest
 {
+	[DebuggerNonUserCode]
 	public static class UnitJudge
 	{
 		static readonly Dictionary<string, MainMethodMap> TargetDlls = new Dictionary<string, MainMethodMap>();
