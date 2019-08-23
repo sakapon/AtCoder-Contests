@@ -6,6 +6,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 [TestClass]
 public class ArrayTest
 {
+	static int[] Range(int start, int count)
+	{
+		var a = new int[count];
+		for (var i = 0; i < count; i++) a[i] = start++;
+		return a;
+	}
+
 	static int[] FindIndexes<T>(T[] a, Func<T, bool> match)
 	{
 		var l = new List<int>();
@@ -30,6 +37,13 @@ public class ArrayTest
 	static int DotProduct2(int[] a, int[] b) { for (int r = 0, i = -1; ; r += a[i] * b[i]) if (++i >= a.Length) return r; }
 
 	#region Test Methods
+
+	[TestMethod]
+	public void Range()
+	{
+		CollectionAssert.AreEqual(new[] { 0, 1, 2, 3, 4 }, Range(0, 5));
+		CollectionAssert.AreEqual(new[] { 2, 3, 4, 5, 6 }, Range(2, 5));
+	}
 
 	[TestMethod]
 	public void FindIndexes()
