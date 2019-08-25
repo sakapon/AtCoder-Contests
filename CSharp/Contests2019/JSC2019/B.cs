@@ -1,16 +1,22 @@
 ﻿using System.Linq;
-using System.Numerics;
 using static System.Console;
 
 class B
 {
 	static void Main()
 	{
+		var M = 1000000007;
 		var h = ReadLine().Split().Select(int.Parse).ToArray();
 		var a = ReadLine().Split().Select(int.Parse).ToArray();
+		long k = h[1];
 
-		BigInteger x1 = Enumerable.Range(0, h[0]).SelectMany(i => Enumerable.Range(0, i).Select(j => new { i, j })).Count(_ => a[_.j] < a[_.i]);
-		BigInteger x2 = Enumerable.Range(0, h[0]).SelectMany(i => Enumerable.Range(i + 1, h[0] - i - 1).Select(j => new { i, j })).Count(_ => a[_.j] < a[_.i]);
-		WriteLine((x1 * (h[1] - 1) + x2 * (h[1] + 1)) * h[1] / 2 % 1000000007);
+		int x1 = 0, x2 = 0;
+		for (var i = 0; i < h[0]; i++)
+			for (var j = i + 1; j < h[0]; j++)
+			{
+				if (a[i] < a[j]) x1++;
+				if (a[i] > a[j]) x2++;
+			}
+		WriteLine((k * (k - 1) / 2 % M * x1 + k * (k + 1) / 2 % M * x2) % M);
 	}
 }
