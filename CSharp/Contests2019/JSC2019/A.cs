@@ -6,6 +6,6 @@ class A
 	static void Main()
 	{
 		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Console.WriteLine(Enumerable.Range(1, a[0]).SelectMany(i => Enumerable.Range(1, a[1]).Select(j => new { i, d1 = j % 10, d2 = j / 10 })).Count(_ => _.d1 >= 2 && _.d2 >= 2 && _.i == _.d1 * _.d2));
+		Console.WriteLine(Enumerable.Range(1, a[1]).Select(j => new { d = j % 10, e = j / 10 }).Count(_ => _.d >= 2 && _.e >= 2 && _.d * _.e <= a[0]));
 	}
 }
