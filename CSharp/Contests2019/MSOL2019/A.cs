@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Linq;
 
 class A
 {
-	static void Main()
-	{
-		Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
-	}
+	static void Main() => Console.WriteLine(180 * (int.Parse(Console.ReadLine()) - 2));
 }

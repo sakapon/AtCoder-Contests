@@ -3,12 +3,5 @@ using System.Linq;
 
 class B
 {
-	static void Main()
-	{
-		Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
-	}
+	static void Main() => Console.WriteLine(Console.ReadLine().Count(c => c == 'x') < 8 ? "YES" : "NO");
 }
