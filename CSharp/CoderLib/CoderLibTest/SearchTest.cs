@@ -7,22 +7,20 @@ public class SearchTest
 {
 	// 挿入先の番号を二分探索で求めます。値が重複する場合は前の番号です。
 	static int Search(IList<int> l, int v) => l.Count > 0 ? Search(l, v, 0, l.Count) : 0;
-	static int Search(IList<int> l, int v, int start, int count)
+	static int Search(IList<int> l, int v, int s, int c)
 	{
-		if (count == 1) return start + (v <= l[start] ? 0 : 1);
-		var c = count / 2;
-		var s = start + c;
-		return v <= l[s] ? Search(l, v, start, c) : Search(l, v, s, count - c);
+		if (c == 1) return v <= l[s] ? s : s + 1;
+		int c2 = c / 2, s2 = s + c2;
+		return v <= l[s2] ? Search(l, v, s, c2) : Search(l, v, s2, c - c2);
 	}
 
 	// 挿入先の番号を二分探索で求めます。値が重複する場合は後ろの番号です。
 	static int SearchForInsert(IList<int> l, int v) => l.Count > 0 ? SearchForInsert(l, v, 0, l.Count) : 0;
-	static int SearchForInsert(IList<int> l, int v, int start, int count)
+	static int SearchForInsert(IList<int> l, int v, int s, int c)
 	{
-		if (count == 1) return start + (v < l[start] ? 0 : 1);
-		var c = count / 2;
-		var s = start + c;
-		return v < l[s] ? SearchForInsert(l, v, start, c) : SearchForInsert(l, v, s, count - c);
+		if (c == 1) return v < l[s] ? s : s + 1;
+		int c2 = c / 2, s2 = s + c2;
+		return v < l[s2] ? SearchForInsert(l, v, s, c2) : SearchForInsert(l, v, s2, c - c2);
 	}
 
 	#region Test Methods
