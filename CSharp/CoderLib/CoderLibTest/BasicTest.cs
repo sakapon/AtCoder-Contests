@@ -11,11 +11,29 @@ public class BasicTest
 	static int Gcd(int x, int y) { for (int r; (r = x % y) > 0; x = y, y = r) ; return y; }
 	static int Lcm(int x, int y) => x / Gcd(x, y) * y;
 
-	// m, M > 0
-	static long[] Primes(long m, long M)
+	static long[] Primes0(long m, long M)
 	{
 		var ps = new List<long>();
 		for (var i = 2L; i <= M; i++)
+		{
+			var ri = (long)Math.Sqrt(i);
+			if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
+		}
+		return ps.SkipWhile(i => i < m).ToArray();
+	}
+
+	// m >= 2
+	static long[] Primes(long m, long M)
+	{
+		var ps = new List<long>();
+		var rM = (long)Math.Sqrt(M);
+		var rM2 = Math.Min(rM, m - 1);
+		for (var i = 2L; i <= rM2; i++)
+		{
+			var ri = (long)Math.Sqrt(i);
+			if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
+		}
+		for (var i = m; i <= M; i++)
 		{
 			var ri = (long)Math.Sqrt(i);
 			if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
@@ -76,8 +94,8 @@ public class BasicTest
 	[TestMethod]
 	public void Primes()
 	{
-		Console.WriteLine(string.Join(" ", Primes(1, 100)));
-		Console.WriteLine(string.Join(" ", Primes(1000000, 1000100)));
+		Console.WriteLine(string.Join(" ", Primes(2, 100)));
+		Console.WriteLine(string.Join(" ", Primes(999999900, 1000000100)));
 	}
 
 	[TestMethod]
