@@ -26,19 +26,15 @@ public class BasicTest
 	static long[] Primes(long m, long M)
 	{
 		var ps = new List<long>();
-		var rM = (long)Math.Sqrt(M);
-		var rM2 = Math.Min(rM, m - 1);
-		for (var i = 2L; i <= rM2; i++)
-		{
-			var ri = (long)Math.Sqrt(i);
-			if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
-		}
-		for (var i = m; i <= M; i++)
-		{
-			var ri = (long)Math.Sqrt(i);
-			if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
-		}
+		var rM = Math.Min((long)Math.Sqrt(M), m - 1);
+		for (var i = 2L; i <= rM; i++) AddPrime(ps, i);
+		for (var i = m; i <= M; i++) AddPrime(ps, i);
 		return ps.SkipWhile(i => i < m).ToArray();
+	}
+	static void AddPrime(List<long> ps, long i)
+	{
+		var ri = (long)Math.Sqrt(i);
+		if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
 	}
 
 	static long PowR(long b, int i)
@@ -96,6 +92,7 @@ public class BasicTest
 	{
 		Console.WriteLine(string.Join(" ", Primes(2, 100)));
 		Console.WriteLine(string.Join(" ", Primes(999999900, 1000000100)));
+		Console.WriteLine(string.Join(" ", Primes(999999999900, 1000000000100)));
 	}
 
 	[TestMethod]
