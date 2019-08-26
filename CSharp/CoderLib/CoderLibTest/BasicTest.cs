@@ -11,6 +11,14 @@ public class BasicTest
 	static int Gcd(int x, int y) { for (int r; (r = x % y) > 0; x = y, y = r) ; return y; }
 	static int Lcm(int x, int y) => x / Gcd(x, y) * y;
 
+	// m, M > 0
+	static long[] Primes(long m, long M)
+	{
+		var ps = new List<long>();
+		for (var i = 2L; i <= M; i++) if (ps.TrueForAll(p => i % p != 0)) ps.Add(i);
+		return ps.SkipWhile(i => i < m).ToArray();
+	}
+
 	static long PowR(long b, int i)
 	{
 		if (i == 0) return 1;
@@ -59,6 +67,13 @@ public class BasicTest
 		Assert.AreEqual(6, Lcm(6, 6));
 		Assert.AreEqual(105, Lcm(15, 21));
 		Assert.AreEqual(315, Lcm(45, 105));
+	}
+
+	[TestMethod]
+	public void Primes()
+	{
+		Console.WriteLine(string.Join(" ", Primes(1, 100)));
+		Console.WriteLine(string.Join(" ", Primes(100000, 100100)));
 	}
 
 	[TestMethod]
