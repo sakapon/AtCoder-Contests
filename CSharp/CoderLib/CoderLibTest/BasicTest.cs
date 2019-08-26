@@ -15,7 +15,11 @@ public class BasicTest
 	static long[] Primes(long m, long M)
 	{
 		var ps = new List<long>();
-		for (var i = 2L; i <= M; i++) if (ps.TrueForAll(p => i % p != 0)) ps.Add(i);
+		for (var i = 2L; i <= M; i++)
+		{
+			var ri = (long)Math.Sqrt(i);
+			if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
+		}
 		return ps.SkipWhile(i => i < m).ToArray();
 	}
 
@@ -73,7 +77,7 @@ public class BasicTest
 	public void Primes()
 	{
 		Console.WriteLine(string.Join(" ", Primes(1, 100)));
-		Console.WriteLine(string.Join(" ", Primes(100000, 100100)));
+		Console.WriteLine(string.Join(" ", Primes(1000000, 1000100)));
 	}
 
 	[TestMethod]
