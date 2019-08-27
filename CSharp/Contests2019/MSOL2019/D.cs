@@ -11,11 +11,11 @@ class D
 		var rs = new int[n - 1].Select(_ => read()).ToArray();
 		var c = read(); Array.Sort(c);
 
-		var ps = Enumerable.Range(1, n).Select(i => new { i, ps = new List<int>() }).ToArray();
-		for (var i = 0; i < rs.Length; i++)
+		var ps = Enumerable.Range(0, n + 1).Select(i => new { i, ps = new List<int>() }).ToArray();
+		foreach (var r in rs)
 		{
-			ps[rs[i][0] - 1].ps.Add(rs[i][1]);
-			ps[rs[i][1] - 1].ps.Add(rs[i][0]);
+			ps[r[0]].ps.Add(r[1]);
+			ps[r[1]].ps.Add(r[0]);
 		}
 		var sorted_ps = ps.OrderBy(_ => _.ps.Count).ToArray();
 
@@ -23,19 +23,19 @@ class D
 		var d = new int[n + 1];
 		var ended = 0;
 		while (ended < n - 1)
-			for (var i = 0; i < n; i++)
+			foreach (var p in sorted_ps)
 			{
-				if (sorted_ps[i].ps.Count != 1) continue;
+				if (p.ps.Count != 1) continue;
+				M += d[p.i] = c[ended++];
 
-				M += (d[sorted_ps[i].i] = c[ended++]);
 				if (ended < n - 1)
 				{
-					ps[sorted_ps[i].ps[0] - 1].ps.Remove(sorted_ps[i].i);
-					sorted_ps[i].ps.RemoveAt(0);
+					ps[p.ps[0]].ps.Remove(p.i);
+					p.ps.RemoveAt(0);
 				}
 				else
 				{
-					d[sorted_ps[i].ps[0]] = c[n - 1];
+					d[p.ps[0]] = c[n - 1];
 					break;
 				}
 			}
