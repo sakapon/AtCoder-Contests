@@ -27,13 +27,16 @@ public class BasicTest
 	{
 		var ps = new List<long>();
 		var rM = Math.Min((long)Math.Sqrt(M), m - 1);
-		for (var i = 2L; i <= rM; i++) AddPrime(ps, i);
-		for (var i = m; i <= M; i++) AddPrime(ps, i);
-		return ps.SkipWhile(i => i < m).ToArray();
+		ri = 1L;
+		for (var i = 3L; i <= rM; i += 2) AddPrime(ps, i);
+		ri = (long)Math.Sqrt(m);
+		for (var i = m % 2 == 1 ? m : m + 1; i <= M; i += 2) AddPrime(ps, i);
+		return ps.Prepend(2).SkipWhile(i => i < m).ToArray();
 	}
+	static long ri;
 	static void AddPrime(List<long> ps, long i)
 	{
-		var ri = (long)Math.Sqrt(i);
+		if ((ri + 1) * (ri + 1) <= i) ri++;
 		if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
 	}
 
