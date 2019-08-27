@@ -15,10 +15,11 @@ class E
 		int turn = 0, si = -1;
 		foreach (var c in t)
 		{
-			if (d[c].Count == 0) { Console.WriteLine(-1); return; }
+			if (!d[c].Any()) { Console.WriteLine(-1); return; }
 
-			var ci = Search(d[c], si);
-			if (ci != d[c].Count)
+			var ci = d[c].BinarySearch(si + 1);
+			if (ci < 0) ci = ~ci;
+			if (ci < d[c].Count)
 			{
 				si = d[c][ci];
 			}
@@ -29,14 +30,5 @@ class E
 			}
 		}
 		Console.WriteLine((long)s.Length * turn + si + 1);
-	}
-
-	static int Search(IList<int> l, int v) => l.Count > 0 ? Search(l, v, 0, l.Count) : 0;
-	static int Search(IList<int> l, int v, int start, int count)
-	{
-		if (count == 1) return start + (v < l[start] ? 0 : 1);
-		var c = count / 2;
-		var s = start + c;
-		return v < l[s] ? Search(l, v, start, c) : Search(l, v, s, count - c);
 	}
 }
