@@ -40,6 +40,22 @@ public class BasicTest
 		if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
 	}
 
+	static long[] Factorize(long v)
+	{
+		var ps = Primes(2, v / 2);
+		var r = new List<long>();
+		foreach (var p in ps)
+		{
+			while (v % p == 0)
+			{
+				r.Add(p);
+				v /= p;
+			}
+			if (v == 1) return r.ToArray();
+		}
+		throw new InvalidOperationException();
+	}
+
 	static long PowR(long b, int i)
 	{
 		if (i == 0) return 1;
@@ -96,6 +112,15 @@ public class BasicTest
 		Console.WriteLine(string.Join(" ", Primes(2, 100)));
 		Console.WriteLine(string.Join(" ", Primes(999999900, 1000000100)));
 		Console.WriteLine(string.Join(" ", Primes(999999999900, 1000000000100)));
+	}
+
+	[TestMethod]
+	public void Factorize()
+	{
+		CollectionAssert.AreEqual(new long[] { 2, 31 }, Factorize(62));
+		CollectionAssert.AreEqual(new long[] { 2, 2, 2, 3, 5 }, Factorize(120));
+		CollectionAssert.AreEqual(new long[] { 2, 3, 3, 3, 37 }, Factorize(1998));
+		CollectionAssert.AreEqual(new long[] { 3, 23, 29 }, Factorize(2001));
 	}
 
 	[TestMethod]
