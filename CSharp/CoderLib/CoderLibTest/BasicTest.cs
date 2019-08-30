@@ -11,6 +11,17 @@ public class BasicTest
 	static int Gcd(int x, int y) { for (int r; (r = x % y) > 0; x = y, y = r) ; return y; }
 	static int Lcm(int x, int y) => x / Gcd(x, y) * y;
 
+	static long[] Primes0(long M)
+	{
+		var ps = new List<long>();
+		for (var i = 2L; i <= M; i++)
+		{
+			var ri = (long)Math.Sqrt(i);
+			if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
+		}
+		return ps.ToArray();
+	}
+
 	static long[] Primes0(long m, long M)
 	{
 		var ps = new List<long>();
@@ -42,18 +53,30 @@ public class BasicTest
 
 	static long[] Factorize(long v)
 	{
-		var ps = Primes(2, v / 2);
 		var r = new List<long>();
-		foreach (var p in ps)
+		foreach (var p in Primes(2, v / 2))
 		{
 			while (v % p == 0)
 			{
 				r.Add(p);
 				v /= p;
 			}
-			if (v == 1) return r.ToArray();
+			if (v == 1) break;
 		}
-		throw new InvalidOperationException();
+		return r.ToArray();
+	}
+
+	static long[] Divisors(long v)
+	{
+		var d = new List<long>();
+		var c = 0;
+		for (long i = 1, j, rv = (long)Math.Sqrt(v); i <= rv; i++)
+			if (v % i == 0)
+			{
+				d.Insert(c, i);
+				if ((j = v / i) != i) d.Insert(++c, j);
+			}
+		return d.ToArray();
 	}
 
 	static long PowR(long b, int i)
@@ -121,6 +144,19 @@ public class BasicTest
 		CollectionAssert.AreEqual(new long[] { 2, 2, 2, 3, 5 }, Factorize(120));
 		CollectionAssert.AreEqual(new long[] { 2, 3, 3, 3, 37 }, Factorize(1998));
 		CollectionAssert.AreEqual(new long[] { 3, 23, 29 }, Factorize(2001));
+	}
+
+	[TestMethod]
+	public void Divisors()
+	{
+		CollectionAssert.AreEqual(new long[] { 1 }, Divisors(1));
+		CollectionAssert.AreEqual(new long[] { 1, 2 }, Divisors(2));
+		CollectionAssert.AreEqual(new long[] { 1, 2, 4 }, Divisors(4));
+		CollectionAssert.AreEqual(new long[] { 1, 5 }, Divisors(5));
+		CollectionAssert.AreEqual(new long[] { 1, 3, 7, 21 }, Divisors(21));
+		CollectionAssert.AreEqual(new long[] { 1, 2, 31, 62 }, Divisors(62));
+		CollectionAssert.AreEqual(new long[] { 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120 }, Divisors(120));
+		CollectionAssert.AreEqual(new long[] { 1, 3, 23, 29, 69, 87, 667, 2001 }, Divisors(2001));
 	}
 
 	[TestMethod]
