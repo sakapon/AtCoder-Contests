@@ -79,6 +79,33 @@ public class BasicTest
 		return d.ToArray();
 	}
 
+	static long[] Divisors2(long v)
+	{
+		if (v == 1) return new[] { 1L };
+		var ps = Factorize(v).GroupBy(p => p).Select(g => new KeyValuePair<long, int>(g.Key, g.Count())).ToArray();
+		var ds = new int[ps.Length];
+		var c = ps.Aggregate(1L, (x, p) => x * (p.Value + 1));
+
+		var d = new List<long> { 1 };
+		var t = 1L;
+		for (var i = 1; i < c; i++) d.Add(t = NextDivisor(ps, ds, t, 0));
+		return d.ToArray();
+	}
+	static long NextDivisor(KeyValuePair<long, int>[] ps, int[] ds, long v, int i)
+	{
+		if (ds[i] < ps[i].Value)
+		{
+			ds[i]++;
+			return v * ps[i].Key;
+		}
+		else
+		{
+			ds[i] = 0;
+			for (int j = 0; j < ps[i].Value; j++) v /= ps[i].Key;
+			return NextDivisor(ps, ds, v, i + 1);
+		}
+	}
+
 	static long PowR(long b, int i)
 	{
 		if (i == 0) return 1;
