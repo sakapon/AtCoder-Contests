@@ -9,9 +9,9 @@ class D
 		Console.ReadLine();
 		var X = Console.ReadLine().Split().Select(int.Parse).ToArray();
 		var ps = Primes(X.Max());
-		var d = new int[4];
-		foreach (var i in X.Select(x => x == 7 ? 3 : ps.Contains(x - 2) ? 2 : 1)) d[i]++;
-		Console.WriteLine(d.Skip(1).Select(x => x % 2).GroupBy(x => x).Count() > 1 ? "An" : "Ai");
+		var d = new int[3];
+		foreach (var i in X.Select(x => x == 7 ? 3 : ps.Contains(x - 2) ? 2 : 1)) d[i - 1]++;
+		Console.WriteLine(d.Select(x => x % 2).GroupBy(x => x).Count() > 1 ? "An" : "Ai");
 	}
 
 	static HashSet<int> Primes(int M)
