@@ -5,10 +5,9 @@ class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
 		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
+		var p = a[1] - a[0];
+		var m = (a[2] - a[0]) % p;
+		Console.WriteLine(m == 0 ? a[2] : a[2] + p - m);
 	}
 }
