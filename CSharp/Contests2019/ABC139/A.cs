@@ -5,10 +5,8 @@ class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
+		var s = Console.ReadLine();
+		var t = Console.ReadLine();
+		Console.WriteLine(Enumerable.Range(0, s.Length).Count(i => s[i] == t[i]));
 	}
 }

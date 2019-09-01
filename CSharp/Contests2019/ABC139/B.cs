@@ -5,10 +5,7 @@ class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
+		var a = Console.ReadLine().Split().Select(double.Parse).ToArray();
+		Console.WriteLine(Math.Ceiling((a[1] - 1) / (a[0] - 1)));
 	}
 }
