@@ -10,11 +10,7 @@ public class PrimesTest
 	static List<int> Primes0(int M)
 	{
 		var ps = new List<int>();
-		for (var i = 2; i <= M; i++)
-		{
-			var ri = (int)Math.Sqrt(i);
-			if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
-		}
+		for (int i = 2, ri = 1; i <= M; ri = (int)Math.Sqrt(++i)) if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
 		return ps;
 	}
 
@@ -114,6 +110,11 @@ public class PrimesTest
 	{
 		Console.WriteLine(string.Join(" ", Primes(2, 100)));
 		Console.WriteLine(string.Join(" ", Primes(999999900, 1000000100)));
+	}
+
+	[TestMethod]
+	public void Primes_Large()
+	{
 		Console.WriteLine(string.Join(" ", Primes(999999999900, 1000000000100)));
 	}
 
