@@ -8,16 +8,19 @@ class OrderedList : List<int>
 	public OrderedList() { }
 	public OrderedList(IEnumerable<int> collection) : base(collection.OrderBy(x => x)) { }
 
-	public void AddForOrder(int v) => Insert(Search(v), v);
-
-	// 挿入先の番号を二分探索で求めます。値が重複する場合は後ろの番号です。
-	int Search(int v) => Count > 0 ? Search(v, 0, Count) : 0;
-	int Search(int v, int start, int count)
+	public void AddForOrder(int v)
 	{
-		if (count == 1) return start + (v < this[start] ? 0 : 1);
-		var c = count / 2;
-		var s = start + c;
-		return v < this[s] ? Search(v, start, c) : Search(v, s, count - c);
+		// 値が重複する場合は先頭の番号ですが、int 型のため問題ありません。
+		var i = BinarySearch(v);
+		if (i < 0) i = ~i;
+		Insert(i, v);
+	}
+
+	public int Dequeue()
+	{
+		var r = this[0];
+		RemoveAt(0);
+		return r;
 	}
 }
 
@@ -60,7 +63,7 @@ public class OrderedListTest
 	public void Ctor()
 	{
 		var random = new Random();
-		var values = Enumerable.Range(0, 1000000).Select(i => random.Next(1000000)).ToArray();
+		var values = Enumerable.Range(0, 100000).Select(i => random.Next(100000)).ToArray();
 		var actual = new OrderedList(values);
 		CollectionAssert.AreEqual(values.OrderBy(x => x).ToArray(), actual);
 	}
@@ -74,6 +77,19 @@ public class OrderedListTest
 		foreach (var v in values)
 			actual.AddForOrder(v);
 		CollectionAssert.AreEqual(values.OrderBy(x => x).ToArray(), actual);
+	}
+
+	[TestMethod]
+	public void Dequeue()
+	{
+		var random = new Random();
+		var values = Enumerable.Range(0, 100000).Select(i => random.Next(100000)).ToArray();
+		var actual = new OrderedList(values);
+		for (int v1 = actual.Dequeue(), v2; actual.Count > 0; v1 = v2)
+		{
+			v2 = actual.Dequeue();
+			Assert.IsTrue(v1 <= v2);
+		}
 	}
 
 	[TestMethod]
