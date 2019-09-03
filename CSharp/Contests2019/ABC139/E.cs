@@ -6,7 +6,7 @@ class E
 {
 	class Game
 	{
-		public string Id;
+		public int Id;
 		public List<Game> ForeGames = new List<Game>();
 		public List<Game> PostGames = new List<Game>();
 
@@ -20,10 +20,10 @@ class E
 	static void Main()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var d = Comb2(n).Select(p => new Game { Id = $"{p[0]} {p[1]}" }).ToDictionary(g => g.Id);
+		var d = Comb2(n).Select(p => new Game { Id = 10000 * p[0] + p[1] }).ToDictionary(g => g.Id);
 		for (var i = 1; i <= n; i++)
 		{
-			var a = Console.ReadLine().Split().Select(int.Parse).Select(j => i < j ? $"{i} {j}" : $"{j} {i}").ToArray();
+			var a = Console.ReadLine().Split().Select(int.Parse).Select(j => i < j ? 10000 * i + j : 10000 * j + i).ToArray();
 			for (var j = 0; j < n - 2; j++)
 			{
 				d[a[j]].PostGames.Add(d[a[j + 1]]);
@@ -39,7 +39,7 @@ class E
 			foreach (var g in q) g.ClearPost();
 			q = set.Where(g => g.ForeGames.Count == 0).ToArray();
 		}
-		Console.WriteLine(d.All(p => p.Value.PostGames.Count == 0) ? c : -1);
+		Console.WriteLine(d.All(p => p.Value.ForeGames.Count == 0) ? c : -1);
 	}
 
 	static IEnumerable<int[]> Comb2(int n)
