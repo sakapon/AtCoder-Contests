@@ -19,14 +19,29 @@ public class PrimesTest
 	{
 		var ps = new List<long>();
 		var rM = Math.Min((long)Math.Sqrt(M), m - 1);
+		for (var i = 2L; i <= rM; AddPrime(ps, i++)) ;
+		for (var i = m; i <= M; AddPrime(ps, i++)) ;
+		return ps.SkipWhile(i => i < m).ToArray();
+	}
+	static void AddPrime(List<long> ps, long i)
+	{
+		var ri = (long)Math.Sqrt(i);
+		if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
+	}
+
+	// m >= 2
+	static long[] Primes2(long m, long M)
+	{
+		var ps = new List<long>();
+		var rM = Math.Min((long)Math.Sqrt(M), m - 1);
 		ri = 1L;
-		for (var i = 3L; i <= rM; i += 2) AddPrime(ps, i);
+		for (var i = 3L; i <= rM; i += 2) AddPrime2(ps, i);
 		ri = (long)Math.Sqrt(m);
-		for (var i = m % 2 == 1 ? m : m + 1; i <= M; i += 2) AddPrime(ps, i);
+		for (var i = m % 2 == 1 ? m : m + 1; i <= M; i += 2) AddPrime2(ps, i);
 		return ps.Prepend(2).SkipWhile(i => i < m).ToArray();
 	}
 	static long ri;
-	static void AddPrime(List<long> ps, long i)
+	static void AddPrime2(List<long> ps, long i)
 	{
 		if ((ri + 1) * (ri + 1) <= i) ri++;
 		if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
@@ -109,6 +124,11 @@ public class PrimesTest
 	public void Primes()
 	{
 		Console.WriteLine(string.Join(" ", Primes(2, 100)));
+		Assert.AreEqual(25, Primes(2, 100).Length);
+		Assert.AreEqual(143, Primes(100, 1000).Length);
+		Assert.AreEqual(1061, Primes(1000, 10000).Length);
+		Assert.AreEqual(8363, Primes(10000, 100000).Length);
+		Console.WriteLine(string.Join(" ", Primes(998244300, 998244400)));
 		Console.WriteLine(string.Join(" ", Primes(999999900, 1000000100)));
 	}
 
