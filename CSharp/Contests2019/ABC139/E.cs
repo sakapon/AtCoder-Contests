@@ -7,40 +7,31 @@ class E
 	static void Main()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var map = Comb2(n).ToDictionary(p => 1000 * p[1] + p[0], p => new List<int>());
-		var fores = new HashSet<int>(map.Keys);
+		var map = new List<int>[1001000];
+		for (var i = 1; i <= n; i++)
+			for (var j = i + 1; j <= n; j++)
+				map[1000 * j + i] = new List<int>();
 		for (var i = 1; i <= n; i++)
 		{
 			var a = Console.ReadLine().Split().Select(int.Parse).Select(j => i > j ? 1000 * i + j : 1000 * j + i).ToArray();
 			var m = n - 2;
-			for (int j = 0, k = 1; j < m; j++, k++)
-			{
-				map[a[j]].Add(a[k]);
-				fores.Remove(a[k]);
-			}
+			for (int j = 0, k = 1; j < m; j++, k++) map[a[j]].Add(a[k]);
 		}
 
-		int c = 0, M = -1;
-		var rs = new HashSet<int>();
 		var cs = new int[1001000];
-		foreach (var id in fores) Find(map, cs, rs, id, ref c, ref M);
-		Console.WriteLine(M);
+		var rs = new bool[1001000];
+		for (var id = 0; id < map.Length; id++) if (map[id] != null) Find(map, id, cs, rs);
+		Console.WriteLine(cs.Max());
 	}
 
-	static IEnumerable<int[]> Comb2(int n)
+	static void Find(List<int>[] map, int id, int[] cs, bool[] rs)
 	{
-		for (var i = 1; i <= n; i++)
-			for (var j = i + 1; j <= n; j++)
-				yield return new[] { i, j };
-	}
-
-	static void Find(Dictionary<int, List<int>> map, int[] cs, HashSet<int> rs, int id, ref int c, ref int M)
-	{
-		if (map[id].Count == 0) { M = Math.Max(M, c + 1); return; }
-		if (rs.Contains(id)) { Console.WriteLine(-1); Environment.Exit(0); }
-		if (cs[id] > c) return;
-		cs[id] = ++c; rs.Add(id);
-		foreach (var pid in map[id]) Find(map, cs, rs, pid, ref c, ref M);
-		c--; rs.Remove(id);
+		if (cs[id] > 0) return;
+		if (map[id].Count == 0) { cs[id] = 1; return; }
+		if (rs[id]) { Console.WriteLine(-1); Environment.Exit(0); }
+		rs[id] = true;
+		foreach (var pid in map[id]) Find(map, pid, cs, rs);
+		cs[id] = map[id].Max(i => cs[i]) + 1;
+		rs[id] = false;
 	}
 }
