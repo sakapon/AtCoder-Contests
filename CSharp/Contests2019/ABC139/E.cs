@@ -24,10 +24,11 @@ class E
 		for (var i = 1; i <= n; i++)
 		{
 			var a = Console.ReadLine().Split().Select(int.Parse).Select(j => i < j ? 10000 * i + j : 10000 * j + i).ToArray();
-			for (var j = 0; j < n - 2; j++)
+			var m = n - 2;
+			for (int j = 0, k = 1; j < m; j++, k++)
 			{
-				d[a[j]].PostGames.Add(d[a[j + 1]]);
-				d[a[j + 1]].ForeGames.Add(d[a[j]]);
+				d[a[j]].PostGames.Add(d[a[k]]);
+				d[a[k]].ForeGames.Add(d[a[j]]);
 			}
 		}
 
