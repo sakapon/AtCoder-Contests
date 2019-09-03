@@ -6,26 +6,16 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 [TestClass]
 public class PrimesTest
 {
-	static long[] Primes0(long M)
+	static int[] Primes0(int m, int M) => Primes0(M).SkipWhile(i => i < m).ToArray();
+	static List<int> Primes0(int M)
 	{
-		var ps = new List<long>();
-		for (var i = 2L; i <= M; i++)
+		var ps = new List<int>();
+		for (var i = 2; i <= M; i++)
 		{
-			var ri = (long)Math.Sqrt(i);
+			var ri = (int)Math.Sqrt(i);
 			if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
 		}
-		return ps.ToArray();
-	}
-
-	static long[] Primes0(long m, long M)
-	{
-		var ps = new List<long>();
-		for (var i = 2L; i <= M; i++)
-		{
-			var ri = (long)Math.Sqrt(i);
-			if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
-		}
-		return ps.SkipWhile(i => i < m).ToArray();
+		return ps;
 	}
 
 	// m >= 2
@@ -102,6 +92,22 @@ public class PrimesTest
 	}
 
 	#region Test Methods
+
+	[TestMethod]
+	public void Primes0()
+	{
+		Console.WriteLine(string.Join(" ", Primes0(100)));
+		Assert.AreEqual(25, Primes0(100).Count);
+		Assert.AreEqual(168, Primes0(1000).Count);
+		Assert.AreEqual(1229, Primes0(10000).Count);
+		Assert.AreEqual(9592, Primes0(100000).Count);
+	}
+
+	[TestMethod]
+	public void Primes0_Large()
+	{
+		Console.WriteLine(string.Join(" ", Primes0(1000000, 1000100)));
+	}
 
 	[TestMethod]
 	public void Primes()
