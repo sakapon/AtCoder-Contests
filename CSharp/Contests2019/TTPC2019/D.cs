@@ -7,9 +7,9 @@ class D
 	{
 		Console.ReadLine();
 		var X = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = PrimeFlags(X.Max());
+		var ps = PrimeFlags(999999);
 		var d = new int[3];
-		foreach (var i in X.Select(x => x == 7 ? 3 : ps[x - 2] ? 2 : 1)) d[i - 1]++;
+		foreach (var x in X) d[x == 7 ? 2 : ps[x - 2] ? 1 : 0]++;
 		Console.WriteLine(d.Select(x => x % 2).GroupBy(x => x).Count() > 1 ? "An" : "Ai");
 	}
 
