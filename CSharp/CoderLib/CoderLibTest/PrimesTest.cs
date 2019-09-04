@@ -6,6 +6,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 [TestClass]
 public class PrimesTest
 {
+	static IEnumerable<int> Range(int m, int M) { for (var i = m; i <= M; i++) yield return i; }
+	static IEnumerable<long> Range(long m, long M) { for (var i = m; i <= M; i++) yield return i; }
+
 	static int[] Primes0(int m, int M) => Primes0(M).SkipWhile(i => i < m).ToArray();
 	static List<int> Primes0(int M)
 	{
@@ -43,6 +46,22 @@ public class PrimesTest
 		return ps;
 	}
 
+	static List<long> PrimesL(long m, long M)
+	{
+		var rM = (long)Math.Sqrt(M);
+		var ps = new List<long>();
+		var l = Range(2, Math.Min(rM, m - 1)).ToList();
+		l.AddRange(Range(m, M));
+		for (var i = 0; l.Count > 0 && l[0] <= rM; i++)
+		{
+			// p^2 未満の判定を無視できないため非効率です。
+			ps.Add(l[0]);
+			l.RemoveAll(j => j % ps[i] == 0);
+		}
+		l.InsertRange(0, ps.Where(p => p >= m));
+		return l;
+	}
+
 	static int[] PrimesF0(int m, int M)
 	{
 		var b = PrimeFlags0(M);
@@ -50,8 +69,8 @@ public class PrimesTest
 	}
 	static bool[] PrimeFlags0(int M)
 	{
-		var b = new bool[M + 1]; b[2] = true;
 		var rM = (int)Math.Sqrt(M);
+		var b = new bool[M + 1]; b[2] = true;
 		for (int i = 3; i <= M; i += 2) b[i] = true;
 		for (int p = 3; p <= rM; p++) if (b[p]) for (var i = 3 * p; i <= M; i += 2 * p) b[i] = false;
 		return b;
@@ -162,6 +181,18 @@ public class PrimesTest
 	public void PrimesL0_Large()
 	{
 		PrimesL0(1000000);
+	}
+
+	[TestMethod]
+	public void PrimesL()
+	{
+		Console.WriteLine(string.Join(" ", PrimesL(2, 100)));
+		Assert.AreEqual(25, PrimesL(2, 100).Count);
+		Assert.AreEqual(143, PrimesL(100, 1000).Count);
+		Assert.AreEqual(1061, PrimesL(1000, 10000).Count);
+		Assert.AreEqual(8363, PrimesL(10000, 100000).Count);
+		Console.WriteLine(string.Join(" ", PrimesL(998244300, 998244400)));
+		Console.WriteLine(string.Join(" ", PrimesL(999999900, 1000000100)));
 	}
 
 	[TestMethod]
