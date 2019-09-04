@@ -29,22 +29,20 @@ public class PrimesTest
 		if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
 	}
 
-	// m >= 2
-	static long[] Primes2(long m, long M)
+	static List<long> PrimesF0(long m, long M)
 	{
+		var b = PrimeFlags0(M);
 		var ps = new List<long>();
-		var rM = Math.Min((long)Math.Sqrt(M), m - 1);
-		ri = 1L;
-		for (var i = 3L; i <= rM; i += 2) AddPrime2(ps, i);
-		ri = (long)Math.Sqrt(m);
-		for (var i = m % 2 == 1 ? m : m + 1; i <= M; i += 2) AddPrime2(ps, i);
-		return ps.Prepend(2).SkipWhile(i => i < m).ToArray();
+		for (var i = m; i <= M; i++) if (b[i]) ps.Add(i);
+		return ps;
 	}
-	static long ri;
-	static void AddPrime2(List<long> ps, long i)
+	static bool[] PrimeFlags0(long M)
 	{
-		if ((ri + 1) * (ri + 1) <= i) ri++;
-		if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
+		var b = new bool[M + 1]; b[2] = true;
+		var rM = (long)Math.Sqrt(M);
+		for (long i = 3; i <= M; i += 2) b[i] = true;
+		for (long p = 3; p <= rM; p++) if (b[p]) for (var i = 3 * p; i <= M; i += 2 * p) b[i] = false;
+		return b;
 	}
 
 	static long[] Factorize(long v)
@@ -136,6 +134,22 @@ public class PrimesTest
 	public void Primes_Large()
 	{
 		Console.WriteLine(string.Join(" ", Primes(999999999900, 1000000000100)));
+	}
+
+	[TestMethod]
+	public void PrimesF0()
+	{
+		Console.WriteLine(string.Join(" ", PrimesF0(2, 100)));
+		Assert.AreEqual(25, PrimesF0(2, 100).Count);
+		Assert.AreEqual(168, PrimesF0(2, 1000).Count);
+		Assert.AreEqual(1229, PrimesF0(2, 10000).Count);
+		Assert.AreEqual(9592, PrimesF0(2, 100000).Count);
+	}
+
+	[TestMethod]
+	public void PrimesF0_Large()
+	{
+		Console.WriteLine(string.Join(" ", PrimesF0(1000000, 1000100)));
 	}
 
 	[TestMethod]
