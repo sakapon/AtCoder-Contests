@@ -27,6 +27,22 @@ public class ArrayTest
 		return l.ToArray();
 	}
 
+	static KeyValuePair<int, int> MaxWithIndex(IList<int> a)
+	{
+		if (a.Count == 0) return new KeyValuePair<int, int>(-1, int.MinValue);
+		int k = 0, m = a[0];
+		for (var i = 1; i < a.Count; i++) if (a[i] > m) { k = i; m = a[i]; }
+		return new KeyValuePair<int, int>(k, m);
+	}
+
+	static KeyValuePair<int, int> MinWithIndex(IList<int> a)
+	{
+		if (a.Count == 0) return new KeyValuePair<int, int>(-1, int.MaxValue);
+		int k = 0, m = a[0];
+		for (var i = 1; i < a.Count; i++) if (a[i] < m) { k = i; m = a[i]; }
+		return new KeyValuePair<int, int>(k, m);
+	}
+
 	static int DotProduct(int[] a, int[] b)
 	{
 		var r = 0;
@@ -59,6 +75,24 @@ public class ArrayTest
 		CollectionAssert.AreEqual(new[] { 2, 5 }, FindWithIndex(new[] { 1, 2, 3, 4, 5 }, x => x % 3 == 2).Select(p => p.Value).ToArray());
 		CollectionAssert.AreEqual(new[] { 0, 2 }, FindWithIndex(new[] { "ab", "abc", "cd", "a" }, x => x.Length == 2).Select(p => p.Key).ToArray());
 		CollectionAssert.AreEqual(new[] { "ab", "cd" }, FindWithIndex(new[] { "ab", "abc", "cd", "a" }, x => x.Length == 2).Select(p => p.Value).ToArray());
+	}
+
+	[TestMethod]
+	public void MaxWithIndex()
+	{
+		var mi = MaxWithIndex(new[] { 2, 4, 1, 5, 3 });
+		Assert.AreEqual(3, mi.Key); Assert.AreEqual(5, mi.Value);
+		var mi2 = MaxWithIndex(new[] { 1, 1, 3, 5, 5 });
+		Assert.AreEqual(3, mi2.Key); Assert.AreEqual(5, mi2.Value);
+	}
+
+	[TestMethod]
+	public void MinWithIndex()
+	{
+		var mi = MinWithIndex(new[] { 2, 4, 1, 5, 3 });
+		Assert.AreEqual(2, mi.Key); Assert.AreEqual(1, mi.Value);
+		var mi2 = MinWithIndex(new[] { 1, 1, 3, 5, 5 });
+		Assert.AreEqual(0, mi2.Key); Assert.AreEqual(1, mi2.Value);
 	}
 
 	[TestMethod]
