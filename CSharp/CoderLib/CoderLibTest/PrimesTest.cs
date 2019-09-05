@@ -9,12 +9,12 @@ public class PrimesTest
 	static IEnumerable<int> Range(int m, int M) { for (var i = m; i <= M; i++) yield return i; }
 	static IEnumerable<long> Range(long m, long M) { for (var i = m; i <= M; i++) yield return i; }
 
-	static int[] PrimesF0(int m, int M)
+	static int[] PrimesF(int m, int M)
 	{
-		var b = PrimeFlags0(M);
+		var b = PrimeFlags(M);
 		return Enumerable.Range(m, M - m + 1).Where(i => b[i]).ToArray();
 	}
-	static bool[] PrimeFlags0(int M)
+	static bool[] PrimeFlags(int M)
 	{
 		var rM = (int)Math.Sqrt(M);
 		var b = new bool[M + 1]; b[2] = true;
@@ -23,8 +23,8 @@ public class PrimesTest
 		return b;
 	}
 
-	static int[] Primes0(int m, int M) => Primes0(M).SkipWhile(i => i < m).ToArray();
-	static List<int> Primes0(int M)
+	static int[] Primes(int m, int M) => Primes(M).SkipWhile(i => i < m).ToArray();
+	static List<int> Primes(int M)
 	{
 		var ps = new List<int>();
 		for (int i = 2, ri = 1; i <= M; ri = (int)Math.Sqrt(++i)) if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
@@ -32,7 +32,7 @@ public class PrimesTest
 	}
 
 	// m >= 2
-	static long[] Primes(long m, long M)
+	static long[] Primes64(long m, long M)
 	{
 		var ps = new List<long>();
 		var rM = Math.Min((long)Math.Sqrt(M), m - 1);
@@ -46,7 +46,7 @@ public class PrimesTest
 		if (ps.TakeWhile(p => p <= ri).All(p => i % p != 0)) ps.Add(i);
 	}
 
-	static List<int> PrimesL0(int M)
+	static List<int> PrimesL(int M)
 	{
 		var ps = new List<int>();
 		var l = Enumerable.Range(2, M - 1).ToList();
@@ -60,7 +60,7 @@ public class PrimesTest
 		return ps;
 	}
 
-	static List<long> PrimesL(long m, long M)
+	static List<long> PrimesL64(long m, long M)
 	{
 		var rM = (long)Math.Sqrt(M);
 		var ps = new List<long>();
@@ -79,7 +79,7 @@ public class PrimesTest
 	static long[] Factorize(long v)
 	{
 		var r = new List<long>();
-		foreach (var p in Primes(2, v / 2))
+		foreach (var p in Primes64(2, v / 2))
 		{
 			while (v % p == 0)
 			{
@@ -134,82 +134,82 @@ public class PrimesTest
 	#region Test Methods
 
 	[TestMethod]
-	public void PrimesF0()
+	public void PrimesF()
 	{
-		Console.WriteLine(string.Join(" ", PrimesF0(2, 100)));
-		Assert.AreEqual(25, PrimesF0(2, 100).Length);
-		Assert.AreEqual(168, PrimesF0(2, 1000).Length);
-		Assert.AreEqual(1229, PrimesF0(2, 10000).Length);
-		Assert.AreEqual(9592, PrimesF0(2, 100000).Length);
-		Assert.AreEqual(78498, PrimesF0(2, 1000000).Length);
+		Console.WriteLine(string.Join(" ", PrimesF(2, 100)));
+		Assert.AreEqual(25, PrimesF(2, 100).Length);
+		Assert.AreEqual(168, PrimesF(2, 1000).Length);
+		Assert.AreEqual(1229, PrimesF(2, 10000).Length);
+		Assert.AreEqual(9592, PrimesF(2, 100000).Length);
+		Assert.AreEqual(78498, PrimesF(2, 1000000).Length);
 	}
 
 	[TestMethod]
-	public void PrimesF0_Large()
+	public void PrimesF_Large()
 	{
-		Console.WriteLine(string.Join(" ", PrimesF0(10000000, 10000100)));
-	}
-
-	[TestMethod]
-	public void Primes0()
-	{
-		Console.WriteLine(string.Join(" ", Primes0(100)));
-		Assert.AreEqual(25, Primes0(100).Count);
-		Assert.AreEqual(168, Primes0(1000).Count);
-		Assert.AreEqual(1229, Primes0(10000).Count);
-		Assert.AreEqual(9592, Primes0(100000).Count);
-	}
-
-	[TestMethod]
-	public void Primes0_Large()
-	{
-		Console.WriteLine(string.Join(" ", Primes0(1000000, 1000100)));
+		Console.WriteLine(string.Join(" ", PrimesF(10000000, 10000100)));
 	}
 
 	[TestMethod]
 	public void Primes()
 	{
-		Console.WriteLine(string.Join(" ", Primes(2, 100)));
-		Assert.AreEqual(25, Primes(2, 100).Length);
-		Assert.AreEqual(143, Primes(100, 1000).Length);
-		Assert.AreEqual(1061, Primes(1000, 10000).Length);
-		Assert.AreEqual(8363, Primes(10000, 100000).Length);
-		Console.WriteLine(string.Join(" ", Primes(998244300, 998244400)));
-		Console.WriteLine(string.Join(" ", Primes(999999900, 1000000100)));
+		Console.WriteLine(string.Join(" ", Primes(100)));
+		Assert.AreEqual(25, Primes(100).Count);
+		Assert.AreEqual(168, Primes(1000).Count);
+		Assert.AreEqual(1229, Primes(10000).Count);
+		Assert.AreEqual(9592, Primes(100000).Count);
 	}
 
 	[TestMethod]
 	public void Primes_Large()
 	{
-		Console.WriteLine(string.Join(" ", Primes(999999999900, 1000000000100)));
+		Console.WriteLine(string.Join(" ", Primes(1000000, 1000100)));
 	}
 
 	[TestMethod]
-	public void PrimesL0()
+	public void Primes64()
 	{
-		Console.WriteLine(string.Join(" ", PrimesL0(100)));
-		Assert.AreEqual(25, PrimesL0(100).Count);
-		Assert.AreEqual(168, PrimesL0(1000).Count);
-		Assert.AreEqual(1229, PrimesL0(10000).Count);
-		Assert.AreEqual(9592, PrimesL0(100000).Count);
+		Console.WriteLine(string.Join(" ", Primes64(2, 100)));
+		Assert.AreEqual(25, Primes64(2, 100).Length);
+		Assert.AreEqual(143, Primes64(100, 1000).Length);
+		Assert.AreEqual(1061, Primes64(1000, 10000).Length);
+		Assert.AreEqual(8363, Primes64(10000, 100000).Length);
+		Console.WriteLine(string.Join(" ", Primes64(998244300, 998244400)));
+		Console.WriteLine(string.Join(" ", Primes64(999999900, 1000000100)));
 	}
 
 	[TestMethod]
-	public void PrimesL0_Large()
+	public void Primes64_Large()
 	{
-		PrimesL0(1000000);
+		Console.WriteLine(string.Join(" ", Primes64(999999999900, 1000000000100)));
 	}
 
 	[TestMethod]
 	public void PrimesL()
 	{
-		Console.WriteLine(string.Join(" ", PrimesL(2, 100)));
-		Assert.AreEqual(25, PrimesL(2, 100).Count);
-		Assert.AreEqual(143, PrimesL(100, 1000).Count);
-		Assert.AreEqual(1061, PrimesL(1000, 10000).Count);
-		Assert.AreEqual(8363, PrimesL(10000, 100000).Count);
-		Console.WriteLine(string.Join(" ", PrimesL(998244300, 998244400)));
-		Console.WriteLine(string.Join(" ", PrimesL(999999900, 1000000100)));
+		Console.WriteLine(string.Join(" ", PrimesL(100)));
+		Assert.AreEqual(25, PrimesL(100).Count);
+		Assert.AreEqual(168, PrimesL(1000).Count);
+		Assert.AreEqual(1229, PrimesL(10000).Count);
+		Assert.AreEqual(9592, PrimesL(100000).Count);
+	}
+
+	[TestMethod]
+	public void PrimesL_Large()
+	{
+		PrimesL(1000000);
+	}
+
+	[TestMethod]
+	public void PrimesL64()
+	{
+		Console.WriteLine(string.Join(" ", PrimesL64(2, 100)));
+		Assert.AreEqual(25, PrimesL64(2, 100).Count);
+		Assert.AreEqual(143, PrimesL64(100, 1000).Count);
+		Assert.AreEqual(1061, PrimesL64(1000, 10000).Count);
+		Assert.AreEqual(8363, PrimesL64(10000, 100000).Count);
+		Console.WriteLine(string.Join(" ", PrimesL64(998244300, 998244400)));
+		Console.WriteLine(string.Join(" ", PrimesL64(999999900, 1000000100)));
 	}
 
 	[TestMethod]
