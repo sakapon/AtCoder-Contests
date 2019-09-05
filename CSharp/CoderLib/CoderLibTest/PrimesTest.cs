@@ -19,7 +19,7 @@ public class PrimesTest
 		var rM = (int)Math.Sqrt(M);
 		var b = new bool[M + 1]; b[2] = true;
 		for (int i = 3; i <= M; i += 2) b[i] = true;
-		for (int p = 3; p <= rM; p++) if (b[p]) for (var i = 3 * p; i <= M; i += 2 * p) b[i] = false;
+		for (int p = 3; p <= rM; p++) if (b[p]) for (var i = p * p; i <= M; i += 2 * p) b[i] = false;
 		return b;
 	}
 
@@ -34,7 +34,7 @@ public class PrimesTest
 		for (long p = 3; p <= rM; p++)
 			if (b[p])
 			{
-				for (var i = 3 * p; i <= rM; i += 2 * p) b[i] = false;
+				for (var i = p * p; i <= rM; i += 2 * p) b[i] = false;
 				var s2 = (m2 - 1) / p;
 				s2 = (s2 + 1 + s2 % 2) * p;
 				for (var i = s2; i <= M; i += 2 * p) b2[i - m2] = false;
