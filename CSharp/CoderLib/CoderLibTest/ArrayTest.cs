@@ -43,6 +43,42 @@ public class ArrayTest
 		return new KeyValuePair<int, int>(k, m);
 	}
 
+	static KeyValuePair<int, int>[] MaxWithIndexes(IList<int> a)
+	{
+		if (a.Count == 0) return new KeyValuePair<int, int>[0];
+		var l = new List<KeyValuePair<int, int>>();
+		var m = a[0];
+		l.Add(new KeyValuePair<int, int>(0, m));
+		for (var i = 1; i < a.Count; i++)
+			if (a[i] > m)
+			{
+				m = a[i];
+				l.Clear();
+				l.Add(new KeyValuePair<int, int>(i, m));
+			}
+			else if (a[i] == m)
+				l.Add(new KeyValuePair<int, int>(i, m));
+		return l.ToArray();
+	}
+
+	static KeyValuePair<int, int>[] MinWithIndexes(IList<int> a)
+	{
+		if (a.Count == 0) return new KeyValuePair<int, int>[0];
+		var l = new List<KeyValuePair<int, int>>();
+		var m = a[0];
+		l.Add(new KeyValuePair<int, int>(0, m));
+		for (var i = 1; i < a.Count; i++)
+			if (a[i] < m)
+			{
+				m = a[i];
+				l.Clear();
+				l.Add(new KeyValuePair<int, int>(i, m));
+			}
+			else if (a[i] == m)
+				l.Add(new KeyValuePair<int, int>(i, m));
+		return l.ToArray();
+	}
+
 	static int DotProduct(int[] a, int[] b)
 	{
 		var r = 0;
@@ -93,6 +129,26 @@ public class ArrayTest
 		Assert.AreEqual(2, mi.Key); Assert.AreEqual(1, mi.Value);
 		var mi2 = MinWithIndex(new[] { 1, 1, 3, 5, 5 });
 		Assert.AreEqual(0, mi2.Key); Assert.AreEqual(1, mi2.Value);
+	}
+
+	[TestMethod]
+	public void MaxWithIndexes()
+	{
+		var mi = MaxWithIndexes(new[] { 2, 4, 1, 5, 3 });
+		Assert.AreEqual(3, mi[0].Key); Assert.AreEqual(5, mi[0].Value);
+		var mi2 = MaxWithIndexes(new[] { 1, 1, 3, 5, 5 });
+		Assert.AreEqual(3, mi2[0].Key); Assert.AreEqual(5, mi2[0].Value);
+		Assert.AreEqual(4, mi2[1].Key); Assert.AreEqual(5, mi2[1].Value);
+	}
+
+	[TestMethod]
+	public void MinWithIndexes()
+	{
+		var mi = MinWithIndexes(new[] { 2, 4, 1, 5, 3 });
+		Assert.AreEqual(2, mi[0].Key); Assert.AreEqual(1, mi[0].Value);
+		var mi2 = MinWithIndexes(new[] { 1, 1, 3, 5, 5 });
+		Assert.AreEqual(0, mi2[0].Key); Assert.AreEqual(1, mi2[0].Value);
+		Assert.AreEqual(1, mi2[1].Key); Assert.AreEqual(1, mi2[1].Value);
 	}
 
 	[TestMethod]
