@@ -10,10 +10,9 @@ class OrderedList : List<int>
 
 	public void AddForOrder(int v)
 	{
-		// 値が重複する場合は先頭の番号ですが、int 型のため問題ありません。
+		// 値が重複する場合は順序が保証されませんが、int 型のため問題ありません。
 		var i = BinarySearch(v);
-		if (i < 0) i = ~i;
-		Insert(i, v);
+		Insert(i < 0 ? ~i : i, v);
 	}
 
 	public int Dequeue()
@@ -60,6 +59,20 @@ class OrderedList<T, TKey> : List<KeyValuePair<TKey, T>>
 public class OrderedListTest
 {
 	[TestMethod]
+	public void Sort0()
+	{
+		var random = new Random();
+		var values = Enumerable.Range(0, 100000).Select(i => random.Next(100000)).ToArray();
+		var actual = new List<int>();
+		foreach (var v in values)
+		{
+			var i = actual.BinarySearch(v);
+			actual.Insert(i < 0 ? ~i : i, v);
+		}
+		CollectionAssert.AreEqual(values.OrderBy(x => x).ToArray(), actual);
+	}
+
+	[TestMethod]
 	public void Ctor()
 	{
 		var random = new Random();
@@ -95,10 +108,11 @@ public class OrderedListTest
 	[TestMethod]
 	public void AddForOrder_Key()
 	{
-		var values = new[] { "ddd", "a", "cc", "bb", "", "c" };
-		var actual = new OrderedList<string, int>(s => s.Length);
+		var random = new Random();
+		var values = Enumerable.Range(0, 10000).Select(i => random.Next(10000)).ToArray();
+		var actual = new OrderedList<int, int>(x => x / 10);
 		foreach (var v in values)
 			actual.AddForOrder(v);
-		CollectionAssert.AreEqual(values.OrderBy(s => s.Length).ToArray(), actual.Select(p => p.Value).ToArray());
+		CollectionAssert.AreEqual(values.OrderBy(x => x / 10).ToArray(), actual.Select(p => p.Value).ToArray());
 	}
 }
