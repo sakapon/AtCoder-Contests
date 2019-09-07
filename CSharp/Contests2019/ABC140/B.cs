@@ -5,12 +5,14 @@ class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
+		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
 		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var a = read();
+		var b = read();
+		var c = read();
 
-		Console.WriteLine(string.Join(" ", a));
+		var s = b.Sum();
+		for (int i = 0; i < n - 1; i++) if (a[i] + 1 == a[i + 1]) s += c[a[i] - 1];
+		Console.WriteLine(s);
 	}
 }

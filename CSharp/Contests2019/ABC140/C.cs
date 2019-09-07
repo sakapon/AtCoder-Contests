@@ -5,12 +5,9 @@ class C
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var b = Console.ReadLine().Split().Select(int.Parse).ToArray();
 
-		Console.WriteLine(string.Join(" ", a));
+		Console.WriteLine(b[0] + Enumerable.Range(0, n - 2).Sum(i => Math.Min(b[i], b[i + 1])) + b[n - 2]);
 	}
 }
