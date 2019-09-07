@@ -14,7 +14,24 @@ public class Modulo2Test
 		}
 	}
 	static long MInv(long x) => MPow(x, M - 2);
+	static long MInt(long x) => (x %= M) < 0 ? x + M : x;
 	static long MAdd(long x, long y) => (x + y) % M;
+	static long MSub(long x, long y) => MInt(x - y);
 	static long MMul(long x, long y) => x * y % M;
 	static long MDiv(long x, long y) => x * MInv(y) % M;
+
+	#region Test Methods
+
+	[TestMethod]
+	public void MInt()
+	{
+		Assert.AreEqual(999999999, MInt(-8));
+	}
+
+	[TestMethod]
+	public void MDiv()
+	{
+		Assert.AreEqual(312500008, MDiv(93, 16));
+	}
+	#endregion
 }
