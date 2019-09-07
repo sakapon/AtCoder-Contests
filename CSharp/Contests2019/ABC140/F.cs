@@ -1,34 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 class F
 {
+	struct P
+	{
+		public int c, v;
+	}
+
 	static void Main()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var s = Console.ReadLine().Split().Select(int.Parse).OrderByDescending(x => x).ToList();
+		var s = new Queue<int>(Console.ReadLine().Split().Select(int.Parse).OrderByDescending(x => x));
 
-		var p2 = new int[n + 2];
-		p2[0] = 0; p2[1] = 1;
-		for (var i = 2; i < p2.Length; i++) p2[i] = 2 * p2[i - 1];
+		var q = new List<P> { new P { c = n, v = s.Dequeue() } };
+		while (q.Any())
+		{
+			var ps = q.ToArray();
+			q.Clear();
 
-		var a = new int[s.Count];
-		a[0] = s[0];
-		s.RemoveAt(0);
-		for (var i = 1; i <= n; i++)
-			for (var j = 0; j < p2[i]; j++)
-			{
-				var si = -1;
-				for (var k = 0; k < s.Count; k++)
-					if (s[k] < a[j])
-					{
-						si = k;
-						break;
-					}
-				if (si == -1) { Console.WriteLine("No"); return; }
-				a[p2[i] + j] = s[si];
-				s.RemoveAt(si);
-			}
+			foreach (var p in ps)
+				for (var i = p.c - 1; i >= 0; i--)
+				{
+					var sv = s.Dequeue();
+					if (sv >= p.v) { Console.WriteLine("No"); return; }
+					if (i > 0) q.Add(new P { c = i, v = sv });
+				}
+		}
 		Console.WriteLine("Yes");
 	}
 }
