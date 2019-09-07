@@ -4,30 +4,24 @@ using System.Linq;
 
 class F
 {
-	struct P
-	{
-		public int c, v;
-	}
-
 	static void Main()
 	{
 		var n = int.Parse(Console.ReadLine());
 		var s = new Queue<int>(Console.ReadLine().Split().Select(int.Parse).OrderByDescending(x => x));
 
-		var q = new List<P> { new P { c = n, v = s.Dequeue() } };
-		while (q.Any())
-		{
-			var ps = q.ToArray();
-			q.Clear();
-
-			foreach (var p in ps)
-				for (var i = p.c - 1; i >= 0; i--)
+		var q = new int[n + 1].Select(_ => new List<int>()).ToArray();
+		q[n].Add(s.Dequeue());
+		for (var i = n; i > 0; i--)
+			while (q[i].Any())
+			{
+				for (var j = i - 1; j >= 0; j--)
 				{
-					var sv = s.Dequeue();
-					if (sv >= p.v) { Console.WriteLine("No"); return; }
-					if (i > 0) q.Add(new P { c = i, v = sv });
+					var hp = s.Dequeue();
+					if (hp >= q[i][0]) { Console.WriteLine("No"); return; }
+					if (j > 0) q[j].Add(hp);
 				}
-		}
+				q[i].RemoveAt(0);
+			}
 		Console.WriteLine("Yes");
 	}
 }
