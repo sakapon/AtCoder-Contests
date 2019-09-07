@@ -8,13 +8,11 @@ class C
 		var M = 1000000007;
 		var h = Console.ReadLine().Split().Select(int.Parse).ToArray();
 		var n = h[0];
-		long _100 = ModInv(100, M), a = h[1] * _100 % M, b = h[2] * _100 % M, c = h[3] * _100 % M;
-
-		if (c > 0) throw new InvalidOperationException();
+		long c_ = 100 * ModInv(100 - h[3], M) % M, a = h[1] * c_ % M * ModInv(100, M) % M, b = h[2] * c_ % M * ModInv(100, M) % M;
 
 		long e = 0, ncr = 1, pa = ModPow(a, n, M), pb = ModPow(b, n, M);
 		for (var i = n; i < 2 * n; i++, ncr = ncr * (i - 1) % M * ModInv(i - n, M) % M, pa = pa * b % M, pb = pb * a % M) e = (e + i * ncr % M * (pa + pb)) % M;
-		Console.WriteLine(e);
+		Console.WriteLine(c_ * e % M);
 	}
 
 	static long ModPow(long b, int i, int mod)
