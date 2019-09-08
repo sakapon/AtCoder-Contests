@@ -10,9 +10,6 @@ class B
 		var a = read();
 		var b = read();
 		var c = read();
-
-		var s = b.Sum();
-		for (int i = 0; i < n - 1; i++) if (a[i] + 1 == a[i + 1]) s += c[a[i] - 1];
-		Console.WriteLine(s);
+		Console.WriteLine(b.Sum() + Enumerable.Range(0, n - 1).Where(i => a[i] + 1 == a[i + 1]).Sum(i => c[a[i] - 1]));
 	}
 }
