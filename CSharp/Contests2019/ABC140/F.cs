@@ -7,16 +7,24 @@ class F
 	static void Main()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var s = new Queue<int>(Console.ReadLine().Split().Select(int.Parse).OrderByDescending(x => x));
+		var s = Console.ReadLine().Split().Select(int.Parse).OrderByDescending(x => x).ToArray();
 
-		var q = new int[n + 1].Select(_ => new Queue<int>()).ToArray();
-		q[n].Enqueue(int.MaxValue);
-		for (int hp, i = n; i >= 0; i--)
-			while (q[i].Any())
-			{
-				if ((hp = s.Dequeue()) >= q[i].Dequeue()) { Console.WriteLine("No"); return; }
-				for (var j = i - 1; j >= 0; j--) q[j].Enqueue(hp);
-			}
+		var q = new int[n + 1].Select(_ => new List<int>()).ToList();
+		q[n].Add(int.MaxValue);
+		foreach (var hp in s)
+		{
+			var match = false;
+			for (var i = q.Count - 1; i >= 0; i--)
+				if (hp < q[i][0])
+				{
+					for (var j = i - 1; j >= 0; j--) q[j].Add(hp);
+					q[i].RemoveAt(0);
+					if (!q[i].Any()) q.RemoveAt(i);
+					match = true;
+					break;
+				}
+			if (!match) { Console.WriteLine("No"); return; }
+		}
 		Console.WriteLine("Yes");
 	}
 }
