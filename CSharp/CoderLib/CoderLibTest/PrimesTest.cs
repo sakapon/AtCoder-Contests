@@ -124,6 +124,18 @@ public class PrimesTest
 		return d.ToArray();
 	}
 
+	static IEnumerable<int> DivisorsDescending(int v)
+	{
+		var d = new List<int>();
+		for (int i = 1, j, rv = (int)Math.Sqrt(v); i <= rv; i++)
+			if (v % i == 0)
+			{
+				d.Add(i);
+				if ((j = v / i) != i) yield return j;
+			}
+		for (var i = d.Count - 1; i >= 0; i--) yield return d[i];
+	}
+
 	static long[] Divisors2(long v)
 	{
 		if (v == 1) return new[] { 1L };
