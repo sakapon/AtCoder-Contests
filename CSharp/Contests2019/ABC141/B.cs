@@ -5,12 +5,7 @@ class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
 		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
+		Console.WriteLine(s.Where((c, i) => i % 2 == 0).All(c => c != 'L') && s.Where((c, i) => i % 2 == 1).All(c => c != 'R') ? "Yes" : "No");
 	}
 }

@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Linq;
 
 class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
+		var a = new[] { "Sunny", "Cloudy", "Rainy" };
+		Console.WriteLine(a[(Array.IndexOf(a, Console.ReadLine()) + 1) % 3]);
 	}
 }
