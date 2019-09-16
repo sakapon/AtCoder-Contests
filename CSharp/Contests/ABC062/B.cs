@@ -5,12 +5,10 @@ class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
 		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
 
-		Console.WriteLine(string.Join(" ", a));
+		Console.WriteLine(new string('#', a[1] + 2));
+		for (var i = 0; i < a[0]; i++) Console.WriteLine($"#{Console.ReadLine()}#");
+		Console.WriteLine(new string('#', a[1] + 2));
 	}
 }
