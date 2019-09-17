@@ -60,7 +60,9 @@ public class PriorityQueueTest
 		var actual = TestHelper.MeasureTime(() => new PQ<int>(values));
 		var a = new int[values.Length];
 		TestHelper.MeasureTime(() => { for (var i = 0; i < a.Length; i++) a[i] = actual.Pop(); });
-		CollectionAssert.AreEqual(values.OrderBy(x => x).ToArray(), a);
+		var e = (int[])values.Clone();
+		TestHelper.MeasureTime(() => Array.Sort(e));
+		CollectionAssert.AreEqual(e, a);
 	}
 
 	[TestMethod]
@@ -70,6 +72,7 @@ public class PriorityQueueTest
 		var actual = TestHelper.MeasureTime(() => new PQ<int>(values, (x, y) => -x.CompareTo(y)));
 		var a = new int[values.Length];
 		TestHelper.MeasureTime(() => { for (var i = 0; i < a.Length; i++) a[i] = actual.Pop(); });
-		CollectionAssert.AreEqual(values.OrderByDescending(x => x).ToArray(), a);
+		var e = TestHelper.MeasureTime(() => values.OrderByDescending(x => x).ToArray());
+		CollectionAssert.AreEqual(e, a);
 	}
 }
