@@ -75,4 +75,19 @@ public class PriorityQueueTest
 		var e = TestHelper.MeasureTime(() => values.OrderByDescending(x => x).ToArray());
 		CollectionAssert.AreEqual(e, a);
 	}
+
+	[TestMethod]
+	public void SortTake()
+	{
+		var values = Enumerable.Range(0, 100000).Select(i => random.Next(100000)).ToArray();
+		var actual = TestHelper.MeasureTime(() =>
+		{
+			var pq = new PQ<int>(values);
+			var a = new int[100];
+			for (var i = 0; i < a.Length; i++) a[i] = pq.Pop();
+			return a;
+		});
+		var expected = TestHelper.MeasureTime(() => values.OrderBy(x => x).Take(100).ToArray());
+		CollectionAssert.AreEqual(expected, actual);
+	}
 }
