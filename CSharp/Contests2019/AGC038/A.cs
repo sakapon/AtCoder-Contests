@@ -5,12 +5,10 @@ class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var s = Console.ReadLine().Split().Select(int.Parse).ToArray();
+		int h = s[0], w = s[1], a = s[2], b = s[3];
 
-		Console.WriteLine(string.Join(" ", a));
+		for (int i = 0; i < b; i++) Console.WriteLine(new string('0', a) + new string('1', w - a));
+		for (int i = 0; i < h - b; i++) Console.WriteLine(new string('1', a) + new string('0', w - a));
 	}
 }
