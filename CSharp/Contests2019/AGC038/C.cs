@@ -12,17 +12,17 @@ class C
 		var c = new double[A + 1];
 		for (var d = 1; d <= A; d++) c[d] = 1.0 / d;
 		for (var d = 1; d <= A / 2; d++)
-			for (var i = 2 * d; i <= A; i += d) c[i] -= c[d];
+			for (var m = 2 * d; m <= A; m += d) c[m] -= c[d];
 
 		var s = 0.0;
 		for (var d = 1; d <= A; d++)
 		{
 			double si = 0, si2 = 0;
-			foreach (var p in a)
+			for (var m = d; m <= A; m += d)
 			{
-				if (p.Key % d != 0) continue;
-				si += (double)p.Value * p.Key;
-				si2 += (double)p.Value * p.Key * p.Key;
+				if (!a.ContainsKey(m)) continue;
+				si += (double)a[m] * m;
+				si2 += (double)a[m] * m * m;
 			}
 			s += (si * si - si2) / 2 * c[d];
 		}
