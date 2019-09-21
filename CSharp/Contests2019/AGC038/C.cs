@@ -5,9 +5,10 @@ class C
 {
 	static void Main()
 	{
+		var A = 1000000;
 		Console.ReadLine();
-		var a = Console.ReadLine().Split().Select(int.Parse).GroupBy(x => x).ToDictionary(g => g.Key, g => g.Count());
-		var A = a.Max(p => p.Key);
+		var a = new int[A + 1];
+		foreach (var x in Console.ReadLine().Split().Select(int.Parse)) a[x]++;
 
 		var c = new long[A + 1];
 		for (var d = 1; d <= A; d++) c[d] = MInv(d);
@@ -21,7 +22,7 @@ class C
 			long si = 0, si2 = 0;
 			for (var m = d; m <= A; m += d)
 			{
-				if (!a.ContainsKey(m)) continue;
+				if (a[m] == 0) continue;
 				si = MAdd(si, MMul(a[m], m));
 				si2 = MAdd(si2, MMul(a[m], MMul(m, m)));
 			}
