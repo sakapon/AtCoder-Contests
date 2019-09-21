@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Numerics;
 
 class C
 {
@@ -16,19 +15,19 @@ class C
 			for (var m = 2 * d; m <= A; m += d) c[m] = MSub(c[m], c[d]);
 
 		var h = MInv(2);
-		BigInteger s = 0;
+		long s = 0;
 		for (var d = 1; d <= A; d++)
 		{
-			BigInteger si = 0, si2 = 0;
+			long si = 0, si2 = 0;
 			for (var m = d; m <= A; m += d)
 			{
 				if (!a.ContainsKey(m)) continue;
-				si += (BigInteger)a[m] * m;
-				si2 += (BigInteger)a[m] * m * m;
+				si = MAdd(si, MMul(a[m], m));
+				si2 = MAdd(si2, MMul(a[m], MMul(m, m)));
 			}
-			s += (si * si - si2) * h * c[d] % M;
+			s = MAdd(s, MMul(MMul(MSub(MMul(si, si), si2), h), c[d]));
 		}
-		Console.WriteLine(s % M);
+		Console.WriteLine(s);
 	}
 
 	const int M = 998244353;
