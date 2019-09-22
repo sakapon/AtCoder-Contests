@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <LangVersion>6</LangVersion>
-    <StartupObject>A</StartupObject>
+    <StartupObject>D</StartupObject>
   </PropertyGroup>
 
 </Project>
