@@ -5,12 +5,10 @@ class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
 		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		int n = a[0], l = a[1];
 
-		Console.WriteLine(string.Join(" ", a));
+		var m = l > 0 ? l : l + n - 1 >= 0 ? 0 : l + n - 1;
+		Console.WriteLine(Enumerable.Range(l, n).Sum() - m);
 	}
 }

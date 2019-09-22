@@ -5,14 +5,12 @@ class D
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
+		var ws = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).OrderBy(x => x[1]).ToArray();
 
-		Console.WriteLine(string.Join(" ", a));
+		var ok = true;
+		var t = 0;
+		foreach (var w in ws) if ((t += w[0]) > w[1]) { ok = false; break; }
+		Console.WriteLine(ok ? "Yes" : "No");
 	}
 }

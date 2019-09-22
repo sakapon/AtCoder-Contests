@@ -5,12 +5,7 @@ class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
 		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
+		Console.WriteLine(Enumerable.Range(0, 3).Any(i => s[i] == s[i + 1]) ? "Bad" : "Good");
 	}
 }
