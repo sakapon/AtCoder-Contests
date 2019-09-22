@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Linq;
 
 class C
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
+		var h = Array.ConvertAll(Console.ReadLine().Split(), double.Parse);
+		Console.WriteLine($"{h[0] * h[1] / 2} {(h[0] == 2 * h[2] && h[1] == 2 * h[3] ? 1 : 0)}");
 	}
 }

@@ -1,18 +1,21 @@
 ﻿using System;
-using System.Linq;
 
 class D
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
+		Func<long[]> read = () => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
+		var a = read();
+		long n = h[0], k = h[1];
 
-		Console.WriteLine(string.Join(" ", a));
+		var j = 0;
+		long c = 0, s = 0;
+		for (int i = 0; i < n; c += n - j + 1, s -= a[i++])
+		{
+			for (; j < n && s < k; s += a[j++]) ;
+			if (s < k) break;
+		}
+		Console.WriteLine(c);
 	}
 }
