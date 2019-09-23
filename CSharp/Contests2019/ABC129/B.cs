@@ -5,12 +5,8 @@ class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
+		var w = Console.ReadLine().Split().Select(int.Parse).ToArray();
+		Console.WriteLine(Enumerable.Range(1, n - 1).Min(i => Math.Abs(w.Take(i).Sum() - w.Skip(i).Sum())));
 	}
 }
