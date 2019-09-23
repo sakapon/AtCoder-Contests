@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Linq;
 
 class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
+		var a = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+		var x = new int[11];
+		x[0] = a[2];
+		for (int i = 1; i <= 10; i++)
+		{
+			x[i] = a[0] * x[i - 1] - a[1];
+			Console.WriteLine(x[i]);
+		}
 	}
 }
