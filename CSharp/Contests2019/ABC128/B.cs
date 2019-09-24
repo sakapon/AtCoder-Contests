@@ -3,14 +3,5 @@ using System.Linq;
 
 class B
 {
-	static void Main()
-	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
-	}
+	static void Main() { foreach (var x in Enumerable.Range(1, int.Parse(Console.ReadLine())).Select(i => ($"{i} " + Console.ReadLine()).Split()).OrderBy(x => x[1]).ThenByDescending(x => int.Parse(x[2]))) Console.WriteLine(x[0]); }
 }
