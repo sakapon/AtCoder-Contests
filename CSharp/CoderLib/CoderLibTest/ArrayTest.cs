@@ -90,6 +90,23 @@ public class ArrayTest
 
 	static int DotProduct2(int[] a, int[] b) { for (int r = 0, i = -1; ; r += a[i] * b[i]) if (++i >= a.Length) return r; }
 
+	static int[] SlideMins(int[] a, int k)
+	{
+		var r = new int[a.Length - k + 1];
+		var q = new List<int>();
+
+		for (int i = 0, j = i - k + 1; i < a.Length; i++, j++)
+		{
+			while (q.Count > 0 && a[q[q.Count - 1]] >= a[i]) q.RemoveAt(q.Count - 1);
+			q.Add(i);
+
+			if (j < 0) continue;
+			r[j] = a[q[0]];
+			if (q[0] == j) q.RemoveAt(0);
+		}
+		return r;
+	}
+
 	#region Test Methods
 
 	[TestMethod]
@@ -158,6 +175,16 @@ public class ArrayTest
 	{
 		Assert.AreEqual(32, DotProduct(new[] { 1, 2, 3 }, new[] { 4, 5, 6 }));
 		Assert.AreEqual(89, DotProduct(new[] { 2, 3, 5, 7 }, new[] { 11, 7, 5, 3 }));
+	}
+
+	[TestMethod]
+	public void SlideMins()
+	{
+		CollectionAssert.AreEqual(new[] { 5, 6, 7 }, SlideMins(new[] { 5, 6, 7, 8, 9 }, 3));
+		CollectionAssert.AreEqual(new[] { 7, 6, 5 }, SlideMins(new[] { 9, 8, 7, 6, 5 }, 3));
+		CollectionAssert.AreEqual(new[] { 6, 5, 5 }, SlideMins(new[] { 7, 6, 8, 5, 9 }, 3));
+		CollectionAssert.AreEqual(new[] { 6, 6, 5 }, SlideMins(new[] { 7, 8, 6, 9, 5 }, 3));
+		CollectionAssert.AreEqual(new[] { 5, 5, 5 }, SlideMins(new[] { 9, 7, 5, 6, 8 }, 3));
 	}
 	#endregion
 }
