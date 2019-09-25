@@ -90,7 +90,7 @@ public class ArrayTest
 
 	static int DotProduct2(int[] a, int[] b) { for (int r = 0, i = -1; ; r += a[i] * b[i]) if (++i >= a.Length) return r; }
 
-	static int[] SlideMins0(int[] a, int k)
+	static int[] SlideMin0(int[] a, int k)
 	{
 		var r = new int[a.Length - k + 1];
 		var q = new List<int>();
@@ -105,13 +105,28 @@ public class ArrayTest
 		return r;
 	}
 
-	static int[] SlideMins(int[] a, int k)
+	static int[] SlideMin(int[] a, int k)
 	{
 		var r = new int[a.Length - k + 1];
 		var q = new int[a.Length];
 		for (int i = 1 - k, j = 0, s = 0, t = -1; j < a.Length; i++, j++)
 		{
 			while (s <= t && a[q[t]] >= a[j]) t--;
+			q[++t] = j;
+			if (i < 0) continue;
+			r[i] = a[q[s]];
+			if (q[s] == i) s++;
+		}
+		return r;
+	}
+
+	static int[] SlideMax(int[] a, int k)
+	{
+		var r = new int[a.Length - k + 1];
+		var q = new int[a.Length];
+		for (int i = 1 - k, j = 0, s = 0, t = -1; j < a.Length; i++, j++)
+		{
+			while (s <= t && a[q[t]] <= a[j]) t--;
 			q[++t] = j;
 			if (i < 0) continue;
 			r[i] = a[q[s]];
@@ -191,13 +206,25 @@ public class ArrayTest
 	}
 
 	[TestMethod]
-	public void SlideMins()
+	public void SlideMin()
 	{
-		CollectionAssert.AreEqual(new[] { 5, 6, 7 }, SlideMins(new[] { 5, 6, 7, 8, 9 }, 3));
-		CollectionAssert.AreEqual(new[] { 7, 6, 5 }, SlideMins(new[] { 9, 8, 7, 6, 5 }, 3));
-		CollectionAssert.AreEqual(new[] { 6, 5, 5 }, SlideMins(new[] { 7, 6, 8, 5, 9 }, 3));
-		CollectionAssert.AreEqual(new[] { 6, 6, 5 }, SlideMins(new[] { 7, 8, 6, 9, 5 }, 3));
-		CollectionAssert.AreEqual(new[] { 5, 5, 5 }, SlideMins(new[] { 9, 7, 5, 6, 8 }, 3));
+		CollectionAssert.AreEqual(new[] { 5, 6, 7 }, SlideMin(new[] { 5, 6, 7, 8, 9 }, 3));
+		CollectionAssert.AreEqual(new[] { 7, 6, 5 }, SlideMin(new[] { 9, 8, 7, 6, 5 }, 3));
+		CollectionAssert.AreEqual(new[] { 6, 5, 5 }, SlideMin(new[] { 7, 6, 8, 5, 9 }, 3));
+		CollectionAssert.AreEqual(new[] { 6, 6, 5 }, SlideMin(new[] { 7, 8, 6, 9, 5 }, 3));
+		CollectionAssert.AreEqual(new[] { 5, 5, 5 }, SlideMin(new[] { 9, 7, 5, 6, 8 }, 3));
+		CollectionAssert.AreEqual(new[] { 6, 7, 5 }, SlideMin(new[] { 6, 8, 9, 7, 5 }, 3));
+	}
+
+	[TestMethod]
+	public void SlideMax()
+	{
+		CollectionAssert.AreEqual(new[] { 7, 8, 9 }, SlideMax(new[] { 5, 6, 7, 8, 9 }, 3));
+		CollectionAssert.AreEqual(new[] { 9, 8, 7 }, SlideMax(new[] { 9, 8, 7, 6, 5 }, 3));
+		CollectionAssert.AreEqual(new[] { 8, 8, 9 }, SlideMax(new[] { 7, 6, 8, 5, 9 }, 3));
+		CollectionAssert.AreEqual(new[] { 8, 9, 9 }, SlideMax(new[] { 7, 8, 6, 9, 5 }, 3));
+		CollectionAssert.AreEqual(new[] { 9, 7, 8 }, SlideMax(new[] { 9, 7, 5, 6, 8 }, 3));
+		CollectionAssert.AreEqual(new[] { 9, 9, 9 }, SlideMax(new[] { 6, 8, 9, 7, 5 }, 3));
 	}
 	#endregion
 }
