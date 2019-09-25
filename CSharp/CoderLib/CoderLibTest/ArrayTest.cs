@@ -90,19 +90,32 @@ public class ArrayTest
 
 	static int DotProduct2(int[] a, int[] b) { for (int r = 0, i = -1; ; r += a[i] * b[i]) if (++i >= a.Length) return r; }
 
-	static int[] SlideMins(int[] a, int k)
+	static int[] SlideMins0(int[] a, int k)
 	{
 		var r = new int[a.Length - k + 1];
 		var q = new List<int>();
-
-		for (int i = 0, j = i - k + 1; i < a.Length; i++, j++)
+		for (int i = 1 - k, j = 0; j < a.Length; i++, j++)
 		{
-			while (q.Count > 0 && a[q[q.Count - 1]] >= a[i]) q.RemoveAt(q.Count - 1);
-			q.Add(i);
+			while (q.Count > 0 && a[q[q.Count - 1]] >= a[j]) q.RemoveAt(q.Count - 1);
+			q.Add(j);
+			if (i < 0) continue;
+			r[i] = a[q[0]];
+			if (q[0] == i) q.RemoveAt(0);
+		}
+		return r;
+	}
 
-			if (j < 0) continue;
-			r[j] = a[q[0]];
-			if (q[0] == j) q.RemoveAt(0);
+	static int[] SlideMins(int[] a, int k)
+	{
+		var r = new int[a.Length - k + 1];
+		var q = new int[a.Length];
+		for (int i = 1 - k, j = 0, s = 0, t = -1; j < a.Length; i++, j++)
+		{
+			while (s <= t && a[q[t]] >= a[j]) t--;
+			q[++t] = j;
+			if (i < 0) continue;
+			r[i] = a[q[s]];
+			if (q[s] == i) s++;
 		}
 		return r;
 	}
