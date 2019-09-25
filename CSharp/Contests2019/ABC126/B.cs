@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Linq;
 
 class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
+		Func<string, bool> month = x => x.CompareTo("00") > 0 && x.CompareTo("12") <= 0;
 		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
+		var m1 = month(s.Substring(0, 2));
+		var m2 = month(s.Substring(2));
+		Console.WriteLine(m1 ? (m2 ? "AMBIGUOUS" : "MMYY") : (m2 ? "YYMM" : "NA"));
 	}
 }
