@@ -8,17 +8,34 @@ class E
 	{
 		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
 		var h = read();
-		var cg_map = Enumerable.Range(0, h[0] + 1).ToArray();
-		var gc_map = cg_map.ToDictionary(i => i, i => new List<int> { i });
-
+		var n = h[0];
+		var map = new int[n + 1].Select(_ => new List<int>()).ToArray();
 		foreach (var r in new int[h[1]].Select(_ => read()))
 		{
-			int g0 = cg_map[r[0]], g1 = cg_map[r[1]];
-			if (g0 == g1) continue;
-			foreach (var c in gc_map[g1]) cg_map[c] = g0;
-			gc_map[g0].AddRange(gc_map[g1]);
-			gc_map.Remove(g1);
+			map[r[0]].Add(r[1]);
+			map[r[1]].Add(r[0]);
 		}
-		Console.WriteLine(gc_map.Count - 1);
+
+		var c = 0;
+		var used = new bool[n + 1];
+		var q = new Queue<int>();
+		for (int i = 1; i <= n; i++)
+		{
+			if (used[i]) continue;
+			c++;
+			q.Enqueue(i);
+
+			while (q.Any())
+			{
+				var p = q.Dequeue();
+				used[p] = true;
+				foreach (var np in map[p])
+				{
+					if (used[np]) continue;
+					q.Enqueue(np);
+				}
+			}
+		}
+		Console.WriteLine(c);
 	}
 }
