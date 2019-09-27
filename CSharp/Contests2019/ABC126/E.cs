@@ -23,18 +23,16 @@ class E
 		{
 			if (used[i]) continue;
 			c++;
+			used[i] = true;
 			q.Enqueue(i);
 
 			while (q.Any())
-			{
-				var p = q.Dequeue();
-				used[p] = true;
-				foreach (var np in map[p])
+				foreach (var np in map[q.Dequeue()])
 				{
 					if (used[np]) continue;
+					used[np] = true;
 					q.Enqueue(np);
 				}
-			}
 		}
 		Console.WriteLine(c);
 	}
