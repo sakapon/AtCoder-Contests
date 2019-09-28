@@ -5,12 +5,7 @@ class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
+		var n = double.Parse(Console.ReadLine());
+		Console.WriteLine(n % 2 == 0 ? 0.5 : (n + 1) / 2 / n);
 	}
 }

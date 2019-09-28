@@ -6,11 +6,7 @@ class C
 	static void Main()
 	{
 		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
+		var a = Console.ReadLine().Split().Select((x, i) => new { x = int.Parse(x), i = i + 1 }).OrderBy(_ => _.x).ToArray();
+		Console.WriteLine(string.Join(" ", a.Select(_ => _.i)));
 	}
 }

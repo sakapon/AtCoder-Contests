@@ -1,18 +1,35 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 class D
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
+		var h = Console.ReadLine().Split().Select(long.Parse).ToArray();
+		var g = Gcd(h[0], h[1]);
 
-		Console.WriteLine(string.Join(" ", a));
+		var l = new List<long>();
+		foreach (var d in Divisors(g))
+		{
+			if (d == 1) continue;
+			if (l.TrueForAll(x => d % x != 0)) l.Add(d);
+		}
+		Console.WriteLine(l.Count + 1);
+	}
+
+	static long Gcd(long x, long y) { for (long r; (r = x % y) > 0; x = y, y = r) ; return y; }
+
+	static long[] Divisors(long v)
+	{
+		var d = new List<long>();
+		var c = 0;
+		for (long i = 1, j, rv = (long)Math.Sqrt(v); i <= rv; i++)
+			if (v % i == 0)
+			{
+				d.Insert(c, i);
+				if ((j = v / i) != i) d.Insert(++c, j);
+			}
+		return d.ToArray();
 	}
 }
