@@ -7,7 +7,6 @@ class B
 	{
 		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
 		var a = read();
-		var h = read();
-		Console.WriteLine(h.Count(x => x >= a[1]));
+		Console.WriteLine(read().Count(x => x >= a[1]));
 	}
 }

@@ -10,11 +10,7 @@ class D
 		var g = Gcd(h[0], h[1]);
 
 		var l = new List<long>();
-		foreach (var d in Divisors(g))
-		{
-			if (d == 1) continue;
-			if (l.TrueForAll(x => d % x != 0)) l.Add(d);
-		}
+		foreach (var d in Divisors(g).Skip(1)) if (l.TrueForAll(x => d % x != 0)) l.Add(d);
 		Console.WriteLine(l.Count + 1);
 	}
 
