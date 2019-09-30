@@ -15,7 +15,10 @@ class E
 		for (int j = 0; j <= m; j++) dp[0, j] = 1;
 		for (int i = 0; i < n; i++)
 			for (int j = 0; j < m; j++)
-				dp[i + 1, j + 1] = (dp[i, j + 1] + dp[i + 1, j] - (s[i] == t[j] ? 0 : dp[i, j])) % 1000000007;
+				dp[i + 1, j + 1] = MInt(dp[i, j + 1] + dp[i + 1, j] - (s[i] == t[j] ? 0 : dp[i, j]));
 		Console.WriteLine(dp[n, m]);
 	}
+
+	const int M = 1000000007;
+	static int MInt(int x) => (x %= M) < 0 ? x + M : x;
 }
