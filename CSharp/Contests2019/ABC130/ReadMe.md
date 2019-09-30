@@ -12,3 +12,9 @@ a[i][j] = 0 (S_i ≠ T_j)
 ```
 dp[i][j] + dp[i-1][j-1] = dp[i][j-1] + dp[i-1][j] + a[i][j]
 ```
+
+したがって、
+```
+dp[i][j] = dp[i][j-1] + dp[i-1][j] (S_i = T_j)
+dp[i][j] = dp[i][j-1] + dp[i-1][j] - dp[i-1][j-1] (S_i ≠ T_j)
+```
