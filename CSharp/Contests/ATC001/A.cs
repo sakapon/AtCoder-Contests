@@ -35,11 +35,5 @@ class A
 		public P(int _i, int _j) { i = _i; j = _j; }
 	}
 
-	static IEnumerable<P> Nexts(P p, int h, int w)
-	{
-		if (p.i > 0) yield return new P(p.i - 1, p.j);
-		if (p.i < h - 1) yield return new P(p.i + 1, p.j);
-		if (p.j > 0) yield return new P(p.i, p.j - 1);
-		if (p.j < w - 1) yield return new P(p.i, p.j + 1);
-	}
+	static IEnumerable<P> Nexts(P p, int h, int w) => new[] { new P(p.i, p.j - 1), new P(p.i, p.j + 1), new P(p.i - 1, p.j), new P(p.i + 1, p.j) }.Where(x => 0 <= x.i && x.i < h && 0 <= x.j && x.j < w);
 }
