@@ -17,7 +17,7 @@ class A
 		u[sp.i, sp.j] = true;
 		q.Enqueue(sp);
 
-		Func<P, IEnumerable<P>> nexts = p => new[] { new P(p.i, p.j - 1), new P(p.i, p.j + 1), new P(p.i - 1, p.j), new P(p.i + 1, p.j) }.Where(x => 0 <= x.i && x.i < h && 0 <= x.j && x.j < w && !u[x.i, x.j]);
+		Func<P, P[]> nexts = p => Array.FindAll(new[] { new P(p.i, p.j - 1), new P(p.i, p.j + 1), new P(p.i - 1, p.j), new P(p.i + 1, p.j) }, x => 0 <= x.i && x.i < h && 0 <= x.j && x.j < w && !u[x.i, x.j]);
 		while (q.Any())
 			foreach (var np in nexts(q.Dequeue()))
 			{

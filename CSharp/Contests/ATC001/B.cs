@@ -8,23 +8,19 @@ class B
 		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
 		var h = read();
 
-		var p = Enumerable.Range(0, h[0]).ToArray();
-		Func<int, int> root = i =>
-		{
-			var x = p[i];
-			while (p[x] != x) x = p[x];
-			return p[i] = x;
-		};
-		Func<int, int, bool> eq = (i, j) => root(i) == root(j);
-
+		var uf = new UF(h[0]);
 		foreach (var q in new int[h[1]].Select(_ => read()))
-		{
-			if (q[0] == 0)
-			{
-				if (eq(q[1], q[2])) continue;
-				p[p[q[2]]] = p[p[q[1]]];
-			}
-			else Console.WriteLine(eq(q[1], q[2]) ? "Yes" : "No");
-		}
+			if (q[0] == 0) uf.SetCommon(q[1], q[2]);
+			else Console.WriteLine(uf.AreCommon(q[1], q[2]) ? "Yes" : "No");
 	}
+}
+
+class UF
+{
+	int[] p;
+	public UF(int n) { p = Enumerable.Range(0, n).ToArray(); }
+
+	public void SetCommon(int a, int b) { if (!AreCommon(a, b)) p[p[b]] = p[p[a]]; }
+	public bool AreCommon(int a, int b) => GetRoot(a) == GetRoot(b);
+	int GetRoot(int a) => p[p[a]] == p[a] ? p[a] : p[a] = GetRoot(p[a]);
 }
