@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 class B
@@ -7,10 +8,13 @@ class B
 	{
 		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
 		var h = read();
+
 		var uf = new UF(h[0]);
+		var l = new List<string>();
 		foreach (var q in new int[h[1]].Select(_ => read()))
 			if (q[0] == 0) uf.Unite(q[1], q[2]);
-			else Console.WriteLine(uf.AreUnited(q[1], q[2]) ? "Yes" : "No");
+			else l.Add(uf.AreUnited(q[1], q[2]) ? "Yes" : "No");
+		Console.WriteLine(string.Join("\n", l));
 	}
 }
 
