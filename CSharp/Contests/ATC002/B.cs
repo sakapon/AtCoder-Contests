@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Linq;
 
 class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
+		var h = Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+		for (long n = h[0], M = h[1], p = h[2], r = 1; ; n = n * n % M)
+		{
+			if (p % 2 > 0) r = r * n % M;
+			if ((p /= 2) < 1) { Console.WriteLine(r); return; }
+		}
 	}
 }
