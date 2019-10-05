@@ -8,9 +8,9 @@ class B
 		Console.ReadLine();
 		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
+		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
 
-		Console.WriteLine(string.Join(" ", a));
+		Console.WriteLine(string.Join(" ", h));
 	}
 }
