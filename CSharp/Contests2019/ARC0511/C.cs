@@ -5,12 +5,12 @@ class C
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var s = new int[n].Select(_ => Console.ReadLine().Replace("AB", "!")).ToArray();
 
-		Console.WriteLine(string.Join(" ", a));
+		var c1 = s.Sum(x => x.Count(c => c == '!'));
+		var c2 = Math.Min(s.Count(x => x[0] == 'B'), s.Count(x => x.Last() == 'A'));
+		if (c2 == n) c2--;
+		Console.WriteLine(c1 + c2);
 	}
 }
