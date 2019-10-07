@@ -14,14 +14,13 @@ class D
 
 	static long Exchange(long n, int[] a, int[] b)
 	{
-		var r = a.Zip(b, (p, q) => new { p, q }).OrderByDescending(_ => (double)_.q / _.p).ToArray();
-		var M = n;
-		for (long i = n / r[0].p, n1 = i * r[0].p; i >= 0; i--, n1 -= r[0].p)
-			for (long j = (n - n1) / r[1].p, n2 = j * r[1].p; j >= 0; j--, n2 -= r[1].p)
-			{
-				var k = (n - n1 - n2) / r[2].p;
-				M = Math.Max(M, i * r[0].q + j * r[1].q + k * r[2].q);
-			}
-		return M;
+		var r = a.Zip(b, (p, q) => new[] { p, q }).Where(x => x[0] < x[1]).ToArray();
+		var dp = new long[n + 1];
+		for (int i = 1; i <= n; i++)
+		{
+			dp[i] = i;
+			foreach (var x in r) if (x[0] <= i) dp[i] = Math.Max(dp[i], dp[i - x[0]] + x[1]);
+		}
+		return dp[n];
 	}
 }
