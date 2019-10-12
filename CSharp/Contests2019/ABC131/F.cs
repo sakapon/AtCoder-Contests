@@ -13,23 +13,19 @@ class F
 		var uf = new UF(n);
 		foreach (var g in dx)
 		{
-			if (g.Count() == 1) continue;
 			var p0 = g.First();
 			foreach (var p in g) uf.Unite(p0.i, p.i);
 		}
 		foreach (var g in dy)
 		{
-			if (g.Count() == 1) continue;
 			var p0 = g.First();
 			foreach (var p in g) uf.Unite(p0.i, p.i);
 		}
 
 		var r = 0L;
 		foreach (var g in uf.ToGroups())
-		{
-			if (g.Count() == dx[ps[g.First()][0]].Count()) continue;
-			r += (long)g.Select(i => ps[i][0]).Distinct().Count() * g.Select(i => ps[i][1]).Distinct().Count() - g.Count();
-		}
+			if (g.Count() > dx[ps[g.First()][0]].Count())
+				r += (long)g.Select(i => ps[i][0]).Distinct().Count() * g.Select(i => ps[i][1]).Distinct().Count() - g.Count();
 		Console.WriteLine(r);
 	}
 }
