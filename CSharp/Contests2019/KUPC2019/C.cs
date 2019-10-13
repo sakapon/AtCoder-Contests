@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Linq;
 
 class C
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
 		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		int m = h[0], k = h[1], n = 0;
+		for (long f = 1, M = 0; M < m; n++, f *= 2 * k + 1) M += k * f;
+		Console.WriteLine(n);
 	}
 }

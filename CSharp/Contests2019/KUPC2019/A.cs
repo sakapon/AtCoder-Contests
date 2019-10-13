@@ -5,12 +5,11 @@ class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
+		var h = read();
+		var a = read();
 
-		Console.WriteLine(string.Join(" ", h));
+		var M = a.Max();
+		Console.WriteLine(a.Count(v => v + h[1] >= M));
 	}
 }
