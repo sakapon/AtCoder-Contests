@@ -1,43 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 class E
 {
+	struct R
+	{
+		public int A, B, C;
+	}
+
 	static void Main()
 	{
 		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
 		var h = read();
-		var rs = Enumerable.Range(0, h[1]).Select(i => read()).Select(r => new R { A = r[0], B = r[1], C = r[2] - h[2] }).ToArray();
-		map = rs.GroupBy(r => r.A).ToDictionary(g => g.Key, g => g.ToArray());
-		ups = new HashSet<int>();
+		var n = h[0];
+		var rs = new int[h[1]].Select(_ => read()).Select(r => new R { A = r[0], B = r[1], C = r[2] - h[2] }).ToArray();
+		var map = rs.ToLookup(r => r.A);
 
-		var cs = Enumerable.Repeat(long.MinValue, h[0] + 1).ToArray();
-		cs[1] = 0;
-		long c;
-		for (var i = 0; i < h[0]; i++)
+		var c = Enumerable.Repeat(long.MinValue, n + 1).ToArray();
+		c[1] = 0;
+		for (long v, i = 0; i < n; i++)
 			foreach (var r in rs)
-				if (cs[r.A] != long.MinValue && cs[r.B] < (c = cs[r.A] + r.C)) cs[r.B] = c;
+				if (c[r.A] != c[0] && c[r.B] < (v = c[r.A] + r.C)) c[r.B] = v;
 
+		var u = new bool[n + 1];
 		foreach (var r in rs)
-		{
-			if (ups.Contains(r.B) || cs[r.A] == long.MinValue || cs[r.B] >= cs[r.A] + r.C) continue;
-			FindPath(r.B);
-			if (ups.Contains(h[0])) { Console.WriteLine(-1); return; }
-		}
-		Console.WriteLine(Math.Max(cs[h[0]], 0));
+			if (c[r.A] != c[0] && c[r.B] < c[r.A] + r.C) Find(r.B, map, u);
+		Console.WriteLine(u[n] ? -1 : Math.Max(c[n], 0));
 	}
 
-	static Dictionary<int, R[]> map;
-	static HashSet<int> ups;
-
-	static void FindPath(int p)
+	static void Find(int p, ILookup<int, R> map, bool[] u)
 	{
-		if (ups.Add(p) && map.ContainsKey(p)) foreach (var r in map[p]) FindPath(r.B);
+		u[p] = true;
+		foreach (var r in map[p]) if (!u[r.B]) Find(r.B, map, u);
 	}
-}
-
-struct R
-{
-	public int A, B, C;
 }
