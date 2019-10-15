@@ -1,18 +1,21 @@
 ﻿using System;
-using System.Linq;
 
 class F
 {
 	static void Main()
 	{
-		Console.ReadLine();
 		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
+		var t = Console.ReadLine();
 
-		Console.WriteLine(string.Join(" ", a));
+		var dp = new string[s.Length + 1, t.Length + 1];
+		for (int i = 0; i <= s.Length; i++) dp[i, 0] = "";
+		for (int j = 0; j <= t.Length; j++) dp[0, j] = "";
+		for (int i = 1; i <= s.Length; i++)
+			for (int j = 1; j <= t.Length; j++)
+				if (s[i - 1] == t[j - 1])
+					dp[i, j] = dp[i - 1, j - 1] + s[i - 1];
+				else
+					dp[i, j] = dp[i, j - 1].Length > dp[i - 1, j].Length ? dp[i, j - 1] : dp[i - 1, j];
+		Console.WriteLine(dp[s.Length, t.Length]);
 	}
 }
