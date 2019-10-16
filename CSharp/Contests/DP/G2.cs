@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
-class G
+class G2
 {
 	static void Main()
 	{
@@ -14,18 +13,20 @@ class G
 		var ins = new int[h[0] + 1];
 		foreach (var r in rs) ins[r[1]]++;
 
-		var q = new Queue<int>(Enumerable.Range(1, h[0]).Where(i => ins[i] == 0));
-		var dp = new int[h[0] + 1];
-		while (q.Any())
+		var q = Enumerable.Range(1, h[0]).Where(i => ins[i] == 0).ToList();
+		var c = -1;
+		for (; q.Any(); c++)
 		{
-			var p = q.Dequeue();
-			foreach (var np in map[p])
-				if (--ins[np] == 0)
+			var ps = q.ToArray();
+			q.Clear();
+
+			foreach (var p in ps)
+				foreach (var np in map[p])
 				{
-					dp[np] = dp[p] + 1;
-					q.Enqueue(np);
+					ins[np]--;
+					if (ins[np] == 0) q.Add(np);
 				}
 		}
-		Console.WriteLine(dp.Max());
+		Console.WriteLine(c);
 	}
 }
