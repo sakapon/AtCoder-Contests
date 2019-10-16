@@ -9,12 +9,9 @@ class C
 		var h = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
 
 		var dp = new int[n + 1, 3];
-		for (int i = 1; i <= n; i++)
-		{
-			dp[i, 0] = Math.Max(dp[i - 1, 1] + h[i - 1][1], dp[i - 1, 2] + h[i - 1][2]);
-			dp[i, 1] = Math.Max(dp[i - 1, 2] + h[i - 1][2], dp[i - 1, 0] + h[i - 1][0]);
-			dp[i, 2] = Math.Max(dp[i - 1, 0] + h[i - 1][0], dp[i - 1, 1] + h[i - 1][1]);
-		}
-		Console.WriteLine(Math.Max(Math.Max(dp[n, 0], dp[n, 1]), dp[n, 2]));
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < 3; j++)
+				dp[i + 1, (j + 2) % 3] = Math.Max(dp[i, j] + h[i][j], dp[i, (j + 1) % 3] + h[i][(j + 1) % 3]);
+		Console.WriteLine(Enumerable.Range(0, 3).Max(i => dp[n, i]));
 	}
 }
