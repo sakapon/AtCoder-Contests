@@ -10,14 +10,14 @@ class Q
 		var h = read();
 		var a = read();
 
-		var l = new List<int>() { 0 };
+		var l = new List<int> { 0 };
 		var dp = new long[n + 1];
 		for (int i = 0; i < n; i++)
 		{
-			var li = ~l.BinarySearch(h[i]);
-			var v = dp[l[li - 1]] + a[i];
-			while (li < l.Count && dp[l[li]] <= v) l.RemoveAt(li);
-			l.Insert(li, h[i]);
+			var j = ~l.BinarySearch(h[i]);
+			var v = dp[l[j - 1]] + a[i];
+			while (j < l.Count && dp[l[j]] <= v) l.RemoveAt(j);
+			l.Insert(j, h[i]);
 			dp[h[i]] = v;
 		}
 		Console.WriteLine(dp[l[l.Count - 1]]);
