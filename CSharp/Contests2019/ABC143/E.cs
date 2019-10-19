@@ -4,6 +4,11 @@ using System.Linq;
 
 class E
 {
+	struct R
+	{
+		public int P, D;
+	}
+
 	static void Main()
 	{
 		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
@@ -12,11 +17,11 @@ class E
 		var rs = new int[h[1]].Select(_ => read()).ToArray();
 		var qs = new int[int.Parse(Console.ReadLine())].Select(_ => read()).ToArray();
 
-		var map = new int[n + 1].Select(_ => new List<int[]>()).ToArray();
+		var map = new int[n + 1].Select(_ => new List<R>()).ToArray();
 		foreach (var r in rs)
 		{
-			map[r[0]].Add(new[] { r[1], r[2] });
-			map[r[1]].Add(new[] { r[0], r[2] });
+			map[r[0]].Add(new R { P = r[1], D = r[2] });
+			map[r[1]].Add(new R { P = r[0], D = r[2] });
 		}
 		var map2 = new int[n + 1].Select(_ => new List<int>()).ToArray();
 
@@ -32,7 +37,7 @@ class E
 				var p = q.Dequeue();
 				foreach (var np in map[p])
 				{
-					int j = np[0], nd = d[p] + np[1];
+					int j = np.P, nd = d[p] + np.D;
 					if (nd <= h[2] && nd < d[j])
 					{
 						if (d[j] > h[2]) map2[i].Add(j);
