@@ -5,12 +5,8 @@ class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		var d = Console.ReadLine().Split().Select(int.Parse).ToArray();
+		Console.WriteLine(Enumerable.Range(0, n).SelectMany(i => Enumerable.Range(i + 1, n - i - 1).Select(j => d[i] * d[j])).Sum());
 	}
 }

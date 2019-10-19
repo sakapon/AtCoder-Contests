@@ -1,16 +1,18 @@
 ﻿using System;
-using System.Linq;
 
 class C
 {
 	static void Main()
 	{
 		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		var r = 0;
+		var t = '/';
+		foreach (var c in Console.ReadLine())
+			if (c != t)
+			{
+				r++;
+				t = c;
+			}
+		Console.WriteLine(r);
 	}
 }

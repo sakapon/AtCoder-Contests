@@ -5,14 +5,16 @@ class D
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
+		var l = Console.ReadLine().Split().Select(int.Parse).OrderBy(x => -x).ToArray();
 
-		Console.WriteLine(string.Join(" ", a));
+		var r = 0;
+		for (int i = 0; i < n - 2; i++)
+			for (int j = i + 1, k = n - 1; j < k; j++)
+			{
+				while (j < k && l[i] >= l[j] + l[k]) k--;
+				r += k - j;
+			}
+		Console.WriteLine(r);
 	}
 }
