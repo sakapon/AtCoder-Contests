@@ -18,67 +18,51 @@ class E
 			map[r[0]].Add(new[] { r[1], r[2] });
 			map[r[1]].Add(new[] { r[0], r[2] });
 		}
+		var map2 = new int[n + 1].Select(_ => new List<int>()).ToArray();
 
-		var d = new long[n + 1, n + 1];
-		for (int i = 1; i <= n; i++)
-			for (int j = 1; j <= n; j++)
-				d[i, j] = long.MaxValue;
-		var q = new List<int>();
+		var q = new Queue<int>();
 		for (int i = 1; i <= n; i++)
 		{
-			d[i, i] = 0;
-			q.Add(i);
+			var d = Enumerable.Repeat(int.MaxValue, n + 1).ToArray();
+			d[i] = 0;
+			q.Enqueue(i);
 
 			while (q.Any())
 			{
-				var ps = q.ToArray();
-				q.Clear();
-
-				foreach (var p in ps)
-					foreach (var np in map[p])
+				var p = q.Dequeue();
+				foreach (var np in map[p])
+				{
+					int j = np[0], nd = d[p] + np[1];
+					if (nd <= h[2] && nd < d[j])
 					{
-						var nd = d[i, p] + np[1];
-						if (nd < d[i, np[0]])
-						{
-							d[i, np[0]] = nd;
-							q.Add(np[0]);
-						}
+						if (d[j] > h[2]) map2[i].Add(j);
+						d[j] = nd;
+						q.Enqueue(j);
 					}
+				}
 			}
 		}
 
-		var map2 = new int[n + 1].Select(_ => new List<int>()).ToArray();
+		var g = new int[n + 1, n + 1];
 		for (int i = 1; i <= n; i++)
 			for (int j = 1; j <= n; j++)
-				if (d[i, j] != 0 && d[i, j] <= h[2]) map2[i].Add(j);
-
-		foreach (var query in qs)
+				g[i, j] = -1;
+		for (int i = 1; i <= n; i++)
 		{
-			Find(query, map2, q);
-			q.Clear();
-		}
-	}
+			g[i, i] = 0;
+			q.Enqueue(i);
 
-	static void Find(int[] query, List<int>[] map, List<int> q)
-	{
-		var u = new bool[map.Length];
-		u[query[0]] = true;
-		q.Add(query[0]);
-
-		for (int i = 0; q.Any(); i++)
-		{
-			var ps = q.ToArray();
-			q.Clear();
-
-			foreach (var p in ps)
-				foreach (var np in map[p])
+			while (q.Any())
+			{
+				var p = q.Dequeue();
+				foreach (var np in map2[p])
 				{
-					if (u[np]) continue;
-					if (np == query[1]) { Console.WriteLine(i); return; }
-					u[np] = true;
-					q.Add(np);
+					if (g[i, np] >= 0) continue;
+					g[i, np] = g[i, p] + 1;
+					q.Enqueue(np);
 				}
+			}
 		}
-		Console.WriteLine(-1);
+		Console.WriteLine(string.Join("\n", qs.Select(x => g[x[0], x[1]]).Select(x => x > 0 ? x - 1 : x)));
 	}
 }
