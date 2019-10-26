@@ -37,7 +37,7 @@ struct MInt
 }
 
 [TestClass]
-public class MIntTest
+public class ModuloIntTest
 {
 	[TestMethod]
 	public void Ctor()
