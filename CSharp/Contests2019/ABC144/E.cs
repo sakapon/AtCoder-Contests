@@ -5,14 +5,18 @@ class E
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
+		Func<long[]> read = () => Console.ReadLine().Split().Select(long.Parse).ToArray();
 		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
+		var a = read().OrderBy(x => -x).ToArray();
+		var f = read().OrderBy(x => x).ToArray();
 
-		Console.WriteLine(string.Join(" ", a));
+		long l = 0, r = a[0] * f.Last(), m;
+		while (l < r)
+		{
+			m = (l + r) / 2;
+			if (Enumerable.Range(0, (int)h[0]).Sum(i => Math.Max(0, a[i] - m / f[i])) <= h[1]) r = m;
+			else l = m + 1;
+		}
+		Console.WriteLine(r);
 	}
 }

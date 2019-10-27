@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Linq;
 
 class D
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
+		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+		double a = h[0], b = h[1], x = h[2];
 
-		Console.WriteLine(string.Join(" ", a));
+		var tan = x < a * a * b / 2 ? a * b * b / (2 * x) : 2 * (a * a * b - x) / (a * a * a);
+		Console.WriteLine(Math.Atan(tan) * 180 / Math.PI);
 	}
 }
