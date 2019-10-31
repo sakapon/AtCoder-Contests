@@ -3,5 +3,5 @@ using System.Linq;
 
 class B
 {
-	static void Main() { foreach (var x in Enumerable.Range(1, int.Parse(Console.ReadLine())).Select(i => ($"{i} " + Console.ReadLine()).Split()).OrderBy(x => x[1]).ThenByDescending(x => int.Parse(x[2]))) Console.WriteLine(x[0]); }
+	static void Main() => Console.WriteLine(string.Join("\n", new int[int.Parse(Console.ReadLine())].Select((_, i) => $"{i + 1} {Console.ReadLine()}".Split()).OrderBy(x => x[1]).ThenBy(x => -int.Parse(x[2])).Select(x => x[0])));
 }
