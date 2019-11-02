@@ -1,18 +1,27 @@
 ﻿using System;
-using System.Linq;
 
 class E
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
+		var d = int.Parse(Console.ReadLine());
+		var n = Console.ReadLine();
 
-		Console.WriteLine(string.Join(" ", a));
+		var dp = new long[n.Length + 1, d, 2];
+		dp[0, 0, 0] = 1;
+		for (int i = 0; i < n.Length; i++)
+		{
+			var x = n[i] - '0';
+			for (int j = 0; j < d; j++)
+			{
+				dp[i + 1, (j + x) % d, 0] += dp[i, j, 0];
+				for (int k = 0; k < 10; k++)
+					dp[i + 1, (j + k) % d, 1] += (k < x ? dp[i, j, 0] : 0) + dp[i, j, 1];
+
+			}
+			for (int j = 0; j < d; j++)
+				dp[i + 1, j, 1] %= 1000000007;
+		}
+		Console.WriteLine(dp[n.Length, 0, 0] + dp[n.Length, 0, 1] - 1);
 	}
 }
