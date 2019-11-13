@@ -10,17 +10,13 @@ class C
 		var a = read();
 		var b = read();
 		var ab = a.Zip(b, (x, y) => new { x, y }).OrderBy(_ => _.y).ThenBy(_ => _.x).ToArray();
-		var ao = a.OrderBy(x => x).ToArray();
+		b = ab.Select(_ => _.y).ToArray();
 
-		if (Enumerable.Range(0, n).Any(i => ao[i] > ab[i].y)) { Console.WriteLine("No"); return; }
-		if (Enumerable.Range(0, n).Any(i => ab[i].x <= ab[i].y && ao[i] <= ab[i].x)) { Console.WriteLine("Yes"); return; }
+		if (a.OrderBy(x => x).Where((x, i) => x > b[i]).Any()) { Console.WriteLine("No"); return; }
 
-		int k = 0, c = 0;
-		while (true)
-		{
-			c++;
-			if ((k = Array.BinarySearch(ao, ab[k].x)) == 0) break;
-		}
+		int c = 0, k = 0;
+		for (; c == 0 || k > 0; c++)
+			if ((k = Array.BinarySearch(b, ab[k].x)) < 0) k = ~k;
 		Console.WriteLine(c != n ? "Yes" : "No");
 	}
 }
