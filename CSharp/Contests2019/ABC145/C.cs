@@ -5,12 +5,15 @@ class C
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		Console.WriteLine(ps.SelectMany(p => ps.Select(q => Norm(p, q))).Sum() / n);
+	}
 
-		Console.WriteLine(string.Join(" ", h));
+	static double Norm(int[] p, int[] q)
+	{
+		var dx = p[0] - q[0];
+		var dy = p[1] - q[1];
+		return Math.Sqrt(dx * dx + dy * dy);
 	}
 }
