@@ -59,14 +59,14 @@ class F
 
 	static double GetTurnTime(List<V> vs)
 	{
-		double l = 0, r = vs.Max(v => v.x) - vs.Min(v => v.x), t;
-		while (Math.Round(r - l, 10) > 0)
+		double l = 0, r = 1000000000, t;
+		while (r - l > 0.001)
 		{
 			t = (l + r) / 2;
 			var vs2 = vs.OrderBy(v => v.x + v.d * t).ThenBy(v => v.d).ToArray();
 			if (vs2[0].d == 1 && vs2.Last().d <= 0 || vs2[0].d == 0 && vs2.Last().d == -1) l = t;
 			else r = t;
 		}
-		return Math.Round(l, 10);
+		return Math.Round(r, 2);
 	}
 }
