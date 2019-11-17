@@ -63,7 +63,7 @@ class F
 		while (Math.Round(r - l, 10) > 0)
 		{
 			t = (l + r) / 2;
-			var vs2 = vs.OrderBy(v => v.x + v.d * t).ToArray();
+			var vs2 = vs.OrderBy(v => v.x + v.d * t).ThenBy(v => v.d).ToArray();
 			if (vs2[0].d == 1 && vs2.Last().d <= 0 || vs2[0].d == 0 && vs2.Last().d == -1) l = t;
 			else r = t;
 		}
