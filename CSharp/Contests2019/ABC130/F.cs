@@ -36,12 +36,12 @@ class F
 		Edge(ys, rs.Concat(ls).ToArray(), p => p.y, 0);
 		Edge(ys, ds, p => p.y, -1);
 
-		var tx = GetTurnTime(xs);
-		var ty = GetTurnTime(ys);
+		var tx = GetTurnTimes(xs);
+		var ty = GetTurnTimes(ys);
 
 		Func<V, double, double> f = (v, t) => v.x + v.d * t;
 		Func<double, double> rect = t => (xs.Max(v => f(v, t)) - xs.Min(v => f(v, t))) * (ys.Max(v => f(v, t)) - ys.Min(v => f(v, t)));
-		Console.WriteLine(Math.Min(rect(Math.Min(tx, ty)), rect(Math.Max(tx, ty))));
+		Console.WriteLine(new[] { 0.0 }.Concat(tx).Concat(ty).Min(t => rect(t)));
 	}
 
 	static void Edge(List<V> vs, P[] ps, Func<P, double> toValue, int d)
@@ -57,16 +57,5 @@ class F
 		}
 	}
 
-	static double GetTurnTime(List<V> vs)
-	{
-		double l = 0, r = 1000000000, t;
-		while (r - l > 0.001)
-		{
-			t = (l + r) / 2;
-			var vs2 = vs.OrderBy(v => v.x + v.d * t).ThenBy(v => v.d).ToArray();
-			if (vs2[0].d == 1 && vs2.Last().d <= 0 || vs2[0].d == 0 && vs2.Last().d == -1) l = t;
-			else r = t;
-		}
-		return Math.Round(r, 2);
-	}
+	static double[] GetTurnTimes(List<V> vs) => vs.SelectMany(u => vs.Where(v => u.d != v.d).Select(v => (u.x - v.x) / (v.d - u.d))).Where(t => t >= 0).ToArray();
 }
