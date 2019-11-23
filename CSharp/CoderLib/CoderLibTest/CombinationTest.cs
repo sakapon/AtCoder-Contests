@@ -65,6 +65,16 @@ public class CombinationTest
 		});
 	}
 
+	const string Letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	static void EnumStrings(string s, int length, Action<string> action)
+	{
+		if (s.Length == length)
+			action(s);
+		else
+			foreach (var c in Letters)
+				EnumStrings(s + c, length, action);
+	}
+
 	#region Test Methods
 
 	[TestMethod]
@@ -133,6 +143,14 @@ public class CombinationTest
 
 		foreach (var a in Perm(new[] { 9, 7, 5, 3 }, 3))
 			Console.WriteLine(string.Join(" ", a));
+	}
+
+	[TestMethod]
+	public void EnumStrings()
+	{
+		var c = 0;
+		EnumStrings("", 4, s => c++);
+		Console.WriteLine(c);
 	}
 	#endregion
 }
