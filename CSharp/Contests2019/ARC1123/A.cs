@@ -5,12 +5,7 @@ class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		var s = Console.ReadLine().Split().Select(int.Parse).Sum(x => Math.Max(0, 4 - x));
+		Console.WriteLine(100000 * (s == 6 ? 10 : s));
 	}
 }
