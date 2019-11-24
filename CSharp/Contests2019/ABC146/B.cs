@@ -5,12 +5,8 @@ class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
+		var l = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		Console.WriteLine(new string(Console.ReadLine().Select(c => l[(c - 'A' + n) % 26]).ToArray()));
 	}
 }
