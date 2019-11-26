@@ -5,14 +5,15 @@ class F
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
+		Func<int[]> read = () => $"0 {Console.ReadLine()}".Split().Select(int.Parse).ToArray();
+		var a = read();
 		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
+		int n = a[1], k = a[2];
 
-		Console.WriteLine(string.Join(" ", a));
+		var dp = new long[n - k + 1, n + 1];
+		for (int i = 1; i <= n - k; i++)
+			for (int j = i; j <= i + k; j++)
+				dp[i, j] = Enumerable.Range(i - 1, j - i + 1).Min(x => dp[i - 1, x] + Math.Max(0, h[j] - h[i == 1 ? 0 : x]));
+		Console.WriteLine(Enumerable.Range(n - k, k + 1).Min(j => dp[n - k, j]));
 	}
 }
