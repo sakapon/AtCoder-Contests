@@ -8,17 +8,17 @@ class F
 		long l = h[0], a = h[1], b = h[2];
 		M = h[3];
 
-		var r = 0L;
+		long r = 0, n_min = 0;
 		var d_max = (a + (l - 1) * b).ToString().Length;
 		for (int d = a.ToString().Length; d <= d_max; d++)
 		{
 			var d10 = 1L;
 			for (int i = 0; i < d; i++) d10 *= 10;
 			var n_max = Math.Min(l - 1, (d10 - 1 - a) / b);
-			var t_min = d10 / 10 - 1 - a;
-			var n_min_ex = t_min < 0 ? -1 : t_min / b;
 
-			long c = a + (n_min_ex + 1) * b, n = n_max - n_min_ex;
+			long c = a + n_min * b, n = n_max - n_min + 1;
+			n_min = ++n_max;
+
 			var q = new long[,] { { d10 % M, 1, 0 }, { 0, 1, 1 }, { 0, 0, 1 } };
 			q = MPow3(q, n);
 			r = (q[0, 0] * r + q[0, 1] * (c % M) + q[0, 2] * (b % M)) % M;
