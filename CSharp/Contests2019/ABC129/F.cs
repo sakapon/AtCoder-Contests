@@ -6,10 +6,11 @@ class F
 	{
 		var h = Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 		long l = h[0], a = h[1], b = h[2];
-		MInt.M = (int)h[3];
+		M = h[3];
 
-		MInt r = 0, td = 1;
-		for (int d = (a + (l - 1) * b).ToString().Length; d >= a.ToString().Length; d--)
+		var r = 0L;
+		var d_max = (a + (l - 1) * b).ToString().Length;
+		for (int d = a.ToString().Length; d <= d_max; d++)
 		{
 			var d10 = 1L;
 			for (int i = 0; i < d; i++) d10 *= 10;
@@ -17,38 +18,35 @@ class F
 			var t_min = d10 / 10 - 1 - a;
 			var n_min_ex = t_min < 0 ? -1 : t_min / b;
 
-			long c = a + n_max * b, n = n_max - n_min_ex;
-			var d10n = ((MInt)d10).Pow(n);
-
-			var s = (d10n - 1) / (d10 - 1) * c - ((n - 1) * d10n * d10 - n * d10n + d10) / ((MInt)(d10 - 1)).Pow(2) * b;
-			r += td * s;
-			td *= d10n;
+			long c = a + (n_min_ex + 1) * b, n = n_max - n_min_ex;
+			var q = new long[,] { { d10 % M, 1, 0 }, { 0, 1, 1 }, { 0, 0, 1 } };
+			q = MPow3(q, n);
+			r = (q[0, 0] * r + q[0, 1] * (c % M) + q[0, 2] * (b % M)) % M;
 		}
-		Console.WriteLine(r.V);
+		Console.WriteLine(r);
 	}
-}
 
-struct MInt
-{
-	public static int M = 1000000007;
-	public long V;
-	public MInt(long v) { V = (v %= M) < 0 ? v + M : v; }
+	static long M;
 
-	public static implicit operator MInt(long v) => new MInt(v);
-	public static MInt operator +(MInt x, MInt y) => x.V + y.V;
-	public static MInt operator -(MInt x, MInt y) => x.V - y.V;
-	public static MInt operator *(MInt x, MInt y) => x.V * y.V;
-	public static MInt operator /(MInt x, MInt y) => x * y.Inv();
-
-	public MInt Pow(long i) => MPow(V, i);
-	public MInt Inv() => MPow(V, M - 2);
-
-	static long MPow(long b, long i)
+	static long[,] MPow3(long[,] b, long i)
 	{
-		for (var r = 1L; ; b = b * b % M)
+		var r = new long[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
+		for (; ; b = MProduct3(b, b))
 		{
-			if (i % 2 > 0) r = r * b % M;
+			if (i % 2 > 0) r = MProduct3(r, b);
 			if ((i /= 2) < 1) return r;
 		}
+	}
+
+	static long[,] MProduct3(long[,] a, long[,] b)
+	{
+		var r = new long[3, 3];
+		for (var i = 0; i < 3; i++)
+			for (int j = 0; j < 3; j++)
+			{
+				for (var k = 0; k < 3; k++) r[i, j] += a[i, k] * b[k, j];
+				r[i, j] %= M;
+			}
+		return r;
 	}
 }
