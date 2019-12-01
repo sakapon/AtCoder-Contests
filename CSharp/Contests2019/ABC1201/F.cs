@@ -5,14 +5,18 @@ class F
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
+		Func<long[]> read = () => Console.ReadLine().Split().Select(long.Parse).ToArray();
+		var t = read();
+		var a = read();
+		var b = read();
+		if (a[0] > b[0]) { var _ = a; a = b; b = _; }
 
-		Console.WriteLine(string.Join(" ", a));
+		var sa = t.Zip(a, (u, x) => u * x).Sum();
+		var sb = t.Zip(b, (u, x) => u * x).Sum();
+		if (sa == sb) { Console.WriteLine("infinity"); return; }
+		if (sa < sb) { Console.WriteLine(0); return; }
+
+		var n = t[0] * (b[0] - a[0]) / (double)(sa - sb);
+		Console.WriteLine((long)n * 2 + ((long)n == n ? 0 : 1));
 	}
 }
