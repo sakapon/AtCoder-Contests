@@ -5,12 +5,7 @@ class C
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		var x = int.Parse(Console.ReadLine());
+		Console.WriteLine(Enumerable.Range(1, 1000).Any(i => 100 * i <= x && x <= 105 * i) ? 1 : 0);
 	}
 }
