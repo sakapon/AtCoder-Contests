@@ -20,11 +20,16 @@ class F
 		{
 			for (; ; j++)
 			{
-				if (s[(i + j) % s.Length] != t[j]) break;
+				if (s[(i + j) % s.Length] != t[j]) { j--; break; }
 				if (j == t.Length - 1) { st[i] = true; break; }
 			}
 
-			if (t_sub[j] == -1)
+			if (j == -1)
+			{
+				i++;
+				j = 0;
+			}
+			else if (t_sub[j] == -1)
 			{
 				i += j + 1;
 				j = 0;
