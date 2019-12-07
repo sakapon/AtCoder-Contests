@@ -7,13 +7,22 @@ class F
 	{
 		var n = int.Parse(Console.ReadLine());
 		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-		var yx = ps.OrderBy(p => p[0]).Select((p, i) => { p[0] = i; return p; }).OrderBy(p => p[1]).ToArray();
-		var xy = yx.Select((p, i) => { p[1] = i; return p; }).OrderBy(p => p[0]).ToArray();
+		var xs = ps.Select(p => p[0]).ToArray();
+		var xy = ps.Select(p => p[1]).ToArray();
+		Array.Sort(xs, xy);
+		for (int i = 0; i < n; i++)
+			xs[i] = i;
+		Array.Sort(xy, xs);
+		var yx = new int[n];
+		Array.Copy(xs, yx, n);
+		for (int i = 0; i < n; i++)
+			xy[i] = i;
+		Array.Sort(xs, xy);
 
 		int ss = 64, sc = n / ss + 1;
 		var s = new int[sc, sc];
 		for (int i = 0; i < n; i++)
-			s[xy[i][0] / ss, xy[i][1] / ss]++;
+			s[i / ss, xy[i] / ss]++;
 		for (int i = 0; i < sc; i++)
 			for (int j = 1; j < sc; j++)
 				s[i, j] += s[i, j - 1];
@@ -24,14 +33,14 @@ class F
 		var c = MInt(n * MPow(2, n) - n);
 		for (int i = 0; i < n; i++)
 		{
-			var v = xy[i][1];
+			var v = xy[i];
 
 			var li = i >= ss && v >= ss ? s[i / ss - 1, v / ss - 1] : 0;
 			var ix = i - i % ss;
 			for (int i2 = ix; i2 < i; i2++)
-				if (xy[i2][1] < v) li++;
+				if (xy[i2] < v) li++;
 			for (int j2 = v - v % ss; j2 < v; j2++)
-				if (yx[j2][0] < ix) li++;
+				if (yx[j2] < ix) li++;
 
 			c -= MPow(2, i) + MPow(2, n - 1 - i) + MPow(2, v) + MPow(2, n - 1 - v);
 			c += MPow(2, li) + MPow(2, i - li) + MPow(2, v - li) + MPow(2, n - 1 + li - i - v);
