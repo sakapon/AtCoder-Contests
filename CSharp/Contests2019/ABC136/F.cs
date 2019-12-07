@@ -6,18 +6,12 @@ class F
 	static void Main()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-		var xs = ps.Select(p => p[0]).ToArray();
-		var xy = ps.Select(p => p[1]).ToArray();
-		Array.Sort(xs, xy);
-		for (int i = 0; i < n; i++)
-			xs[i] = i;
-		Array.Sort(xy, xs);
-		var yx = new int[n];
-		Array.Copy(xs, yx, n);
-		for (int i = 0; i < n; i++)
-			xy[i] = i;
-		Array.Sort(xs, xy);
+		var t = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).OrderBy(p => p[0]).Select(p => p[1]).ToArray();
+		var yx = Enumerable.Range(0, n).ToArray();
+		var xy = (int[])yx.Clone();
+		Array.Sort(t, yx);
+		yx.CopyTo(t, 0);
+		Array.Sort(t, xy);
 
 		int ss = 64, sc = n / ss + 1;
 		var s = new int[sc, sc];
