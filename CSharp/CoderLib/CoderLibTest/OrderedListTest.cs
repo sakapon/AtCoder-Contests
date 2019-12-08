@@ -44,14 +44,16 @@ class OrderedList<T, TKey> : List<KeyValuePair<TKey, T>>
 		Insert(Search(p.Key), p);
 	}
 
-	// 挿入先の番号を二分探索で求めます。値が重複する場合は後ろの番号です。
-	int Search(TKey k) => Count > 0 ? Search(k, 0, Count) : 0;
-	int Search(TKey k, int start, int count)
+	// 挿入先の番号を求めます。値が重複する場合は最後尾に挿入するときの番号です。すべて正の値です。
+	int Search(TKey k)
 	{
-		if (count == 1) return _comparer.Compare(k, this[start].Key) < 0 ? start : start + 1;
-		var c = count / 2;
-		var s = start + c;
-		return _comparer.Compare(k, this[s].Key) < 0 ? Search(k, start, c) : Search(k, s, count - c);
+		int l = 0, r = Count, m;
+		while (l < r)
+		{
+			m = (l + r - 1) / 2;
+			if (_comparer.Compare(this[m].Key, k) <= 0) l = m + 1; else r = m;
+		}
+		return r;
 	}
 }
 

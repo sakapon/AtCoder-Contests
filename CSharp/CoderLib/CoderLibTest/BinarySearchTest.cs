@@ -18,7 +18,7 @@ public class BinarySearchTest
 		return r < a.Count && a[r] == v ? r : ~r;
 	}
 
-	// 挿入先の番号を求めます。値が重複する場合は最後尾です。すべて正の値です。
+	// 挿入先の番号を求めます。値が重複する場合は最後尾に挿入するときの番号です。すべて正の値です。
 	static int IndexForInsert(IList<int> a, int v)
 	{
 		int l = 0, r = a.Count, m;
