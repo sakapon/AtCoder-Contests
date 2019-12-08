@@ -114,5 +114,21 @@ public class BinarySearchTest
 			}
 		}
 	}
+
+	[TestMethod]
+	public void Index_Time()
+	{
+		var n = 300000;
+		var a = Enumerable.Range(0, n).Select(_ => random.Next(0, n)).OrderBy(x => x).ToArray();
+		var r = TestHelper.MeasureTime(() => Enumerable.Range(0, n).Select(x => Index(a, x)).ToArray());
+	}
+
+	[TestMethod]
+	public void IndexForInsert_Time()
+	{
+		var n = 300000;
+		var a = Enumerable.Range(0, n).Select(_ => random.Next(0, n)).OrderBy(x => x).ToArray();
+		var r = TestHelper.MeasureTime(() => Enumerable.Range(0, n).Select(x => IndexForInsert(a, x)).ToArray());
+	}
 	#endregion
 }
