@@ -25,6 +25,22 @@ public class BinarySearchTest
 		return r;
 	}
 
+	// Array.BinarySearch メソッドと異なる点: 一致する値が複数存在する場合は最後の番号。
+	static int IndexLast(IList<int> a, int v)
+	{
+		var r = SearchLast(i => a[i] <= v, -1, a.Count - 1);
+		return r >= 0 && a[r] == v ? r : ~(r + 1);
+	}
+
+	// 条件を満たす最後の番号を探索します。
+	// f に l は渡されません。
+	static int SearchLast(Func<int, bool> f, int l, int r)
+	{
+		int m;
+		while (l < r) if (f(m = (l + r + 1) / 2)) l = m; else r = m - 1;
+		return r;
+	}
+
 	#region Test Methods
 
 	[TestMethod]
