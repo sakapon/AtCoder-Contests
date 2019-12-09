@@ -6,26 +6,15 @@ class E
 	static void Main()
 	{
 		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var a = read();
-		int h = a[0], w = a[1];
-
-		var m = new int[h, w];
-		for (int i = 0; i < h; i++)
-		{
-			var l = read();
-			for (int j = 0; j < w; j++)
-				m[i, j] = l[j];
-		}
-		for (int i = 0; i < h; i++)
-		{
-			var l = read();
-			for (int j = 0; j < w; j++)
-				m[i, j] -= l[j];
-		}
+		var s = read();
+		int h = s[0], w = s[1];
+		var a = new int[h].Select(_ => read()).ToArray();
+		var b = new int[h].Select(_ => read()).ToArray();
+		var m = a.Zip(b, (u, v) => u.Zip(v, (x, y) => x - y).ToArray()).ToArray();
 
 		var M = 80 * (h + w);
 		var dp = new bool[h, w, M];
-		dp[0, 0, Math.Abs(m[0, 0])] = true;
+		dp[0, 0, Math.Abs(m[0][0])] = true;
 		for (int k = 0; k < h + w - 2; k++)
 		{
 			for (int i = 0, j = k; i <= k; i++, j--)
@@ -38,13 +27,13 @@ class E
 
 					if (j + 1 < w)
 					{
-						dp[i, j + 1, Math.Abs(v + m[i, j + 1])] = true;
-						dp[i, j + 1, Math.Abs(v - m[i, j + 1])] = true;
+						dp[i, j + 1, Math.Abs(v + m[i][j + 1])] = true;
+						dp[i, j + 1, Math.Abs(v - m[i][j + 1])] = true;
 					}
 					if (i + 1 < h)
 					{
-						dp[i + 1, j, Math.Abs(v + m[i + 1, j])] = true;
-						dp[i + 1, j, Math.Abs(v - m[i + 1, j])] = true;
+						dp[i + 1, j, Math.Abs(v + m[i + 1][j])] = true;
+						dp[i + 1, j, Math.Abs(v - m[i + 1][j])] = true;
 					}
 				}
 			}
