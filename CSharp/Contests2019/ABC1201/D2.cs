@@ -10,7 +10,7 @@ class D2
 
 		var q = from i1 in d.Select(g => g.First())
 				from i2 in d.Select(g => g.FirstOrDefault(x => x > i1)).Where(x => x > 0)
-				select d.Count(g => g.Any(x => x > i2));
+				select d.Count(g => g.Last() > i2);
 		Console.WriteLine(q.Sum());
 	}
 }
