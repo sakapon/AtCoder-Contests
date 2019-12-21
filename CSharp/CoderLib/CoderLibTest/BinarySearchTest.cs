@@ -51,7 +51,7 @@ public class BinarySearchTest
 	/// <param name="r">探索範囲の上限。</param>
 	/// <param name="digits">誤差を表す小数部の桁数。</param>
 	/// <returns>条件 f を満たす最初の値。</returns>
-	public static double First(Func<double, bool> f, double l, double r, int digits = 9)
+	static double First(Func<double, bool> f, double l, double r, int digits = 9)
 	{
 		double m;
 		while (Math.Round(r - l, digits) > 0) if (f(m = l + (r - l) / 2)) r = m; else l = m;
@@ -69,25 +69,25 @@ public class BinarySearchTest
 	/// <param name="r">探索範囲の上限。</param>
 	/// <param name="digits">誤差を表す小数部の桁数。</param>
 	/// <returns>条件 f を満たす最後の値。</returns>
-	public static double Last(Func<double, bool> f, double l, double r, int digits = 9)
+	static double Last(Func<double, bool> f, double l, double r, int digits = 9)
 	{
 		double m;
 		while (Math.Round(r - l, digits) > 0) if (f(m = r - (r - l) / 2)) l = m; else r = m;
 		return l;
 	}
 
-	// Array.BinarySearch メソッドと異なる点: 一致する値が複数存在する場合は先頭の番号。
-	static int Index(IList<int> a, int v)
+	// 挿入先のインデックスを求めます。
+	static int IndexForInsert(IList<int> a, int v) => First(i => a[i] > v, 0, a.Count);
+
+	// Array.BinarySearch メソッドと異なる点: 一致する値が複数存在する場合は最初のインデックス。
+	static int IndexOf(IList<int> a, int v)
 	{
 		var r = First(i => a[i] >= v, 0, a.Count);
 		return r < a.Count && a[r] == v ? r : ~r;
 	}
 
-	// 挿入先の番号を求めます。値が重複する場合は最後尾に挿入するときの番号です。すべて正の値です。
-	static int IndexForInsert(IList<int> a, int v) => First(i => a[i] > v, 0, a.Count);
-
-	// Array.BinarySearch メソッドと異なる点: 一致する値が複数存在する場合は最後の番号。
-	static int IndexLast(IList<int> a, int v)
+	// Array.BinarySearch メソッドと異なる点: 一致する値が複数存在する場合は最後のインデックス。
+	static int LastIndexOf(IList<int> a, int v)
 	{
 		var r = Last(i => a[i] <= v, -1, a.Count - 1);
 		return r >= 0 && a[r] == v ? r : ~(r + 1);
@@ -100,7 +100,7 @@ public class BinarySearchTest
 	{
 		var a = new[] { 3, 5, 6, 6, 6, 8 };
 		for (int i = 0; i < 10; i++)
-			Assert.AreEqual(Array.BinarySearch(a, i), Index(a, i));
+			Assert.AreEqual(Array.BinarySearch(a, i), IndexOf(a, i));
 	}
 
 	[TestMethod]
@@ -136,7 +136,7 @@ public class BinarySearchTest
 		for (int i = -2; i < n + 2; i++)
 		{
 			var expected = Array.BinarySearch(a, i);
-			var actual = Index(a, i);
+			var actual = IndexOf(a, i);
 			if (expected >= 0)
 			{
 				Assert.AreEqual(i, a[actual]);
@@ -183,7 +183,7 @@ public class BinarySearchTest
 	{
 		var n = 300000;
 		var a = Enumerable.Range(0, n).Select(_ => random.Next(0, n)).OrderBy(x => x).ToArray();
-		var r = TestHelper.MeasureTime(() => Enumerable.Range(0, n).Select(x => Index(a, x)).ToArray());
+		var r = TestHelper.MeasureTime(() => Enumerable.Range(0, n).Select(x => IndexOf(a, x)).ToArray());
 	}
 
 	[TestMethod]
