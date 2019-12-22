@@ -6,17 +6,10 @@ class D
 	static void Main()
 	{
 		Console.ReadLine();
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-
 		int r = 0, t = 1;
-		foreach (var v in a)
-		{
-			if (v == t)
-			{
-				r++;
-				t++;
-			}
-		}
-		Console.WriteLine(r == 0 ? -1 : a.Length - r);
+		foreach (var v in Console.ReadLine().Split().Select(int.Parse))
+			if (v == t) t++;
+			else r++;
+		Console.WriteLine(t == 1 ? -1 : r);
 	}
 }
