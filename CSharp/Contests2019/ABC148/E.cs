@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Linq;
 
 class E
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
+		var n = long.Parse(Console.ReadLine());
+		if (n % 2 == 1) { Console.WriteLine(0); return; }
 
-		Console.WriteLine(string.Join(" ", a));
+		long r = 0, t = 2;
+		while (t < n) r += n / (t *= 5);
+		Console.WriteLine(r);
 	}
 }
