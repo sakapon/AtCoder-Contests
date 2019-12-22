@@ -36,10 +36,10 @@ class F
 		foreach (var lrs in map.Values)
 		{
 			var M = long.MinValue;
-			foreach (var lr in lrs.OrderBy(s => s.L).ThenBy(s => s.R))
+			foreach (var lr in lrs.OrderBy(s => s.L))
 			{
-				c += lr.R - Math.Max(M, lr.L - 1);
-				M = lr.R;
+				c += Math.Max(0, lr.R - Math.Max(M, lr.L - 1));
+				M = Math.Max(M, lr.R);
 			}
 		}
 		Console.WriteLine(c);
