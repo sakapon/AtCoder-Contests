@@ -21,11 +21,10 @@ class F
 		for (long i = 0; i <= n; i++)
 		{
 			var l = i * (i - 1) / 2;
-			var r = n * (n - 1) / 2 - (n - i) * (n - i - 1) / 2;
+			var r = l + i * (n - i);
 
 			var a = i * x;
-			var m = a % d;
-			if (m < 0) m += d;
+			var m = (a % d + d) % d;
 			a = (a - m) / d;
 
 			if (!map.ContainsKey(m)) map[m] = new List<LR>();
@@ -35,11 +34,11 @@ class F
 		var c = 0L;
 		foreach (var lrs in map.Values)
 		{
-			var M = long.MinValue;
-			foreach (var lr in lrs.OrderBy(s => s.L))
+			var r = long.MinValue;
+			foreach (var lr in lrs.OrderBy(s => s.L).Where(s => s.R > r))
 			{
-				c += Math.Max(0, lr.R - Math.Max(M, lr.L - 1));
-				M = Math.Max(M, lr.R);
+				c += lr.R - Math.Max(r, lr.L - 1);
+				r = lr.R;
 			}
 		}
 		Console.WriteLine(c);
