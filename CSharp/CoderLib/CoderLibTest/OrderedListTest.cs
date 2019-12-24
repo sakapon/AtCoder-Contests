@@ -48,11 +48,7 @@ class OrderedList<T, TKey> : List<KeyValuePair<TKey, T>>
 	int Search(TKey k)
 	{
 		int l = 0, r = Count, m;
-		while (l < r)
-		{
-			m = (l + r - 1) / 2;
-			if (_comparer.Compare(this[m].Key, k) <= 0) l = m + 1; else r = m;
-		}
+		while (l < r) if (_comparer.Compare(this[m = l + (r - l - 1) / 2].Key, k) > 0) r = m; else l = m + 1;
 		return r;
 	}
 }
