@@ -3,9 +3,5 @@ using System.Linq;
 
 class B
 {
-	static void Main()
-	{
-		var n = int.Parse(Console.ReadLine());
-		Console.WriteLine(new int[n].Select(_ => Console.ReadLine()).Count(x => x == "black") > n / 2 ? "black" : "white");
-	}
+	static void Main() => Console.WriteLine(new int[int.Parse(Console.ReadLine())].Select(_ => Console.ReadLine()).GroupBy(x => x).OrderBy(g => g.Count()).Last().Key);
 }

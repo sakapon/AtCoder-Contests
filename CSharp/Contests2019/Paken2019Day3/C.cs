@@ -13,11 +13,7 @@ class C
 		var M = 0L;
 		for (int j = 0; j < m; j++)
 			for (int k = j + 1; k < m; k++)
-			{
-				var sum = 0L;
-				for (int i = 0; i < n; i++) sum += Math.Max(a[i][j], a[i][k]);
-				M = Math.Max(M, sum);
-			}
+				M = Math.Max(M, Enumerable.Range(0, n).Sum(i => (long)Math.Max(a[i][j], a[i][k])));
 		Console.WriteLine(M);
 	}
 }

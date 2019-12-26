@@ -8,18 +8,12 @@ class D
 		var n = int.Parse(Console.ReadLine());
 		var s = new int[5].Select(_ => Console.ReadLine()).ToArray();
 
-		var d = new int[n + 1, 3];
-		for (int i = 0; i < n; i++)
-		{
-			d[i + 1, 0] = Enumerable.Range(0, 5).Count(j => s[j][i] != 'B');
-			d[i + 1, 1] = Enumerable.Range(0, 5).Count(j => s[j][i] != 'W');
-			d[i + 1, 2] = Enumerable.Range(0, 5).Count(j => s[j][i] != 'R');
-		}
+		var d = Enumerable.Range(0, n).Select(j => "BWR".Select(c => Enumerable.Range(0, 5).Count(i => s[i][j] != c)).ToArray()).ToArray();
 
 		var dp = new int[n + 1, 3];
-		for (int i = 1; i <= n; i++)
+		for (int j = 0; j < n; j++)
 			for (int k = 0; k < 3; k++)
-				dp[i, k] = Math.Min(dp[i - 1, (k + 1) % 3], dp[i - 1, (k + 2) % 3]) + d[i, k];
+				dp[j + 1, k] = Math.Min(dp[j, (k + 1) % 3], dp[j, (k + 2) % 3]) + d[j][k];
 		Console.WriteLine(Enumerable.Range(0, 3).Min(k => dp[n, k]));
 	}
 }
