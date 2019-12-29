@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Linq;
 
 class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		var h = Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+		Console.WriteLine($"{Math.Max(0, h[0] - h[2])} {Math.Max(0, h[1] - Math.Max(0, h[2] - h[0]))}");
 	}
 }

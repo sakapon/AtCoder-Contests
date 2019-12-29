@@ -5,14 +5,27 @@ class D
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
 		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
 		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
+		int n = h[0], k = h[1];
+		var rsp = read();
+		var t = Console.ReadLine();
+		var win = "spr";
 
-		Console.WriteLine(string.Join(" ", a));
+		var r = 0;
+		var u = new char[n];
+		for (int i = 0; i < n; i++)
+		{
+			if (i >= k && u[i - k] == t[i])
+			{
+				u[i] = '?';
+			}
+			else
+			{
+				r += rsp[win.IndexOf(t[i])];
+				u[i] = t[i];
+			}
+		}
+		Console.WriteLine(r);
 	}
 }
