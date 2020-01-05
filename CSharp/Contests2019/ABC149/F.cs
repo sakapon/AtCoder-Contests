@@ -41,15 +41,23 @@ class F
 			}
 		}
 
-		Console.WriteLine((tour.Select(l => Hole(l, rs.Length)).Aggregate((x, y) => x + y) / 2).V);
+		Console.WriteLine((tour.Select(l => Hole(l, n - 1)).Aggregate((x, y) => x + y) / 2).V);
 	}
 
 	static MInt Hole(List<int> l, int m)
 	{
 		if (l.Count < 2) return 0;
-		var whites = Enumerable.Range(0, l.Count).Select(i => ((l[(i + 1) % l.Count] - l[i]) / 2 + m) % m).Select(x => 1 / ((MInt)2).Pow(x)).ToArray();
-		var allWhite = whites.Aggregate((x, y) => x * y);
-		return 1 - allWhite * (1 + whites.Select(x => 1 / x - 1).Aggregate((x, y) => x + y));
+
+		MInt allWhite = 1, bSum = 0;
+		for (int i = 0; i < l.Count; i++)
+		{
+			var c = ((l[(i + 1) % l.Count] - l[i]) / 2 + m) % m;
+			var w = 1 / ((MInt)2).Pow(c);
+
+			allWhite *= w;
+			bSum += 1 / w - 1;
+		}
+		return 1 - allWhite * (1 + bSum);
 	}
 }
 
