@@ -48,16 +48,13 @@ class F
 	{
 		if (l.Count < 2) return 0;
 
-		MInt allWhite = 1, bSum = 0;
+		MInt bSum = 0;
 		for (int i = 0; i < l.Count; i++)
 		{
 			var c = ((l[(i + 1) % l.Count] - l[i]) / 2 + m) % m;
-			var w = 1 / ((MInt)2).Pow(c);
-
-			allWhite *= w;
-			bSum += 1 / w - 1;
+			bSum += ((MInt)2).Pow(c) - 1;
 		}
-		return 1 - allWhite * (1 + bSum);
+		return 1 - (1 + bSum) / ((MInt)2).Pow(m);
 	}
 }
 

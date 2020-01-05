@@ -7,9 +7,8 @@ class F2
 	static void Main()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var m = n - 1;
 		map = new int[n + 1].Select(_ => new List<int>()).ToArray();
-		foreach (var r in new int[m].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()))
+		foreach (var r in new int[n - 1].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()))
 		{
 			map[r[0]].Add(r[1]);
 			map[r[1]].Add(r[0]);
@@ -18,7 +17,16 @@ class F2
 		tour = new int[n + 1].Select(_ => new List<int>()).ToArray();
 		Dfs(1, 0);
 
-		Console.WriteLine((tour.Select(l => Hole(l, m)).Aggregate((x, y) => x + y) / 2).V);
+		MInt bSum = 0, m2 = 2, all = m2.Pow(n - 1);
+		foreach (var l in tour.Skip(1))
+		{
+			if (l.Count < 2)
+				bSum += all - 1;
+			else
+				foreach (var c in Subtrees(l, n - 1))
+					bSum += m2.Pow(c) - 1;
+		}
+		Console.WriteLine(((n - (n + bSum) / all) / 2).V);
 	}
 
 	static List<int>[] map;
@@ -35,19 +43,9 @@ class F2
 		}
 	}
 
-	static MInt Hole(List<int> l, int m)
+	static IEnumerable<int> Subtrees(List<int> l, int m)
 	{
-		if (l.Count < 2) return 0;
-
-		MInt allWhite = 1, bSum = 0;
 		for (int i = 0; i < l.Count; i++)
-		{
-			var c = ((l[(i + 1) % l.Count] - l[i]) / 2 + m) % m;
-			var w = 1 / ((MInt)2).Pow(c);
-
-			allWhite *= w;
-			bSum += 1 / w - 1;
-		}
-		return 1 - allWhite * (1 + bSum);
+			yield return ((l[(i + 1) % l.Count] - l[i]) / 2 + m) % m;
 	}
 }
