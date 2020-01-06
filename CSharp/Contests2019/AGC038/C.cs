@@ -10,28 +10,43 @@ class C
 		var a = new int[A + 1];
 		foreach (var x in Console.ReadLine().Split().Select(int.Parse)) a[x]++;
 
-		var c = new long[A + 1];
-		for (var d = 1; d <= A; d++) c[d] = MInv(d);
+		var c = new MInt[A + 1];
+		for (var d = 1; d <= A; d++) c[d] = new MInt(d).Inv();
 		for (var d = 1; d <= A / 2; d++)
-			for (var m = 2 * d; m <= A; m += d) c[m] = MSub(c[m], c[d]);
+			for (var m = 2 * d; m <= A; m += d) c[m] -= c[d];
 
-		var h = MInv(2);
-		long s = 0;
+		var h = new MInt(2).Inv();
+		MInt s = 0;
 		for (var d = 1; d <= A; d++)
 		{
-			long si = 0, si2 = 0;
+			MInt si = 0, si2 = 0;
 			for (var m = d; m <= A; m += d)
 			{
 				if (a[m] == 0) continue;
-				si = MAdd(si, MMul(a[m], m));
-				si2 = MAdd(si2, MMul(a[m], MMul(m, m)));
+				si += ((MInt)a[m]) * m;
+				si2 += ((MInt)a[m]) * m * m;
 			}
-			s = MAdd(s, MMul(MMul(MSub(MMul(si, si), si2), h), c[d]));
+			s += (si * si - si2) * h * c[d];
 		}
-		Console.WriteLine(s);
+		Console.WriteLine(s.V);
 	}
+}
 
+struct MInt
+{
 	const int M = 998244353;
+	public long V;
+	public MInt(long v) { V = (v %= M) < 0 ? v + M : v; }
+
+	public static implicit operator MInt(long v) => new MInt(v);
+	public static MInt operator +(MInt x, MInt y) => x.V + y.V;
+	public static MInt operator -(MInt x, MInt y) => x.V - y.V;
+	public static MInt operator *(MInt x, MInt y) => x.V * y.V;
+	public static MInt operator /(MInt x, MInt y) => x * y.Inv();
+
+	public MInt Pow(int i) => MPow(V, i);
+	public MInt Inv() => MPow(V, M - 2);
+
 	static long MPow(long b, int i)
 	{
 		for (var r = 1L; ; b = b * b % M)
@@ -40,10 +55,4 @@ class C
 			if ((i /= 2) < 1) return r;
 		}
 	}
-	static long MInv(long x) => MPow(x, M - 2);
-	static long MInt(long x) => (x %= M) < 0 ? x + M : x;
-	static long MAdd(long x, long y) => (x + y) % M;
-	static long MSub(long x, long y) => MInt(x - y);
-	static long MMul(long x, long y) => x * y % M;
-	static long MDiv(long x, long y) => x * MInv(y) % M;
 }
