@@ -5,12 +5,9 @@ class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var ms = new int[int.Parse(Console.ReadLine())].Select(_ => Console.ReadLine().Split()).ToArray();
+		var x = Console.ReadLine();
 
-		Console.WriteLine(string.Join(" ", h));
+		Console.WriteLine(ms.SkipWhile(m => m[0] != x).Skip(1).Sum(m => int.Parse(m[1])));
 	}
 }
