@@ -5,14 +5,12 @@ class F
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
 		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
 
-		Console.WriteLine(string.Join(" ", a));
+		var M = new int[n + 1];
+		for (int i = 0; i < n; i++)
+			M[i + 1] = Math.Max(M[i], a[i]);
+		Console.WriteLine(Enumerable.Range(0, n).Count(i => M[i] < a[i]));
 	}
 }
