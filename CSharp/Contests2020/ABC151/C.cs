@@ -5,12 +5,10 @@ class C
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var h = Console.ReadLine().Split().Select(int.Parse).ToArray();
+		var s = new int[h[1]].Select(_ => Console.ReadLine().Split()).ToArray();
 
-		Console.WriteLine(string.Join(" ", h));
+		var qs = s.GroupBy(x => x[0], x => x[1]).Where(g => g.Contains("AC")).Select(g => g.TakeWhile(x => x == "WA").Count()).ToArray();
+		Console.WriteLine($"{qs.Length} {qs.Sum()}");
 	}
 }
