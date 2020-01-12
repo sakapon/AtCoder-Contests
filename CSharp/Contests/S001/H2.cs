@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Linq;
 
-class H
+class H2
 {
 	static void Main()
 	{
 		var n = int.Parse(Console.ReadLine());
 		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
 
-		var l = new int[0].ToList();
-		int i;
-		foreach (var x in a)
-			if ((i = ~l.BinarySearch(x)) < l.Count) l[i] = x;
-			else l.Add(x);
-		Console.WriteLine(l.Count);
+		var b = Enumerable.Range(n + 1, n).ToArray();
+		foreach (var x in a) b[~Array.BinarySearch(b, x)] = x;
+		Console.WriteLine(b.Count(x => x <= n));
 	}
 }
