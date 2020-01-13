@@ -5,12 +5,11 @@ class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var p = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).OrderBy(x => x[0]).ToArray();
 
-		Console.WriteLine(string.Join(" ", h));
+		var a_max = p.Last()[0];
+		var d = p.Max(x => x[1] - 2 * a_max + x[0]);
+		Console.WriteLine(2 * a_max + Math.Max(d, 0));
 	}
 }
