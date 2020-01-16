@@ -7,7 +7,7 @@ class E
 	{
 		var h = Console.ReadLine().Split().Select(int.Parse).ToArray();
 		var n = h[0];
-		var s = new int[h[1]].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var s = new int[h[1]].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray());
 
 		var f = new bool[n, n];
 		foreach (var q in s)
