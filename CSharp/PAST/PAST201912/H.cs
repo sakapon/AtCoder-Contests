@@ -7,7 +7,7 @@ class H
 	{
 		var n = int.Parse(Console.ReadLine());
 		var c = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var s = new int[int.Parse(Console.ReadLine())].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var s = new int[int.Parse(Console.ReadLine())].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray());
 
 		var ne = n / 2;
 		var mo = c.Where((x, i) => i % 2 == 0).Min();
