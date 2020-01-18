@@ -11,6 +11,22 @@ public class BasicTest
 	static int Gcd(int x, int y) { for (int r; (r = x % y) > 0; x = y, y = r) ; return y; }
 	static int Lcm(int x, int y) => x / Gcd(x, y) * y;
 
+	static int[] Pow2_32(int n)
+	{
+		var p = new int[n + 1];
+		p[0] = 1;
+		for (int i = 0; i < n; i++) p[i + 1] = p[i] * 2;
+		return p;
+	}
+
+	static long[] Pow2_64(int n)
+	{
+		var p = new long[n + 1];
+		p[0] = 1;
+		for (int i = 0; i < n; i++) p[i + 1] = p[i] * 2;
+		return p;
+	}
+
 	static long PowR(long b, int i)
 	{
 		if (i == 0) return 1;
@@ -59,6 +75,15 @@ public class BasicTest
 		Assert.AreEqual(6, Lcm(6, 6));
 		Assert.AreEqual(105, Lcm(15, 21));
 		Assert.AreEqual(315, Lcm(45, 105));
+	}
+
+	[TestMethod]
+	public void Pow2()
+	{
+		var p30 = Enumerable.Range(0, 31).Select(i => 1 << i).ToArray();
+		CollectionAssert.AreEqual(p30, Pow2_32(30));
+		var p62 = Enumerable.Range(0, 63).Select(i => 1L << i).ToArray();
+		CollectionAssert.AreEqual(p62, Pow2_64(62));
 	}
 
 	[TestMethod]
