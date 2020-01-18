@@ -5,12 +5,10 @@ class C
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var h = Console.ReadLine().Split().Select(int.Parse).ToArray();
+		int n = h[0], k = h[1], s = h[2], M = 1000000000;
 
-		Console.WriteLine(string.Join(" ", h));
+		var a = Enumerable.Repeat(s, k).Concat(Enumerable.Repeat(s == M ? 1 : M, n - k));
+		Console.WriteLine(string.Join(" ", a));
 	}
 }
