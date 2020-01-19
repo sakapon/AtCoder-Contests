@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Linq;
 
 class C
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var p = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 
-		Console.WriteLine(string.Join(" ", h));
+		int r = 0, m = n + 1;
+		for (int i = 0; i < n; i++)
+			if (p[i] <= (m = Math.Min(m, p[i]))) r++;
+		Console.WriteLine(r);
 	}
 }
