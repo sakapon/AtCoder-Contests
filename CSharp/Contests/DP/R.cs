@@ -5,16 +5,58 @@ class R
 {
 	static void Main()
 	{
-		var h = Console.ReadLine().Split().Select(long.Parse).ToArray();
-		var n = (int)h[0]; var k = h[1];
-		var a = Enumerable.Range(0, n).ToDictionary(i => i, i => Console.ReadLine().Split().Select((x, j) => new { x, j }).Where(_ => _.x == "1").Select(_ => _.j).ToArray());
+		Func<long[]> read = () => Console.ReadLine().Split().Select(long.Parse).ToArray();
+		var h = read();
+		long n = h[0], k = h[1];
 
-		var dp = new long[n, k + 1];
+		var a = new long[n, n];
 		for (int i = 0; i < n; i++)
-			dp[i, 0] = 1;
-		for (int j = 1; j <= k; j++)
-			for (int i = 0; i < n; i++)
-				dp[i, j] = a[i].Sum(x => dp[x, j - 1]) % 1000000007;
-		Console.WriteLine(Enumerable.Range(0, n).Sum(i => dp[i, k]));
+		{
+			var r = read();
+			for (int j = 0; j < n; j++) a[i, j] = r[j];
+		}
+
+		var v0 = Enumerable.Repeat(1L, (int)n).ToArray();
+		var vk = MMul(MPow(a, k), v0);
+		Console.WriteLine(vk.Sum() % M);
+	}
+
+	static int M = 1000000007;
+
+	static long[,] UnitMatrix(int n)
+	{
+		var r = new long[n, n];
+		for (int i = 0; i < n; i++) r[i, i] = 1;
+		return r;
+	}
+
+	static long[,] MPow(long[,] b, long i)
+	{
+		for (var r = UnitMatrix(b.GetLength(0)); ; b = MMul(b, b))
+		{
+			if (i % 2 > 0) r = MMul(r, b);
+			if ((i /= 2) < 1) return r;
+		}
+	}
+
+	static long[,] MMul(long[,] a, long[,] b)
+	{
+		var n = a.GetLength(0);
+		var r = new long[n, n];
+		for (var i = 0; i < n; i++)
+			for (int j = 0; j < n; j++)
+				for (var k = 0; k < n; k++)
+					r[i, j] = (r[i, j] + a[i, k] * b[k, j]) % M;
+		return r;
+	}
+
+	static long[] MMul(long[,] a, long[] v)
+	{
+		var n = v.Length;
+		var r = new long[n];
+		for (var i = 0; i < n; i++)
+			for (var k = 0; k < n; k++)
+				r[i] = (r[i] + a[i, k] * v[k]) % M;
+		return r;
 	}
 }
