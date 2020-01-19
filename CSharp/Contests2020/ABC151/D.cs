@@ -26,11 +26,11 @@ class D
 		for (int i = 0; i < h; i++)
 			for (int j = 0; j < w; j++)
 				if (c[i][j] == '.')
-					M = Math.Max(M, CountMax(new P(i, j)));
+					M = Math.Max(M, Search(new P(i, j)));
 		Console.WriteLine(M);
 	}
 
-	static int CountMax(P sp)
+	static int Search(P sp)
 	{
 		var u = new int[h, w];
 		var q = new Queue<P>();
@@ -43,10 +43,8 @@ class D
 			var p = q.Dequeue();
 			foreach (var x in p.Nexts())
 			{
-				if (!x.IsInRange || u[x.i, x.j] > 0) continue;
-				if (c[x.i][x.j] == '#') { u[x.i, x.j] = int.MaxValue; continue; }
-				u[x.i, x.j] = u[p.i, p.j] + 1;
-				M = Math.Max(M, u[x.i, x.j]);
+				if (!x.IsInRange || u[x.i, x.j] > 0 || c[x.i][x.j] == '#') continue;
+				M = u[x.i, x.j] = u[p.i, p.j] + 1;
 				q.Enqueue(x);
 			}
 		}

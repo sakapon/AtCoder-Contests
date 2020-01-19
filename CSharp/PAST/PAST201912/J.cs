@@ -4,20 +4,31 @@ using System.Linq;
 
 class J
 {
+	struct P
+	{
+		public int i, j;
+		public P(int _i, int _j) { i = _i; j = _j; }
+		public bool IsInRange => 0 <= i && i < h && 0 <= j && j < w;
+		public P[] Nexts() => new[] { new P(i, j - 1), new P(i, j + 1), new P(i - 1, j), new P(i + 1, j) };
+	}
+
+	static int h, w;
+	static int[][] a;
+
 	static void Main()
 	{
 		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
 		var z = read();
-		int h = z[0], w = z[1];
-		var a = new int[h].Select(_ => read()).ToArray();
+		h = z[0]; w = z[1];
+		a = new int[h].Select(_ => read()).ToArray();
 
-		var u1 = GetCost(h, w, a, new P(h - 1, 0));
-		var u2 = GetCost(h, w, a, new P(h - 1, w - 1));
-		var u3 = GetCost(h, w, a, new P(0, w - 1));
+		var u1 = Search(new P(h - 1, 0));
+		var u2 = Search(new P(h - 1, w - 1));
+		var u3 = Search(new P(0, w - 1));
 		Console.WriteLine(Enumerable.Range(0, h).SelectMany(i => Enumerable.Range(0, w).Select(j => u1[i, j] + u2[i, j] + u3[i, j] - 2 * a[i][j])).Min());
 	}
 
-	static int[,] GetCost(int h, int w, int[][] a, P p0)
+	static int[,] Search(P sp)
 	{
 		var u = new int[h, w];
 		var q = new Queue<P>();
@@ -25,27 +36,21 @@ class J
 		for (int i = 0; i < h; i++)
 			for (int j = 0; j < w; j++)
 				u[i, j] = int.MaxValue;
-		u[p0.i, p0.j] = 0;
-		q.Enqueue(p0);
+		u[sp.i, sp.j] = 0;
+		q.Enqueue(sp);
 
-		Func<P, P[]> nexts = p => Array.FindAll(new[] { new P(p.i, p.j - 1), new P(p.i, p.j + 1), new P(p.i - 1, p.j), new P(p.i + 1, p.j) }, x => 0 <= x.i && x.i < h && 0 <= x.j && x.j < w);
 		while (q.Any())
 		{
 			var p = q.Dequeue();
-			foreach (var np in nexts(p))
+			foreach (var x in p.Nexts())
 			{
-				var v = u[p.i, p.j] + a[np.i][np.j];
-				if (v >= u[np.i, np.j]) continue;
-				u[np.i, np.j] = v;
-				q.Enqueue(np);
+				if (!x.IsInRange) continue;
+				var v = u[p.i, p.j] + a[x.i][x.j];
+				if (v >= u[x.i, x.j]) continue;
+				u[x.i, x.j] = v;
+				q.Enqueue(x);
 			}
 		}
 		return u;
-	}
-
-	struct P
-	{
-		public int i, j;
-		public P(int _i, int _j) { i = _i; j = _j; }
 	}
 }
