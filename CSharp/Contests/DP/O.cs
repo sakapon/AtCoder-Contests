@@ -12,11 +12,12 @@ class O
 		var dp = new int[n + 1, p2[n]];
 		dp[0, 0] = 1;
 		for (int i = 0, i2 = 1; i < n; i++, i2++)
-			for (int j = 0; j < n; j++)
+			for (int f = 0, f2; f < p2[n]; f++)
 			{
-				if (a[i][j] == 0) continue;
-				for (int f = 0, f2; f < p2[n]; f++)
+				if (dp[i, f] == 0) continue;
+				for (int j = 0; j < n; j++)
 				{
+					if (a[i][j] == 0) continue;
 					if ((f2 = f | p2[j]) == f) continue;
 					dp[i2, f2] = (dp[i2, f2] + dp[i, f]) % 1000000007;
 				}
