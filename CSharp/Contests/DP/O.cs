@@ -6,7 +6,7 @@ class O
 	static void Main()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var a = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var a = new int[n].Select(_ => Console.ReadLine().Split().Select(s => s == "1").ToArray()).ToArray();
 		var p2 = Enumerable.Range(0, n + 1).Select(i => 1 << i).ToArray();
 
 		var dp = new int[n + 1, p2[n]];
@@ -17,7 +17,7 @@ class O
 				if (dp[i, f] == 0) continue;
 				for (int j = 0; j < n; j++)
 				{
-					if (a[i][j] == 0) continue;
+					if (!a[i][j]) continue;
 					if ((f2 = f | p2[j]) == f) continue;
 					dp[i2, f2] = (dp[i2, f2] + dp[i, f]) % 1000000007;
 				}
