@@ -13,6 +13,7 @@ class A2
 	}
 
 	static int h, w;
+	static string[] c;
 
 	static void Main()
 	{
@@ -21,9 +22,15 @@ class A2
 		h = z[0]; w = z[1];
 		var s = read();
 		var g = read();
-		var c = new int[h].Select(_ => Console.ReadLine()).ToArray();
-		var sp = new P(s[0] - 1, s[1] - 1);
+		c = new int[h].Select(_ => Console.ReadLine()).ToArray();
 
+		var sp = new P(s[0] - 1, s[1] - 1);
+		var gp = new P(g[0] - 1, g[1] - 1);
+		Console.WriteLine(Search(sp, gp));
+	}
+
+	static int Search(P sp, P gp)
+	{
 		var u = new int[h, w];
 		var q = new Queue<P>();
 		u[sp.i, sp.j] = 1;
@@ -34,12 +41,11 @@ class A2
 			var p = q.Dequeue();
 			foreach (var x in p.Nexts())
 			{
-				if (!x.IsInRange || u[x.i, x.j] > 0) continue;
-				if (c[x.i][x.j] == '#') { u[x.i, x.j] = int.MaxValue; continue; }
+				if (!x.IsInRange || u[x.i, x.j] > 0 || c[x.i][x.j] == '#') continue;
 				u[x.i, x.j] = u[p.i, p.j] + 1;
 				q.Enqueue(x);
 			}
 		}
-		Console.WriteLine(u[g[0] - 1, g[1] - 1] - 1);
+		return u[gp.i, gp.j] - 1;
 	}
 }
