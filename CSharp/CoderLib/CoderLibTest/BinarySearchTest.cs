@@ -12,11 +12,11 @@ public class BinarySearchTest
 	/// f(l) が true のとき、l を返します。
 	/// f(r - 1) が false のとき、r を返します。
 	/// </summary>
-	/// <param name="f">半開区間 [l, r) 上で定義される条件。</param>
 	/// <param name="l">探索範囲の下限。</param>
 	/// <param name="r">探索範囲の上限。</param>
+	/// <param name="f">半開区間 [l, r) 上で定義される条件。</param>
 	/// <returns>条件 f を満たす最初の値。</returns>
-	static int First(Func<int, bool> f, int l, int r)
+	static int First(int l, int r, Func<int, bool> f)
 	{
 		int m;
 		while (l < r) if (f(m = l + (r - l - 1) / 2)) r = m; else l = m + 1;
@@ -29,11 +29,11 @@ public class BinarySearchTest
 	/// f(r) が true のとき、r を返します。
 	/// f(l + 1) が false のとき、l を返します。
 	/// </summary>
-	/// <param name="f">半開区間 (l, r] 上で定義される条件。</param>
 	/// <param name="l">探索範囲の下限。</param>
 	/// <param name="r">探索範囲の上限。</param>
+	/// <param name="f">半開区間 (l, r] 上で定義される条件。</param>
 	/// <returns>条件 f を満たす最後の値。</returns>
-	static int Last(Func<int, bool> f, int l, int r)
+	static int Last(int l, int r, Func<int, bool> f)
 	{
 		int m;
 		while (l < r) if (f(m = r - (r - l - 1) / 2)) l = m; else r = m - 1;
@@ -46,12 +46,12 @@ public class BinarySearchTest
 	/// l 近傍で true のとき、l を返します。
 	/// r 近傍で false のとき、r を返します。
 	/// </summary>
-	/// <param name="f">開区間 (l, r) 上で定義される条件。</param>
 	/// <param name="l">探索範囲の下限。</param>
 	/// <param name="r">探索範囲の上限。</param>
+	/// <param name="f">開区間 (l, r) 上で定義される条件。</param>
 	/// <param name="digits">誤差を表す小数部の桁数。</param>
 	/// <returns>条件 f を満たす最初の値。</returns>
-	static double First(Func<double, bool> f, double l, double r, int digits = 9)
+	static double First(double l, double r, Func<double, bool> f, int digits = 9)
 	{
 		double m;
 		while (Math.Round(r - l, digits) > 0) if (f(m = l + (r - l) / 2)) r = m; else l = m;
@@ -64,12 +64,12 @@ public class BinarySearchTest
 	/// r 近傍で true のとき、r を返します。
 	/// l 近傍で false のとき、l を返します。
 	/// </summary>
-	/// <param name="f">開区間 (l, r) 上で定義される条件。</param>
 	/// <param name="l">探索範囲の下限。</param>
 	/// <param name="r">探索範囲の上限。</param>
+	/// <param name="f">開区間 (l, r) 上で定義される条件。</param>
 	/// <param name="digits">誤差を表す小数部の桁数。</param>
 	/// <returns>条件 f を満たす最後の値。</returns>
-	static double Last(Func<double, bool> f, double l, double r, int digits = 9)
+	static double Last(double l, double r, Func<double, bool> f, int digits = 9)
 	{
 		double m;
 		while (Math.Round(r - l, digits) > 0) if (f(m = r - (r - l) / 2)) l = m; else r = m;
@@ -77,19 +77,19 @@ public class BinarySearchTest
 	}
 
 	// 挿入先のインデックスを求めます。
-	static int IndexForInsert(IList<int> a, int v) => First(i => a[i] > v, 0, a.Count);
+	static int IndexForInsert(IList<int> a, int v) => First(0, a.Count, i => a[i] > v);
 
 	// Array.BinarySearch メソッドと異なる点: 一致する値が複数存在する場合は最初のインデックス。
 	static int IndexOf(IList<int> a, int v)
 	{
-		var r = First(i => a[i] >= v, 0, a.Count);
+		var r = First(0, a.Count, i => a[i] >= v);
 		return r < a.Count && a[r] == v ? r : ~r;
 	}
 
 	// Array.BinarySearch メソッドと異なる点: 一致する値が複数存在する場合は最後のインデックス。
 	static int LastIndexOf(IList<int> a, int v)
 	{
-		var r = Last(i => a[i] <= v, -1, a.Count - 1);
+		var r = Last(-1, a.Count - 1, i => a[i] <= v);
 		return r >= 0 && a[r] == v ? r : ~(r + 1);
 	}
 

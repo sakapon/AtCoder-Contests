@@ -20,23 +20,38 @@ public class Modulo2Test
 	static long MMul(long x, long y) => x * y % M;
 	static long MDiv(long x, long y) => x * MInv(y) % M;
 
-	static long[,] MPow3(long[,] b, long i)
+	// Matrix
+	static long[,] UnitMatrix(int n)
 	{
-		for (var r = new long[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } }; ; b = MMul3(b, b))
+		var r = new long[n, n];
+		for (int i = 0; i < n; i++) r[i, i] = 1;
+		return r;
+	}
+	static long[,] MPow(long[,] b, long i)
+	{
+		for (var r = UnitMatrix(b.GetLength(0)); ; b = MMul(b, b))
 		{
-			if (i % 2 > 0) r = MMul3(r, b);
+			if (i % 2 > 0) r = MMul(r, b);
 			if ((i /= 2) < 1) return r;
 		}
 	}
-	static long[,] MMul3(long[,] a, long[,] b)
+	static long[,] MMul(long[,] a, long[,] b)
 	{
-		var r = new long[3, 3];
-		for (var i = 0; i < 3; i++)
-			for (int j = 0; j < 3; j++)
-			{
-				for (var k = 0; k < 3; k++) r[i, j] += a[i, k] * b[k, j];
-				r[i, j] %= M;
-			}
+		var n = a.GetLength(0);
+		var r = new long[n, n];
+		for (var i = 0; i < n; i++)
+			for (int j = 0; j < n; j++)
+				for (var k = 0; k < n; k++)
+					r[i, j] = (r[i, j] + a[i, k] * b[k, j]) % M;
+		return r;
+	}
+	static long[] MMul(long[,] a, long[] v)
+	{
+		var n = v.Length;
+		var r = new long[n];
+		for (var i = 0; i < n; i++)
+			for (var k = 0; k < n; k++)
+				r[i] = (r[i] + a[i, k] * v[k]) % M;
 		return r;
 	}
 
