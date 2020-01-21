@@ -18,9 +18,8 @@ class U
 
 		var dp = (long[])s.Clone();
 		for (int f = 0; f < p2[n]; f++)
-			for (int g = 1; g <= f; g++)
-				if ((f | g) == f)
-					dp[f] = Math.Max(dp[f], dp[g] + s[f - g]);
+			for (int g = f; g > 0; g = f & (g - 1))
+				dp[f] = Math.Max(dp[f], dp[f - g] + s[g]);
 		Console.WriteLine(dp[p2[n] - 1]);
 	}
 }
