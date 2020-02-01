@@ -39,11 +39,8 @@ public class CombinationTest
 	[TestMethod]
 	public void Combination_r()
 	{
-		for (int n = 6, r = 0; r <= n; r++)
-		{
+		for (int n = 6, r = 0; r <= n; r++, Console.WriteLine())
 			new Comb<int>().Find(Enumerable.Range(1, n).ToArray(), r, p => Console.WriteLine(string.Join(" ", p)));
-			Console.WriteLine();
-		}
 
 		new Comb<int>().Find(new[] { 9, 7, 5, 3, 1 }, 3, p => Console.WriteLine(string.Join(" ", p)));
 	}

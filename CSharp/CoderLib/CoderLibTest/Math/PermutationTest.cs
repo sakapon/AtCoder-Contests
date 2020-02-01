@@ -43,12 +43,8 @@ public class PermutationTest
 	[TestMethod]
 	public void Permutation_r()
 	{
-		for (int n = 4, r = 0; r <= n; r++)
-		{
-			// nPr
+		for (int n = 4, r = 0; r <= n; r++, Console.WriteLine())
 			new Perm<int>().Find(Enumerable.Range(1, n).ToArray(), r, p => Console.WriteLine(string.Join(" ", p)));
-			Console.WriteLine();
-		}
 
 		new Perm<int>().Find(new[] { 9, 7, 5, 3 }, 3, p => Console.WriteLine(string.Join(" ", p)));
 	}

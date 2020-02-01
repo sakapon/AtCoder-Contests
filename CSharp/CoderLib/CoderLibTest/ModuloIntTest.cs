@@ -17,6 +17,7 @@ struct MInt
 
 	public MInt Pow(int i) => MPow(V, i);
 	public MInt Inv() => MPow(V, M - 2);
+	public override string ToString() => $"{V}";
 
 	static long MPow(long b, int i)
 	{
