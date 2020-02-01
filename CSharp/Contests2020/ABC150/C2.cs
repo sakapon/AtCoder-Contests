@@ -10,36 +10,37 @@ class C2
 		var a = Read();
 		var b = Read();
 
-		values = Enumerable.Range(1, n).ToArray();
 		int i = 0, j = 0, c = 0;
-		action = () =>
+		new Perm<int>().Find(Enumerable.Range(1, n).ToArray(), n, p =>
 		{
 			++c;
 			if (p.SequenceEqual(a)) i = c;
 			if (p.SequenceEqual(b)) j = c;
-		};
-		Perm(n);
+		});
 		Console.WriteLine(Math.Abs(i - j));
 	}
+}
 
-	static int[] values;
-	static Action action;
-	static int[] p;
-	static bool[] u;
-	static void Perm(int r)
+class Perm<T>
+{
+	T[] v, p;
+	bool[] u;
+	Action<T[]> act;
+
+	public void Find(T[] _v, int r, Action<T[]> _act)
 	{
-		p = new int[r];
-		u = new bool[values.Length];
-		if (r > 0) Dfs(0); else action();
+		v = _v; p = new T[r]; u = new bool[v.Length]; act = _act;
+		if (p.Length > 0) Dfs(0); else act(p);
 	}
-	static void Dfs(int i)
+
+	void Dfs(int i)
 	{
-		for (int j = 0; j < u.Length; ++j)
+		for (int j = 0; j < v.Length; ++j)
 		{
 			if (u[j]) continue;
-			p[i] = values[j];
+			p[i] = v[j];
 			u[j] = true;
-			if (i + 1 < p.Length) Dfs(i + 1); else action();
+			if (i + 1 < p.Length) Dfs(i + 1); else act(p);
 			u[j] = false;
 		}
 	}
