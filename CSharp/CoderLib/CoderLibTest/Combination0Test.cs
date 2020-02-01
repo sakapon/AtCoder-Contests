@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
-public class CombinationTest
+public class Combination0Test
 {
 	static IEnumerable<int[]> Comb2(int n)
 	{
