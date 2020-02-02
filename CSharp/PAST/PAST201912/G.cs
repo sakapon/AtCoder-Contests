@@ -9,24 +9,35 @@ class G
 		var a = new int[n - 1].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
 
 		var M = int.MinValue;
-		Perm(new int[n], 0, g =>
+		new PowComb<char>().Find("012".ToArray(), n, p =>
 		{
 			var r = 0;
 			for (int i = 0; i < n; i++)
 				for (int j = i + 1; j < n; j++)
-					if (g[i] == g[j]) r += a[i][j - i - 1];
+					if (p[i] == p[j]) r += a[i][j - i - 1];
 			M = Math.Max(M, r);
 		});
 		Console.WriteLine(M);
 	}
+}
 
-	static void Perm(int[] g, int i, Action<int[]> action)
+class PowComb<T>
+{
+	T[] v, p;
+	Action<T[]> act;
+
+	public void Find(T[] _v, int r, Action<T[]> _act)
 	{
-		for (int x = 0; x < 3; x++)
+		v = _v; p = new T[r]; act = _act;
+		if (p.Length > 0) Dfs(0); else act(p);
+	}
+
+	void Dfs(int i)
+	{
+		for (int j = 0; j < v.Length; ++j)
 		{
-			g[i] = x;
-			if (i == g.Length - 1) action(g);
-			else Perm(g, i + 1, action);
+			p[i] = v[j];
+			if (i + 1 < p.Length) Dfs(i + 1); else act(p);
 		}
 	}
 }
