@@ -76,6 +76,35 @@ namespace CoderLibTest.Graphs
 			}
 			Console.WriteLine(string.Join("\n", u.Select((x, i) => $"{i}: {x}")));
 		}
+
+		[TestMethod]
+		public void Tree_DFS()
+		{
+			var n = 5;
+			var rs = new[]
+			{
+				new[] { 3, 1 },
+				new[] { 3, 5 },
+				new[] { 3, 4 },
+				new[] { 2, 3 },
+			};
+			map = DirectedMap(n, rs);
+			u = new int[n + 1];
+			Dfs(2, 0);
+			Console.WriteLine(string.Join("\n", u.Select((x, i) => $"{i}: {x}")));
+		}
+
+		static List<int>[] map;
+		static int[] u;
+		static void Dfs(int p, int p0)
+		{
+			foreach (var p2 in map[p])
+			{
+				if (p2 == p0) continue;
+				u[p2] = u[p] + 1;
+				Dfs(p2, p);
+			}
+		}
 		#endregion
 	}
 }
