@@ -8,7 +8,7 @@ namespace CoderLibTest.Graphs
 	[TestClass]
 	public class GraphTest
 	{
-		static List<int>[] GetMap(int n, int[][] rs)
+		static List<int>[] UndirectedMap(int n, int[][] rs)
 		{
 			var map = Array.ConvertAll(new int[n + 1], _ => new List<int>());
 			foreach (var r in rs)
@@ -18,6 +18,30 @@ namespace CoderLibTest.Graphs
 			}
 			return map;
 		}
+
+		// キーが含まれない可能性があります。
+		static Dictionary<int, int[]> UndirectedMap(int[][] rs) => rs.Concat(rs.Select(r => new[] { r[1], r[0] })).GroupBy(r => r[0], r => r[1]).ToDictionary(g => g.Key, g => g.ToArray());
+
+		static List<int>[] DirectedMap(int n, int[][] rs)
+		{
+			var map = Array.ConvertAll(new int[n + 1], _ => new List<int>());
+			foreach (var r in rs)
+				map[r[0]].Add(r[1]);
+			return map;
+		}
+
+		// 値が null の可能性があります。
+		static List<int>[] DirectedMap2(int n, int[][] rs)
+		{
+			var map = new List<int>[n + 1];
+			foreach (var r in rs)
+				if (map[r[0]] == null) map[r[0]] = new List<int> { r[1] };
+				else map[r[0]].Add(r[1]);
+			return map;
+		}
+
+		// キーが含まれない可能性があります。
+		static Dictionary<int, int[]> DirectedMap(int[][] rs) => rs.GroupBy(r => r[0], r => r[1]).ToDictionary(g => g.Key, g => g.ToArray());
 
 		#region Test Methods
 
@@ -32,7 +56,7 @@ namespace CoderLibTest.Graphs
 				new[] { 4, 3 },
 				new[] { 2, 3 },
 			};
-			var map = GetMap(n, rs);
+			var map = UndirectedMap(n, rs);
 
 			var u = new int[n + 1];
 			var q = new Queue<int>();
