@@ -3,16 +3,16 @@ using System.Linq;
 
 class D
 {
+	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
+		var h = Read();
+		int n = h[0], k = h[1];
+		var p = Read();
 
-		Console.WriteLine(string.Join(" ", a));
+		int M = p.Take(k).Sum(), t = M;
+		for (int i = 0; i < n - k; i++)
+			M = Math.Max(M, t += p[i + k] - p[i]);
+		Console.WriteLine((M + k) / 2.0);
 	}
 }
