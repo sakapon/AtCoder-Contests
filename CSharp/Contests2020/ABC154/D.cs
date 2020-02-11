@@ -10,7 +10,7 @@ class D
 		int n = h[0], k = h[1];
 		var p = Read();
 
-		int M = p.Take(k).Sum(), t = M;
+		int t = p.Take(k).Sum(), M = t;
 		for (int i = 0; i < n - k; i++)
 			M = Math.Max(M, t += p[i + k] - p[i]);
 		Console.WriteLine((M + k) / 2.0);
