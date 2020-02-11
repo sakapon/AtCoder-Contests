@@ -6,17 +6,18 @@ class F
 	static void Main()
 	{
 		var h = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		int r1 = h[0], c1 = h[1], r2 = h[2], c2 = h[3];
-		Console.WriteLine(Sum(r1, r2, c2) - Sum(r1, r2, c1 - 1));
+		int r1 = h[0] - 1, c1 = h[1] - 1, r2 = h[2], c2 = h[3];
+		invs = Enumerable.Range(0, c2 + 2).Select(i => ((MInt)i).Inv()).ToArray();
+		Console.WriteLine(Sum(r2, c2) + Sum(r1, c1) - Sum(r1, c2) - Sum(r2, c1));
 	}
 
-	static MInt Sum(int r1, int r2, int c)
+	static MInt[] invs;
+	static MInt Sum(int r, int c)
 	{
-		MInt t = MInt.MNcr(c + r1, r1), v = 0;
-		for (int i = r1; i <= r2; ++i)
+		MInt t = 1, v = 0;
+		for (int i = 1; i <= c + 1; i++)
 		{
-			t *= c + i + 1;
-			t /= i + 1;
+			t *= (r + i) * invs[i];
 			v += t;
 		}
 		return v;
@@ -49,12 +50,4 @@ struct MInt
 			if ((i /= 2) < 1) return r;
 		}
 	}
-
-	public static long MFactorial(int n) { for (long x = 1, i = 1; ; x = x * ++i % M) if (i >= n) return x; }
-	public static long MNpr(int n, int r)
-	{
-		if (n < r) return 0;
-		for (long x = 1, i = n - r; ; x = x * ++i % M) if (i >= n) return x;
-	}
-	public static MInt MNcr(int n, int r) => n < r ? 0 : n - r < r ? MNcr(n, n - r) : (MInt)MNpr(n, r) / MFactorial(r);
 }
