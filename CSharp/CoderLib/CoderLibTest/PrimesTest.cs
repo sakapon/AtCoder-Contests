@@ -99,6 +99,7 @@ public class PrimesTest
 	// 素因数分解 O(√n)
 	// n = 1 の場合は空の配列。
 	// √n を超える素因数はたかだか 1 個であり、その次数は 1。
+	// 候補 x を 2 または奇数に限定することで高速化できます。
 	static long[] Factorize(long n)
 	{
 		var r = new List<long>();
