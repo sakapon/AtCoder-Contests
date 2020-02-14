@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 class E
@@ -8,42 +9,22 @@ class E
 		var n = int.Parse(Console.ReadLine());
 		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
 
-		var aM = a.Max();
-		if (aM == 1) { Console.WriteLine(n); return; }
+		var d = new Dictionary<long, int>();
+		foreach (var x in a)
+			foreach (var o in Factorize(x).GroupBy(p => p).Select(g => new { p = g.Key, c = g.Count() }))
+				if (!d.ContainsKey(o.p) || d[o.p] < o.c) d[o.p] = o.c;
 
-		var ps = PrimesF(2, aM);
-		var cs = new int[aM + 1];
-		var a2 = (int[])a.Clone();
-
-		for (int i = 0; i < n; i++)
-		{
-			foreach (var p in ps)
-			{
-				if (p > 1000) break;
-				if (a2[i] == 1) break;
-				var c = 0;
-				for (; a2[i] % p == 0; c++) a2[i] /= p;
-				if (c > cs[p]) cs[p] = c;
-			}
-			if (a2[i] > 1) cs[a2[i]] = 1;
-		}
-
-		var lcm = ps.Where(p => cs[p] > 0).Select(p => ((MInt)p).Pow(cs[p])).Aggregate((x, y) => x * y);
-		Console.WriteLine(a.Select(x => lcm / x).Aggregate((x, y) => x + y).V);
+		var lcm = d.Select(p => ((MInt)p.Key).Pow(p.Value)).Aggregate((MInt)1, (x, y) => x * y);
+		Console.WriteLine(a.Select(x => lcm / x).Aggregate((x, y) => x + y));
 	}
 
-	static int[] PrimesF(int m, int M)
+	static long[] Factorize(long n)
 	{
-		var b = PrimeFlags(M);
-		return Enumerable.Range(m, M - m + 1).Where(i => b[i]).ToArray();
-	}
-	static bool[] PrimeFlags(int M)
-	{
-		var rM = (int)Math.Sqrt(M);
-		var b = new bool[M + 1]; b[2] = true;
-		for (int i = 3; i <= M; i += 2) b[i] = true;
-		for (int p = 3; p <= rM; p++) if (b[p]) for (var i = p * p; i <= M; i += 2 * p) b[i] = false;
-		return b;
+		var r = new List<long>();
+		for (long rn = (long)Math.Ceiling(Math.Sqrt(n)), x = 2; x <= rn && n > 1; ++x)
+			while (n % x == 0) { r.Add(x); n /= x; }
+		if (n > 1) r.Add(n);
+		return r.ToArray();
 	}
 }
 
@@ -61,6 +42,7 @@ struct MInt
 
 	public MInt Pow(int i) => MPow(V, i);
 	public MInt Inv() => MPow(V, M - 2);
+	public override string ToString() => $"{V}";
 
 	static long MPow(long b, int i)
 	{
