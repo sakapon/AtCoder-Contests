@@ -96,33 +96,31 @@ public class PrimesTest
 		return l;
 	}
 
-	static long[] Factorize(long v)
+	// 素因数分解 O(√n)
+	// n = 1 の場合は空の配列。
+	// √n を超える素因数はたかだか 1 個であり、その次数は 1。
+	static long[] Factorize(long n)
 	{
 		var r = new List<long>();
-		foreach (var p in Primes64(2, v / 2))
-		{
-			while (v % p == 0)
-			{
-				r.Add(p);
-				v /= p;
-			}
-			if (v == 1) break;
-		}
+		for (long rn = (long)Math.Ceiling(Math.Sqrt(n)), x = 2; x <= rn && n > 1; ++x)
+			while (n % x == 0) { r.Add(x); n /= x; }
+		if (n > 1) r.Add(n);
 		return r.ToArray();
 	}
 
-	static long[] Divisors(long v)
+	// すべての約数 O(√n)
+	static long[] Divisors(long n)
 	{
-		var d = new List<long>();
-		var c = 0;
-		for (long i = 1, j, rv = (long)Math.Sqrt(v); i <= rv; i++)
-			if (v % i == 0)
-			{
-				d.Insert(c, i);
-				if ((j = v / i) != i) d.Insert(++c, j);
-			}
-		return d.ToArray();
+		long rn = (long)Math.Ceiling(Math.Sqrt(n)), v;
+		var r = new List<long>();
+		for (long x = 1; x <= rn; ++x)
+			if (n % x == 0) r.Add(x);
+		for (int i = r.Count - 1; i >= 0; --i)
+			if ((v = n / r[i]) > rn) r.Add(v);
+		return r.ToArray();
 	}
+
+	#region Lab
 
 	static IEnumerable<int> DivisorsDescending(int v)
 	{
@@ -162,6 +160,7 @@ public class PrimesTest
 			return NextDivisor(ps, ds, v, i + 1);
 		}
 	}
+	#endregion
 
 	#region Test Methods
 
