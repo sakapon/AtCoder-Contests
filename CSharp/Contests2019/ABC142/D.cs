@@ -14,10 +14,8 @@ class D
 
 	static long[] Factorize(long n)
 	{
-		long rn = (long)Math.Ceiling(Math.Sqrt(n)), x = 2;
 		var r = new List<long>();
-		while (n % x == 0) { r.Add(x); n /= x; }
-		for (x++; x <= rn && n > 1; x += 2)
+		for (long x = 2; x * x <= n && n > 1; ++x)
 			while (n % x == 0) { r.Add(x); n /= x; }
 		if (n > 1) r.Add(n);
 		return r.ToArray();
