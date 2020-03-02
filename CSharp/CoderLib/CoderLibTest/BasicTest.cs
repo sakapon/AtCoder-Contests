@@ -8,9 +8,6 @@ public class BasicTest
 {
 	// Tabs for indentation.
 
-	static int Gcd(int x, int y) { for (int r; (r = x % y) > 0; x = y, y = r) ; return y; }
-	static int Lcm(int x, int y) => x / Gcd(x, y) * y;
-
 	static int[] Pow2_32(int n)
 	{
 		var p = new int[n + 1];
@@ -54,28 +51,6 @@ public class BasicTest
 	static long Ncr(int n, int r) => n < r ? 0 : n - r < r ? Ncr(n, n - r) : Npr(n, r) / Factorial(r);
 
 	#region Test Methods
-
-	[TestMethod]
-	public void Gcd()
-	{
-		Assert.AreEqual(1, Gcd(1, 1));
-		Assert.AreEqual(1, Gcd(1, 2));
-		Assert.AreEqual(2, Gcd(4, 6));
-		Assert.AreEqual(6, Gcd(6, 6));
-		Assert.AreEqual(3, Gcd(15, 21));
-		Assert.AreEqual(15, Gcd(45, 105));
-	}
-
-	[TestMethod]
-	public void Lcm()
-	{
-		Assert.AreEqual(1, Lcm(1, 1));
-		Assert.AreEqual(2, Lcm(1, 2));
-		Assert.AreEqual(12, Lcm(4, 6));
-		Assert.AreEqual(6, Lcm(6, 6));
-		Assert.AreEqual(105, Lcm(15, 21));
-		Assert.AreEqual(315, Lcm(45, 105));
-	}
 
 	[TestMethod]
 	public void Pow2()
