@@ -26,9 +26,10 @@ namespace CoderLibTest.Maths
 			var r = new List<long>();
 			for (long x = 1; x * x <= n; ++x)
 				if (n % x == 0) r.Add(x);
-			long v;
-			for (int i = r.Count - 1; i >= 0; --i)
-				if ((v = n / r[i]) > r[i]) r.Add(v);
+			var i = r.Count - 1;
+			if (r[i] * r[i] == n) --i;
+			for (; i >= 0; --i)
+				r.Add(n / r[i]);
 			return r.ToArray();
 		}
 
