@@ -48,6 +48,27 @@ namespace CoderLibTest.Maths
 			return n > 1;
 		}
 
+		// n 以下の素数 O(n)?
+		static int[] GetPrimes(int n)
+		{
+			var b = PrimeFlags(n);
+			var r = new List<int>();
+			for (int x = 2; x <= n; ++x) if (b[x]) r.Add(x);
+			return r.ToArray();
+		}
+		// 候補 x を奇数に限定することで高速化できます。
+		static bool[] PrimeFlags(int n)
+		{
+			var b = new bool[n + 1];
+			for (int x = 2; x <= n; ++x) b[x] = true;
+
+			for (int p = 2; p * p <= n; ++p)
+				if (b[p])
+					for (int x = p * p; x <= n; x += p)
+						b[x] = false;
+			return b;
+		}
+
 		#region Test Methods
 
 		[TestMethod]
