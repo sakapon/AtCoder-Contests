@@ -126,9 +126,25 @@ namespace CoderLibTest.Maths
 		}
 
 		[TestMethod]
+		public void IsPrime()
+		{
+			Action<long> Test = n => Assert.AreEqual(Factorize(n).Length == 1, IsPrime(n));
+
+			for (int i = 1; i <= 100; i++) Test(i);
+
+			Test(1000000000037); // 10^12
+			Test(1000000000039);
+			Test(1L << 40);
+			Test((1L << 40) - 1);
+		}
+
+		[TestMethod]
 		public void GetPrimes()
 		{
 			Console.WriteLine(string.Join(" ", GetPrimes(100)));
+
+			Assert.AreEqual(0, GetPrimes(1).Length);
+			Assert.AreEqual(1, GetPrimes(2).Length);
 			Assert.AreEqual(25, GetPrimes(100).Length);
 			Assert.AreEqual(168, GetPrimes(1000).Length);
 			Assert.AreEqual(1229, GetPrimes(10000).Length);
@@ -139,14 +155,15 @@ namespace CoderLibTest.Maths
 		[TestMethod]
 		public void GetPrimes_Range()
 		{
-			Console.WriteLine(string.Join(" ", GetPrimes(2, 100)));
-			Assert.AreEqual(25, GetPrimes(2, 100).Length);
+			Console.WriteLine(string.Join(" ", GetPrimes(1, 100)));
+			Assert.AreEqual(25, GetPrimes(1, 100).Length);
 			Assert.AreEqual(143, GetPrimes(100, 1000).Length);
 			Assert.AreEqual(1061, GetPrimes(1000, 10000).Length);
 			Assert.AreEqual(8363, GetPrimes(10000, 100000).Length);
 			Console.WriteLine(string.Join(" ", GetPrimes(998244300, 998244400)));
 			Console.WriteLine(string.Join(" ", GetPrimes(999999900, 1000000100)));
 			Console.WriteLine(string.Join(" ", GetPrimes(999999999900, 1000000000100)));
+			Console.WriteLine(GetPrimes(1000000000000, 1000001000000).Length);
 		}
 		#endregion
 	}
