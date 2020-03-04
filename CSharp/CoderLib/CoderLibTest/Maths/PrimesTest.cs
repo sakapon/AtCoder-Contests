@@ -49,24 +49,34 @@ namespace CoderLibTest.Maths
 		}
 
 		// n 以下の素数 O(n)?
+		// 候補 x を奇数に限定することで高速化できます。
 		static int[] GetPrimes(int n)
 		{
-			var b = PrimeFlags(n);
+			var b = new bool[n + 1];
+			for (int p = 2; p * p <= n; ++p) if (!b[p]) for (int x = p * p; x <= n; x += p) b[x] = true;
 			var r = new List<int>();
-			for (int x = 2; x <= n; ++x) if (b[x]) r.Add(x);
+			for (int x = 2; x <= n; ++x) if (!b[x]) r.Add(x);
 			return r.ToArray();
 		}
-		// 候補 x を奇数に限定することで高速化できます。
-		static bool[] PrimeFlags(int n)
-		{
-			var b = new bool[n + 1];
-			for (int x = 2; x <= n; ++x) b[x] = true;
 
-			for (int p = 2; p * p <= n; ++p)
-				if (b[p])
-					for (int x = p * p; x <= n; x += p)
-						b[x] = false;
-			return b;
+		// 範囲内の素数 O(√M)? or O(M - m)?
+		// M が大きい場合、誤差が生じる可能性があります。
+		static long[] GetPrimes(long m, long M)
+		{
+			var rn = (int)Math.Ceiling(Math.Sqrt(M));
+			var b1 = new bool[rn + 1];
+			var b2 = new bool[M - m + 1];
+			if (m == 1) b2[0] = true;
+			for (long p = 2; p <= rn; ++p)
+				if (!b1[p])
+				{
+					for (var x = p * p; x <= rn; x += p) b1[x] = true;
+					for (var x = Math.Max(p, (m + p - 1) / p) * p; x <= M; x += p) b2[x - m] = true;
+				}
+
+			var r = new List<long>();
+			for (int x = 0; x < b2.Length; ++x) if (!b2[x]) r.Add(m + x);
+			return r.ToArray();
 		}
 
 		#region Test Methods
@@ -113,6 +123,30 @@ namespace CoderLibTest.Maths
 			CollectionAssert.AreEqual(new long[] { 1, 2, 31, 62 }, Divisors(62));
 			CollectionAssert.AreEqual(new long[] { 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120 }, Divisors(120));
 			CollectionAssert.AreEqual(new long[] { 1, 3, 23, 29, 69, 87, 667, 2001 }, Divisors(2001));
+		}
+
+		[TestMethod]
+		public void GetPrimes()
+		{
+			Console.WriteLine(string.Join(" ", GetPrimes(100)));
+			Assert.AreEqual(25, GetPrimes(100).Length);
+			Assert.AreEqual(168, GetPrimes(1000).Length);
+			Assert.AreEqual(1229, GetPrimes(10000).Length);
+			Assert.AreEqual(9592, GetPrimes(100000).Length);
+			Assert.AreEqual(78498, GetPrimes(1000000).Length);
+		}
+
+		[TestMethod]
+		public void GetPrimes_Range()
+		{
+			Console.WriteLine(string.Join(" ", GetPrimes(2, 100)));
+			Assert.AreEqual(25, GetPrimes(2, 100).Length);
+			Assert.AreEqual(143, GetPrimes(100, 1000).Length);
+			Assert.AreEqual(1061, GetPrimes(1000, 10000).Length);
+			Assert.AreEqual(8363, GetPrimes(10000, 100000).Length);
+			Console.WriteLine(string.Join(" ", GetPrimes(998244300, 998244400)));
+			Console.WriteLine(string.Join(" ", GetPrimes(999999900, 1000000100)));
+			Console.WriteLine(string.Join(" ", GetPrimes(999999999900, 1000000000100)));
 		}
 		#endregion
 	}
