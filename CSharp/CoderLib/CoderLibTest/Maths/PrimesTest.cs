@@ -20,8 +20,7 @@ namespace CoderLibTest.Maths
 		static long[] Factorize(long n)
 		{
 			var r = new List<long>();
-			for (long x = 2; x * x <= n && n > 1; ++x)
-				while (n % x == 0) { r.Add(x); n /= x; }
+			for (long x = 2; x * x <= n && n > 1; ++x) while (n % x == 0) { r.Add(x); n /= x; }
 			if (n > 1) r.Add(n);
 			return r.ToArray();
 		}
@@ -30,12 +29,10 @@ namespace CoderLibTest.Maths
 		static long[] Divisors(long n)
 		{
 			var r = new List<long>();
-			for (long x = 1; x * x <= n; ++x)
-				if (n % x == 0) r.Add(x);
+			for (long x = 1; x * x <= n; ++x) if (n % x == 0) r.Add(x);
 			var i = r.Count - 1;
 			if (r[i] * r[i] == n) --i;
-			for (; i >= 0; --i)
-				r.Add(n / r[i]);
+			for (; i >= 0; --i) r.Add(n / r[i]);
 			return r.ToArray();
 		}
 
@@ -43,8 +40,7 @@ namespace CoderLibTest.Maths
 		// 候補 x を 2 または奇数に限定することで高速化できます。
 		static bool IsPrime(long n)
 		{
-			for (long x = 2; x * x <= n; ++x)
-				if (n % x == 0) return false;
+			for (long x = 2; x * x <= n; ++x) if (n % x == 0) return false;
 			return n > 1;
 		}
 
