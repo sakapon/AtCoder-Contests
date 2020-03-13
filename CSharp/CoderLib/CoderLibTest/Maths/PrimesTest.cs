@@ -13,6 +13,18 @@ namespace CoderLibTest.Maths
 		static long Gcd(long x, long y) { for (long r; (r = x % y) > 0; x = y, y = r) ; return y; }
 		static long Lcm(long x, long y) => x / Gcd(x, y) * y;
 
+		// ax + by = 1 の解 (x, y)
+		// 前提: a と b は互いに素。
+		// ax + by = GCD(a, b) の解を求める場合、予め GCD(a, b) で割ってからこの関数を利用します。
+		static long[] ExtendedEuclid(long a, long b)
+		{
+			if (b == 1) return new[] { 1, 1 - a };
+			long r;
+			var q = Math.DivRem(a, b, out r);
+			var t = ExtendedEuclid(b, r);
+			return new[] { t[1], t[0] - q * t[1] };
+		}
+
 		// 素因数分解 O(√n)
 		// n = 1 の場合は空の配列。
 		// √n を超える素因数はたかだか 1 個であり、その次数は 1。
@@ -97,6 +109,18 @@ namespace CoderLibTest.Maths
 			Assert.AreEqual(6, Lcm(6, 6));
 			Assert.AreEqual(105, Lcm(15, 21));
 			Assert.AreEqual(315, Lcm(45, 105));
+		}
+
+		[TestMethod]
+		public void ExtendedEuclid()
+		{
+			CollectionAssert.AreEqual(new[] { -29L, 5 }, ExtendedEuclid(6, 35));
+			CollectionAssert.AreEqual(new[] { 19L, -9 }, ExtendedEuclid(10, 21));
+			CollectionAssert.AreEqual(new[] { 14L, -13 }, ExtendedEuclid(14, 15));
+
+			CollectionAssert.AreEqual(new[] { 5L, -29 }, ExtendedEuclid(35, 6));
+			CollectionAssert.AreEqual(new[] { -9L, 19 }, ExtendedEuclid(21, 10));
+			CollectionAssert.AreEqual(new[] { -13L, 14 }, ExtendedEuclid(15, 14));
 		}
 
 		[TestMethod]
