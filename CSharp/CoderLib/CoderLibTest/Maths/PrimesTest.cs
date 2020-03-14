@@ -106,6 +106,8 @@ namespace CoderLibTest.Maths
 			CollectionAssert.AreEqual(new long[] { 2, 2, 2, 3, 5 }, Factorize(120));
 			CollectionAssert.AreEqual(new long[] { 2, 3, 3, 3, 37 }, Factorize(1998));
 			CollectionAssert.AreEqual(new long[] { 3, 23, 29 }, Factorize(2001));
+			CollectionAssert.AreEqual(new long[] { 53, 59, 349, 916319 }, Factorize(1000000000037));
+			CollectionAssert.AreEqual(new long[] { 1000000000039 }, Factorize(1000000000039));
 		}
 
 		[TestMethod]
@@ -119,6 +121,7 @@ namespace CoderLibTest.Maths
 			CollectionAssert.AreEqual(new long[] { 1, 2, 31, 62 }, Divisors(62));
 			CollectionAssert.AreEqual(new long[] { 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 24, 30, 40, 60, 120 }, Divisors(120));
 			CollectionAssert.AreEqual(new long[] { 1, 3, 23, 29, 69, 87, 667, 2001 }, Divisors(2001));
+			CollectionAssert.AreEqual(new long[] { 1, 1000000000039 }, Divisors(1000000000039));
 		}
 
 		[TestMethod]
