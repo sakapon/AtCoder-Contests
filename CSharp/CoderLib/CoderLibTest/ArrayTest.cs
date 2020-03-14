@@ -11,7 +11,14 @@ public class ArrayTest
 	static int[] Range(int start, int count)
 	{
 		var a = new int[count];
-		for (var i = 0; i < count; i++) a[i] = start++;
+		for (var i = 0; i < count; ++i) a[i] = start + i;
+		return a;
+	}
+
+	static int[] Range2(int m, int M)
+	{
+		var a = new int[M - m + 1];
+		for (var i = m; i <= M; ++i) a[i - m] = i;
 		return a;
 	}
 
@@ -81,6 +88,9 @@ public class ArrayTest
 		return l.ToArray();
 	}
 
+	static int KyotoNorm(int[] p, int[] q) => Math.Abs(p[0] - q[0]) + Math.Abs(p[1] - q[1]);
+	//static long KyotoNorm((long x, long y) p, (long x, long y) q) => Math.Abs(q.x - p.x) + Math.Abs(q.y - p.y);
+
 	static int DotProduct(int[] a, int[] b)
 	{
 		var r = 0;
@@ -142,6 +152,13 @@ public class ArrayTest
 	{
 		CollectionAssert.AreEqual(new[] { 0, 1, 2, 3, 4 }, Range(0, 5));
 		CollectionAssert.AreEqual(new[] { 2, 3, 4, 5, 6 }, Range(2, 5));
+	}
+
+	[TestMethod]
+	public void Range2()
+	{
+		CollectionAssert.AreEqual(new[] { 0, 1, 2, 3, 4 }, Range2(0, 4));
+		CollectionAssert.AreEqual(new[] { 2, 3, 4, 5, 6 }, Range2(2, 6));
 	}
 
 	[TestMethod]
