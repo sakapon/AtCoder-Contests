@@ -96,7 +96,7 @@ namespace CoderLibTest.Trees
 			var values = Enumerable.Range(0, 100000).Select(i => random.Next(100000)).ToArray();
 			var actual = TestHelper.MeasureTime(() => PQ1<int>.Create(x => x.ToString(), values, true));
 			var a = new List<int>();
-			TestHelper.MeasureTime(() => { while (actual.Count > 0) a.Add(actual.Pop()); });
+			TestHelper.MeasureTime(() => { while (actual.Any) a.Add(actual.Pop()); });
 			var e = TestHelper.MeasureTime(() => values.OrderByDescending(x => x.ToString()).ToArray());
 			CollectionAssert.AreEqual(e, a);
 		}
