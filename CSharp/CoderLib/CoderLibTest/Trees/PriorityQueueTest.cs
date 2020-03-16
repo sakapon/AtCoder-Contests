@@ -7,13 +7,15 @@ namespace CoderLibTest.Trees
 {
 	class PQ<T> : List<T>
 	{
-		public static PQ<T> CreateDesc(T[] vs)
+		public static PQ<T> Create(T[] vs = null, bool desc = false)
 		{
 			var c = Comparer<T>.Default;
-			return new PQ<T>(vs, (x, y) => c.Compare(y, x));
+			return desc ?
+				new PQ<T>(vs, (x, y) => c.Compare(y, x)) :
+				new PQ<T>(vs, c.Compare);
 		}
 
-		public static PQ<T> Create<TKey>(T[] vs, Func<T, TKey> getKey, bool desc = false)
+		public static PQ<T> Create<TKey>(Func<T, TKey> getKey, T[] vs = null, bool desc = false)
 		{
 			var c = Comparer<TKey>.Default;
 			return desc ?
@@ -21,27 +23,31 @@ namespace CoderLibTest.Trees
 				new PQ<T>(vs, (x, y) => c.Compare(getKey(x), getKey(y)));
 		}
 
-		Comparison<T> _c;
+		Comparison<T> c;
 		public T First => this[0];
 
-		public PQ(T[] vs = null, Comparison<T> c = null)
+		PQ(T[] vs, Comparison<T> _c)
 		{
-			_c = c ?? Comparer<T>.Default.Compare;
+			c = _c;
 			if (vs != null) foreach (var v in vs) Push(v);
 		}
 
 		void Swap(int i, int j) { var o = this[i]; this[i] = this[j]; this[j] = o; }
-		void UpHeap(int i) { for (int j; i > 0 && _c(this[j = (i - 1) / 2], this[i]) > 0; Swap(i, j), i = j) ; }
+		void UpHeap(int i) { for (int j; i > 0 && c(this[j = (i - 1) / 2], this[i]) > 0; Swap(i, i = j)) ; }
 		void DownHeap(int i)
 		{
-			for (int j; (j = 2 * i + 1) < Count; i = j)
+			for (int j; (j = 2 * i + 1) < Count;)
 			{
-				if (j + 1 < Count && _c(this[j], this[j + 1]) > 0) j++;
-				if (_c(this[i], this[j]) > 0) Swap(i, j); else break;
+				if (j + 1 < Count && c(this[j], this[j + 1]) > 0) j++;
+				if (c(this[i], this[j]) > 0) Swap(i, i = j); else break;
 			}
 		}
 
-		public void Push(T v) { Add(v); UpHeap(Count - 1); }
+		public void Push(T v)
+		{
+			Add(v);
+			UpHeap(Count - 1);
+		}
 		public T Pop()
 		{
 			var r = this[0];
@@ -58,22 +64,10 @@ namespace CoderLibTest.Trees
 		Random random = new Random();
 
 		[TestMethod]
-		public void Pop()
-		{
-			var values = Enumerable.Range(0, 100000).Select(i => random.Next(100000)).ToArray();
-			var actual = new PQ<int>(values);
-			for (int v1 = actual.Pop(), v2; actual.Count > 0; v1 = v2)
-			{
-				v2 = actual.Pop();
-				Assert.IsTrue(v1 <= v2);
-			}
-		}
-
-		[TestMethod]
 		public void Sort()
 		{
 			var values = Enumerable.Range(0, 100000).Select(i => random.Next(100000)).ToArray();
-			var actual = TestHelper.MeasureTime(() => new PQ<int>(values));
+			var actual = TestHelper.MeasureTime(() => PQ<int>.Create(values));
 			var a = new int[values.Length];
 			TestHelper.MeasureTime(() => { for (var i = 0; i < a.Length; i++) a[i] = actual.Pop(); });
 			var e = (int[])values.Clone();
@@ -85,7 +79,7 @@ namespace CoderLibTest.Trees
 		public void SortDescending()
 		{
 			var values = Enumerable.Range(0, 100000).Select(i => random.Next(100000)).ToArray();
-			var actual = TestHelper.MeasureTime(() => PQ<int>.CreateDesc(values));
+			var actual = TestHelper.MeasureTime(() => PQ<int>.Create(values, true));
 			var a = new int[values.Length];
 			TestHelper.MeasureTime(() => { for (var i = 0; i < a.Length; i++) a[i] = actual.Pop(); });
 			var e = TestHelper.MeasureTime(() => values.OrderByDescending(x => x).ToArray());
@@ -99,7 +93,7 @@ namespace CoderLibTest.Trees
 			var values = Enumerable.Range(0, 100000).Select(i => random.Next(100000)).ToArray();
 			var actual = TestHelper.MeasureTime(() =>
 			{
-				var pq = new PQ<int>(values);
+				var pq = PQ<int>.Create(values);
 				var a = new int[100];
 				for (var i = 0; i < a.Length; i++) a[i] = pq.Pop();
 				return a;
