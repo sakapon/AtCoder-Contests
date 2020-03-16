@@ -28,6 +28,7 @@ namespace CoderLibTest.Trees
 		Comparison<T> c;
 		public T First => l[1];
 		public int Count => l.Count - 1;
+		public bool Any => l.Count > 1;
 
 		PQ1(T[] vs, Comparison<T> _c)
 		{
