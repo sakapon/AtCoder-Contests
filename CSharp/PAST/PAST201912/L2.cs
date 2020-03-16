@@ -32,10 +32,10 @@ class L2
 		Func<int, int, R> ToR = (i, j) => new R { i = i, j = j, Cost = Norm(ps[i], ps[j]) };
 
 		var c = 0.0;
-		var pq = new PQ<R>(Enumerable.Range(1, ps.Length - 1).Select(i => ToR(0, i)), (x, y) => Math.Sign(x.Cost - y.Cost));
+		var pq = PQ<R>.Create(x => x.Cost, Enumerable.Range(1, ps.Length - 1).Select(i => ToR(0, i)).ToArray());
 		var u = new bool[ps.Length];
 		u[0] = true;
-		while (pq.Any())
+		while (pq.Any)
 		{
 			var r = pq.Pop();
 			if (u[r.i] && u[r.j]) continue;
@@ -56,35 +56,50 @@ class L2
 	}
 }
 
-class PQ<T> : List<T>
+class PQ<T>
 {
-	Comparison<T> _c;
-	public T First => this[0];
-
-	public PQ(IEnumerable<T> vs = null, Comparison<T> c = null)
+	public static PQ<T> Create<TKey>(Func<T, TKey> getKey, T[] vs = null, bool desc = false)
 	{
-		_c = c ?? Comparer<T>.Default.Compare;
+		var c = Comparer<TKey>.Default;
+		return desc ?
+			new PQ<T>(vs, (x, y) => c.Compare(getKey(y), getKey(x))) :
+			new PQ<T>(vs, (x, y) => c.Compare(getKey(x), getKey(y)));
+	}
+
+	List<T> l = new List<T> { default(T) };
+	Comparison<T> c;
+	public T First => l[1];
+	public int Count => l.Count - 1;
+	public bool Any => l.Count > 1;
+
+	PQ(T[] vs, Comparison<T> _c)
+	{
+		c = _c;
 		if (vs != null) foreach (var v in vs) Push(v);
 	}
 
-	void Swap(int i, int j) { var o = this[i]; this[i] = this[j]; this[j] = o; }
-	void UpHeap(int i) { for (int j; i > 0 && _c(this[(j = (i - 1) / 2)], this[i]) > 0; Swap(i, j), i = j) ; }
+	void Swap(int i, int j) { var o = l[i]; l[i] = l[j]; l[j] = o; }
+	void UpHeap(int i) { for (int j; (j = i / 2) > 0 && c(l[j], l[i]) > 0; Swap(i, i = j)) ; }
 	void DownHeap(int i)
 	{
-		for (int j; (j = 2 * i + 1) < Count; i = j)
+		for (int j; (j = 2 * i) < l.Count;)
 		{
-			if (j + 1 < Count && _c(this[j], this[j + 1]) > 0) j++;
-			if (_c(this[i], this[j]) > 0) Swap(i, j); else break;
+			if (j + 1 < l.Count && c(l[j], l[j + 1]) > 0) j++;
+			if (c(l[i], l[j]) > 0) Swap(i, i = j); else break;
 		}
 	}
 
-	public void Push(T v) { Add(v); UpHeap(Count - 1); }
+	public void Push(T v)
+	{
+		l.Add(v);
+		UpHeap(Count);
+	}
 	public T Pop()
 	{
-		var r = this[0];
-		this[0] = this[Count - 1];
-		RemoveAt(Count - 1);
-		DownHeap(0);
+		var r = l[1];
+		l[1] = l[Count];
+		l.RemoveAt(Count);
+		DownHeap(1);
 		return r;
 	}
 }
