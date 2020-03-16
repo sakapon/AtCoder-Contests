@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CoderLibTest.Trees
 {
 	// 1-indexed
-	class PQ1<T> : List<T>
+	class PQ1<T>
 	{
 		public static PQ1<T> Create(T[] vs = null, bool desc = false)
 		{
@@ -24,37 +24,38 @@ namespace CoderLibTest.Trees
 				new PQ1<T>(vs, (x, y) => c.Compare(getKey(x), getKey(y)));
 		}
 
+		List<T> l = new List<T> { default(T) };
 		Comparison<T> c;
-		public T First => this[1];
-		public new int Count => base.Count - 1;
+		public T First => l[1];
+		public int Count => l.Count - 1;
+
 		PQ1(T[] vs, Comparison<T> _c)
 		{
 			c = _c;
-			Add(default(T));
 			if (vs != null) foreach (var v in vs) Push(v);
 		}
 
-		void Swap(int i, int j) { var o = this[i]; this[i] = this[j]; this[j] = o; }
-		void UpHeap(int i) { for (int j; i > 1 && c(this[j = i / 2], this[i]) > 0; Swap(i, i = j)) ; }
+		void Swap(int i, int j) { var o = l[i]; l[i] = l[j]; l[j] = o; }
+		void UpHeap(int i) { for (int j; (j = i / 2) > 0 && c(l[j], l[i]) > 0; Swap(i, i = j)) ; }
 		void DownHeap(int i)
 		{
-			for (int j; (j = 2 * i) < base.Count; i = j)
+			for (int j; (j = 2 * i) < l.Count;)
 			{
-				if (j + 1 < base.Count && c(this[j], this[j + 1]) > 0) j++;
-				if (c(this[i], this[j]) > 0) Swap(i, j); else break;
+				if (j + 1 < l.Count && c(l[j], l[j + 1]) > 0) j++;
+				if (c(l[i], l[j]) > 0) Swap(i, i = j); else break;
 			}
 		}
 
 		public void Push(T v)
 		{
-			Add(v);
+			l.Add(v);
 			UpHeap(Count);
 		}
 		public T Pop()
 		{
-			var r = this[1];
-			this[1] = this[Count];
-			RemoveAt(Count);
+			var r = l[1];
+			l[1] = l[Count];
+			l.RemoveAt(Count);
 			DownHeap(1);
 			return r;
 		}
@@ -64,18 +65,6 @@ namespace CoderLibTest.Trees
 	public class PriorityQueue1Test
 	{
 		Random random = new Random();
-
-		[TestMethod]
-		public void Pop()
-		{
-			var values = Enumerable.Range(0, 100000).Select(i => random.Next(100000)).ToArray();
-			var actual = PQ1<int>.Create(values);
-			for (int v1 = actual.Pop(), v2; actual.Count > 0; v1 = v2)
-			{
-				v2 = actual.Pop();
-				Assert.IsTrue(v1 <= v2);
-			}
-		}
 
 		[TestMethod]
 		public void Sort()
