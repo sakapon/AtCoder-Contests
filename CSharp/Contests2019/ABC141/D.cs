@@ -9,7 +9,7 @@ class D
 		var h = Console.ReadLine().Split().Select(int.Parse).ToArray();
 		var a = Console.ReadLine().Split().Select(double.Parse).ToArray();
 
-		var q = new PQ<double>(a, (x, y) => -x.CompareTo(y));
+		var q = PQ<double>.Create(a, true);
 		for (var i = 0; i < h[1]; i++) q.Push(q.Pop() / 2);
 		Console.WriteLine(q.Sum(x => (long)x));
 	}
@@ -17,33 +17,39 @@ class D
 
 class PQ<T> : List<T>
 {
-	Comparison<T> _c;
+	public static PQ<T> Create(T[] vs = null, bool desc = false)
+	{
+		var c = Comparer<T>.Default;
+		return desc ?
+			new PQ<T>(vs, (x, y) => c.Compare(y, x)) :
+			new PQ<T>(vs, c.Compare);
+	}
+
+	Comparison<T> c;
 	public T First => this[0];
 
-	public PQ(IEnumerable<T> vs = null, Comparison<T> c = null)
+	PQ(T[] vs, Comparison<T> _c)
 	{
-		_c = c ?? Comparer<T>.Default.Compare;
+		c = _c;
 		if (vs != null) foreach (var v in vs) Push(v);
 	}
 
-	void Swap(int i, int j)
-	{
-		var t = this[i];
-		this[i] = this[j];
-		this[j] = t;
-	}
-
-	void UpHeap(int i) { for (int j; i > 0 && _c(this[(j = (i - 1) / 2)], this[i]) > 0; Swap(i, j), i = j) ; }
+	void Swap(int i, int j) { var o = this[i]; this[i] = this[j]; this[j] = o; }
+	void UpHeap(int i) { for (int j; i > 0 && c(this[j = (i - 1) / 2], this[i]) > 0; Swap(i, i = j)) ; }
 	void DownHeap(int i)
 	{
-		for (int j; (j = 2 * i + 1) < Count; i = j)
+		for (int j; (j = 2 * i + 1) < Count;)
 		{
-			if (j + 1 < Count && _c(this[j], this[j + 1]) > 0) j++;
-			if (_c(this[i], this[j]) > 0) Swap(i, j); else break;
+			if (j + 1 < Count && c(this[j], this[j + 1]) > 0) j++;
+			if (c(this[i], this[j]) > 0) Swap(i, i = j); else break;
 		}
 	}
 
-	public void Push(T v) { Add(v); UpHeap(Count - 1); }
+	public void Push(T v)
+	{
+		Add(v);
+		UpHeap(Count - 1);
+	}
 	public T Pop()
 	{
 		var r = this[0];
