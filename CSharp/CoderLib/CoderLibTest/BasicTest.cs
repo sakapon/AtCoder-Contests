@@ -8,6 +8,19 @@ public class BasicTest
 {
 	// Tabs for indentation.
 
+	static int[] CumSum(int[] a)
+	{
+		var s = new int[a.Length + 1];
+		for (int i = 0; i < a.Length; ++i) s[i + 1] = s[i] + a[i];
+		return s;
+	}
+	static long[] CumSumL(int[] a)
+	{
+		var s = new long[a.Length + 1];
+		for (int i = 0; i < a.Length; ++i) s[i + 1] = s[i] + a[i];
+		return s;
+	}
+
 	static int[] Pow2() => Enumerable.Range(0, 31).Select(i => 1 << i).ToArray();
 	static long[] Pow2L() => Enumerable.Range(0, 63).Select(i => 1L << i).ToArray();
 
@@ -18,7 +31,6 @@ public class BasicTest
 		for (int i = 0; i < n; ++i) p[i + 1] = p[i] * b;
 		return p;
 	}
-
 	static long[] Powers(int n, long b)
 	{
 		var p = new long[n + 1];
@@ -56,6 +68,13 @@ public class BasicTest
 	#region Test Methods
 
 	[TestMethod]
+	public void CumSum()
+	{
+		Assert.AreEqual(500500, CumSum(Enumerable.Range(1, 1000).ToArray())[1000]);
+		Assert.AreEqual(5000050000, CumSumL(Enumerable.Range(1, 100000).ToArray())[100000]);
+	}
+
+	[TestMethod]
 	public void Powers()
 	{
 		CollectionAssert.AreEqual(Pow2(), Powers(30, 2));
@@ -70,7 +89,7 @@ public class BasicTest
 		for (var i = 0; i <= 62; i++)
 			Assert.AreEqual((long)Math.Pow(b, i), Pow(b, i));
 		b = 3;
-		for (var i = 0; i <= 30; i++)
+		for (var i = 0; i <= 33; i++)
 			Assert.AreEqual((long)Math.Pow(b, i), Pow(b, i));
 	}
 
