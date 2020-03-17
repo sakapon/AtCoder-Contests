@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CoderLibTest.Collections
 {
 	[TestClass]
-	public class SearchTest
+	public class BinarySearchLabTest
 	{
 		// 挿入先の番号を二分探索で求めます。値が重複する場合は前の番号です。
 		static int Search(IList<int> l, int v) => l.Count > 0 ? Search(l, v, 0, l.Count) : 0;
