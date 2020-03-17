@@ -11,22 +11,20 @@ class E2
 		var a = read();
 
 		var s = a.Sum();
-		foreach (var d in Divisors(s))
+		foreach (int d in Divisors(s).Reverse())
 		{
-			var m = a.Select(x => x % d).OrderByDescending(x => x).ToArray();
+			var m = a.Select(x => x % d).OrderBy(x => -x).ToArray();
 			if (m.Skip(m.Sum() / d).Sum() <= h[1]) { Console.WriteLine(d); return; }
 		}
 	}
 
-	static IEnumerable<int> Divisors(int v)
+	static long[] Divisors(long n)
 	{
-		var d = new List<int>();
-		for (int i = 1, j, rv = (int)Math.Sqrt(v); i <= rv; i++)
-			if (v % i == 0)
-			{
-				d.Add(i);
-				if ((j = v / i) != i) yield return j;
-			}
-		for (int i = d.Count - 1; i >= 0; i--) yield return d[i];
+		var r = new List<long>();
+		for (long x = 1; x * x <= n; ++x) if (n % x == 0) r.Add(x);
+		var i = r.Count - 1;
+		if (r[i] * r[i] == n) --i;
+		for (; i >= 0; --i) r.Add(n / r[i]);
+		return r.ToArray();
 	}
 }
