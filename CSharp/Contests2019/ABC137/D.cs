@@ -8,19 +8,18 @@ class D
 	{
 		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
 		var h = read();
-		var js = new int[h[0]].Select(_ => read()).Where(j => j[0] <= h[1]).ToLookup(j => j[0], j => j[1]);
+		var js = new int[h[0]].Select(_ => read()).ToLookup(j => j[0], j => j[1]);
 
-		var r = 0L;
+		var r = 0;
 		var l = new List<int>();
 		for (var i = 1; i <= h[1]; i++)
 		{
-			if (js.Contains(i))
-				foreach (var b in js[i])
-				{
-					var k = l.BinarySearch(b);
-					if (k < 0) k = ~k;
-					l.Insert(k, b);
-				}
+			foreach (var b in js[i])
+			{
+				var k = l.BinarySearch(b);
+				if (k < 0) k = ~k;
+				l.Insert(k, b);
+			}
 
 			if (!l.Any()) continue;
 			r += l.Last();
