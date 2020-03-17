@@ -8,19 +8,22 @@ public class BasicTest
 {
 	// Tabs for indentation.
 
-	static int[] Pow2_32(int n)
+	static int[] Pow2() => Enumerable.Range(0, 31).Select(i => 1 << i).ToArray();
+	static long[] Pow2L() => Enumerable.Range(0, 63).Select(i => 1L << i).ToArray();
+
+	static int[] Powers(int n, int b)
 	{
 		var p = new int[n + 1];
 		p[0] = 1;
-		for (int i = 0; i < n; i++) p[i + 1] = p[i] * 2;
+		for (int i = 0; i < n; ++i) p[i + 1] = p[i] * b;
 		return p;
 	}
 
-	static long[] Pow2_64(int n)
+	static long[] Powers(int n, long b)
 	{
 		var p = new long[n + 1];
 		p[0] = 1;
-		for (int i = 0; i < n; i++) p[i + 1] = p[i] * 2;
+		for (int i = 0; i < n; ++i) p[i + 1] = p[i] * b;
 		return p;
 	}
 
@@ -53,12 +56,11 @@ public class BasicTest
 	#region Test Methods
 
 	[TestMethod]
-	public void Pow2()
+	public void Powers()
 	{
-		var p30 = Enumerable.Range(0, 31).Select(i => 1 << i).ToArray();
-		CollectionAssert.AreEqual(p30, Pow2_32(30));
-		var p62 = Enumerable.Range(0, 63).Select(i => 1L << i).ToArray();
-		CollectionAssert.AreEqual(p62, Pow2_64(62));
+		CollectionAssert.AreEqual(Pow2(), Powers(30, 2));
+		CollectionAssert.AreEqual(Pow2L(), Powers(62, 2L));
+		Assert.AreEqual(4052555153018976267, Powers(39, 3L)[39]);
 	}
 
 	[TestMethod]
