@@ -3,20 +3,20 @@ using System.Linq;
 
 class E
 {
+	static long[] Read() => Console.ReadLine().Split().Select(long.Parse).ToArray();
 	static void Main()
 	{
-		Func<long[]> read = () => Console.ReadLine().Split().Select(long.Parse).ToArray();
-		var h = read();
-		var a = read().OrderBy(x => -x).ToArray();
-		var f = read().OrderBy(x => x).ToArray();
+		var h = Read();
+		var a = Read().OrderBy(x => x).ToArray();
+		var f = Read().OrderBy(x => -x).ToArray();
 
-		long l = 0, r = a[0] * f.Last(), m;
-		while (l < r)
-		{
-			m = (l + r) / 2;
-			if (Enumerable.Range(0, (int)h[0]).Sum(i => Math.Max(0, a[i] - m / f[i])) <= h[1]) r = m;
-			else l = m + 1;
-		}
-		Console.WriteLine(r);
+		Console.WriteLine(First(0, a.Last() * f[0], m => a.Zip(f, (x, y) => Math.Max(0, x - m / y)).Sum() <= h[1]));
+	}
+
+	static long First(long l, long r, Func<long, bool> f)
+	{
+		long m;
+		while (l < r) if (f(m = l + (r - l - 1) / 2)) r = m; else l = m + 1;
+		return r;
 	}
 }

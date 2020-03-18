@@ -8,17 +8,21 @@ class E
 		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
 		var h = read();
 		var n = h[0];
-		var p2 = Enumerable.Range(0, n + 1).Select(i => (int)Math.Pow(2, i)).ToArray();
-		var ks = new int[h[1]].Select(_ => new { a = read()[0], c = read().Select(x => p2[x - 1]).Aggregate((x, y) => x | y) }).ToArray();
+		var p2 = Enumerable.Range(0, n + 1).Select(i => 1 << i).ToArray();
+		var k = new int[h[1]].Select(_ => new { a = read()[0], f = read().Sum(x => p2[x - 1]) }).ToArray();
 
-		var dp = Enumerable.Repeat(int.MaxValue, p2[n]).ToArray();
+		var M = int.MaxValue;
+		var dp = Enumerable.Repeat(M, p2[n]).ToArray();
 		dp[0] = 0;
-		for (int i = 0, j; i < p2[n]; i++)
+		for (int f = 0, f2; f < p2[n]; f++)
 		{
-			if (dp[i] == int.MaxValue) continue;
-			foreach (var k in ks) if ((j = i | k.c) != i) dp[j] = Math.Min(dp[j], dp[i] + k.a);
+			if (dp[f] == M) continue;
+			foreach (var x in k)
+			{
+				if ((f2 = f | x.f) == f) continue;
+				dp[f2] = Math.Min(dp[f2], dp[f] + x.a);
+			}
 		}
-		var m = dp[p2[n] - 1];
-		Console.WriteLine(m == int.MaxValue ? -1 : m);
+		Console.WriteLine(dp.Last() < M ? dp.Last() : -1);
 	}
 }
