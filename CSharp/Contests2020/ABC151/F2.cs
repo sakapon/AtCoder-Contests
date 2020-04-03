@@ -19,18 +19,14 @@ class F2
 
 	static double GetRadius(int[] p, int[] q, int[] r)
 	{
-		var e = new[] { Norm(p, q), Norm(q, r), Norm(r, p) };
-		if (e[0] < e[1]) Swap(e, 0, 1);
-		if (e[0] < e[2]) Swap(e, 0, 2);
+		double a = Norm(p, q), b = Norm(q, r), c = Norm(r, p), t;
+		if (b > a) { t = b; b = a; a = t; }
+		if (c > a) { t = c; c = a; a = t; }
 
-		var d = e[1] * e[1] + e[2] * e[2] - e[0] * e[0];
-		if (d < 0) return e[0] / 2;
-
-		var cos = d / 2 / e[1] / e[2];
-		var sin = Math.Sqrt(1 - cos * cos);
-		return e[0] / 2 / sin;
+		var cos = CosA(a, b, c);
+		return a / 2 / (cos < 0 ? 1 : Math.Sqrt(1 - cos * cos));
 	}
 
-	static void Swap<T>(T[] a, int i, int j) { var o = a[i]; a[i] = a[j]; a[j] = o; }
 	static double Norm(int[] p, int[] q) => Math.Sqrt(Math.Pow(p[0] - q[0], 2) + Math.Pow(p[1] - q[1], 2));
+	static double CosA(double a, double b, double c) => (b * b + c * c - a * a) / (2 * b * c);
 }
