@@ -11,26 +11,19 @@ class D
 		var a = Read();
 		var s = Read();
 
-		var x0 = a[0];
-		var l = new List<(int value, int index)> { (x0, 1) };
-		for (int i = 1; i < h[0]; i++)
-		{
-			var t = Gcd(x0, a[i]);
-			if (t == x0) continue;
-			l.Add((x0 = t, i + 1));
-		}
+		var y = a[0];
+		var l = new List<(int, int)> { (y, 1) };
+		for (int t, i = 1; i < h[0]; i++)
+			if ((t = Gcd(y, a[i])) != y)
+				l.Add((y = t, i + 1));
 
-		var r = s.Select(q =>
+		int Solve(int x)
 		{
-			var x = q;
 			foreach (var (v, i) in l)
-			{
-				x = Gcd(x, v);
-				if (x == 1) return i;
-			}
+				if ((x = Gcd(x, v)) == 1) return i;
 			return x;
-		});
-		Console.WriteLine(string.Join("\n", r));
+		}
+		Console.WriteLine(string.Join("\n", s.Select(Solve)));
 	}
 
 	static int Gcd(int x, int y) { for (int r; (r = x % y) > 0; x = y, y = r) ; return y; }
