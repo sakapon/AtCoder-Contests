@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using KLibrary.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CoderLibTest.Maths
@@ -20,14 +21,13 @@ namespace CoderLibTest.Maths
 
 		#region Test Methods
 
-		static void AssertNearlyEqual(double expected, double actual) =>
-			Assert.AreEqual(0.0, Math.Round(expected - actual, 12));
-
 		[TestMethod]
 		public void Area()
 		{
-			AssertNearlyEqual(6 * Math.Sqrt(6), Area(5, 6, 7));
-			AssertNearlyEqual(Math.Sqrt(131) / 4, Area(Math.Sqrt(5), Math.Sqrt(7), 3));
+			var Test = TestHelper.CreateAreNearlyEqual<double, double, double, double>(Area);
+
+			Test(5, 6, 7, 6 * Math.Sqrt(6));
+			Test(Math.Sqrt(5), Math.Sqrt(7), 3, Math.Sqrt(131) / 4);
 		}
 		#endregion
 	}
