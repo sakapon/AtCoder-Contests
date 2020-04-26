@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using KLibrary.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CoderLibTest.Maths
@@ -92,35 +93,41 @@ namespace CoderLibTest.Maths
 		[TestMethod]
 		public void Gcd()
 		{
-			Assert.AreEqual(1, Gcd(1, 1));
-			Assert.AreEqual(1, Gcd(1, 2));
-			Assert.AreEqual(2, Gcd(4, 6));
-			Assert.AreEqual(6, Gcd(6, 6));
-			Assert.AreEqual(3, Gcd(15, 21));
-			Assert.AreEqual(15, Gcd(45, 105));
+			var Test = TestHelper.CreateAreEqual<int, int, int>(Gcd);
+
+			Test(1, 1, 1);
+			Test(1, 2, 1);
+			Test(4, 6, 2);
+			Test(6, 6, 6);
+			Test(15, 21, 3);
+			Test(45, 105, 15);
 		}
 
 		[TestMethod]
 		public void Lcm()
 		{
-			Assert.AreEqual(1, Lcm(1, 1));
-			Assert.AreEqual(2, Lcm(1, 2));
-			Assert.AreEqual(12, Lcm(4, 6));
-			Assert.AreEqual(6, Lcm(6, 6));
-			Assert.AreEqual(105, Lcm(15, 21));
-			Assert.AreEqual(315, Lcm(45, 105));
+			var Test = TestHelper.CreateAreEqual<int, int, int>(Lcm);
+
+			Test(1, 1, 1);
+			Test(1, 2, 2);
+			Test(4, 6, 12);
+			Test(6, 6, 6);
+			Test(15, 21, 105);
+			Test(45, 105, 315);
 		}
 
 		[TestMethod]
 		public void ExtendedEuclid()
 		{
-			CollectionAssert.AreEqual(new[] { -29L, 5 }, ExtendedEuclid(6, 35));
-			CollectionAssert.AreEqual(new[] { 19L, -9 }, ExtendedEuclid(10, 21));
-			CollectionAssert.AreEqual(new[] { 14L, -13 }, ExtendedEuclid(14, 15));
+			var Test = TestHelper.CreateAreEqual<long, long, long[]>(ExtendedEuclid);
 
-			CollectionAssert.AreEqual(new[] { 5L, -29 }, ExtendedEuclid(35, 6));
-			CollectionAssert.AreEqual(new[] { -9L, 19 }, ExtendedEuclid(21, 10));
-			CollectionAssert.AreEqual(new[] { -13L, 14 }, ExtendedEuclid(15, 14));
+			Test(6, 35, new[] { -29L, 5 });
+			Test(10, 21, new[] { 19L, -9 });
+			Test(14, 15, new[] { 14L, -13 });
+
+			Test(35, 6, new[] { 5L, -29 });
+			Test(21, 10, new[] { -9L, 19 });
+			Test(15, 14, new[] { -13L, 14 });
 		}
 
 		[TestMethod]
