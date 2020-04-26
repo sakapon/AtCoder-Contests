@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using KLibrary.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CoderLibTest.Collections
@@ -167,7 +168,7 @@ namespace CoderLibTest.Collections
 		{
 			var n = 300000;
 			var a = Enumerable.Range(0, n).Select(_ => random.Next(0, n)).OrderBy(x => x).ToArray();
-			var r = TestHelper.MeasureTime(() => Enumerable.Range(0, n).Select(x => IndexOf(a, x)).ToArray());
+			var r = TimeHelper.Measure(() => Enumerable.Range(0, n).Select(x => IndexOf(a, x)).ToArray());
 		}
 
 		[TestMethod]
@@ -175,7 +176,7 @@ namespace CoderLibTest.Collections
 		{
 			var n = 300000;
 			var a = Enumerable.Range(0, n).Select(_ => random.Next(0, n)).OrderBy(x => x).ToArray();
-			var r = TestHelper.MeasureTime(() => Enumerable.Range(0, n).Select(x => IndexForInsert(a, x)).ToArray());
+			var r = TimeHelper.Measure(() => Enumerable.Range(0, n).Select(x => IndexForInsert(a, x)).ToArray());
 		}
 		#endregion
 	}
