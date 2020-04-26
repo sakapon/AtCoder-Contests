@@ -103,8 +103,6 @@ namespace CoderLibTest.Collections
 			Assert.AreEqual(6, IndexForInsert(a, 9));
 		}
 
-		static readonly Random random = new Random();
-
 		[TestMethod]
 		public void Index_Random()
 		{
@@ -117,7 +115,7 @@ namespace CoderLibTest.Collections
 
 		static void Index_Random(int n)
 		{
-			var a = Enumerable.Range(0, n).Select(_ => random.Next(0, n)).OrderBy(x => x).ToArray();
+			var a = RandomHelper.CreateData(n).OrderBy(x => x).ToArray();
 			for (int i = -2; i < n + 2; i++)
 			{
 				var expected = Array.BinarySearch(a, i);
@@ -146,7 +144,7 @@ namespace CoderLibTest.Collections
 
 		static void IndexForInsert_Random(int n)
 		{
-			var a = Enumerable.Range(0, n).Select(_ => random.Next(0, n)).OrderBy(x => x).ToArray();
+			var a = RandomHelper.CreateData(n).OrderBy(x => x).ToArray();
 			for (int i = -2; i < n + 2; i++)
 			{
 				var expected = Array.BinarySearch(a, i);
@@ -167,7 +165,7 @@ namespace CoderLibTest.Collections
 		public void Index_Time()
 		{
 			var n = 300000;
-			var a = Enumerable.Range(0, n).Select(_ => random.Next(0, n)).OrderBy(x => x).ToArray();
+			var a = RandomHelper.CreateData(n).OrderBy(x => x).ToArray();
 			var r = TimeHelper.Measure(() => Enumerable.Range(0, n).Select(x => IndexOf(a, x)).ToArray());
 		}
 
@@ -175,7 +173,7 @@ namespace CoderLibTest.Collections
 		public void IndexForInsert_Time()
 		{
 			var n = 300000;
-			var a = Enumerable.Range(0, n).Select(_ => random.Next(0, n)).OrderBy(x => x).ToArray();
+			var a = RandomHelper.CreateData(n).OrderBy(x => x).ToArray();
 			var r = TimeHelper.Measure(() => Enumerable.Range(0, n).Select(x => IndexForInsert(a, x)).ToArray());
 		}
 		#endregion

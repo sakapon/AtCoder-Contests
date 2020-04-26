@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using KLibrary.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CoderLibTest.Trees
@@ -19,13 +20,11 @@ namespace CoderLibTest.Trees
 	[TestClass]
 	public class UnionFindTest
 	{
-		Random random = new Random();
-
 		[TestMethod]
 		public void Unite()
 		{
 			var n = 100000;
-			var groups = Enumerable.Range(0, n).Select(i => new { i, key = random.Next(n) }).ToLookup(_ => _.key, _ => _.i);
+			var groups = Enumerable.Range(0, n).Select(i => new { i, key = RandomHelper.Random.Next(n) }).ToLookup(_ => _.key, _ => _.i);
 
 			var uf = new UF(n);
 			foreach (var g in groups)
