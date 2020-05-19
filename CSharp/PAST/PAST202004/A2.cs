@@ -4,8 +4,8 @@ class A2
 {
 	static void Main()
 	{
-		var h = Array.ConvertAll(Console.ReadLine().Split(), s => s[1] == 'F' ? Subtract(s[0], '1') : Subtract('0', s[1]));
-		Console.WriteLine(Abs(Subtract(h[0], h[1])));
+		var f = Array.ConvertAll(Console.ReadLine().Split(), s => s[1] == 'F' ? Subtract(s[0], '1') : Subtract('0', s[1]));
+		Console.WriteLine(Abs(Subtract(f[0], f[1])));
 	}
 
 	static int Subtract(int x, int y)
