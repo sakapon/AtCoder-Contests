@@ -6,11 +6,6 @@ class B
 	static void Main()
 	{
 		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		Console.WriteLine(Console.ReadLine().Split().Select(int.Parse).All(x => x % 2 != 0 || x % 3 == 0 || x % 5 == 0) ? "APPROVED" : "DENIED");
 	}
 }
