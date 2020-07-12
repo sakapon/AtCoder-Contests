@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Linq;
 
 class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
 		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		var t = Console.ReadLine();
+		Console.WriteLine(s == t ? "same" : s.Equals(t, StringComparison.InvariantCultureIgnoreCase) ? "case-insensitive" : "different");
 	}
 }
