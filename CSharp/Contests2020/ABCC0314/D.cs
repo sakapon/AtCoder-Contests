@@ -1,18 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 class D
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = Read();
-		var ps = new int[h[0]].Select(_ => Read()).ToArray();
 
-		Console.WriteLine(string.Join(" ", a));
+		var d = new int[n + 1].Select(_ => new List<string>()).ToArray();
+		d[0].Add("");
+
+		for (int i = 1; i <= n; i++)
+			foreach (var s in d[i - 1])
+				foreach (var c in "abcdefghij")
+				{
+					var end = !s.Contains(c);
+					d[i].Add(s + c);
+					if (end) break;
+				}
+		Console.WriteLine(string.Join("\n", d[n]));
 	}
 }

@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Linq;
 
 class A
 {
-	static void Main()
-	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
-	}
+	static void Main() => Console.WriteLine("1 1 1 2 1 2 1 5 2 2 1 5 1 2 1 14 1 5 1 5 2 2 1 15 2 2 5 4 1 4 1 51".Split()[int.Parse(Console.ReadLine()) - 1]);
 }

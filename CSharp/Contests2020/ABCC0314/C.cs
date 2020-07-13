@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Linq;
 
 class C
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		var h = Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+		long a = h[0], b = h[1], c = h[2], d = c - a - b;
+		Console.WriteLine(d > 0 && 4 * a * b < d * d ? "Yes" : "No");
 	}
 }
