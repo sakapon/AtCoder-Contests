@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
 
-class C
+class C2
 {
 	static void Main()
 	{
 		Console.ReadLine();
 		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Console.WriteLine(Enumerable.Range(1, 100).Min(p => a.Sum(x => (x - p) * (x - p))));
+		var p = Math.Round(a.Average());
+		Console.WriteLine(a.Sum(x => (x - p) * (x - p)));
 	}
 }
