@@ -5,12 +5,8 @@ class C
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		var h = Console.ReadLine().Split().Select(int.Parse).ToArray();
+		var r = Enumerable.Range(1, 1009).FirstOrDefault(x => (int)(0.08 * x) == h[0] && (int)(0.1 * x) == h[1]);
+		Console.WriteLine(r > 0 ? r : -1);
 	}
 }

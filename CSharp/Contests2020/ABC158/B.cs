@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Linq;
 
 class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		var h = Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+		var q = Math.DivRem(h[0], h[1] + h[2], out var r);
+		Console.WriteLine(q * h[1] + Math.Min(r, h[1]));
 	}
 }

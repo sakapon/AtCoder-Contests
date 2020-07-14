@@ -5,12 +5,10 @@ class C
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var h = Console.ReadLine().Split().Select(int.Parse).ToArray();
+		var scs = new int[h[1]].Select(_ => Console.ReadLine()).ToArray();
 
-		Console.WriteLine(string.Join(" ", h));
+		var r = Enumerable.Range(0, 1000).Select(i => $"{i}").Where(x => x.Length == h[0] && scs.All(sc => x[sc[0] - '1'] == sc[2])).ToArray();
+		Console.WriteLine(r.Any() ? r[0] : "-1");
 	}
 }

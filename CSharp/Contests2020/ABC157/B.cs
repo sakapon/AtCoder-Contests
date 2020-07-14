@@ -5,12 +5,10 @@ class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var a = new int[3].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var b = new int[int.Parse(Console.ReadLine())].Select(_ => int.Parse(Console.ReadLine())).ToHashSet();
 
-		Console.WriteLine(string.Join(" ", h));
+		var r3 = new[] { 0, 1, 2 };
+		Console.WriteLine(a.Any(ai => ai.All(b.Contains)) || r3.Any(j => a.All(ai => b.Contains(ai[j]))) || r3.All(i => b.Contains(a[i][i])) || r3.All(i => b.Contains(a[i][2 - i])) ? "Yes" : "No");
 	}
 }
