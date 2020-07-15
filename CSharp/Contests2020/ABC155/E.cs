@@ -1,18 +1,21 @@
 ﻿using System;
-using System.Linq;
 
 class E
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
+		var n = Array.ConvertAll($"0{Console.ReadLine()}".ToCharArray(), x => x - '0');
+		var r = 0;
+		for (int i = n.Length - 1; i >= 0; i--)
+			if (n[i] < 5 || n[i] == 5 && n[i - 1] < 5)
+			{
+				r += n[i];
+			}
+			else
+			{
+				r += 10 - n[i];
+				n[i - 1]++;
+			}
+		Console.WriteLine(r);
 	}
 }
