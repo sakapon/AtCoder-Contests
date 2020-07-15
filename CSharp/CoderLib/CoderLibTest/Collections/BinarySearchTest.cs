@@ -37,6 +37,20 @@ namespace CoderLibTest.Collections
 			return l;
 		}
 
+		static long First(long l, long r, Func<long, bool> f)
+		{
+			long m;
+			while (l < r) if (f(m = l + (r - l - 1) / 2)) r = m; else l = m + 1;
+			return r;
+		}
+
+		static long Last(long l, long r, Func<long, bool> f)
+		{
+			long m;
+			while (l < r) if (f(m = r - (r - l - 1) / 2)) l = m; else r = m - 1;
+			return l;
+		}
+
 		/// <summary>
 		/// 条件 f を満たす最初の値を指定された誤差の範囲内で探索します。
 		/// (l, x) 上で false、[x, r) 上で true となる x を返します。
