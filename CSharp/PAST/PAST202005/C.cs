@@ -4,11 +4,8 @@ class C
 {
 	static void Main()
 	{
-		var h = Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-		long a = h[0], r = h[1], n = h[2];
-
-		for (int i = 1; i < n; i++)
-			if ((a *= r) > 1000000000) { Console.WriteLine("large"); return; }
-		Console.WriteLine(a);
+		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+		var x = h[0] * Math.Pow(h[1], h[2] - 1);
+		Console.WriteLine(x > 1000000000 ? "large" : $"{x}");
 	}
 }
