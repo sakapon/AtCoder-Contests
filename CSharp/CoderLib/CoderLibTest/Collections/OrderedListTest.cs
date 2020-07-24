@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using KLibrary.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CoderLibTest.Collections
@@ -61,8 +62,7 @@ namespace CoderLibTest.Collections
 		[TestMethod]
 		public void Sort0()
 		{
-			var random = new Random();
-			var values = Enumerable.Range(0, 100000).Select(i => random.Next(100000)).ToArray();
+			var values = RandomHelper.CreateData(100000).ToArray();
 			var actual = new List<int>();
 			foreach (var v in values)
 			{
@@ -75,8 +75,7 @@ namespace CoderLibTest.Collections
 		[TestMethod]
 		public void Ctor()
 		{
-			var random = new Random();
-			var values = Enumerable.Range(0, 100000).Select(i => random.Next(100000)).ToArray();
+			var values = RandomHelper.CreateData(100000).ToArray();
 			var actual = new OrderedList(values);
 			CollectionAssert.AreEqual(values.OrderBy(x => x).ToArray(), actual);
 		}
@@ -84,8 +83,7 @@ namespace CoderLibTest.Collections
 		[TestMethod]
 		public void AddForOrder()
 		{
-			var random = new Random();
-			var values = Enumerable.Range(0, 100000).Select(i => random.Next(100000)).ToArray();
+			var values = RandomHelper.CreateData(100000).ToArray();
 			var actual = new OrderedList();
 			foreach (var v in values)
 				actual.AddForOrder(v);
@@ -95,8 +93,7 @@ namespace CoderLibTest.Collections
 		[TestMethod]
 		public void Dequeue()
 		{
-			var random = new Random();
-			var values = Enumerable.Range(0, 100000).Select(i => random.Next(100000)).ToArray();
+			var values = RandomHelper.CreateData(100000).ToArray();
 			var actual = new OrderedList(values);
 			for (int v1 = actual.Dequeue(), v2; actual.Count > 0; v1 = v2)
 			{
@@ -108,8 +105,7 @@ namespace CoderLibTest.Collections
 		[TestMethod]
 		public void AddForOrder_Key()
 		{
-			var random = new Random();
-			var values = Enumerable.Range(0, 10000).Select(i => random.Next(10000)).ToArray();
+			var values = RandomHelper.CreateData(10000).ToArray();
 			var actual = new OrderedList<int, int>(x => x / 10);
 			foreach (var v in values)
 				actual.AddForOrder(v);
