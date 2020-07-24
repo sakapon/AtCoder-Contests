@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 class N
@@ -31,47 +32,44 @@ class N
 			if (v.q == 0)
 				c[v.c] = st.Get(v.y);
 			else
-				st.Add(v.y, v.Y, v.c);
+				st.Add(v.y, v.Y + 1, v.c);
 		Console.WriteLine(string.Join("\n", c));
 	}
 }
 
 class ST
 {
-	int ln;
-	long[][] vs;
+	int kMax;
+	List<long[]> vs = new List<long[]> { new long[1] };
 	public ST(int n)
 	{
-		ln = (int)Math.Ceiling(Math.Log(n, 2));
-		vs = Enumerable.Range(0, ln + 1).Select(i => new long[1 << ln - i]).ToArray();
+		for (int c = 1; c < n; vs.Add(new long[c <<= 1])) ;
+		kMax = vs.Count - 1;
 	}
 
-	public void Add(int m, int M, long v)
+	(int k, int i)[] GetLevels(int i)
 	{
-		for (int k = 0, f = 1; k <= ln; k++, f *= 2)
-		{
-			if (m + f > M + 1) break;
-			if ((m & f) != 0)
-			{
-				vs[k][m / f] += v;
-				m += f;
-			}
-		}
-		for (int k = ln, f = 1 << ln; k >= 0; k--, f /= 2)
-		{
-			if (M - m + 1 >= f)
-			{
-				vs[k][m / f] += v;
-				m += f;
-				if (m > M) break;
-			}
-		}
+		var r = new List<(int, int)>();
+		for (int k = kMax; k >= 0; --k, i >>= 1) r.Add((k, i));
+		return r.ToArray();
 	}
 
-	public long Get(int i)
+	(int k, int i)[] GetRange(int minIn, int maxEx)
 	{
-		var sum = 0L;
-		for (int k = 0; k <= ln; k++, i /= 2) sum += vs[k][i];
-		return sum;
+		var r = new List<(int, int)>();
+		for (int k = kMax, f = 1; k >= 0 && minIn < maxEx; --k, f <<= 1)
+		{
+			if ((minIn & f) != 0) r.Add((k, (minIn += f) / f - 1));
+			if ((maxEx & f) != 0) r.Add((k, (maxEx -= f) / f));
+		}
+		return r.ToArray();
 	}
+
+	public void Add(int minIn, int maxEx, long v)
+	{
+		foreach (var (k, i) in GetRange(minIn, maxEx))
+			vs[k][i] += v;
+	}
+
+	public long Get(int i) => GetLevels(i).Sum(x => vs[x.k][x.i]);
 }
