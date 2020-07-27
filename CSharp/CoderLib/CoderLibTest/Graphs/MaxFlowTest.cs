@@ -89,5 +89,65 @@ namespace CoderLibTest.Graphs
 			while ((t = Dfs(sv, long.MaxValue)) > 0) M += t;
 			return M;
 		}
+
+		static long MinCostFlow(int n, int sv, int ev, long[][] dag, long f)
+		{
+			var map = Array.ConvertAll(new int[n + 1], _ => new List<long[]>());
+			foreach (var r in dag)
+			{
+				map[r[0]].Add(new[] { r[1], r[2], r[3], map[r[1]].Count });
+				map[r[1]].Add(new[] { r[0], 0, -r[3], map[r[0]].Count - 1 });
+			}
+
+			long[][] from;
+			long[] u, minFlow;
+			void BellmanFord()
+			{
+				from = new long[n + 1][];
+				u = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
+				minFlow = new long[n + 1];
+				u[sv] = 0;
+				minFlow[sv] = long.MaxValue;
+				long t;
+				var next = true;
+				while (next)
+				{
+					next = false;
+					for (int v = 0; v <= n; v++)
+					{
+						if (u[v] == long.MaxValue) continue;
+						foreach (var r in map[v])
+						{
+							if (r[1] == 0 || (t = u[v] + r[2]) >= u[r[0]]) continue;
+							from[r[0]] = r;
+							u[r[0]] = t;
+							minFlow[r[0]] = Math.Min(minFlow[v], r[1]);
+							next = true;
+						}
+					}
+				}
+			}
+
+			var cost = 0L;
+			while (f > 0)
+			{
+				BellmanFord();
+				if (from[ev] == null) break;
+
+				var delta = Math.Min(minFlow[ev], f);
+				f -= delta;
+				cost += delta * u[ev];
+
+				long v = ev;
+				while (true)
+				{
+					from[v][1] -= delta;
+					var rev = map[from[v][0]][(int)from[v][3]];
+					rev[1] += delta;
+					if ((v = rev[0]) == sv) break;
+				}
+			}
+			return cost;
+		}
 	}
 }
