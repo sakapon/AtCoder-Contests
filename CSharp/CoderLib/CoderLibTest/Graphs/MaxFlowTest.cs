@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CoderLibTest.Graphs
@@ -91,64 +90,61 @@ namespace CoderLibTest.Graphs
 		}
 
 		// dag: { from, to, capacity, cost }
+		// 到達不可能の場合、MaxValue を返します。
 		static long MinCostFlow(int n, int sv, int ev, long[][] dag, long f)
 		{
 			var map = Array.ConvertAll(new int[n + 1], _ => new List<long[]>());
-			foreach (var r in dag)
+			foreach (var e in dag)
 			{
-				map[r[0]].Add(new[] { r[1], r[2], r[3], map[r[1]].Count });
-				map[r[1]].Add(new[] { r[0], 0, -r[3], map[r[0]].Count - 1 });
+				map[e[0]].Add(new[] { e[0], e[1], e[2], e[3], map[e[1]].Count });
+				map[e[1]].Add(new[] { e[1], e[0], 0, -e[3], map[e[0]].Count - 1 });
 			}
 
-			long[][] from;
-			long[] u, minFlow;
-			void BellmanFord()
+			long BellmanFord()
 			{
-				from = new long[n + 1][];
-				u = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
-				minFlow = new long[n + 1];
-				u[sv] = 0;
-				minFlow[sv] = long.MaxValue;
-				long t;
+				var from = new long[n + 1][];
+				var cost = new long[n + 1];
+				Array.Fill(cost, long.MaxValue);
+				var minFlow = new long[n + 1];
+				cost[sv] = 0;
+				minFlow[sv] = f;
+
 				var next = true;
 				while (next)
 				{
 					next = false;
 					for (int v = 0; v <= n; v++)
 					{
-						if (u[v] == long.MaxValue) continue;
-						foreach (var r in map[v])
+						if (cost[v] == long.MaxValue) continue;
+						foreach (var e in map[v])
 						{
-							if (r[1] == 0 || (t = u[v] + r[2]) >= u[r[0]]) continue;
-							from[r[0]] = r;
-							u[r[0]] = t;
-							minFlow[r[0]] = Math.Min(minFlow[v], r[1]);
+							if (e[2] == 0 || cost[e[1]] <= cost[v] + e[3]) continue;
+							from[e[1]] = e;
+							cost[e[1]] = cost[v] + e[3];
+							minFlow[e[1]] = Math.Min(minFlow[v], e[2]);
 							next = true;
 						}
 					}
 				}
+
+				if (from[ev] == null) return long.MaxValue;
+				for (long v = ev; v != sv; v = from[v][0])
+				{
+					var e = from[v];
+					e[2] -= minFlow[ev];
+					map[e[1]][(int)e[4]][2] += minFlow[ev];
+				}
+				f -= minFlow[ev];
+				return minFlow[ev] * cost[ev];
 			}
 
-			var cost = 0L;
+			long r = 0, t;
 			while (f > 0)
 			{
-				BellmanFord();
-				if (from[ev] == null) break;
-
-				var delta = Math.Min(minFlow[ev], f);
-				f -= delta;
-				cost += delta * u[ev];
-
-				long v = ev;
-				while (true)
-				{
-					from[v][1] -= delta;
-					var rev = map[from[v][0]][(int)from[v][3]];
-					rev[1] += delta;
-					if ((v = rev[0]) == sv) break;
-				}
+				if ((t = BellmanFord()) == long.MaxValue) return t;
+				r += t;
 			}
-			return cost;
+			return r;
 		}
 	}
 }
