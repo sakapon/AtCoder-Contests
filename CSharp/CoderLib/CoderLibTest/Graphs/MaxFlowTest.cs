@@ -8,20 +8,21 @@ namespace CoderLibTest.Graphs
 	[TestClass]
 	public class MaxFlowTest
 	{
+		// dag: { from, to, capacity }
 		static long MaxFlow(int n, int sv, int ev, long[][] dag)
 		{
 			var map = Array.ConvertAll(new int[n + 1], _ => new List<long[]>());
 			foreach (var e in dag)
 			{
-				map[e[0]].Add(new[] { e[1], e[2], map[e[1]].Count });
-				map[e[1]].Add(new[] { e[0], 0, map[e[0]].Count - 1 });
+				map[e[0]].Add(new[] { e[0], e[1], e[2], map[e[1]].Count });
+				map[e[1]].Add(new[] { e[1], e[0], 0, map[e[0]].Count - 1 });
 			}
 
 			long Bfs()
 			{
 				var from = new long[n + 1][];
-				var u = new bool[n + 1];
-				var minFlow = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
+				var minFlow = new long[n + 1];
+				Array.Fill(minFlow, long.MaxValue);
 				var q = new Queue<long>();
 				q.Enqueue(sv);
 
@@ -30,22 +31,19 @@ namespace CoderLibTest.Graphs
 					if (v == ev) break;
 					foreach (var e in map[v])
 					{
-						if (u[e[0]] || e[1] == 0) continue;
-						from[e[0]] = e;
-						u[e[0]] = true;
-						minFlow[e[0]] = Math.Min(minFlow[v], e[1]);
-						q.Enqueue(e[0]);
+						if (from[e[1]] != null || e[2] == 0) continue;
+						from[e[1]] = e;
+						minFlow[e[1]] = Math.Min(minFlow[v], e[2]);
+						q.Enqueue(e[1]);
 					}
 				}
 
 				if (from[ev] == null) return 0;
-				long tv = ev;
-				while (true)
+				for (long v = ev; v != sv; v = from[v][0])
 				{
-					from[tv][1] -= minFlow[ev];
-					var rev = map[from[tv][0]][(int)from[tv][2]];
-					rev[1] += minFlow[ev];
-					if ((tv = rev[0]) == sv) break;
+					var e = from[v];
+					e[2] -= minFlow[ev];
+					map[e[1]][(int)e[3]][2] += minFlow[ev];
 				}
 				return minFlow[ev];
 			}
@@ -55,6 +53,8 @@ namespace CoderLibTest.Graphs
 			return M;
 		}
 
+		// dag: { from, to, capacity }
+		[Obsolete]
 		static long MaxFlowByDfs(int n, int sv, int ev, long[][] dag)
 		{
 			var map = Array.ConvertAll(new int[n + 1], _ => new List<long[]>());
@@ -90,6 +90,7 @@ namespace CoderLibTest.Graphs
 			return M;
 		}
 
+		// dag: { from, to, capacity, cost }
 		static long MinCostFlow(int n, int sv, int ev, long[][] dag, long f)
 		{
 			var map = Array.ConvertAll(new int[n + 1], _ => new List<long[]>());
