@@ -7,11 +7,11 @@ namespace CoderLibTest.Graphs
 	[TestClass]
 	public class MaxFlowTest
 	{
-		// dag: { from, to, capacity }
-		static long MaxFlow(int n, int sv, int ev, long[][] dag)
+		// dg: { from, to, capacity }
+		static long MaxFlow(int n, int sv, int ev, long[][] dg)
 		{
 			var map = Array.ConvertAll(new int[n + 1], _ => new List<long[]>());
-			foreach (var e in dag)
+			foreach (var e in dg)
 			{
 				map[e[0]].Add(new[] { e[0], e[1], e[2], map[e[1]].Count });
 				map[e[1]].Add(new[] { e[1], e[0], 0, map[e[0]].Count - 1 });
@@ -52,12 +52,12 @@ namespace CoderLibTest.Graphs
 			return M;
 		}
 
-		// dag: { from, to, capacity }
+		// dg: { from, to, capacity }
 		[Obsolete]
-		static long MaxFlowByDfs(int n, int sv, int ev, long[][] dag)
+		static long MaxFlowByDfs(int n, int sv, int ev, long[][] dg)
 		{
 			var map = Array.ConvertAll(new int[n + 1], _ => new List<long[]>());
-			foreach (var e in dag)
+			foreach (var e in dg)
 			{
 				map[e[0]].Add(new[] { e[1], e[2], map[e[1]].Count });
 				map[e[1]].Add(new[] { e[0], 0, map[e[0]].Count - 1 });
@@ -89,12 +89,12 @@ namespace CoderLibTest.Graphs
 			return M;
 		}
 
-		// dag: { from, to, capacity, cost }
+		// dg: { from, to, capacity, cost }
 		// 到達不可能の場合、MaxValue を返します。
-		static long MinCostFlow(int n, int sv, int ev, long[][] dag, long f)
+		static long MinCostFlow(int n, int sv, int ev, long[][] dg, long f)
 		{
 			var map = Array.ConvertAll(new int[n + 1], _ => new List<long[]>());
-			foreach (var e in dag)
+			foreach (var e in dg)
 			{
 				map[e[0]].Add(new[] { e[0], e[1], e[2], e[3], map[e[1]].Count });
 				map[e[1]].Add(new[] { e[1], e[0], 0, -e[3], map[e[0]].Count - 1 });
