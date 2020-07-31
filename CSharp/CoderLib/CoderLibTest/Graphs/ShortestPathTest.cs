@@ -18,6 +18,7 @@ namespace CoderLibTest.Graphs
 			foreach (var e in es)
 			{
 				map[e[0]].Add(new[] { e[1], e[2] });
+				// 有向グラフの場合、ここを削除します。
 				map[e[1]].Add(new[] { e[0], e[2] });
 			}
 
@@ -44,6 +45,93 @@ namespace CoderLibTest.Graphs
 			// コストを求める場合。
 			//return u[ev];
 
+			if (from[ev] == -1) return null;
+			var path = new List<int>();
+			for (var v = ev; v != -1; v = from[v])
+				path.Add(v);
+			path.Reverse();
+			return path.ToArray();
+		}
+
+		// priority queue ではなく、queue を使うほうが速いことがあります。
+		static int[] Dijklmna(int n, int sv, int ev, int[][] es)
+		{
+			var map = Array.ConvertAll(new int[n + 1], _ => new List<int[]>());
+			foreach (var e in es)
+			{
+				map[e[0]].Add(new[] { e[1], e[2] });
+				// 有向グラフの場合、ここを削除します。
+				map[e[1]].Add(new[] { e[0], e[2] });
+			}
+
+			var from = Enumerable.Repeat(-1, n + 1).ToArray();
+			var u = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
+			var q = new Queue<int>();
+			u[sv] = 0;
+			q.Enqueue(sv);
+
+			while (q.Count > 0)
+			{
+				var v = q.Dequeue();
+				// すべての頂点を探索する場合、ここを削除します。
+				if (v == ev) break;
+				foreach (var e in map[v])
+				{
+					if (u[e[0]] <= u[v] + e[1]) continue;
+					from[e[0]] = v;
+					u[e[0]] = u[v] + e[1];
+					q.Enqueue(e[0]);
+				}
+			}
+
+			// コストを求める場合。
+			//return u[ev];
+
+			if (from[ev] == -1) return null;
+			var path = new List<int>();
+			for (var v = ev; v != -1; v = from[v])
+				path.Add(v);
+			path.Reverse();
+			return path.ToArray();
+		}
+
+		// dag: { from, to, weight }
+		// 経路: 負閉路が存在する場合または到達不可能の場合、null を返します。
+		// コスト: 負閉路が存在する場合は MinValue を、到達不可能の場合は MaxValue を返します。
+		static int[] BellmanFord(int n, int sv, int ev, int[][] dag)
+		{
+			var map = Array.ConvertAll(new int[n + 1], _ => new List<int[]>());
+			foreach (var e in dag)
+			{
+				map[e[0]].Add(new[] { e[1], e[2] });
+			}
+
+			var from = Enumerable.Repeat(-1, n + 1).ToArray();
+			var u = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
+			u[sv] = 0;
+
+			var next = true;
+			for (int k = 0; k <= n && next; k++)
+			{
+				next = false;
+				for (int v = 0; v <= n; v++)
+				{
+					if (u[v] == long.MaxValue) continue;
+					foreach (var e in map[v])
+					{
+						if (u[e[0]] <= u[v] + e[1]) continue;
+						from[e[0]] = v;
+						u[e[0]] = u[v] + e[1];
+						next = true;
+					}
+				}
+			}
+
+			// コストを求める場合。
+			//if (next) return long.MinValue;
+			//return u[ev];
+
+			if (next) return null;
 			if (from[ev] == -1) return null;
 			var path = new List<int>();
 			for (var v = ev; v != -1; v = from[v])
