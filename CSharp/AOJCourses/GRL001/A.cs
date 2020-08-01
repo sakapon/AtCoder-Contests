@@ -8,10 +8,9 @@ class A
 	static void Main()
 	{
 		var h = Read();
-		int vn = h[0], r = h[2];
 		var es = new int[h[1]].Select(_ => Read()).ToArray();
 
-		var u = Dijkstra(vn - 1, r, -1, es);
+		var u = Dijkstra(h[0] - 1, h[2], -1, es);
 		Console.WriteLine(string.Join("\n", u.Select(x => x == long.MaxValue ? "INF" : $"{x}")));
 	}
 
@@ -21,9 +20,11 @@ class A
 		foreach (var e in es)
 		{
 			map[e[0]].Add(new[] { e[1], e[2] });
+			// 有向グラフの場合、ここを削除します。
 			//map[e[1]].Add(new[] { e[0], e[2] });
 		}
 
+		var from = Enumerable.Repeat(-1, n + 1).ToArray();
 		var u = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
 		var pq = PQ<int>.Create(v => u[v]);
 		u[sv] = 0;
@@ -32,9 +33,12 @@ class A
 		while (pq.Count > 0)
 		{
 			var v = pq.Pop();
+			// すべての頂点を探索する場合、ここを削除します。
+			//if (v == ev) break;
 			foreach (var e in map[v])
 			{
 				if (u[e[0]] <= u[v] + e[1]) continue;
+				from[e[0]] = v;
 				u[e[0]] = u[v] + e[1];
 				pq.Push(e[0]);
 			}
