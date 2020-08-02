@@ -23,9 +23,8 @@ namespace CoderLibTest.Graphs
 			return minEdges.ToArray();
 		}
 
-		static int[][] Prim(int n, int[][] es)
+		static int[][] Prim(int n, int sv, int[][] es)
 		{
-			var sv = 1;
 			var map = Array.ConvertAll(new int[n + 1], _ => new List<int[]>());
 			foreach (var e in es)
 			{

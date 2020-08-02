@@ -10,12 +10,11 @@ class A2
 		var h = Read();
 		var es = new int[h[1]].Select(_ => Read()).ToArray();
 
-		Console.WriteLine(Prim(h[0] - 1, es).Sum(e => e[2]));
+		Console.WriteLine(Prim(h[0] - 1, 0, es).Sum(e => e[2]));
 	}
 
-	static int[][] Prim(int n, int[][] es)
+	static int[][] Prim(int n, int sv, int[][] es)
 	{
-		var sv = 0;
 		var map = Array.ConvertAll(new int[n + 1], _ => new List<int[]>());
 		foreach (var e in es)
 		{
