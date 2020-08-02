@@ -11,33 +11,32 @@ class C
 
 		var d = WarshallFloyd(h[0] - 1, es);
 		if (d == null) { Console.WriteLine("NEGATIVE CYCLE"); return; }
-		Console.WriteLine(string.Join("\n", Enumerable.Range(0, h[0]).Select(i => string.Join(" ", Enumerable.Range(0, h[0]).Select(j => d[i, j] == long.MaxValue ? "INF" : $"{d[i, j]}")))));
+		Console.WriteLine(string.Join("\n", d.Select(a => string.Join(" ", a.Select(x => x == long.MaxValue ? "INF" : $"{x}")))));
 	}
 
-	static long[,] WarshallFloyd(int n, int[][] es)
+	static long[][] WarshallFloyd(int n, int[][] es)
 	{
-		var d = new long[n + 1, n + 1];
+		var d = new long[n + 1][];
 		for (int i = 0; i <= n; i++)
 		{
-			for (int j = 0; j <= n; j++)
-				d[i, j] = long.MaxValue;
-			d[i, i] = 0;
+			d[i] = Array.ConvertAll(d, _ => long.MaxValue);
+			d[i][i] = 0;
 		}
 
 		foreach (var e in es)
 		{
-			d[e[0], e[1]] = e[2];
+			d[e[0]][e[1]] = e[2];
 			// 有向グラフの場合、ここを削除します。
-			//d[e[1], e[0]] = e[2];
+			//d[e[1]][e[0]] = e[2];
 		}
 
 		for (int k = 0; k <= n; k++)
 			for (int i = 0; i <= n; i++)
 				for (int j = 0; j <= n; j++)
-					if (d[i, k] < long.MaxValue && d[k, j] < long.MaxValue)
-						d[i, j] = Math.Min(d[i, j], d[i, k] + d[k, j]);
+					if (d[i][k] < long.MaxValue && d[k][j] < long.MaxValue)
+						d[i][j] = Math.Min(d[i][j], d[i][k] + d[k][j]);
 
-		if (Enumerable.Range(0, n + 1).Any(i => d[i, i] < 0)) return null;
+		if (Enumerable.Range(0, n + 1).Any(i => d[i][i] < 0)) return null;
 		return d;
 	}
 }
