@@ -9,7 +9,7 @@ namespace CoderLibTest.Trees
 	class UF
 	{
 		int[] p;
-		public UF(int n) { p = Enumerable.Range(0, n).ToArray(); }
+		public UF(int n) { p = Enumerable.Range(0, n + 1).ToArray(); }
 
 		public void Unite(int a, int b) { if (!AreUnited(a, b)) p[p[b]] = p[a]; }
 		public bool AreUnited(int a, int b) => GetRoot(a) == GetRoot(b);
@@ -24,7 +24,7 @@ namespace CoderLibTest.Trees
 		public void Unite()
 		{
 			var n = 100000;
-			var groups = Enumerable.Range(0, n).Select(i => new { i, key = RandomHelper.Random.Next(n) }).ToLookup(_ => _.key, _ => _.i);
+			var groups = Enumerable.Range(0, n + 1).Select(i => new { i, key = RandomHelper.Random.Next(n) }).ToLookup(_ => _.key, _ => _.i);
 
 			var uf = new UF(n);
 			foreach (var g in groups)
