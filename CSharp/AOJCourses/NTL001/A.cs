@@ -1,16 +1,19 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 
 class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		Console.WriteLine($"{n}: {string.Join(" ", Factorize(n))}");
+	}
 
-		Console.WriteLine(string.Join(" ", h));
+	static long[] Factorize(long n)
+	{
+		var r = new List<long>();
+		for (long x = 2; x * x <= n && n > 1; ++x) while (n % x == 0) { r.Add(x); n /= x; }
+		if (n > 1) r.Add(n);
+		return r.ToArray();
 	}
 }

@@ -1,18 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 class D
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
+		var n = long.Parse(Console.ReadLine());
+		Console.WriteLine(Factorize(n).Distinct().Aggregate(n, (t, p) => t / p * (p - 1)));
+	}
 
-		Console.WriteLine(string.Join(" ", a));
+	static long[] Factorize(long n)
+	{
+		var r = new List<long>();
+		for (long x = 2; x * x <= n && n > 1; ++x) while (n % x == 0) { r.Add(x); n /= x; }
+		if (n > 1) r.Add(n);
+		return r.ToArray();
 	}
 }
