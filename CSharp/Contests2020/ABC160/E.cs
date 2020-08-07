@@ -3,16 +3,17 @@ using System.Linq;
 
 class E
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
+	static long[] Read() => Console.ReadLine().Split().Select(long.Parse).ToArray();
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
 		var h = Read();
-		var ps = new int[h[0]].Select(_ => Read()).ToArray();
+		int x = (int)h[0], y = (int)h[1];
+		var a = Read();
+		var b = Read();
+		var c = Read();
 
-		Console.WriteLine(string.Join(" ", a));
+		var rg = a.OrderBy(v => -v).Take(x).Concat(b.OrderBy(v => -v).Take(y)).OrderBy(v => -v).ToArray();
+		var w = c.OrderBy(v => -v).Take(x + y).Concat(new long[Math.Max(0, x + y - h[4])]).Reverse().ToArray();
+		Console.WriteLine(Enumerable.Range(0, x + y).Sum(i => Math.Max(rg[i], w[i])));
 	}
 }

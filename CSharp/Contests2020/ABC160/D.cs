@@ -3,16 +3,15 @@ using System.Linq;
 
 class D
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = Read();
-		var ps = new int[h[0]].Select(_ => Read()).ToArray();
+		var h = Console.ReadLine().Split().Select(int.Parse).ToArray();
+		int n = h[0], x = h[1], y = h[2];
 
-		Console.WriteLine(string.Join(" ", a));
+		var r = new int[n];
+		for (int i = 1; i <= n; i++)
+			for (int j = i + 1; j <= n; j++)
+				r[Math.Min(j - i, Math.Abs(i - x) + 1 + Math.Abs(j - y))]++;
+		Console.WriteLine(string.Join("\n", r.Skip(1)));
 	}
 }
