@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Linq;
 
 class A
 {
-	static void Main()
-	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
-	}
+	static void Main() => Console.WriteLine(360 / Gcd(360, int.Parse(Console.ReadLine())));
+	static int Gcd(int a, int b) { for (int r; (r = a % b) > 0; a = b, b = r) ; return b; }
 }
