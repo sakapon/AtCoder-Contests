@@ -3,14 +3,18 @@ using System.Linq;
 
 class B
 {
+	static long[] Read() => Console.ReadLine().Split().Select(long.Parse).ToArray();
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var av = Read();
+		long a = av[0], v = av[1];
+		var bw = Read();
+		long b = bw[0], w = bw[1];
+		var t = long.Parse(Console.ReadLine());
 
-		Console.WriteLine(string.Join(" ", h));
+		if (a < b)
+			Console.WriteLine(b + w * t <= a + v * t ? "YES" : "NO");
+		else
+			Console.WriteLine(a - v * t <= b - w * t ? "YES" : "NO");
 	}
 }
