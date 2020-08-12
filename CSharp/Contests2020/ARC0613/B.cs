@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Linq;
 
 class B
 {
-	static long[] Read() => Console.ReadLine().Split().Select(long.Parse).ToArray();
+	static long[] Read() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main()
 	{
 		var av = Read();
@@ -12,9 +11,6 @@ class B
 		long b = bw[0], w = bw[1];
 		var t = long.Parse(Console.ReadLine());
 
-		if (a < b)
-			Console.WriteLine(b + w * t <= a + v * t ? "YES" : "NO");
-		else
-			Console.WriteLine(a - v * t <= b - w * t ? "YES" : "NO");
+		Console.WriteLine(Math.Abs(a - b) + w * t <= v * t ? "YES" : "NO");
 	}
 }
