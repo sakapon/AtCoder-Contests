@@ -42,6 +42,7 @@ struct V : IEquatable<V>
 	public static V operator /(V v, double c) => new V(v.X / c, v.Y / c);
 
 	public double Norm => Math.Sqrt(X * X + Y * Y);
+	public double NormL1 => Math.Abs(X) + Math.Abs(Y);
 	public double Angle => Math.Atan2(Y, X);
 
 	public V Rotate(double angle)
