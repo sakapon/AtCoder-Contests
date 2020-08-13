@@ -10,7 +10,7 @@ class B
 		var ss = new int[n].Select(_ => Console.ReadLine()).OrderBy(s => s.Length).ToArray();
 
 		var r = 0L;
-		var root = new Node('/');
+		var root = new Node();
 
 		foreach (var s in ss)
 		{
@@ -29,19 +29,16 @@ class B
 					}
 
 				if (!node.Nexts.ContainsKey(s[i]))
-					node.Nexts[s[i]] = new Node(s[i]);
+					node.Nexts[s[i]] = new Node();
 				node = node.Nexts[s[i]];
 			}
 		}
-
 		Console.WriteLine(r);
 	}
 }
 
 class Node
 {
-	public char C;
 	public int[] Ends = new int[26];
 	public Dictionary<char, Node> Nexts = new Dictionary<char, Node>();
-	public Node(char c) => C = c;
 }
