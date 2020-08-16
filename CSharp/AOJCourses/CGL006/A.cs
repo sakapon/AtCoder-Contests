@@ -9,11 +9,10 @@ class A
 		var n = int.Parse(Console.ReadLine());
 		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
 
-		var dx = ps.Select(v => v[0]).Concat(ps.Select(v => v[2])).Distinct().OrderBy(x => x).Select((x, i) => new { x, i }).ToDictionary(_ => _.x, _ => _.i);
 		var dy = ps.Select(v => v[1]).Concat(ps.Select(v => v[3])).Distinct().OrderBy(y => y).Select((y, i) => new { y, i }).ToDictionary(_ => _.y, _ => _.i);
 
-		var xs = ps.Where(v => v[1] == v[3]).SelectMany(v => new[] { new[] { -1, dx[Math.Min(v[0], v[2])], dy[v[1]] }, new[] { 1, dx[Math.Max(v[0], v[2])], dy[v[1]] } }).ToArray();
-		var ys = ps.Where(v => v[0] == v[2]).Select(v => new[] { 0, dx[v[0]], dy[Math.Min(v[1], v[3])], dy[Math.Max(v[1], v[3])] }).ToArray();
+		var xs = ps.Where(v => v[1] == v[3]).SelectMany(v => new[] { new[] { -1, Math.Min(v[0], v[2]), dy[v[1]] }, new[] { 1, Math.Max(v[0], v[2]), dy[v[1]] } }).ToArray();
+		var ys = ps.Where(v => v[0] == v[2]).Select(v => new[] { 0, v[0], dy[Math.Min(v[1], v[3])], dy[Math.Max(v[1], v[3])] }).ToArray();
 		var qs = xs.Concat(ys).OrderBy(q => q[1]).ThenBy(q => q[0]);
 
 		var r = 0L;
