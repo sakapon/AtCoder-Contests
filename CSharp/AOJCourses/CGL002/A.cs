@@ -3,14 +3,29 @@ using System.Linq;
 
 class A
 {
-	static void Main()
-	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
+	static void Main() => Console.WriteLine(string.Join("\n", new int[int.Parse(Console.ReadLine())].Select(_ => Solve())));
 
-		Console.WriteLine(string.Join(" ", h));
+	static long Solve()
+	{
+		var h = Read();
+		V p0 = new V(h[0], h[1]), p1 = new V(h[2], h[3]), p2 = new V(h[4], h[5]), p3 = new V(h[6], h[7]);
+		V s1 = p1 - p0, s2 = p3 - p2;
+
+		return V.IsParallel(s1, s2) ? 2 : V.IsOrthogonal(s1, s2) ? 1 : 0;
 	}
+}
+
+struct V
+{
+	public int X, Y;
+	public V(int x, int y) { X = x; Y = y; }
+	public override string ToString() => $"{X} {Y}";
+
+	public static V operator -(V v) => new V(-v.X, -v.Y);
+	public static V operator +(V v1, V v2) => new V(v1.X + v2.X, v1.Y + v2.Y);
+	public static V operator -(V v1, V v2) => new V(v1.X - v2.X, v1.Y - v2.Y);
+
+	public static bool IsParallel(V v1, V v2) => v1.X * v2.Y == v2.X * v1.Y;
+	public static bool IsOrthogonal(V v1, V v2) => v1.X * v2.X == -v1.Y * v2.Y;
 }
