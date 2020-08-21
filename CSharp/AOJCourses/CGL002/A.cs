@@ -26,6 +26,9 @@ struct V
 	public static V operator +(V v1, V v2) => new V(v1.X + v2.X, v1.Y + v2.Y);
 	public static V operator -(V v1, V v2) => new V(v1.X - v2.X, v1.Y - v2.Y);
 
+	public double Norm => Math.Sqrt(X * X + Y * Y);
+
+	public static int Dot(V v1, V v2) => v1.X * v2.X + v1.Y * v2.Y;
 	public static bool IsParallel(V v1, V v2) => v1.X * v2.Y == v2.X * v1.Y;
 	public static bool IsOrthogonal(V v1, V v2) => v1.X * v2.X == -v1.Y * v2.Y;
 }
