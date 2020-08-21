@@ -3,14 +3,14 @@ using System.Linq;
 
 class B
 {
+	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var h = Read();
+		int n = h[0], m = h[1];
+		var a = Read();
 
-		Console.WriteLine(string.Join(" ", h));
+		var d = a.Sum() / (4D * m);
+		Console.WriteLine(a.Count(x => x >= d) >= m ? "Yes" : "No");
 	}
 }
