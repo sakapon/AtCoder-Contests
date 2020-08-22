@@ -8,13 +8,14 @@ class A
 		var n = int.Parse(Console.ReadLine());
 		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(double.Parse).ToArray()).ToArray();
 
-		var d = 4.01 * Enumerable.Range(0, n - 1).Min(i => Norm1(ps[i + 1], ps[i]));
+		//var d = 4.01 * Enumerable.Range(0, n - 1).Min(i => NormL1(ps[i + 1], ps[i]));
+		var d = 401D;
 		double r;
 		while (double.IsNaN(r = MinDistance(ps, d /= 2))) ;
 		Console.WriteLine($"{r:F9}");
 	}
 
-	const int Sup = 100;
+	const int Sup = 400;
 	static double MinDistance(double[][] ps, double d)
 	{
 		var gs0 = ps.GroupBy(p => new P((int)Math.Floor((p[0] + 100) / d), (int)Math.Floor((p[1] + 100) / d))).Select(g => g.ToArray()).ToArray();
@@ -41,8 +42,8 @@ class A
 		return m;
 	}
 
-	static double Norm1(double[] p, double[] q) => Math.Abs(p[0] - q[0]) + Math.Abs(p[1] - q[1]);
 	static double Norm(double[] p, double[] q) => Math.Sqrt((p[0] - q[0]) * (p[0] - q[0]) + (p[1] - q[1]) * (p[1] - q[1]));
+	static double NormL1(double[] p, double[] q) => Math.Abs(p[0] - q[0]) + Math.Abs(p[1] - q[1]);
 }
 
 public struct P : IEquatable<P>
