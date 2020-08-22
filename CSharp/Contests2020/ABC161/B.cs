@@ -7,10 +7,10 @@ class B
 	static void Main()
 	{
 		var h = Read();
-		int n = h[0], m = h[1];
+		var m = h[1];
 		var a = Read();
 
-		var d = a.Sum() / (4D * m);
-		Console.WriteLine(a.Count(x => x >= d) >= m ? "Yes" : "No");
+		var s = a.Sum();
+		Console.WriteLine(a.Count(x => 4 * m * x >= s) >= m ? "Yes" : "No");
 	}
 }
