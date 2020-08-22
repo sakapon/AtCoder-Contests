@@ -8,24 +8,26 @@ class A
 		var n = int.Parse(Console.ReadLine());
 		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(double.Parse).ToArray()).ToArray();
 
-		double r, d = 401;
+		var d = 4.01 * Enumerable.Range(0, n - 1).Min(i => Norm1(ps[i + 1], ps[i]));
+		double r;
 		while (double.IsNaN(r = MinDistance(ps, d /= 2))) ;
-		Console.WriteLine(r);
+		Console.WriteLine($"{r:F9}");
 	}
 
+	const int Sup = 100;
 	static double MinDistance(double[][] ps, double d)
 	{
 		var gs0 = ps.GroupBy(p => new P((int)Math.Floor((p[0] + 100) / d), (int)Math.Floor((p[1] + 100) / d))).Select(g => g.ToArray()).ToArray();
-		if (gs0.Max(g => g.Length) > 100) return double.NaN;
+		if (gs0.Max(g => g.Length) > Sup) return double.NaN;
 
 		var gs1 = ps.GroupBy(p => new P((int)Math.Floor((p[0] + 100) / d), (int)Math.Floor((p[1] + 100 + d / 2) / d))).Select(g => g.ToArray()).ToArray();
-		if (gs1.Max(g => g.Length) > 100) return double.NaN;
+		if (gs1.Max(g => g.Length) > Sup) return double.NaN;
 
 		var gs2 = ps.GroupBy(p => new P((int)Math.Floor((p[0] + 100 + d / 2) / d), (int)Math.Floor((p[1] + 100) / d))).Select(g => g.ToArray()).ToArray();
-		if (gs2.Max(g => g.Length) > 100) return double.NaN;
+		if (gs2.Max(g => g.Length) > Sup) return double.NaN;
 
 		var gs3 = ps.GroupBy(p => new P((int)Math.Floor((p[0] + 100 + d / 2) / d), (int)Math.Floor((p[1] + 100 + d / 2) / d))).Select(g => g.ToArray()).ToArray();
-		if (gs3.Max(g => g.Length) > 100) return double.NaN;
+		if (gs3.Max(g => g.Length) > Sup) return double.NaN;
 
 		return gs0.Concat(gs1).Concat(gs2).Concat(gs3).Min(g => AllMinDistance(g));
 	}
@@ -39,7 +41,8 @@ class A
 		return m;
 	}
 
-	static double Norm(double[] p, double[] q) => Math.Sqrt(Math.Pow(p[0] - q[0], 2) + Math.Pow(p[1] - q[1], 2));
+	static double Norm1(double[] p, double[] q) => Math.Abs(p[0] - q[0]) + Math.Abs(p[1] - q[1]);
+	static double Norm(double[] p, double[] q) => Math.Sqrt((p[0] - q[0]) * (p[0] - q[0]) + (p[1] - q[1]) * (p[1] - q[1]));
 }
 
 public struct P : IEquatable<P>
