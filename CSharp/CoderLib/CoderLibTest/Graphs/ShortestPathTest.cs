@@ -23,27 +23,31 @@ namespace CoderLibTest.Graphs
 			}
 
 			var from = Enumerable.Repeat(-1, n + 1).ToArray();
-			var u = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
-			var pq = PQ<int>.Create(v => u[v]);
-			u[sv] = 0;
-			pq.Push(sv);
+			var d = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
+			var u = new bool[n + 1];
+			var pq = PQ<(int, long v)>.Create(_ => _.v);
+			d[sv] = 0;
+			pq.Push((sv, d[sv]));
 
 			while (pq.Count > 0)
 			{
-				var v = pq.Pop();
+				var (v, _) = pq.Pop();
 				// すべての頂点を探索する場合、ここを削除します。
 				if (v == ev) break;
+				if (u[v]) continue;
+				u[v] = true;
+
 				foreach (var e in map[v])
 				{
-					if (u[e[0]] <= u[v] + e[1]) continue;
+					if (d[e[0]] <= d[v] + e[1]) continue;
 					from[e[0]] = v;
-					u[e[0]] = u[v] + e[1];
-					pq.Push(e[0]);
+					d[e[0]] = d[v] + e[1];
+					pq.Push((e[0], d[e[0]]));
 				}
 			}
 
 			// コストを求める場合。
-			//return u[ev];
+			//return d[ev];
 
 			if (from[ev] == -1) return null;
 			var path = new List<int>();
