@@ -30,21 +30,22 @@ class D2
 		for (int i = 0; i < h; i++)
 			for (int j = 0; j < w; j++)
 				u[i, j] = c[i][j] == '.' ? 1 << 30 : -1;
-		var pq = PQ<P>.Create(p => u[p.i, p.j]);
+		var pq = PQ<(P, int v)>.Create(_ => _.v);
 
 		u[sp.i, sp.j] = 0;
-		pq.Push(sp);
+		pq.Push((sp, 0));
 
 		// Dijkstra
 		while (pq.Any())
 		{
-			var p = pq.Pop();
+			var (p, r) = pq.Pop();
+			if (p.Equals(gp)) { Console.WriteLine(r); return; }
 
 			foreach (var x in p.Nexts())
 			{
 				if (!x.IsInRange || u[x.i, x.j] <= u[p.i, p.j]) continue;
 				u[x.i, x.j] = u[p.i, p.j];
-				pq.Push(x);
+				pq.Push((x, u[x.i, x.j]));
 			}
 
 			for (int i = -2; i <= 2; i++)
@@ -53,11 +54,10 @@ class D2
 					var x = new P(p.i + i, p.j + j);
 					if (!x.IsInRange || u[x.i, x.j] <= u[p.i, p.j] + 1) continue;
 					u[x.i, x.j] = u[p.i, p.j] + 1;
-					pq.Push(x);
+					pq.Push((x, u[x.i, x.j]));
 				}
 		}
-		var r = u[gp.i, gp.j];
-		Console.WriteLine(r == 1 << 30 ? -1 : r);
+		Console.WriteLine(-1);
 	}
 }
 
