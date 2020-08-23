@@ -25,9 +25,9 @@ class A
 		}
 
 		var from = Enumerable.Repeat(-1, n + 1).ToArray();
-		var u = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
-		var pq = PQ<int>.Create(v => u[v]);
-		u[sv] = 0;
+		var d = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
+		var pq = PQ<int>.Create(v => d[v]);
+		d[sv] = 0;
 		pq.Push(sv);
 
 		while (pq.Count > 0)
@@ -37,13 +37,13 @@ class A
 			//if (v == ev) break;
 			foreach (var e in map[v])
 			{
-				if (u[e[0]] <= u[v] + e[1]) continue;
+				if (d[e[0]] <= d[v] + e[1]) continue;
 				from[e[0]] = v;
-				u[e[0]] = u[v] + e[1];
+				d[e[0]] = d[v] + e[1];
 				pq.Push(e[0]);
 			}
 		}
-		return u;
+		return d;
 	}
 }
 
