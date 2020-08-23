@@ -26,38 +26,42 @@ class D2
 		var sp = new P(s[0] - 1, s[1] - 1);
 		var gp = new P(g[0] - 1, g[1] - 1);
 
-		var u = new int[h, w];
+		var d = new int[h, w];
 		for (int i = 0; i < h; i++)
 			for (int j = 0; j < w; j++)
-				u[i, j] = c[i][j] == '.' ? 1 << 30 : -1;
+				d[i, j] = c[i][j] == '.' ? 1 << 30 : -1;
+		var u = new bool[h, w];
 		var pq = PQ<(P, int v)>.Create(_ => _.v);
 
-		u[sp.i, sp.j] = 0;
+		d[sp.i, sp.j] = 0;
 		pq.Push((sp, 0));
 
 		// Dijkstra
 		while (pq.Any())
 		{
-			var (p, r) = pq.Pop();
-			if (p.Equals(gp)) { Console.WriteLine(r); return; }
+			var (p, _) = pq.Pop();
+			if (p.Equals(gp)) break;
+			if (u[p.i, p.j]) continue;
+			u[p.i, p.j] = true;
 
 			foreach (var x in p.Nexts())
 			{
-				if (!x.IsInRange || u[x.i, x.j] <= u[p.i, p.j]) continue;
-				u[x.i, x.j] = u[p.i, p.j];
-				pq.Push((x, u[x.i, x.j]));
+				if (!x.IsInRange || d[x.i, x.j] <= d[p.i, p.j]) continue;
+				d[x.i, x.j] = d[p.i, p.j];
+				pq.Push((x, d[x.i, x.j]));
 			}
 
 			for (int i = -2; i <= 2; i++)
 				for (int j = -2; j <= 2; j++)
 				{
 					var x = new P(p.i + i, p.j + j);
-					if (!x.IsInRange || u[x.i, x.j] <= u[p.i, p.j] + 1) continue;
-					u[x.i, x.j] = u[p.i, p.j] + 1;
-					pq.Push((x, u[x.i, x.j]));
+					if (!x.IsInRange || d[x.i, x.j] <= d[p.i, p.j] + 1) continue;
+					d[x.i, x.j] = d[p.i, p.j] + 1;
+					pq.Push((x, d[x.i, x.j]));
 				}
 		}
-		Console.WriteLine(-1);
+		var r = d[gp.i, gp.j];
+		Console.WriteLine(r == 1 << 30 ? -1 : r);
 	}
 }
 
