@@ -11,26 +11,14 @@ class C
 
 		var l = new LinkedList<int>();
 
+		var actions = new Dictionary<string, Action<string[]>>();
+		actions["insert"] = q => l.AddFirst(int.Parse(q[1]));
+		actions["delete"] = q => l.Remove(int.Parse(q[1]));
+		actions["deleteFirst"] = q => l.RemoveFirst();
+		actions["deleteLast"] = q => l.RemoveLast();
+
 		foreach (var q in qs)
-		{
-			switch (q[0])
-			{
-				case "insert":
-					l.AddFirst(int.Parse(q[1]));
-					break;
-				case "delete":
-					l.Remove(int.Parse(q[1]));
-					break;
-				case "deleteFirst":
-					l.RemoveFirst();
-					break;
-				case "deleteLast":
-					l.RemoveLast();
-					break;
-				default:
-					break;
-			}
-		}
+			actions[q[0]](q);
 		Console.WriteLine(string.Join(" ", l));
 	}
 }
