@@ -9,7 +9,7 @@ class C2
 		var n = int.Parse(Console.ReadLine());
 		var qs = new int[n].Select(_ => Console.ReadLine().Split());
 
-		var dq = new DQ<int>(n);
+		var dq = new DQ<int>(Math.Min(1000000, n));
 
 		var actions = new Dictionary<string, Action<string[]>>();
 		actions["insert"] = q => dq.PushFirst(int.Parse(q[1]));
@@ -17,8 +17,7 @@ class C2
 		actions["deleteFirst"] = q => dq.PopFirst();
 		actions["deleteLast"] = q => dq.PopLast();
 
-		foreach (var q in qs)
-			actions[q[0]](q);
+		foreach (var q in qs) actions[q[0]](q);
 		Console.WriteLine(string.Join(" ", Enumerable.Range(0, dq.Length).Select(i => dq[i])));
 	}
 }
