@@ -1,16 +1,36 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 class C
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var qs = new int[n].Select(_ => Console.ReadLine().Split());
 
-		Console.WriteLine(string.Join(" ", h));
+		var l = new LinkedList<int>();
+
+		foreach (var q in qs)
+		{
+			switch (q[0])
+			{
+				case "insert":
+					l.AddFirst(int.Parse(q[1]));
+					break;
+				case "delete":
+					l.Remove(int.Parse(q[1]));
+					break;
+				case "deleteFirst":
+					l.RemoveFirst();
+					break;
+				case "deleteLast":
+					l.RemoveLast();
+					break;
+				default:
+					break;
+			}
+		}
+		Console.WriteLine(string.Join(" ", l));
 	}
 }

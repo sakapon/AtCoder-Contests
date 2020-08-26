@@ -1,16 +1,31 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 
 class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var es = Console.ReadLine().Split();
+		var s = new Stack<int>();
 
-		Console.WriteLine(string.Join(" ", h));
+		foreach (var e in es)
+		{
+			switch (e)
+			{
+				case "+":
+					s.Push(s.Pop() + s.Pop());
+					break;
+				case "-":
+					s.Push(-s.Pop() + s.Pop());
+					break;
+				case "*":
+					s.Push(s.Pop() * s.Pop());
+					break;
+				default:
+					s.Push(int.Parse(e));
+					break;
+			}
+		}
+		Console.WriteLine(s.Pop());
 	}
 }
