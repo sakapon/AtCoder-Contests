@@ -1,16 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 class C
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
 
-		Console.WriteLine(string.Join(" ", h));
+		var r = new List<bool>();
+		var set = new HashSet<string>();
+		for (int i = 0; i < n; i++)
+		{
+			var q = Console.ReadLine().Split();
+			if (q[0][0] == 'i')
+				set.Add(q[1]);
+			else
+				r.Add(set.Contains(q[1]));
+		}
+		Console.WriteLine(string.Join("\n", r.Select(x => x ? "yes" : "no")));
 	}
 }
