@@ -3,13 +3,12 @@ using System.Linq;
 
 class C
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
 	{
-		var h = Read();
+		var h = Console.ReadLine().Split().Select(int.Parse).ToList();
 		int k = h[0], n = h[1];
-		var a = Read();
-		a = a.Append(k + a[0]).ToArray();
+		var a = Console.ReadLine().Split().Select(int.Parse).ToList();
+		a.Add(k + a[0]);
 		Console.WriteLine(k - Enumerable.Range(0, n).Max(i => a[i + 1] - a[i]));
 	}
 }
