@@ -1,16 +1,27 @@
 ﻿using System;
-using System.Linq;
 
 class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var a = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+		BucketSort(a, 10000);
+		Console.WriteLine(string.Join(" ", a));
+	}
 
-		Console.WriteLine(string.Join(" ", h));
+	static int[] Count(int[] a, int max)
+	{
+		var r = new int[max + 1];
+		foreach (var x in a) ++r[x];
+		return r;
+	}
+
+	static void BucketSort(int[] a, int max)
+	{
+		var b = Count(a, max);
+		for (int i = -1, x = 0; x <= max; ++x)
+			while (b[x]-- > 0)
+				a[++i] = x;
 	}
 }
