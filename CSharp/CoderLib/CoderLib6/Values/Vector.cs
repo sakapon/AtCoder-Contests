@@ -26,14 +26,18 @@ namespace CoderLib6.Values
 		public static V operator -(V v) => new V(-v.X, -v.Y);
 		public static V operator +(V v1, V v2) => new V(v1.X + v2.X, v1.Y + v2.Y);
 		public static V operator -(V v1, V v2) => new V(v1.X - v2.X, v1.Y - v2.Y);
-		public static V operator *(double c, V v) => new V(v.X * c, v.Y * c);
+		public static V operator *(double c, V v) => v * c;
 		public static V operator *(V v, double c) => new V(v.X * c, v.Y * c);
 		public static V operator /(V v, double c) => new V(v.X / c, v.Y / c);
 
 		public double NormL1 => Math.Abs(X) + Math.Abs(Y);
 		public double NormL2 => Math.Sqrt(X * X + Y * Y);
 		public double Angle => Math.Atan2(Y, X);
+		public double Cos => X / NormL2;
+		public double Sin => Y / NormL2;
+		public double Tan => Y / X;
 
+		public V Normalize() => this / NormL2;
 		public V Rotate(double angle)
 		{
 			var cos = Math.Cos(angle);
@@ -43,5 +47,6 @@ namespace CoderLib6.Values
 
 		public static double Dot(V v1, V v2) => v1.X * v2.X + v1.Y * v2.Y;
 		public static double Area(V v1, V v2) => Math.Abs(v1.X * v2.Y - v2.X * v1.Y) / 2;
+		public static V Divide(V v1, V v2, double m, double n) => (n * v1 + m * v2) / (m + n);
 	}
 }
