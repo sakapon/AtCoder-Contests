@@ -8,8 +8,6 @@ namespace CoderLibTest.Collections
 	[TestClass]
 	public class ArrayTest
 	{
-		static void Swap<T>(T[] a, int i, int j) { var o = a[i]; a[i] = a[j]; a[j] = o; }
-
 		static int[] Range(int start, int count)
 		{
 			var a = new int[count];
@@ -23,13 +21,6 @@ namespace CoderLibTest.Collections
 			for (var i = m; i <= M; ++i) a[i - m] = i;
 			return a;
 		}
-
-		static double Norm(int[] p, int[] q) => Math.Sqrt((p[0] - q[0]) * (p[0] - q[0]) + (p[1] - q[1]) * (p[1] - q[1]));
-		static double Norm(double[] p, double[] q) => Math.Sqrt((p[0] - q[0]) * (p[0] - q[0]) + (p[1] - q[1]) * (p[1] - q[1]));
-
-		static int NormL1(int[] p, int[] q) => Math.Abs(p[0] - q[0]) + Math.Abs(p[1] - q[1]);
-		static double NormL1(double[] p, double[] q) => Math.Abs(p[0] - q[0]) + Math.Abs(p[1] - q[1]);
-		//static long NormL1((long x, long y) p, (long x, long y) q) => Math.Abs(q.x - p.x) + Math.Abs(q.y - p.y);
 
 		static int DotProduct(int[] a, int[] b)
 		{
