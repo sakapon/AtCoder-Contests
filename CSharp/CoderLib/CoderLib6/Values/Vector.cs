@@ -4,13 +4,17 @@ namespace CoderLib6.Values
 {
 	struct V : IEquatable<V>
 	{
-		public static V Zero { get; } = new V();
-		public static V UnitX { get; } = new V(1, 0);
-		public static V UnitY { get; } = new V(0, 1);
+		public static V Zero = new V();
+		public static V UnitX = new V(1, 0);
+		public static V UnitY = new V(0, 1);
 
 		public double X, Y;
 		public V(double x, double y) { X = x; Y = y; }
-		public override string ToString() => $"{X} {Y}";
+		public override string ToString() => $"{X:F9} {Y:F9}";
+		public static V Parse(string s) => Array.ConvertAll(s.Split(), double.Parse);
+
+		public static implicit operator V(double[] v) => new V(v[0], v[1]);
+		public static explicit operator double[](V v) => new[] { v.X, v.Y };
 
 		public bool Equals(V other) => X == other.X && Y == other.Y;
 		public static bool operator ==(V v1, V v2) => v1.Equals(v2);
@@ -29,6 +33,13 @@ namespace CoderLib6.Values
 		public double NormL1 => Math.Abs(X) + Math.Abs(Y);
 		public double NormL2 => Math.Sqrt(X * X + Y * Y);
 		public double Angle => Math.Atan2(Y, X);
+
+		public V Rotate(double angle)
+		{
+			var cos = Math.Cos(angle);
+			var sin = Math.Sin(angle);
+			return new V(cos * X - sin * Y, sin * X + cos * Y);
+		}
 
 		public static double Dot(V v1, V v2) => v1.X * v2.X + v1.Y * v2.Y;
 		public static double Area(V v1, V v2) => Math.Abs(v1.X * v2.Y - v2.X * v1.Y) / 2;

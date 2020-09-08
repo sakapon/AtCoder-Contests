@@ -4,9 +4,17 @@ namespace CoderLib6.Values
 {
 	struct IntV : IEquatable<IntV>
 	{
+		public static IntV Zero = new IntV();
+		public static IntV UnitX = new IntV(1, 0);
+		public static IntV UnitY = new IntV(0, 1);
+
 		public int X, Y;
 		public IntV(int x, int y) { X = x; Y = y; }
 		public override string ToString() => $"{X} {Y}";
+		public static IntV Parse(string s) => Array.ConvertAll(s.Split(), int.Parse);
+
+		public static implicit operator IntV(int[] v) => new IntV(v[0], v[1]);
+		public static explicit operator int[](IntV v) => new[] { v.X, v.Y };
 
 		public bool Equals(IntV other) => X == other.X && Y == other.Y;
 		public static bool operator ==(IntV v1, IntV v2) => v1.Equals(v2);
