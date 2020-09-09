@@ -3,14 +3,5 @@ using System.Linq;
 
 class B
 {
-	static void Main()
-	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
-	}
+	static void Main() => Console.WriteLine(Enumerable.Range(1, int.Parse(Console.ReadLine())).Where(x => x % 3 > 0 && x % 5 > 0).Sum(x => (long)x));
 }
