@@ -9,8 +9,11 @@ class C
 		var r = 0;
 		for (int a = 1; a <= k; a++)
 			for (int b = 1; b <= k; b++)
+			{
+				var g = Gcd(a, b);
 				for (int c = 1; c <= k; c++)
-					r += Gcd(Gcd(a, b), c);
+					r += Gcd(g, c);
+			}
 		Console.WriteLine(r);
 	}
 
