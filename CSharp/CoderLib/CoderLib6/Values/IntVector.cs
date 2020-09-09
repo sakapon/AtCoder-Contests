@@ -27,6 +27,12 @@ namespace CoderLib6.Values
 		public static IntV operator -(IntV v1, IntV v2) => new IntV(v1.X - v2.X, v1.Y - v2.Y);
 
 		public int NormL1 => Math.Abs(X) + Math.Abs(Y);
-		public double NormL2 => Math.Sqrt(X * X + Y * Y);
+		public double Norm => Math.Sqrt(X * X + Y * Y);
+
+		public static int Dot(IntV v1, IntV v2) => v1.X * v2.X + v1.Y * v2.Y;
+		// 菱形の面積
+		public static int Area(IntV v1, IntV v2) => Math.Abs(v1.X * v2.Y - v2.X * v1.Y);
+		public static bool IsParallel(IntV v1, IntV v2) => v1.X * v2.Y == v2.X * v1.Y;
+		public static bool IsOrthogonal(IntV v1, IntV v2) => v1.X * v2.X == -v1.Y * v2.Y;
 	}
 }
