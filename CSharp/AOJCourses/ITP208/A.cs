@@ -1,16 +1,20 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 
 class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
 
-		Console.WriteLine(string.Join(" ", h));
+		var d = new Dictionary<string, string>();
+		for (int i = 0; i < n; i++)
+		{
+			var q = Console.ReadLine().Split();
+			if (q[0] == "0")
+				d[q[1]] = q[2];
+			else
+				Console.WriteLine(d[q[1]]);
+		}
 	}
 }
