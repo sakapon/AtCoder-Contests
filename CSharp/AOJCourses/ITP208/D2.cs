@@ -26,7 +26,7 @@ class D2
 				d.Add(keyInt, q[2]);
 			}
 			else if (q[0] == "1")
-				r.AddRange(d.Enumerate(keyInt));
+				r.AddRange(d.ReadValues(keyInt));
 			else if (q[0] == "2")
 			{
 				d.Remove(keyInt);

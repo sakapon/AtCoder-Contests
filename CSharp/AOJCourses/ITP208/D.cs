@@ -22,7 +22,7 @@ class D
 			}
 			else if (q[0] == "1")
 			{
-				r.AddRange(d.Enumerate(q[1]));
+				r.AddRange(d.ReadValues(q[1]));
 			}
 			else if (q[0] == "2")
 			{
@@ -38,7 +38,7 @@ class D
 
 class MultiMap<TK, TV> : Dictionary<TK, List<TV>>
 {
-	static TV[] empty = new TV[0];
+	static List<TV> empty = new List<TV>();
 
 	public void Add(TK key, TV v)
 	{
@@ -46,5 +46,5 @@ class MultiMap<TK, TV> : Dictionary<TK, List<TV>>
 		else this[key] = new List<TV> { v };
 	}
 
-	public IEnumerable<TV> Enumerate(TK key) => ContainsKey(key) ? this[key].AsEnumerable() : empty;
+	public List<TV> ReadValues(TK key) => ContainsKey(key) ? this[key] : empty;
 }
