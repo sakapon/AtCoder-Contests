@@ -1,18 +1,36 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 class D
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
 		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
 
-		Console.WriteLine(string.Join(" ", a));
+		var d = a.OrderBy(x => x).Select((x, i) => new { x, i }).ToDictionary(_ => _.x, _ => _.i);
+		var b = a.Select(x => d[x]).ToArray();
+
+		var r = a.Sum();
+		var m = a.Min();
+		var u = new bool[n];
+
+		for (int i = 0; i < n; i++)
+		{
+			if (u[i]) continue;
+
+			var l = new List<int> { i };
+			var t = i;
+			while ((t = b[t]) != i)
+			{
+				l.Add(t);
+				u[t] = true;
+			}
+
+			var lm = l.Min(j => a[j]);
+			r += Math.Min((l.Count - 2) * lm, (l.Count + 1) * m + lm);
+		}
+		Console.WriteLine(r);
 	}
 }
