@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace CoderLib6.Collections
+﻿namespace CoderLib6.Collections
 {
+	// 制約: PushFirst, PushLast はそれぞれ size 回まで。
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/1/ITP2_1_B
 	class DQ<T>
 	{
 		T[] a;
