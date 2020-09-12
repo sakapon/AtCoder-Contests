@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoderLibTest.Trees;
+using CoderLib6.Trees;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CoderLibTest.Graphs
@@ -11,7 +11,7 @@ namespace CoderLibTest.Graphs
 	{
 		static int[][] Kruskal(int n, int[][] es)
 		{
-			var uf = new UF(n);
+			var uf = new UF(n + 1);
 			var minEdges = new List<int[]>();
 
 			foreach (var e in es.OrderBy(e => e[2]))
