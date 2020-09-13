@@ -34,9 +34,13 @@ class ST
 	{
 		public int k, i;
 		public Node(int _k, int _i) { k = _k; i = _i; }
+
+		public Node Parent => new Node(k - 1, i >> 1);
+		public Node Child0 => new Node(k + 1, i << 1);
+		public Node Child1 => new Node(k + 1, (i << 1) + 1);
 	}
 
-	int kMax;
+	protected int kMax;
 	List<long[]> vs = new List<long[]> { new long[1] };
 
 	public ST(int n)
@@ -45,7 +49,7 @@ class ST
 		kMax = vs.Count - 1;
 	}
 
-	public long this[int i] => vs[kMax][i];
+	public virtual long this[int i] => vs[kMax][i];
 	public long this[Node n]
 	{
 		get { return vs[n.k][n.i]; }

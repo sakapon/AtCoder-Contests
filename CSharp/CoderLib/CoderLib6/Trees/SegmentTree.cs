@@ -50,6 +50,7 @@ namespace CoderLib6.Trees
 			for (int k = kMax; k >= 0; --k, i >>= 1) action(new Node(k, i));
 		}
 
+		// インデックスの昇順ではなく、階層の降順です。
 		public void ForRange(int minIn, int maxEx, Action<Node> action)
 		{
 			for (int k = kMax, f = 1; k >= 0 && minIn < maxEx; --k, f <<= 1)
@@ -123,6 +124,21 @@ namespace CoderLib6.Trees
 
 			while (mn.k < kMax) mn = this[mn.Child0] == m ? mn.Child0 : mn.Child1;
 			return mn.i;
+		}
+	}
+
+	// 範囲の最大値を求める場合。
+	class ST_Max : ST
+	{
+		public ST_Max(int n) : base(n) { }
+
+		public void Set(int i, long v) => ForLevels(i, n => this[n] = n.k == kMax ? v : Math.Max(this[n.Child0], this[n.Child1]));
+
+		public long Submax(int minIn, int maxEx)
+		{
+			var r = long.MinValue;
+			ForRange(minIn, maxEx, n => r = Math.Max(r, this[n]));
+			return r;
 		}
 	}
 
