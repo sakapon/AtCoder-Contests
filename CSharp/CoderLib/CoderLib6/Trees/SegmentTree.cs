@@ -13,9 +13,13 @@ namespace CoderLib6.Trees
 		{
 			public int k, i;
 			public Node(int _k, int _i) { k = _k; i = _i; }
+
+			public Node Parent => new Node(k - 1, i >> 1);
+			public Node Child0 => new Node(k + 1, i << 1);
+			public Node Child1 => new Node(k + 1, (i << 1) + 1);
 		}
 
-		int kMax;
+		protected int kMax;
 		List<long[]> vs = new List<long[]> { new long[1] };
 
 		public ST(int n)
@@ -29,6 +33,11 @@ namespace CoderLib6.Trees
 		{
 			get { return vs[n.k][n.i]; }
 			set { vs[n.k][n.i] = value; }
+		}
+
+		public void InitAllLevels(long v)
+		{
+			foreach (var a in vs) for (int i = 0; i < a.Length; ++i) a[i] = v;
 		}
 
 		public void Clear()
@@ -82,6 +91,53 @@ namespace CoderLib6.Trees
 				ForLevels(i, n => r += this[n]);
 				return r;
 			}
+		}
+	}
+
+	// 範囲の最小値を求める場合。
+	class ST_Min : ST
+	{
+		public ST_Min(int n) : base(n) { }
+
+		public void Set(int i, long v) => ForLevels(i, n => this[n] = n.k == kMax ? v : Math.Min(this[n.Child0], this[n.Child1]));
+
+		public long Submin(int minIn, int maxEx)
+		{
+			var r = long.MaxValue;
+			ForRange(minIn, maxEx, n => r = Math.Min(r, this[n]));
+			return r;
+		}
+
+		public int FirstArgMin(int minIn, int maxEx)
+		{
+			var m = long.MaxValue;
+			var mn = new Node();
+			ForRange(minIn, maxEx, n =>
+			{
+				if (this[n] < m)
+				{
+					m = this[n];
+					mn = n;
+				}
+			});
+
+			while (mn.k < kMax) mn = this[mn.Child0] == m ? mn.Child0 : mn.Child1;
+			return mn.i;
+		}
+	}
+
+	// 範囲の bit OR を求める場合。
+	class ST_BitOR : ST
+	{
+		public ST_BitOR(int n) : base(n) { }
+
+		public void Set(int i, long v) => ForLevels(i, n => this[n] = n.k == kMax ? v : this[n.Child0] | this[n.Child1]);
+
+		public long Subor(int minIn, int maxEx)
+		{
+			var r = 0L;
+			ForRange(minIn, maxEx, n => r |= this[n]);
+			return r;
 		}
 	}
 }

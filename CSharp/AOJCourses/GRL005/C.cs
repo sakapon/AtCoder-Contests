@@ -15,6 +15,7 @@ class C
 		tour = new List<int>();
 		order = Array.ConvertAll(new int[n], _ => new List<int>());
 		minDepth = new ST_Min(2 * n);
+		minDepth.InitAllLevels(1 << 30);
 		EulerTourDfs(0, 0);
 
 		Console.WriteLine(string.Join("\n", qs.Select(x => Lca(x[0], x[1]))));
@@ -27,14 +28,14 @@ class C
 	static void EulerTourDfs(int v, int depth)
 	{
 		order[v].Add(tour.Count);
-		minDepth.SetMin(tour.Count, depth);
+		minDepth.Set(tour.Count, depth);
 		foreach (var nv in map[v])
 		{
 			tour.Add(v);
 			EulerTourDfs(nv, depth + 1);
 			tour.Add(-nv);
 			order[v].Add(tour.Count);
-			minDepth.SetMin(tour.Count, depth);
+			minDepth.Set(tour.Count, depth);
 		}
 	}
 
@@ -43,65 +44,90 @@ class C
 		if (u == v) return u;
 		if (order[u][0] > order[v][0]) { var t = u; u = v; v = t; }
 		if (order[u].Last() > order[v][0]) return u;
-		return tour[minDepth.ArgMin(order[u].Last(), order[v][0])];
+		return tour[minDepth.FirstArgMin(order[u].Last(), order[v][0])];
 	}
 }
 
-class ST_Min
+class ST
 {
-	struct KI
+	public struct Node
 	{
 		public int k, i;
+		public Node(int _k, int _i) { k = _k; i = _i; }
+
+		public Node Parent => new Node(k - 1, i >> 1);
+		public Node Child0 => new Node(k + 1, i << 1);
+		public Node Child1 => new Node(k + 1, (i << 1) + 1);
 	}
 
-	int kMax;
+	protected int kMax;
 	List<long[]> vs = new List<long[]> { new long[1] };
-	public ST_Min(int n)
+
+	public ST(int n)
 	{
 		for (int c = 1; c < n; vs.Add(new long[c <<= 1])) ;
-		foreach (var a in vs)
-			for (int i = 0; i < a.Length; i++)
-				a[i] = long.MaxValue;
 		kMax = vs.Count - 1;
 	}
 
-	KI[] GetLevels(int i)
+	public virtual long this[int i] => vs[kMax][i];
+	public long this[Node n]
 	{
-		var r = new List<KI>();
-		for (int k = kMax; k >= 0; --k, i >>= 1) r.Add(new KI { k = k, i = i });
-		return r.ToArray();
+		get { return vs[n.k][n.i]; }
+		set { vs[n.k][n.i] = value; }
 	}
 
-	KI[] GetRange(int minIn, int maxEx)
+	public void InitAllLevels(long v)
 	{
-		var r = new List<KI>();
+		foreach (var a in vs) for (int i = 0; i < a.Length; ++i) a[i] = v;
+	}
+
+	public void Clear()
+	{
+		for (int k = 0; k <= kMax; ++k) Array.Clear(vs[k], 0, vs[k].Length);
+	}
+
+	public void ForLevels(int i, Action<Node> action)
+	{
+		for (int k = kMax; k >= 0; --k, i >>= 1) action(new Node(k, i));
+	}
+
+	public void ForRange(int minIn, int maxEx, Action<Node> action)
+	{
 		for (int k = kMax, f = 1; k >= 0 && minIn < maxEx; --k, f <<= 1)
 		{
-			if ((minIn & f) != 0) r.Add(new KI { k = k, i = (minIn += f) / f - 1 });
-			if ((maxEx & f) != 0) r.Add(new KI { k = k, i = (maxEx -= f) / f });
+			if ((minIn & f) != 0) action(new Node(k, (minIn += f) / f - 1));
+			if ((maxEx & f) != 0) action(new Node(k, (maxEx -= f) / f));
 		}
-		return r.ToArray();
+	}
+}
+
+class ST_Min : ST
+{
+	public ST_Min(int n) : base(n) { }
+
+	public void Set(int i, long v) => ForLevels(i, n => this[n] = n.k == kMax ? v : Math.Min(this[n.Child0], this[n.Child1]));
+
+	public long Submin(int minIn, int maxEx)
+	{
+		var r = long.MaxValue;
+		ForRange(minIn, maxEx, n => r = Math.Min(r, this[n]));
+		return r;
 	}
 
-	public long Get(int i) => vs[kMax][i];
-
-	public void SetMin(int i, long v)
+	public int FirstArgMin(int minIn, int maxEx)
 	{
-		foreach (var x in GetLevels(i)) vs[x.k][x.i] = Math.Min(vs[x.k][x.i], v);
-	}
-
-	public long Submin(int minIn, int maxEx) => GetRange(minIn, maxEx).Select(x => vs[x.k][x.i]).Aggregate(Math.Min);
-
-	public int ArgMin(int minIn, int maxEx)
-	{
-		var m = Submin(minIn, maxEx);
-		var ki = GetRange(minIn, maxEx).First(x => vs[x.k][x.i] == m);
-
-		for (int j; ki.k < kMax; ki = new KI { k = ki.k + 1, i = j })
+		var m = long.MaxValue;
+		var mn = new Node();
+		ForRange(minIn, maxEx, n =>
 		{
-			j = 2 * ki.i;
-			if (vs[ki.k + 1][j] > m) j++;
-		}
-		return ki.i;
+			if (this[n] < m)
+			{
+				m = this[n];
+				mn = n;
+			}
+		});
+
+		while (mn.k < kMax) mn = this[mn.Child0] == m ? mn.Child0 : mn.Child1;
+		return mn.i;
 	}
 }
