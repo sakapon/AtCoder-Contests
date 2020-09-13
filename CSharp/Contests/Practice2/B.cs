@@ -12,7 +12,7 @@ class B
 		var n = h[0];
 		var a = Read();
 
-		var st = new ST(n);
+		var st = new ST_Subsum(n);
 		for (int i = 0; i < n; i++)
 			st.Add(i, a[i]);
 
@@ -30,39 +30,54 @@ class B
 
 class ST
 {
+	public struct Node
+	{
+		public int k, i;
+		public Node(int _k, int _i) { k = _k; i = _i; }
+	}
+
 	int kMax;
 	List<long[]> vs = new List<long[]> { new long[1] };
+
 	public ST(int n)
 	{
 		for (int c = 1; c < n; vs.Add(new long[c <<= 1])) ;
 		kMax = vs.Count - 1;
 	}
 
-	(int k, int i)[] GetLevels(int i)
+	public long this[int i] => vs[kMax][i];
+	public long this[Node n]
 	{
-		var r = new List<(int, int)>();
-		for (int k = kMax; k >= 0; --k, i >>= 1) r.Add((k, i));
-		return r.ToArray();
+		get { return vs[n.k][n.i]; }
+		set { vs[n.k][n.i] = value; }
 	}
 
-	(int k, int i)[] GetRange(int minIn, int maxEx)
+	public void ForLevels(int i, Action<Node> action)
 	{
-		var r = new List<(int, int)>();
+		for (int k = kMax; k >= 0; --k, i >>= 1) action(new Node(k, i));
+	}
+
+	public void ForRange(int minIn, int maxEx, Action<Node> action)
+	{
 		for (int k = kMax, f = 1; k >= 0 && minIn < maxEx; --k, f <<= 1)
 		{
-			if ((minIn & f) != 0) r.Add((k, (minIn += f) / f - 1));
-			if ((maxEx & f) != 0) r.Add((k, (maxEx -= f) / f));
+			if ((minIn & f) != 0) action(new Node(k, (minIn += f) / f - 1));
+			if ((maxEx & f) != 0) action(new Node(k, (maxEx -= f) / f));
 		}
-		return r.ToArray();
 	}
+}
 
-	public long Get(int i) => vs[kMax][i];
-	public void Set(int i, long v) => Add(i, v - vs[kMax][i]);
+class ST_Subsum : ST
+{
+	public ST_Subsum(int n) : base(n) { }
 
-	public void Add(int i, long v)
+	public void Set(int i, long v) => Add(i, v - this[i]);
+	public void Add(int i, long v) => ForLevels(i, n => this[n] += v);
+
+	public long Subsum(int minIn, int maxEx)
 	{
-		foreach (var (k, j) in GetLevels(i)) vs[k][j] += v;
+		var r = 0L;
+		ForRange(minIn, maxEx, n => r += this[n]);
+		return r;
 	}
-
-	public long Subsum(int minIn, int maxEx) => GetRange(minIn, maxEx).Sum(x => vs[x.k][x.i]);
 }
