@@ -10,7 +10,7 @@ namespace CoderLib8.Values
 		public override string ToString() => $"{X:F9} {Y:F9}";
 		public static V Parse(string s) => Array.ConvertAll(s.Split(), double.Parse);
 
-		public static implicit operator V(double[] v) => new V(v[0], v[1]);
+		public static implicit operator V(double[] v) => (v[0], v[1]);
 		public static explicit operator double[](V v) => new[] { v.X, v.Y };
 		public static implicit operator V((double x, double y) v) => new V(v.x, v.y);
 		public static explicit operator (double, double)(V v) => (v.X, v.Y);
@@ -21,12 +21,12 @@ namespace CoderLib8.Values
 		public override bool Equals(object obj) => obj is V v && Equals(v);
 		public override int GetHashCode() => (X, Y).GetHashCode();
 
-		public static V operator -(V v) => new V(-v.X, -v.Y);
-		public static V operator +(V v1, V v2) => new V(v1.X + v2.X, v1.Y + v2.Y);
-		public static V operator -(V v1, V v2) => new V(v1.X - v2.X, v1.Y - v2.Y);
+		public static V operator -(V v) => (-v.X, -v.Y);
+		public static V operator +(V v1, V v2) => (v1.X + v2.X, v1.Y + v2.Y);
+		public static V operator -(V v1, V v2) => (v1.X - v2.X, v1.Y - v2.Y);
 		public static V operator *(double c, V v) => v * c;
-		public static V operator *(V v, double c) => new V(v.X * c, v.Y * c);
-		public static V operator /(V v, double c) => new V(v.X / c, v.Y / c);
+		public static V operator *(V v, double c) => (v.X * c, v.Y * c);
+		public static V operator /(V v, double c) => (v.X / c, v.Y / c);
 
 		public double NormL1 => Math.Abs(X) + Math.Abs(Y);
 		public double Norm => Math.Sqrt(X * X + Y * Y);
@@ -40,7 +40,7 @@ namespace CoderLib8.Values
 		{
 			var cos = Math.Cos(angle);
 			var sin = Math.Sin(angle);
-			return new V(cos * X - sin * Y, sin * X + cos * Y);
+			return (cos * X - sin * Y, sin * X + cos * Y);
 		}
 
 		public static double Dot(V v1, V v2) => v1.X * v2.X + v1.Y * v2.Y;
