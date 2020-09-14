@@ -4,25 +4,23 @@ namespace CoderLib8.Values
 {
 	struct V : IEquatable<V>
 	{
-		public static V Zero = new V();
-		public static V UnitX = new V(1, 0);
-		public static V UnitY = new V(0, 1);
-
 		public double X, Y;
-		public V(double x, double y) { X = x; Y = y; }
+		public V(double x, double y) => (X, Y) = (x, y);
+		public void Deconstruct(out double x, out double y) => (x, y) = (X, Y);
 		public override string ToString() => $"{X:F9} {Y:F9}";
 		public static V Parse(string s) => Array.ConvertAll(s.Split(), double.Parse);
 
 		public static implicit operator V(double[] v) => new V(v[0], v[1]);
 		public static explicit operator double[](V v) => new[] { v.X, v.Y };
+		public static implicit operator V((double x, double y) v) => new V(v.x, v.y);
+		public static explicit operator (double, double)(V v) => (v.X, v.Y);
 
 		public bool Equals(V other) => X == other.X && Y == other.Y;
 		public static bool operator ==(V v1, V v2) => v1.Equals(v2);
 		public static bool operator !=(V v1, V v2) => !v1.Equals(v2);
-		public override bool Equals(object obj) => obj is V && Equals((V)obj);
-		public override int GetHashCode() => Tuple.Create(X, Y).GetHashCode();
+		public override bool Equals(object obj) => obj is V v && Equals(v);
+		public override int GetHashCode() => (X, Y).GetHashCode();
 
-		public static V operator +(V v) => v;
 		public static V operator -(V v) => new V(-v.X, -v.Y);
 		public static V operator +(V v1, V v2) => new V(v1.X + v2.X, v1.Y + v2.Y);
 		public static V operator -(V v1, V v2) => new V(v1.X - v2.X, v1.Y - v2.Y);
