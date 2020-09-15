@@ -68,7 +68,7 @@ namespace CoderLibTest.Maths
 			return r.ToArray();
 		}
 
-		// 範囲内の素数 O(√M)? or O(M - m)?
+		// 範囲内の素数 O(√M + (M - m))?
 		// M が大きい場合、誤差が生じる可能性があります。
 		static long[] GetPrimes(long m, long M)
 		{
