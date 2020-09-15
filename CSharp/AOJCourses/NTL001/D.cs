@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 class D
 {
-	static void Main()
-	{
-		var n = long.Parse(Console.ReadLine());
-		Console.WriteLine(Factorize(n).Distinct().Aggregate(n, (t, p) => t / p * (p - 1)));
-	}
+	static void Main() => Console.WriteLine(Totient(long.Parse(Console.ReadLine())));
 
-	static long[] Factorize(long n)
+	static long Totient(long n)
 	{
-		var r = new List<long>();
-		for (long x = 2; x * x <= n && n > 1; ++x) while (n % x == 0) { r.Add(x); n /= x; }
-		if (n > 1) r.Add(n);
-		return r.ToArray();
+		var r = n;
+		for (long x = 2; x * x <= n && n > 1; ++x)
+			if (n % x == 0)
+			{
+				r = r / x * (x - 1);
+				while ((n /= x) % x == 0) ;
+			}
+		if (n > 1) r = r / n * (n - 1);
+		return r;
 	}
 }

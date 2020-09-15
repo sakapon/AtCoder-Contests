@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 class E
@@ -15,20 +14,9 @@ class E
 	{
 		var b = new bool[n + 1];
 		for (int p = 2; p * p <= n; ++p) if (!b[p]) for (int x = p * p; x <= n; x += p) b[x] = true;
-		var ps = new List<int>();
-		for (int x = 2; x <= n; ++x) if (!b[x]) ps.Add(x);
-
 		var r = new int[n + 1];
-		r[1] = 1;
-		for (int x = 2; x <= n; ++x)
-			if (!b[x]) r[x] = x - 1;
-			else foreach (var p in ps) if (x % p == 0)
-					{
-						var t = p;
-						while (x % (t * p) == 0) t *= p;
-						r[x] = x / t == 1 ? x / p * (p - 1) : r[t] * r[x / t];
-						break;
-					}
+		for (int x = 1; x <= n; ++x) r[x] = x;
+		for (int p = 2; p <= n; ++p) if (!b[p]) for (int x = p; x <= n; x += p) r[x] = r[x] / p * (p - 1);
 		return r;
 	}
 }
