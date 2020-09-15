@@ -29,6 +29,7 @@ struct MInt
 
 	public static implicit operator MInt(long v) => new MInt(v);
 	public static MInt operator +(MInt x, MInt y) => x.V + y.V;
+	public static MInt operator -(MInt x, MInt y) => x.V - y.V;
 	public static MInt operator *(MInt x, MInt y) => x.V * y.V;
 
 	public MInt Pow(int i) => MPow(V, i);
