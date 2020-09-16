@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Linq;
 
 class D
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = Read();
-		var ps = new int[h[0]].Select(_ => Read()).ToArray();
+		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+		long n = h[0], k = h[1];
 
-		Console.WriteLine(string.Join(" ", a));
+		long r = 1, M = n * (n + 1) / 2, m = M;
+		for (long i = n; i >= k; i--)
+			r += (M -= n - i) - (m -= i) + 1;
+		Console.WriteLine(r % 1000000007);
 	}
 }

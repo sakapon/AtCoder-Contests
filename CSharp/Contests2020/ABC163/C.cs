@@ -5,12 +5,8 @@ class C
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		var d = Console.ReadLine().Split().Select(int.Parse).ToLookup(x => x);
+		Console.WriteLine(string.Join("\n", Enumerable.Range(1, n).Select(i => d[i].Count())));
 	}
 }
