@@ -9,39 +9,38 @@ class G
 	{
 		var h = Read();
 		var n = h[0];
-		var es = new int[h[1]].Select(_ => Read()).ToArray();
+		// 多重辺および自己ループを除去。
+		var es = new int[h[1]].Select(_ => Read()).Select(e => (v0: e[0], v1: e[1])).Where(e => e.v0 != e.v1).Distinct().ToArray();
 
 		var map = Array.ConvertAll(new int[n], _ => new List<int>());
 		var map_r = Array.ConvertAll(new int[n], _ => new List<int>());
-		foreach (var e in es)
+		foreach (var (v0, v1) in es)
 		{
-			map[e[0]].Add(e[1]);
-			map_r[e[1]].Add(e[0]);
+			map[v0].Add(v1);
+			map_r[v1].Add(v0);
 		}
 
 		var u = new bool[n];
-		var order = new List<int>();
+		var order = new int[n];
+		var c = n;
 		var gs = new List<List<int>>();
 		List<int> lg = null;
 
-		Action<int> Dfs = null;
-		Dfs = v =>
+		void Dfs(int v)
 		{
 			u[v] = true;
 			foreach (var nv in map[v]) if (!u[nv]) Dfs(nv);
-			order.Add(v);
-		};
+			order[--c] = v;
+		}
 		for (int v = 0; v < n; v++) if (!u[v]) Dfs(v);
 
-		Action<int> Dfs_r = null;
-		Dfs_r = v =>
+		void Dfs_r(int v)
 		{
 			u[v] = true;
 			foreach (var nv in map_r[v]) if (!u[nv]) Dfs_r(nv);
 			lg.Add(v);
-		};
+		}
 		Array.Clear(u, 0, n);
-		order.Reverse();
 		foreach (var v in order) if (!u[v]) { gs.Add(lg = new List<int>()); Dfs_r(v); }
 
 		Console.WriteLine(gs.Count);
