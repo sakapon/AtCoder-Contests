@@ -9,15 +9,14 @@ class G
 	{
 		var h = Read();
 		var n = h[0];
-		// 多重辺および自己ループを除去。
-		var es = new int[h[1]].Select(_ => Read()).Select(e => (v0: e[0], v1: e[1])).Where(e => e.v0 != e.v1).Distinct().ToArray();
+		var es = new int[h[1]].Select(_ => Read()).ToArray();
 
 		var map = Array.ConvertAll(new int[n], _ => new List<int>());
 		var map_r = Array.ConvertAll(new int[n], _ => new List<int>());
-		foreach (var (v0, v1) in es)
+		foreach (var e in es)
 		{
-			map[v0].Add(v1);
-			map_r[v1].Add(v0);
+			map[e[0]].Add(e[1]);
+			map_r[e[1]].Add(e[0]);
 		}
 
 		var u = new bool[n];
