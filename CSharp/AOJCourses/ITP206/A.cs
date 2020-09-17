@@ -5,12 +5,9 @@ class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
+		var qs = new int[int.Parse(Console.ReadLine())].Select(_ => int.Parse(Console.ReadLine())).ToArray();
+		Console.WriteLine(string.Join("\n", qs.Select(q => Array.BinarySearch(a, q) >= 0 ? 1 : 0)));
 	}
 }

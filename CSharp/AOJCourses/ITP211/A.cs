@@ -5,12 +5,8 @@ class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		var rn = Enumerable.Range(0, n).ToArray();
+		Console.WriteLine(string.Join("\n", Enumerable.Range(0, 1 << n).Select(x => x == 0 ? "0:" : $"{x}: {string.Join(" ", rn.Where(i => (x & (1 << i)) != 0))}")));
 	}
 }
