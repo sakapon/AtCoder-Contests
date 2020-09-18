@@ -47,7 +47,7 @@ namespace CoderLib8.Values
 		// 菱形の面積
 		public static double Area(V v1, V v2) => Math.Abs(v1.X * v2.Y - v2.X * v1.Y);
 		public static bool IsParallel(V v1, V v2) => v1.X * v2.Y == v2.X * v1.Y;
-		public static bool IsOrthogonal(V v1, V v2) => v1.X * v2.X == -v1.Y * v2.Y;
+		public static bool IsOrthogonal(V v1, V v2) => Dot(v1, v2) == 0;
 
 		// 分点
 		public static V Divide(V v1, V v2, double m, double n) => (n * v1 + m * v2) / (m + n);
