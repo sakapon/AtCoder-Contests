@@ -23,5 +23,14 @@ namespace CoderLib6.Values
 		public static IntMatrix operator -(IntMatrix v1, IntMatrix v2) => v1.V.Zip(v2.V, (x, y) => ((IntVector)x - y).V).ToArray();
 		public static IntVector operator *(IntMatrix m, IntVector v) => m.V.Select(r => IntVector.Dot(r, v)).ToArray();
 		public static IntMatrix operator *(IntMatrix v1, IntMatrix v2) => v1.V.Select(r => Enumerable.Range(0, v2.V[0].Length).Select(j => r.Select((x, i) => x * v2[i, j]).Sum()).ToArray()).ToArray();
+		//public static IntMatrix operator *(IntMatrix v1, IntMatrix v2)
+		//{
+		//	var t2 = v2.Transpose();
+		//	return v1.V.Select(r => t2.V.Select(c => IntVector.Dot(r, c)).ToArray()).ToArray();
+		//}
+
+		public long[] GetRow(int r) => (long[])V[r].Clone();
+		public long[] GetColumn(int c) => Array.ConvertAll(V, r => r[c]);
+		public IntMatrix Transpose() => V[0].Select((x, c) => GetColumn(c)).ToArray();
 	}
 }
