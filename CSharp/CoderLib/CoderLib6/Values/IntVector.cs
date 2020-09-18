@@ -8,6 +8,7 @@ namespace CoderLib6.Values
 	class IntVector
 	{
 		public long[] V;
+		public long this[int i] => V[i];
 		public IntVector(long[] v) { V = v; }
 		public override string ToString() => string.Join(" ", V);
 		public static IntVector Parse(string s) => Array.ConvertAll(s.Split(), long.Parse);
