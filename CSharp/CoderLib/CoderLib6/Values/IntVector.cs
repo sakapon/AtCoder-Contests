@@ -3,6 +3,7 @@ using System.Linq;
 
 namespace CoderLib6.Values
 {
+	// 任意次元ベクトル
 	// 渡された配列をラップするだけです。
 	class IntVector
 	{
