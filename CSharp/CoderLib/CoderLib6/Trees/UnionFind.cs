@@ -4,6 +4,7 @@ using System.Linq;
 namespace CoderLib6.Trees
 {
 	// n: 個数
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/11/ALDS1_11_D
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/1/DSL_1_A
 	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_a
 	class UF
