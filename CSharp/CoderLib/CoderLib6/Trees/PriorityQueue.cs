@@ -6,6 +6,7 @@ namespace CoderLib6.Trees
 	// 0-indexed List
 	// キーの値が途中で変わらないことを前提とします。
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/2/ITP2_2_C
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/9/ALDS1_9_C
 	class PQ<T> : List<T>
 	{
 		public static PQ<T> Create(T[] vs = null, bool desc = false)
