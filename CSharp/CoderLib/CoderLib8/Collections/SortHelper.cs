@@ -30,5 +30,25 @@ namespace CoderLib8.Collections
 			for (int i = a.Length - 1; i >= 0; --i) r[--s[keys[i]]] = a[i];
 			return r;
 		}
+
+		// Int32 のすべての値が対象です。
+		static void RadixSort(int[] a)
+		{
+			var f = 0xFF;
+			BucketSort(a, x => x & f, f);
+			BucketSort(a, x => x >> 8 & f, f);
+			BucketSort(a, x => x >> 16 & f, f);
+			BucketSort(a, x => x >> 24 & f ^ 0x80, f);
+		}
+
+		// Int64 のすべての値が対象です。
+		static void RadixSort(long[] a)
+		{
+			var f = 0xFF;
+			BucketSort(a, x => (int)x & f, f);
+			for (int b = 8; b < 56; b += 8)
+				BucketSort(a, x => (int)(x >> b) & f, f);
+			BucketSort(a, x => (int)(x >> 56) & f ^ 0x80, f);
+		}
 	}
 }
