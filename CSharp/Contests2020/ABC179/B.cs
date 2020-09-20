@@ -5,12 +5,8 @@ class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		var d = new int[n].Select(_ => Console.ReadLine()).Select(s => s[0] == s[2]).ToArray();
+		Console.WriteLine(Enumerable.Range(0, n - 2).Any(i => d[i] && d[i + 1] && d[i + 2]) ? "Yes" : "No");
 	}
 }
