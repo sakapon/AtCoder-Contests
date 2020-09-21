@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using CoderLib6.Trees;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CoderLibTest.Graphs
+namespace CoderLib6.Graphs
 {
-	[TestClass]
-	public class SpanningTreeTest
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/12/ALDS1_12_A
+	static class SpanningTree
 	{
+		// n: 最後の番号
 		static int[][] Kruskal(int n, int[][] es)
 		{
 			var uf = new UF(n + 1);
@@ -23,6 +23,7 @@ namespace CoderLibTest.Graphs
 			return minEdges.ToArray();
 		}
 
+		// n: 最後の番号
 		static int[][] Prim(int n, int sv, int[][] es)
 		{
 			var map = Array.ConvertAll(new int[n + 1], _ => new List<int[]>());
