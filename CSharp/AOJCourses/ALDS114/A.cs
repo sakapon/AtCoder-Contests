@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Linq;
 
 class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
 		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		var p = Console.ReadLine();
+		int i = -1;
+		while ((i = s.IndexOf(p, i + 1)) != -1) Console.WriteLine(i);
 	}
 }
