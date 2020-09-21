@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using CoderLib6.Trees;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CoderLibTest.Graphs
+namespace CoderLib6.Graphs
 {
-	[TestClass]
-	public class ShortestPathTest
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/12/ALDS1_12_C
+	static class ShortestPath
 	{
 		// es: { from, to, weight }
 		// 経路: 到達不可能の場合、null を返します。
@@ -25,13 +24,13 @@ namespace CoderLibTest.Graphs
 			var from = Enumerable.Repeat(-1, n + 1).ToArray();
 			var d = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
 			var u = new bool[n + 1];
-			var pq = PQ<(int, long v)>.Create(_ => _.v);
+			var pq = PQ<VC>.Create(_ => _.c);
 			d[sv] = 0;
-			pq.Push((sv, d[sv]));
+			pq.Push(new VC { v = sv, c = d[sv] });
 
 			while (pq.Count > 0)
 			{
-				var (v, _) = pq.Pop();
+				var v = pq.Pop().v;
 				// すべての頂点を探索する場合、ここを削除します。
 				if (v == ev) break;
 				if (u[v]) continue;
@@ -42,7 +41,7 @@ namespace CoderLibTest.Graphs
 					if (d[e[0]] <= d[v] + e[1]) continue;
 					from[e[0]] = v;
 					d[e[0]] = d[v] + e[1];
-					pq.Push((e[0], d[e[0]]));
+					pq.Push(new VC { v = e[0], c = d[e[0]] });
 				}
 			}
 
@@ -55,6 +54,12 @@ namespace CoderLibTest.Graphs
 				path.Add(v);
 			path.Reverse();
 			return path.ToArray();
+		}
+
+		struct VC
+		{
+			public int v;
+			public long c;
 		}
 
 		// priority queue ではなく、queue を使うほうが速いことがあります。
