@@ -15,7 +15,7 @@ class D2
 		Func<string, bool> match = p =>
 		{
 			var order = First(0, n + 1, o => StringCompare(s, sa[o], p, 0, p.Length) >= 0);
-			return order <= n && StringEquals(s, sa[order], p, 0, p.Length);
+			return order <= n && sa[order] + p.Length <= n && StringEquals(s, sa[order], p, 0, p.Length);
 		};
 		Console.WriteLine(string.Join("\n", ps.Select(p => match(p) ? 1 : 0)));
 	}
