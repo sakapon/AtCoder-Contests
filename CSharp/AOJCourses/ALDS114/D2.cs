@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-class D
+class D2
 {
 	static void Main()
 	{
@@ -14,10 +14,37 @@ class D
 
 		Func<string, bool> match = p =>
 		{
-			var order = First(0, n + 1, o => string.CompareOrdinal(s, sa[o], p, 0, p.Length) >= 0);
-			return order <= n && string.CompareOrdinal(s, sa[order], p, 0, p.Length) == 0;
+			var order = First(0, n + 1, o => StringCompare(s, sa[o], p, 0, p.Length) >= 0);
+			return order <= n && StringEquals(s, sa[order], p, 0, p.Length);
 		};
 		Console.WriteLine(string.Join("\n", ps.Select(p => match(p) ? 1 : 0)));
+	}
+
+	// string.CompareOrdinal の代用です。
+	static int StringCompare(string s1, int i1, string s2, int i2, int length)
+	{
+		for (int j = 0; j < length; ++j)
+		{
+			int j1 = i1 + j, j2 = i2 + j;
+			if (j1 == s1.Length ^ j2 == s2.Length) return j1 == s1.Length ? -1 : 1;
+			if (j1 == s1.Length) return 0;
+			var r = s1[j1].CompareTo(s2[j2]);
+			if (r != 0) return r;
+		}
+		return 0;
+	}
+
+	// string.CompareOrdinal (== 0) の代用です。
+	static bool StringEquals(string s1, int i1, string s2, int i2, int length)
+	{
+		for (int j = 0; j < length; ++j)
+		{
+			int j1 = i1 + j, j2 = i2 + j;
+			if (j1 == s1.Length ^ j2 == s2.Length) return false;
+			if (j1 == s1.Length) return true;
+			if (s1[j1] != s2[j2]) return false;
+		}
+		return true;
 	}
 
 	static int[] SuffixArray(string s)
