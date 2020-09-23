@@ -49,19 +49,40 @@ class D3
 
 		var comparer = Comparer<int>.Create(compare);
 
-		for (; k < n; k <<= 1)
+		// k == 1
 		{
-			for (int i = n; i >= 0; --i)
-			{
-				var start = rank[sa[i]];
-				if (start == i) continue;
-				Array.Sort(sa, start, i - start + 1, comparer);
-				i = start;
-			}
+			Array.Sort(sa, compare);
 
 			for (int i = 1; i <= n; ++i)
 				tr[sa[i]] = equals(sa[i], sa[i - 1]) ? tr[sa[i - 1]] : i;
 			tr.CopyTo(rank, 0);
+		}
+
+		var next = true;
+		while (next && (k <<= 1) < n)
+		{
+			next = false;
+			for (int j = n; j >= 0; --j)
+			{
+				var start = rank[sa[j]];
+				if (start == j) continue;
+				var count = j - start + 1;
+
+				// ソートが完了していない部分のみソートします。
+				Array.Sort(sa, start, count, comparer);
+
+				for (int i = start + 1; i <= j; ++i)
+				{
+					var eq = equals(sa[i], sa[i - 1]);
+					tr[sa[i]] = eq ? tr[sa[i - 1]] : i;
+					if (eq) next = true;
+				}
+				// rank の一部が早く更新されるため、while の回数が少なくなる可能性があります。
+				for (int i = start + 1; i <= j; ++i)
+					rank[sa[i]] = tr[sa[i]];
+
+				j = start;
+			}
 		}
 		return sa;
 	}
