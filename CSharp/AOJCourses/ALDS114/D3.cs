@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 class D3
@@ -46,12 +47,20 @@ class D3
 		};
 		Func<int, int, bool> equals = (i, j) => rank[i] == rank[j] && rank[Math.Min(i + k, n)] == rank[Math.Min(j + k, n)];
 
+		var comparer = Comparer<int>.Create(compare);
+
 		for (; k < n; k <<= 1)
 		{
-			Array.Sort(sa, compare);
+			for (int i = n; i >= 0; --i)
+			{
+				var start = rank[sa[i]];
+				if (start == i) continue;
+				Array.Sort(sa, start, i - start + 1, comparer);
+				i = start;
+			}
 
-			for (int i = 0; i < n; i++)
-				tr[sa[i + 1]] = tr[sa[i]] + (equals(sa[i], sa[i + 1]) ? 0 : 1);
+			for (int i = 1; i <= n; ++i)
+				tr[sa[i]] = equals(sa[i], sa[i - 1]) ? tr[sa[i - 1]] : i;
 			tr.CopyTo(rank, 0);
 		}
 		return sa;
