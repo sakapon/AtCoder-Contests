@@ -79,27 +79,27 @@ namespace CoderLib6.Strings
 			// order -> index
 			var sa = Enumerable.Range(0, n + 1).ToArray();
 			// index -> order
+			// Empty のランクを 0 とします。
 			var rank = new int[n + 1];
 			var tr = new int[n + 1];
-			tr[n] = rank[n] = -1;
 			for (int i = 0; i < n; i++) rank[i] = s[i];
 
 			// rank_k(i) と rank_k(i+k) から rank_2k(i) を作ります。
 			var k = 1;
-			Comparison<int> c = (i, j) =>
+			Comparison<int> compare = (i, j) =>
 			{
 				var r = rank[i].CompareTo(rank[j]);
 				if (r != 0) return r;
 				return rank[Math.Min(i + k, n)].CompareTo(rank[Math.Min(j + k, n)]);
 			};
-			Func<int, int, bool> eq = (i, j) => rank[i] == rank[j] && rank[Math.Min(i + k, n)] == rank[Math.Min(j + k, n)];
+			Func<int, int, bool> equals = (i, j) => rank[i] == rank[j] && rank[Math.Min(i + k, n)] == rank[Math.Min(j + k, n)];
 
 			for (; k < n; k <<= 1)
 			{
-				Array.Sort(sa, c);
+				Array.Sort(sa, compare);
 
-				for (int i = 0; i < n; i++)
-					tr[sa[i + 1]] = tr[sa[i]] + (eq(sa[i], sa[i + 1]) ? 0 : 1);
+				for (int i = 1; i <= n; ++i)
+					tr[sa[i]] = equals(sa[i], sa[i - 1]) ? tr[sa[i - 1]] : i;
 				tr.CopyTo(rank, 0);
 			}
 			return sa;

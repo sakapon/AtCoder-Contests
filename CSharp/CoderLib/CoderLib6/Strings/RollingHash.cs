@@ -25,6 +25,7 @@
 		}
 
 		public long Hash(int start, int count) => pre[start + count] - pre[start] * pow[count];
+		public long Hash2(int minIn, int maxEx) => pre[maxEx] - pre[minIn] * pow[maxEx - minIn];
 
 		public static long Hash(string s, long p) => Hash(s, 0, s.Length, p);
 		public static long Hash(string s, int start, int count, long p)
