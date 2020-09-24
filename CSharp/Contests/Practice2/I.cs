@@ -23,12 +23,17 @@ class I
 		var n = s.Length;
 
 		// order -> index
-		var sa = Enumerable.Range(0, n + 1).ToArray();
+		var sa = new int[n + 1];
 		// index -> order
 		// Empty のランクを 0 とします。
 		var rank = new int[n + 1];
 		var tr = new int[n + 1];
-		for (int i = 0; i < n; i++) rank[i] = s[i];
+		for (int i = 0; i < n; ++i)
+		{
+			sa[i] = n - i;
+			rank[i] = s[i];
+		}
+		if (s.All(c => c == s[0])) return (sa, Enumerable.Range(0, n).ToArray());
 
 		// rank_k(i) と rank_k(i+k) から rank_2k(i) を作ります。
 		var k = 1;
@@ -36,9 +41,7 @@ class I
 		{
 			var d = rank[i] - rank[j];
 			if (d != 0) return d;
-			i = Math.Min(i + k, n);
-			j = Math.Min(j + k, n);
-			return rank[i] - rank[j];
+			return rank[Math.Min(i + k, n)] - rank[Math.Min(j + k, n)];
 		};
 		Func<int, int, bool> equals = (i, j) => rank[i] == rank[j] && rank[Math.Min(i + k, n)] == rank[Math.Min(j + k, n)];
 
