@@ -11,7 +11,7 @@ class D
 		var q = int.Parse(Console.ReadLine());
 		var ps = new int[q].Select(_ => Console.ReadLine());
 
-		var sa = SuffixArray(s);
+		var sa = ManberMyers(s);
 
 		Func<string, bool> match = p =>
 		{
@@ -21,7 +21,7 @@ class D
 		Console.WriteLine(string.Join("\n", ps.Select(p => match(p) ? 1 : 0)));
 	}
 
-	static int[] SuffixArray(string s)
+	static int[] ManberMyers(string s)
 	{
 		var n = s.Length;
 

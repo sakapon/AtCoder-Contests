@@ -12,18 +12,27 @@ class D3
 		var q = int.Parse(Console.ReadLine());
 		var ps = new int[q].Select(_ => Console.ReadLine());
 
-		var sa = SuffixArray(s);
-		var rh = new RollingHash(s, M);
+		var sa = ManberMyers(s);
+		var rh = new RH(s, M);
+
+		Func<int, string, RH, int> compare = (i, p, prh) =>
+		{
+			var preCount = Last(0, Math.Min(n - i, p.Length), x => rh.Hash(i, x) == prh.Hash(0, x));
+			if (i + preCount == n ^ preCount == p.Length) return preCount == p.Length ? 1 : -1;
+			if (preCount == p.Length) return 0;
+			return s[i + preCount] - p[preCount];
+		};
 
 		Func<string, bool> match = p =>
 		{
-			var order = First(0, n + 1, o => string.CompareOrdinal(s, sa[o], p, 0, p.Length) >= 0);
-			return order <= n && sa[order] + p.Length <= n && rh.Hash(sa[order], p.Length) == RollingHash.Hash(p, M);
+			var prh = new RH(p, M);
+			var order = First(0, n + 1, o => compare(sa[o], p, prh) >= 0);
+			return order <= n && sa[order] + p.Length <= n && rh.Hash(sa[order], p.Length) == prh.Hash(0, p.Length);
 		};
 		Console.WriteLine(string.Join("\n", ps.Select(p => match(p) ? 1 : 0)));
 	}
 
-	static int[] SuffixArray(string s)
+	static int[] ManberMyers(string s)
 	{
 		var n = s.Length;
 
@@ -93,16 +102,23 @@ class D3
 		while (l < r) if (f(m = l + (r - l - 1) / 2)) r = m; else l = m + 1;
 		return r;
 	}
+
+	static int Last(int l, int r, Func<int, bool> f)
+	{
+		int m;
+		while (l < r) if (f(m = r - (r - l - 1) / 2)) l = m; else r = m - 1;
+		return l;
+	}
 }
 
-class RollingHash
+class RH
 {
 	string s;
 	int n;
 	long p;
 	long[] pow, pre;
 
-	public RollingHash(string _s, long _p)
+	public RH(string _s, long _p)
 	{
 		s = _s;
 		n = s.Length;
