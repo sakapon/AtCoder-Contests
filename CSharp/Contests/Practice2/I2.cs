@@ -2,23 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 
-class I
+class I2
 {
 	static void Main()
 	{
 		var s = Console.ReadLine();
 		var n = s.Length;
 
-		var (sa, lcp) = ManberMyers_Lcp(s);
+		var sa = ManberMyers(s);
+		var rh = new RH(s, 1000000007);
 
-		// 前の文字列と一致した部分より後ろの文字数を加算します。
 		var r = 0L;
+		// 前の文字列と一致した部分より後ろの文字数を加算します。
 		for (int i = 0; i < n; i++)
-			r += n - sa[i + 1] - lcp[i];
+			r += n - sa[i + 1] - Last(0, Math.Min(n - sa[i], n - sa[i + 1]), x => rh.Hash(sa[i], x) == rh.Hash(sa[i + 1], x));
 		Console.WriteLine(r);
 	}
 
-	static (int[], int[]) ManberMyers_Lcp(string s)
+	static int[] ManberMyers(string s)
 	{
 		var n = s.Length;
 
@@ -79,15 +80,49 @@ class I
 				j = start;
 			}
 		}
+		return sa;
+	}
 
-		// order -> count
-		var lcp = new int[n];
+	static int Last(int l, int r, Func<int, bool> f)
+	{
+		int m;
+		while (l < r) if (f(m = r - (r - l - 1) / 2)) l = m; else r = m - 1;
+		return l;
+	}
+}
+
+class RH
+{
+	string s;
+	int n;
+	long p;
+	long[] pow, pre;
+
+	public RH(string _s, long _p)
+	{
+		s = _s;
+		n = s.Length;
+		p = _p;
+
+		pow = new long[n + 1];
+		pow[0] = 1;
+		pre = new long[n + 1];
+
 		for (int i = 0; i < n; ++i)
 		{
-			var o = rank[i] - 1;
-			for (int j = sa[o] + lcp[o], i2 = i + lcp[o]; j < n && i2 < n && s[j] == s[i2]; ++j, ++i2) ++lcp[o];
-			if (lcp[o] > 1) lcp[rank[i + 1] - 1] = lcp[o] - 1;
+			pow[i + 1] = pow[i] * p;
+			pre[i + 1] = pre[i] * p + s[i];
 		}
-		return (sa, lcp);
+	}
+
+	public long Hash(int start, int count) => pre[start + count] - pre[start] * pow[count];
+	public long Hash2(int minIn, int maxEx) => pre[maxEx] - pre[minIn] * pow[maxEx - minIn];
+
+	public static long Hash(string s, long p) => Hash(s, 0, s.Length, p);
+	public static long Hash(string s, int start, int count, long p)
+	{
+		var h = 0L;
+		for (int i = 0; i < count; ++i) h = h * p + s[start + i];
+		return h;
 	}
 }
