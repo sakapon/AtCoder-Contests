@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 class I
@@ -8,60 +9,120 @@ class I
 		var s = Console.ReadLine();
 		var n = s.Length;
 
-		var (sa, d) = SuffixArray(s);
+		var sa = ManberMyers(s);
+		var rh = new RH(s, 1000000007);
 
 		var r = 0L;
 		// 前の文字列と一致した部分より後ろの文字数を加算します。
 		for (int i = 0; i < n; i++)
-		{
-			var t = d[i + 1];
-			var j0 = sa[i] + t;
-			var j1 = sa[i + 1] + t;
-			while (j0 < n && j1 < n && s[j0] == s[j1]) { t++; j0++; j1++; }
-			r += n - sa[i + 1] - t;
-		}
+			r += n - sa[i + 1] - Last(0, Math.Min(n - sa[i], n - sa[i + 1]), x => rh.Hash(sa[i], x) == rh.Hash(sa[i + 1], x));
 		Console.WriteLine(r);
 	}
 
-	static (int[], int[]) SuffixArray(string s)
+	static int[] ManberMyers(string s)
 	{
 		var n = s.Length;
 
 		// order -> index
 		var sa = Enumerable.Range(0, n + 1).ToArray();
 		// index -> order
+		// Empty のランクを 0 とします。
 		var rank = new int[n + 1];
 		var tr = new int[n + 1];
-		tr[n] = rank[n] = -1;
 		for (int i = 0; i < n; i++) rank[i] = s[i];
-
-		// 前の文字列と等しいことが保証されている文字数
-		// order -> count
-		var d = new int[n + 1];
 
 		// rank_k(i) と rank_k(i+k) から rank_2k(i) を作ります。
 		var k = 1;
 		Comparison<int> compare = (i, j) =>
 		{
-			var r = rank[i].CompareTo(rank[j]);
-			if (r != 0) return r;
-			return rank[Math.Min(i + k, n)].CompareTo(rank[Math.Min(j + k, n)]);
+			var d = rank[i] - rank[j];
+			if (d != 0) return d;
+			i = Math.Min(i + k, n);
+			j = Math.Min(j + k, n);
+			return rank[i] - rank[j];
 		};
 		Func<int, int, bool> equals = (i, j) => rank[i] == rank[j] && rank[Math.Min(i + k, n)] == rank[Math.Min(j + k, n)];
 
-		for (; k < n; k <<= 1)
+		var comparer = Comparer<int>.Create(compare);
+
+		// k == 1
 		{
 			Array.Sort(sa, compare);
 
-			for (int i = 0; i < n; i++)
-			{
-				// 2k 文字まで等しいかどうか
-				var eq = equals(sa[i], sa[i + 1]);
-				tr[sa[i + 1]] = tr[sa[i]] + (eq ? 0 : 1);
-				if (eq) d[i + 1] = k << 1;
-			}
+			for (int i = 1; i <= n; ++i)
+				tr[sa[i]] = equals(sa[i], sa[i - 1]) ? tr[sa[i - 1]] : i;
 			tr.CopyTo(rank, 0);
 		}
-		return (sa, d);
+
+		var next = true;
+		while (next && (k <<= 1) < n)
+		{
+			next = false;
+			for (int j = n; j >= 0; --j)
+			{
+				var start = rank[sa[j]];
+				if (start == j) continue;
+				var count = j - start + 1;
+
+				// ソートが完了していない部分のみソートします。
+				Array.Sort(sa, start, count, comparer);
+
+				for (int i = start + 1; i <= j; ++i)
+				{
+					var eq = equals(sa[i], sa[i - 1]);
+					tr[sa[i]] = eq ? tr[sa[i - 1]] : i;
+					if (eq) next = true;
+				}
+				// rank の一部が早く更新されるため、while の回数が少なくなる可能性があります。
+				for (int i = start + 1; i <= j; ++i)
+					rank[sa[i]] = tr[sa[i]];
+
+				j = start;
+			}
+		}
+		return sa;
+	}
+
+	static int Last(int l, int r, Func<int, bool> f)
+	{
+		int m;
+		while (l < r) if (f(m = r - (r - l - 1) / 2)) l = m; else r = m - 1;
+		return l;
+	}
+}
+
+class RH
+{
+	string s;
+	int n;
+	long p;
+	long[] pow, pre;
+
+	public RH(string _s, long _p)
+	{
+		s = _s;
+		n = s.Length;
+		p = _p;
+
+		pow = new long[n + 1];
+		pow[0] = 1;
+		pre = new long[n + 1];
+
+		for (int i = 0; i < n; ++i)
+		{
+			pow[i + 1] = pow[i] * p;
+			pre[i + 1] = pre[i] * p + s[i];
+		}
+	}
+
+	public long Hash(int start, int count) => pre[start + count] - pre[start] * pow[count];
+	public long Hash2(int minIn, int maxEx) => pre[maxEx] - pre[minIn] * pow[maxEx - minIn];
+
+	public static long Hash(string s, long p) => Hash(s, 0, s.Length, p);
+	public static long Hash(string s, int start, int count, long p)
+	{
+		var h = 0L;
+		for (int i = 0; i < count; ++i) h = h * p + s[start + i];
+		return h;
 	}
 }
