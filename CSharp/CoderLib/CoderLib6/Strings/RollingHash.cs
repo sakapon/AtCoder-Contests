@@ -1,5 +1,8 @@
 ﻿namespace CoderLib6.Strings
 {
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/14/ALDS1_14_B
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/14/ALDS1_14_D
+	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_i
 	class RH
 	{
 		string s;
@@ -33,6 +36,15 @@
 			var h = 0L;
 			for (int i = 0; i < count; ++i) h = h * p + s[start + i];
 			return h;
+		}
+
+		public static long Pow(long b, long x)
+		{
+			for (var r = 1L; ; b *= b)
+			{
+				if ((x & 1) != 0) r *= b;
+				if ((x >>= 1) == 0) return r;
+			}
 		}
 	}
 }

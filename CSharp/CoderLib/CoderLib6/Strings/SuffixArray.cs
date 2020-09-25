@@ -3,8 +3,11 @@ using System.Linq;
 
 namespace CoderLib6.Strings
 {
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/14/ALDS1_14_D
+	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_i
 	static class SuffixArray
 	{
+		// O(n (log n)^2)
 		static int[] ManberMyers(string s)
 		{
 			var n = s.Length;
@@ -96,6 +99,22 @@ namespace CoderLib6.Strings
 				tr.CopyTo(rank, 0);
 			}
 			return sa;
+		}
+
+		// O(n)
+		static int[] Lcp(string s, int[] sa, int[] rank)
+		{
+			var n = s.Length;
+
+			// order -> count
+			var lcp = new int[n];
+			for (int i = 0; i < n; ++i)
+			{
+				var o = rank[i] - 1;
+				for (int j = sa[o] + lcp[o], i2 = i + lcp[o]; j < n && i2 < n && s[j] == s[i2]; ++j, ++i2) ++lcp[o];
+				if (lcp[o] > 1) lcp[rank[i + 1] - 1] = lcp[o] - 1;
+			}
+			return lcp;
 		}
 	}
 }
