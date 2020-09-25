@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Linq;
 
 class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		Console.WriteLine(Math.DivRem(n, 25, out n) + Math.DivRem(n, 10, out n) + Math.DivRem(n, 5, out n) + n);
 	}
 }
