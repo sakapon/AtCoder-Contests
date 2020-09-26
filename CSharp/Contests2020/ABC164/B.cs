@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Linq;
 
 class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
 		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		while (true)
+		{
+			if ((h[2] -= h[1]) <= 0) { Console.WriteLine("Yes"); return; }
+			if ((h[0] -= h[3]) <= 0) { Console.WriteLine("No"); return; }
+		}
 	}
 }
