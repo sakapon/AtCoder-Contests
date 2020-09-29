@@ -60,6 +60,9 @@ class ST
 		if (i == n2) { action(1); return; }
 		for (; i > 1; i >>= 1) if ((i & 1) != 0) action(i - 1);
 	}
+
+	public static long Chmax(ref long x, long v) => x < v ? x = v : x;
+	public static long Chmin(ref long x, long v) => x > v ? x = v : x;
 }
 
 // 範囲の最小値を求める場合。
@@ -75,7 +78,7 @@ class ST_Min : ST
 	public long Submin(int minIn, int maxEx)
 	{
 		var r = long.MaxValue;
-		ForRange(minIn, maxEx, n => r = Math.Min(r, this[n]));
+		ForRange(minIn, maxEx, n => Chmin(ref r, this[n]));
 		return r;
 	}
 }
