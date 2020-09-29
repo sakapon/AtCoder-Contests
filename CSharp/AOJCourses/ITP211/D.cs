@@ -9,28 +9,23 @@ class D
 		var r = new List<Tuple<int, string>>();
 		var h = Console.ReadLine().Split().Select(int.Parse).ToArray();
 		int n = h[0], k = h[1];
-		new Comb<int>().Find(Enumerable.Range(0, n).ToArray(), k, p => r.Add(Tuple.Create(p.Aggregate(0, (t, i) => t | (1 << i)), string.Join(" ", p))));
+		Combination(Enumerable.Range(0, n).ToArray(), k, p => r.Add(Tuple.Create(p.Aggregate(0, (t, i) => t | (1 << i)), string.Join(" ", p))));
 		Console.WriteLine(string.Join("\n", r.OrderBy(t => t.Item1).Select(t => $"{t.Item1}: {t.Item2}")));
 	}
-}
 
-class Comb<T>
-{
-	T[] v, p;
-	Action<T[]> act;
-
-	public void Find(T[] _v, int r, Action<T[]> _act)
+	static void Combination<T>(T[] values, int r, Action<T[]> action)
 	{
-		v = _v; p = new T[r]; act = _act;
-		if (p.Length > 0) Dfs(0, 0); else act(p);
-	}
+		var p = new T[r];
 
-	void Dfs(int i, int j0)
-	{
-		for (int j = j0; j < v.Length; ++j)
+		Action<int, int> Dfs = null;
+		Dfs = (i, j0) =>
 		{
-			p[i] = v[j];
-			if (i + 1 < p.Length) Dfs(i + 1, j + 1); else act(p);
-		}
+			for (int j = j0; j < values.Length; ++j)
+			{
+				p[i] = values[j];
+				if (i + 1 < r) Dfs(i + 1, j + 1); else action(p);
+			}
+		};
+		if (r > 0) Dfs(0, 0); else action(p);
 	}
 }

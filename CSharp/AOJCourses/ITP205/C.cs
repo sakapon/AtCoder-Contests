@@ -10,7 +10,7 @@ class C
 
 		int[] prev = null;
 		var end = false;
-		new Perm<int>().Find(a.OrderBy(x => x).ToArray(), n, p =>
+		Permutation(a.OrderBy(x => x).ToArray(), n, p =>
 		{
 			if (end)
 			{
@@ -27,29 +27,24 @@ class C
 			prev = (int[])p.Clone();
 		});
 	}
-}
 
-class Perm<T>
-{
-	T[] v, p;
-	bool[] u;
-	Action<T[]> act;
-
-	public void Find(T[] _v, int r, Action<T[]> _act)
+	static void Permutation<T>(T[] values, int r, Action<T[]> action)
 	{
-		v = _v; p = new T[r]; u = new bool[v.Length]; act = _act;
-		if (p.Length > 0) Dfs(0); else act(p);
-	}
+		var p = new T[r];
+		var u = new bool[values.Length];
 
-	void Dfs(int i)
-	{
-		for (int j = 0; j < v.Length; ++j)
+		Action<int> Dfs = null;
+		Dfs = i =>
 		{
-			if (u[j]) continue;
-			p[i] = v[j];
-			u[j] = true;
-			if (i + 1 < p.Length) Dfs(i + 1); else act(p);
-			u[j] = false;
-		}
+			for (int j = 0; j < values.Length; ++j)
+			{
+				if (u[j]) continue;
+				p[i] = values[j];
+				u[j] = true;
+				if (i + 1 < r) Dfs(i + 1); else action(p);
+				u[j] = false;
+			}
+		};
+		if (r > 0) Dfs(0); else action(p);
 	}
 }

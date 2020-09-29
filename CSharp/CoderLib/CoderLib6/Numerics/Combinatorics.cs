@@ -5,6 +5,8 @@ namespace CoderLib6.Numerics
 	// 列挙時に配列の内容が変更されます (同一の配列を参照)。
 	public static class Combinatorics
 	{
+		// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/5/ITP2_5_C
+		// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/5/ITP2_5_D
 		public static void Permutation<T>(T[] values, int r, Action<T[]> action)
 		{
 			var p = new T[r];
@@ -25,6 +27,7 @@ namespace CoderLib6.Numerics
 			if (r > 0) Dfs(0); else action(p);
 		}
 
+		// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/11/ITP2_11_D
 		public static void Combination<T>(T[] values, int r, Action<T[]> action)
 		{
 			var p = new T[r];
