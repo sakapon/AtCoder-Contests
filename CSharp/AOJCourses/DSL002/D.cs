@@ -1,18 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 class D
 {
+	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
+		var r = new List<long>();
+		var h = Read();
+		var n = h[0];
 
-		Console.WriteLine(string.Join(" ", a));
+		var st = new ST_RangeSet(n);
+		st.InitAllLevels(int.MaxValue);
+
+		for (int i = 0; i < h[1]; i++)
+		{
+			var q = Read();
+			if (q[0] == 0)
+				st.Set(q[1], q[2] + 1, q[3]);
+			else
+				r.Add(st[q[1]]);
+		}
+		Console.WriteLine(string.Join("\n", r));
 	}
 }

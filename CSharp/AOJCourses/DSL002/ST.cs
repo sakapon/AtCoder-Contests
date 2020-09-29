@@ -98,3 +98,44 @@ class ST_Subsum : ST
 		return r;
 	}
 }
+
+// 範囲に設定する場合。
+class ST_RangeSet : ST
+{
+	public ST_RangeSet(int n) : base(n) { }
+
+	long c = 0;
+	public void Set(int minIn, int maxEx, long v)
+	{
+		v |= ++c << 32;
+		ForRange(minIn, maxEx, n => this[n] = v);
+	}
+
+	public override long this[int i]
+	{
+		get
+		{
+			var r = 0L;
+			ForLevels(i, n => Chmax(ref r, this[n]));
+			return (int)r;
+		}
+	}
+}
+
+// 範囲に加算する場合。
+class ST_RangeAdd : ST
+{
+	public ST_RangeAdd(int n) : base(n) { }
+
+	public void Add(int minIn, int maxEx, long v) => ForRange(minIn, maxEx, n => this[n] += v);
+
+	public override long this[int i]
+	{
+		get
+		{
+			var r = 0L;
+			ForLevels(i, n => r += this[n]);
+			return r;
+		}
+	}
+}
