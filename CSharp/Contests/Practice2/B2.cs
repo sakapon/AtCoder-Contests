@@ -39,9 +39,12 @@ class BIT
 		a = new long[n2 + 1];
 	}
 
-	public long this[int i] => Subsum(i, i + 1);
+	public long this[int i]
+	{
+		get => Subsum(i) - Subsum(i - 1);
+		set => Add(i, value - this[i]);
+	}
 
-	public void Set(int i, long v) => Add(i, v - this[i]);
 	public void Add(int i, long v)
 	{
 		for (; i <= n2; i += i & -i) a[i] += v;
