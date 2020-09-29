@@ -25,7 +25,8 @@ class B2
 	}
 }
 
-// 1-indexed, 1 <= i <= n
+// 外見上は 1-indexed, 1 <= i <= n
+// 内部では 1-indexed, 1 <= i <= n2
 class BIT
 {
 	// Power of 2
@@ -38,7 +39,7 @@ class BIT
 		a = new long[n2 + 1];
 	}
 
-	public long this[int i] => Subsum(i, i + 1);
+	public long this[int i] => Subsum(i) - Subsum(i - 1);
 
 	public void Set(int i, long v) => Add(i, v - this[i]);
 	public void Add(int i, long v)

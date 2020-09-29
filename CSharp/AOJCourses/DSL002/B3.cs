@@ -25,7 +25,8 @@ class B3
 	}
 }
 
-// 1-indexed, 1 <= i <= n
+// 外見上は 1-indexed, 1 <= i <= n
+// 内部では 1-indexed, 1 <= i <= n
 class BIT3
 {
 	int n;
@@ -38,9 +39,12 @@ class BIT3
 		a = new long[n + 1];
 	}
 
-	public long this[int i] => Subsum(i, i + 1);
+	public long this[int i]
+	{
+		get { return Subsum(i) - Subsum(i - 1); }
+		set { Add(i, value - this[i]); }
+	}
 
-	public void Set(int i, long v) => Add(i, v - this[i]);
 	public void Add(int i, long v)
 	{
 		for (; i <= n; i += i & -i) a[i] += v;
