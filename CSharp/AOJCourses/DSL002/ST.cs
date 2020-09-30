@@ -61,6 +61,22 @@ class ST
 		for (; i > 1; i >>= 1) if ((i & 1) != 0) action(i - 1);
 	}
 
+	// 範囲の昇順 (再帰)
+	public void ForRangeR(int minIn, int maxEx, Action<Node> action) => ForRangeR(1, n2 >> 1, Actual(minIn), Actual(maxEx), action);
+	protected void ForRangeR(Node i, int length, Node l, Node r, Action<Node> action)
+	{
+		int nl = i.i * length, nr = nl + length;
+		if (r.i <= nl || nr <= l.i) return;
+
+		if (l.i <= nl && nr <= r.i)
+			action(i);
+		else
+		{
+			ForRangeR(i.Child0, length >> 1, l, r, action);
+			ForRangeR(i.Child1, length >> 1, l, r, action);
+		}
+	}
+
 	public static long Chmax(ref long x, long v) => x < v ? x = v : x;
 	public static long Chmin(ref long x, long v) => x > v ? x = v : x;
 }
