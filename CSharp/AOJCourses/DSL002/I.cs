@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-class F
+class I
 {
 	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
@@ -11,8 +11,7 @@ class F
 		var h = Read();
 		var n = h[0];
 
-		var st = new ST_RangeSetMin(n);
-		st.Set(0, n, int.MaxValue);
+		var st = new ST_RangeSetSum(n);
 
 		for (int i = 0; i < h[1]; i++)
 		{
@@ -20,13 +19,13 @@ class F
 			if (q[0] == 0)
 				st.Set(q[1], q[2] + 1, q[3]);
 			else
-				r.Add(st.Min(q[1], q[2] + 1));
+				r.Add(st.Sum(q[1], q[2] + 1));
 		}
 		Console.WriteLine(string.Join("\n", r));
 	}
 }
 
-class ST_RangeSetMin
+class ST_RangeSetSum
 {
 	public struct Node
 	{
@@ -44,10 +43,10 @@ class ST_RangeSetMin
 	protected int n2 = 1;
 	// original: 通常の Range Update
 	public long[] a1;
-	// shadow: 自身を含む子孫の最小値
+	// shadow: 自身を含む子孫の和
 	public long[] a2;
 
-	public ST_RangeSetMin(int n)
+	public ST_RangeSetSum(int n)
 	{
 		while (n2 < n) n2 <<= 1;
 		n2 <<= 1;
@@ -65,27 +64,28 @@ class ST_RangeSetMin
 
 		if (l.i <= nl && nr <= r.i)
 		{
-			a2[i.i] = a1[i.i] = v;
+			a1[i.i] = v;
+			a2[i.i] = v * length;
 		}
 		else
 		{
 			if (a1[i.i] != NaN)
 			{
 				a1[i.Child0.i] = a1[i.Child1.i] = a1[i.i];
-				a2[i.Child0.i] = a2[i.Child1.i] = a1[i.i];
+				a2[i.Child0.i] = a2[i.Child1.i] = a1[i.i] * (length >> 1);
 				a1[i.i] = NaN;
 			}
 			Set(i.Child0, length >> 1, l, r, v);
 			Set(i.Child1, length >> 1, l, r, v);
-			a2[i.i] = Math.Min(a2[i.Child0.i], a2[i.Child1.i]);
+			a2[i.i] = a2[i.Child0.i] + a2[i.Child1.i];
 		}
 	}
 
-	public long Min(int minIn, int maxEx) => Min(1, n2 >> 1, Actual(minIn), Actual(maxEx));
-	long Min(Node i, int length, Node l, Node r)
+	public long Sum(int minIn, int maxEx) => Sum(1, n2 >> 1, Actual(minIn), Actual(maxEx));
+	long Sum(Node i, int length, Node l, Node r)
 	{
 		int nl = i.i * length, nr = nl + length;
-		if (r.i <= nl || nr <= l.i) return long.MaxValue;
+		if (r.i <= nl || nr <= l.i) return 0;
 
 		if (l.i <= nl && nr <= r.i)
 		{
@@ -96,10 +96,10 @@ class ST_RangeSetMin
 			if (a1[i.i] != NaN)
 			{
 				a1[i.Child0.i] = a1[i.Child1.i] = a1[i.i];
-				a2[i.Child0.i] = a2[i.Child1.i] = a1[i.i];
+				a2[i.Child0.i] = a2[i.Child1.i] = a1[i.i] * (length >> 1);
 				a1[i.i] = NaN;
 			}
-			return Math.Min(Min(i.Child0, length >> 1, l, r), Min(i.Child1, length >> 1, l, r));
+			return Sum(i.Child0, length >> 1, l, r) + Sum(i.Child1, length >> 1, l, r);
 		}
 	}
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-class G
+class G2
 {
 	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
@@ -11,7 +11,7 @@ class G
 		var h = Read();
 		var n = h[0];
 
-		var st = new ST_RangeAddSum(n + 1);
+		var st = new ST_RangeAddSum2(n + 1);
 
 		for (int i = 0; i < h[1]; i++)
 		{
@@ -25,7 +25,7 @@ class G
 	}
 }
 
-class ST_RangeAddSum
+class ST_RangeAddSum2
 {
 	public struct Node
 	{
@@ -41,10 +41,10 @@ class ST_RangeAddSum
 	protected int n2 = 1;
 	// original: 通常の Range Add
 	public long[] a1;
-	// shadow: 子孫の和
+	// shadow: 自身を含む子孫の和
 	public long[] a2;
 
-	public ST_RangeAddSum(int n)
+	public ST_RangeAddSum2(int n)
 	{
 		while (n2 < n) n2 <<= 1;
 		n2 <<= 1;
@@ -83,13 +83,13 @@ class ST_RangeAddSum
 		if (l.i <= nl && nr <= r.i)
 		{
 			a1[i.i] += v;
+			a2[i.i] += v * length;
 			return length;
 		}
 		else
 		{
-			var cl = Add(i.Child0, length >> 1, l, r, v);
-			cl += Add(i.Child1, length >> 1, l, r, v);
-			a2[i.i] += v * cl;
+			var cl = Add(i.Child0, length >> 1, l, r, v) + Add(i.Child1, length >> 1, l, r, v);
+			a2[i.i] = a1[i.i] * length + a2[i.Child0.i] + a2[i.Child1.i];
 			return cl;
 		}
 	}
@@ -107,13 +107,12 @@ class ST_RangeAddSum
 
 		if (l.i <= nl && nr <= r.i)
 		{
-			action(a1[i.i] * length + a2[i.i]);
+			action(a2[i.i]);
 			return length;
 		}
 		else
 		{
-			var cl = Sum(i.Child0, length >> 1, l, r, action);
-			cl += Sum(i.Child1, length >> 1, l, r, action);
+			var cl = Sum(i.Child0, length >> 1, l, r, action) + Sum(i.Child1, length >> 1, l, r, action);
 			action(a1[i.i] * cl);
 			return cl;
 		}
