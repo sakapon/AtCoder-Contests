@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-class D2
+class E2
 {
 	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
@@ -11,8 +11,7 @@ class D2
 		var h = Read();
 		var n = h[0];
 
-		var st = new ST_RUQ(n);
-		st.Set(0, n, int.MaxValue);
+		var st = new ST_RAQ(n + 1);
 
 		for (int i = 0; i < h[1]; i++)
 		{
@@ -26,7 +25,7 @@ class D2
 	}
 }
 
-class ST_RUQ
+class ST_RAQ
 {
 	public struct Node
 	{
@@ -42,9 +41,9 @@ class ST_RUQ
 	protected int n2 = 1;
 	public long[] a;
 
-	const long e = long.MaxValue;
+	const long e = 0;
 
-	public ST_RUQ(int n)
+	public ST_RAQ(int n)
 	{
 		while (n2 < n) n2 <<= 1;
 		a = new long[n2 <<= 1];
@@ -62,14 +61,14 @@ class ST_RUQ
 
 		if (l.i <= nl && nr <= r.i)
 		{
-			a[i.i] = v;
+			a[i.i] += v;
 		}
 		else
 		{
 			if (a[i.i] != e)
 			{
-				a[i.Child0.i] = a[i.i];
-				a[i.Child1.i] = a[i.i];
+				a[i.Child0.i] += a[i.i];
+				a[i.Child1.i] += a[i.i];
 				a[i.i] = e;
 			}
 			Set(i.Child0, length >> 1, l, r, v);
@@ -91,11 +90,11 @@ class ST_RUQ
 		{
 			if (a[i.i] != e)
 			{
-				a[i.Child0.i] = a[i.i];
-				a[i.Child1.i] = a[i.i];
+				a[i.Child0.i] += a[i.i];
+				a[i.Child1.i] += a[i.i];
 				a[i.i] = e;
 			}
-			return Math.Min(Get(i.Child0, length >> 1, l, r), Get(i.Child1, length >> 1, l, r));
+			return Get(i.Child0, length >> 1, l, r) + Get(i.Child1, length >> 1, l, r);
 		}
 	}
 }
