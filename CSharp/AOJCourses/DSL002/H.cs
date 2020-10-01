@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-class F
+class H
 {
 	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
@@ -11,8 +11,7 @@ class F
 		var h = Read();
 		var n = h[0];
 
-		var st = new ST_RangeSetMin(n);
-		st.Set(0, n, int.MaxValue);
+		var st = new ST_RAMQ(n);
 
 		for (int i = 0; i < h[1]; i++)
 		{
@@ -26,7 +25,7 @@ class F
 	}
 }
 
-class ST_RangeSetMin
+class ST_RAMQ
 {
 	public struct Node
 	{
@@ -47,7 +46,7 @@ class ST_RangeSetMin
 	// shadow: 自身を含む子孫の集計
 	public long[] a2;
 
-	public ST_RangeSetMin(int n)
+	public ST_RAMQ(int n)
 	{
 		while (n2 < n) n2 <<= 1;
 		n2 <<= 1;
@@ -65,16 +64,17 @@ class ST_RangeSetMin
 
 		if (l.i <= nl && nr <= r.i)
 		{
-			a2[i.i] = a1[i.i] = v;
+			a1[i.i] += v;
+			a2[i.i] += v;
 		}
 		else
 		{
-			if (a1[i.i] != NaN)
-			{
-				a1[i.Child0.i] = a1[i.Child1.i] = a1[i.i];
-				a2[i.Child0.i] = a2[i.Child1.i] = a1[i.i];
-				a1[i.i] = NaN;
-			}
+			a1[i.Child0.i] += a1[i.i];
+			a1[i.Child1.i] += a1[i.i];
+			a2[i.Child0.i] += a1[i.i];
+			a2[i.Child1.i] += a1[i.i];
+			a1[i.i] = 0;
+
 			Set(i.Child0, length >> 1, l, r, v);
 			Set(i.Child1, length >> 1, l, r, v);
 			a2[i.i] = Math.Min(a2[i.Child0.i], a2[i.Child1.i]);
@@ -93,12 +93,12 @@ class ST_RangeSetMin
 		}
 		else
 		{
-			if (a1[i.i] != NaN)
-			{
-				a1[i.Child0.i] = a1[i.Child1.i] = a1[i.i];
-				a2[i.Child0.i] = a2[i.Child1.i] = a1[i.i];
-				a1[i.i] = NaN;
-			}
+			a1[i.Child0.i] += a1[i.i];
+			a1[i.Child1.i] += a1[i.i];
+			a2[i.Child0.i] += a1[i.i];
+			a2[i.Child1.i] += a1[i.i];
+			a1[i.i] = 0;
+
 			return Math.Min(Get(i.Child0, length >> 1, l, r), Get(i.Child1, length >> 1, l, r));
 		}
 	}
