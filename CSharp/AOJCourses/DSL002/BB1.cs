@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-class B2
+class BB1
 {
 	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
