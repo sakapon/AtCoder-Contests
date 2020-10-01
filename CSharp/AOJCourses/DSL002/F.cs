@@ -11,7 +11,7 @@ class F
 		var h = Read();
 		var n = h[0];
 
-		var st = new ST_RangeSetMin(n);
+		var st = new ST_RUMQ(n);
 		st.Set(0, n, int.MaxValue);
 
 		for (int i = 0; i < h[1]; i++)
@@ -26,7 +26,7 @@ class F
 	}
 }
 
-class ST_RangeSetMin
+class ST_RUMQ
 {
 	public struct Node
 	{
@@ -38,8 +38,6 @@ class ST_RangeSetMin
 		public Node Child1 => (i << 1) + 1;
 	}
 
-	const long NaN = long.MinValue;
-
 	// Power of 2
 	protected int n2 = 1;
 	// original: 通常の更新
@@ -47,7 +45,10 @@ class ST_RangeSetMin
 	// shadow: 自身を含む子孫の集計
 	public long[] a2;
 
-	public ST_RangeSetMin(int n)
+	const long e1 = long.MaxValue;
+	const long e2 = long.MaxValue;
+
+	public ST_RUMQ(int n)
 	{
 		while (n2 < n) n2 <<= 1;
 		n2 <<= 1;
@@ -65,15 +66,18 @@ class ST_RangeSetMin
 
 		if (l.i <= nl && nr <= r.i)
 		{
-			a2[i.i] = a1[i.i] = v;
+			a1[i.i] = v;
+			a2[i.i] = v;
 		}
 		else
 		{
-			if (a1[i.i] != NaN)
+			if (a1[i.i] != e1)
 			{
-				a1[i.Child0.i] = a1[i.Child1.i] = a1[i.i];
-				a2[i.Child0.i] = a2[i.Child1.i] = a1[i.i];
-				a1[i.i] = NaN;
+				a1[i.Child0.i] = a1[i.i];
+				a1[i.Child1.i] = a1[i.i];
+				a2[i.Child0.i] = a1[i.i];
+				a2[i.Child1.i] = a1[i.i];
+				a1[i.i] = e1;
 			}
 			Set(i.Child0, length >> 1, l, r, v);
 			Set(i.Child1, length >> 1, l, r, v);
@@ -85,7 +89,7 @@ class ST_RangeSetMin
 	long Get(Node i, int length, Node l, Node r)
 	{
 		int nl = i.i * length, nr = nl + length;
-		if (r.i <= nl || nr <= l.i) return long.MaxValue;
+		if (r.i <= nl || nr <= l.i) return e2;
 
 		if (l.i <= nl && nr <= r.i)
 		{
@@ -93,11 +97,13 @@ class ST_RangeSetMin
 		}
 		else
 		{
-			if (a1[i.i] != NaN)
+			if (a1[i.i] != e1)
 			{
-				a1[i.Child0.i] = a1[i.Child1.i] = a1[i.i];
-				a2[i.Child0.i] = a2[i.Child1.i] = a1[i.i];
-				a1[i.i] = NaN;
+				a1[i.Child0.i] = a1[i.i];
+				a1[i.Child1.i] = a1[i.i];
+				a2[i.Child0.i] = a1[i.i];
+				a2[i.Child1.i] = a1[i.i];
+				a1[i.i] = e1;
 			}
 			return Math.Min(Get(i.Child0, length >> 1, l, r), Get(i.Child1, length >> 1, l, r));
 		}

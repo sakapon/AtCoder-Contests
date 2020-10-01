@@ -11,7 +11,7 @@ class I
 		var h = Read();
 		var n = h[0];
 
-		var st = new ST_RangeSetSum(n);
+		var st = new ST_RUSQ(n);
 
 		for (int i = 0; i < h[1]; i++)
 		{
@@ -19,13 +19,13 @@ class I
 			if (q[0] == 0)
 				st.Set(q[1], q[2] + 1, q[3]);
 			else
-				r.Add(st.Sum(q[1], q[2] + 1));
+				r.Add(st.Get(q[1], q[2] + 1));
 		}
 		Console.WriteLine(string.Join("\n", r));
 	}
 }
 
-class ST_RangeSetSum
+class ST_RUSQ
 {
 	public struct Node
 	{
@@ -37,16 +37,17 @@ class ST_RangeSetSum
 		public Node Child1 => (i << 1) + 1;
 	}
 
-	const long NaN = long.MinValue;
-
 	// Power of 2
 	protected int n2 = 1;
-	// original: 通常の Range Update
+	// original: 通常の更新
 	public long[] a1;
-	// shadow: 自身を含む子孫の和
+	// shadow: 自身を含む子孫の集計
 	public long[] a2;
 
-	public ST_RangeSetSum(int n)
+	const long e1 = long.MaxValue;
+	const long e2 = 0;
+
+	public ST_RUSQ(int n)
 	{
 		while (n2 < n) n2 <<= 1;
 		n2 <<= 1;
@@ -69,11 +70,13 @@ class ST_RangeSetSum
 		}
 		else
 		{
-			if (a1[i.i] != NaN)
+			if (a1[i.i] != e1)
 			{
-				a1[i.Child0.i] = a1[i.Child1.i] = a1[i.i];
-				a2[i.Child0.i] = a2[i.Child1.i] = a1[i.i] * (length >> 1);
-				a1[i.i] = NaN;
+				a1[i.Child0.i] = a1[i.i];
+				a1[i.Child1.i] = a1[i.i];
+				a2[i.Child0.i] = a1[i.i] * (length >> 1);
+				a2[i.Child1.i] = a1[i.i] * (length >> 1);
+				a1[i.i] = e1;
 			}
 			Set(i.Child0, length >> 1, l, r, v);
 			Set(i.Child1, length >> 1, l, r, v);
@@ -81,11 +84,11 @@ class ST_RangeSetSum
 		}
 	}
 
-	public long Sum(int minIn, int maxEx) => Sum(1, n2 >> 1, Actual(minIn), Actual(maxEx));
-	long Sum(Node i, int length, Node l, Node r)
+	public long Get(int minIn, int maxEx) => Get(1, n2 >> 1, Actual(minIn), Actual(maxEx));
+	long Get(Node i, int length, Node l, Node r)
 	{
 		int nl = i.i * length, nr = nl + length;
-		if (r.i <= nl || nr <= l.i) return 0;
+		if (r.i <= nl || nr <= l.i) return e2;
 
 		if (l.i <= nl && nr <= r.i)
 		{
@@ -93,13 +96,15 @@ class ST_RangeSetSum
 		}
 		else
 		{
-			if (a1[i.i] != NaN)
+			if (a1[i.i] != e1)
 			{
-				a1[i.Child0.i] = a1[i.Child1.i] = a1[i.i];
-				a2[i.Child0.i] = a2[i.Child1.i] = a1[i.i] * (length >> 1);
-				a1[i.i] = NaN;
+				a1[i.Child0.i] = a1[i.i];
+				a1[i.Child1.i] = a1[i.i];
+				a2[i.Child0.i] = a1[i.i] * (length >> 1);
+				a2[i.Child1.i] = a1[i.i] * (length >> 1);
+				a1[i.i] = e1;
 			}
-			return Sum(i.Child0, length >> 1, l, r) + Sum(i.Child1, length >> 1, l, r);
+			return Get(i.Child0, length >> 1, l, r) + Get(i.Child1, length >> 1, l, r);
 		}
 	}
 }
