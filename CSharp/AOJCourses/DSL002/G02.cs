@@ -57,6 +57,7 @@ class ST_RASQ2
 
 	protected Node Actual(int i) => (n2 >> 1) + i;
 
+	public void Set(int i, long v) => Set(1, n2 >> 1, Actual(i), Actual(i + 1), v);
 	public void Set(int minIn, int maxEx, long v) => Set(1, n2 >> 1, Actual(minIn), Actual(maxEx), v);
 	void Set(Node i, int length, Node l, Node r, long v)
 	{
@@ -84,6 +85,7 @@ class ST_RASQ2
 		}
 	}
 
+	public long Get(int i) => Get(1, n2 >> 1, Actual(i), Actual(i + 1));
 	public long Get(int minIn, int maxEx) => Get(1, n2 >> 1, Actual(minIn), Actual(maxEx));
 	long Get(Node i, int length, Node l, Node r)
 	{
