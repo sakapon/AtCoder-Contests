@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-class B2
+class J2
 {
 	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
@@ -11,23 +11,26 @@ class B2
 		var n = h[0];
 		var a = Read();
 
-		var st = new ST_RSQ(n);
+		var st = new ST_RMQ(n + 2);
 		for (int i = 0; i < n; i++)
-			st.Set(i, a[i]);
+			st.Set(i + 1, a[i]);
+		st.Set(n + 1, 1 << 30);
 
-		for (int i = 0; i < h[1]; i++)
+		for (int k = 0; k < h[1]; k++)
 		{
 			var q = Read();
-			if (q[0] == 0)
+			if (q[0] == 1)
 				st.Set(q[1], q[2]);
+			else if (q[0] == 2)
+				Console.WriteLine(st.Get(q[1], q[2] + 1));
 			else
-				Console.WriteLine(st.Get(q[1], q[2]));
+				Console.WriteLine(st.First(q[1], n + 2, q[2]));
 		}
 		Console.Out.Flush();
 	}
 }
 
-class ST_RSQ
+class ST_RMQ
 {
 	public struct Node
 	{
@@ -43,9 +46,9 @@ class ST_RSQ
 	protected int n2 = 1;
 	public long[] a;
 
-	const long e = 0;
+	const long e = long.MinValue;
 
-	public ST_RSQ(int n)
+	public ST_RMQ(int n)
 	{
 		while (n2 < n) n2 <<= 1;
 		a = new long[n2 <<= 1];
@@ -64,13 +67,13 @@ class ST_RSQ
 
 		if (l.i <= nl && nr <= r.i)
 		{
-			a[i.i] += v;
+			a[i.i] = v;
 		}
 		else
 		{
 			Set(i.Child0, length >> 1, l, r, v);
 			Set(i.Child1, length >> 1, l, r, v);
-			a[i.i] = a[i.Child0.i] + a[i.Child1.i];
+			a[i.i] = Math.Max(a[i.Child0.i], a[i.Child1.i]);
 		}
 	}
 
@@ -87,7 +90,29 @@ class ST_RSQ
 		}
 		else
 		{
-			return Get(i.Child0, length >> 1, l, r) + Get(i.Child1, length >> 1, l, r);
+			return Math.Max(Get(i.Child0, length >> 1, l, r), Get(i.Child1, length >> 1, l, r));
+		}
+	}
+
+	public int First(int minIn, int maxEx, long v) => First(1, n2 >> 1, Actual(minIn), Actual(maxEx), v);
+	int First(Node i, int length, Node l, Node r, long v)
+	{
+		int nl = i.i * length, nr = nl + length;
+		if (r.i <= nl || nr <= l.i) return n2;
+
+		if (l.i <= nl && nr <= r.i)
+		{
+			if (a[i.i] < v) return n2;
+			if (length == 1) return i.i - (n2 >> 1);
+			var li = First(i.Child0, length >> 1, l, r, v);
+			if (li < n2) return li;
+			return First(i.Child1, length >> 1, l, r, v);
+		}
+		else
+		{
+			var li = First(i.Child0, length >> 1, l, r, v);
+			if (li < n2) return li;
+			return First(i.Child1, length >> 1, l, r, v);
 		}
 	}
 }
