@@ -1,16 +1,22 @@
 ﻿using System;
-using System.Linq;
 
 class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var s = Console.ReadLine().Split()[1];
+		var n = s.Length;
 
-		Console.WriteLine(string.Join(" ", h));
+		var r = 0L;
+		for (int i = 0; i < n; i++)
+		{
+			var c = new int[128];
+			for (int j = i; j < n; j++)
+			{
+				c[s[j]]++;
+				if (c['A'] == c['T'] && c['C'] == c['G']) r++;
+			}
+		}
+		Console.WriteLine(r);
 	}
 }
