@@ -19,5 +19,27 @@ namespace CoderLibTest.Collections
 			Assert.AreEqual(14, seq.Sum(1, 5));
 			Assert.AreEqual(15, seq.Sum(0, 5));
 		}
+
+		[TestMethod]
+		public void SlideMin()
+		{
+			CollectionAssert.AreEqual(new[] { 5, 6, 7 }, Seq.SlideMin(new[] { 5, 6, 7, 8, 9 }, 3));
+			CollectionAssert.AreEqual(new[] { 7, 6, 5 }, Seq.SlideMin(new[] { 9, 8, 7, 6, 5 }, 3));
+			CollectionAssert.AreEqual(new[] { 6, 5, 5 }, Seq.SlideMin(new[] { 7, 6, 8, 5, 9 }, 3));
+			CollectionAssert.AreEqual(new[] { 6, 6, 5 }, Seq.SlideMin(new[] { 7, 8, 6, 9, 5 }, 3));
+			CollectionAssert.AreEqual(new[] { 5, 5, 5 }, Seq.SlideMin(new[] { 9, 7, 5, 6, 8 }, 3));
+			CollectionAssert.AreEqual(new[] { 6, 7, 5 }, Seq.SlideMin(new[] { 6, 8, 9, 7, 5 }, 3));
+		}
+
+		[TestMethod]
+		public void SlideMax()
+		{
+			CollectionAssert.AreEqual(new[] { 7, 8, 9 }, Seq.SlideMax(new[] { 5, 6, 7, 8, 9 }, 3));
+			CollectionAssert.AreEqual(new[] { 9, 8, 7 }, Seq.SlideMax(new[] { 9, 8, 7, 6, 5 }, 3));
+			CollectionAssert.AreEqual(new[] { 8, 8, 9 }, Seq.SlideMax(new[] { 7, 6, 8, 5, 9 }, 3));
+			CollectionAssert.AreEqual(new[] { 8, 9, 9 }, Seq.SlideMax(new[] { 7, 8, 6, 9, 5 }, 3));
+			CollectionAssert.AreEqual(new[] { 9, 7, 8 }, Seq.SlideMax(new[] { 9, 7, 5, 6, 8 }, 3));
+			CollectionAssert.AreEqual(new[] { 9, 9, 9 }, Seq.SlideMax(new[] { 6, 8, 9, 7, 5 }, 3));
+		}
 	}
 }
