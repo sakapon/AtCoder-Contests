@@ -1,16 +1,26 @@
 ﻿using System;
-using System.Linq;
 
 class C
 {
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var h = Read();
+		int n = h[0];
+		var a = Read();
+		var seq = new Seq(a);
+		var q = ReadL();
 
-		Console.WriteLine(string.Join(" ", h));
+		foreach (var x in q)
+		{
+			var c = 0L;
+			for (int l = 0, r = 0; l < n; l++)
+			{
+				while (r < n && seq.Sum(l, r + 1) <= x) r++;
+				c += r - l;
+			}
+			Console.WriteLine(c);
+		}
 	}
 }
