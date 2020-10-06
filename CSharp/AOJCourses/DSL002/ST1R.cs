@@ -77,40 +77,40 @@ class STR<T>
 {
 	public struct Node
 	{
-		public int i;
-		public static implicit operator Node(int i) => new Node { i = i };
+		public int i, Length;
+		public Node(int _i, int length) { i = _i; Length = length; }
+		public override string ToString() => $"{i}";
 
-		public Node Parent => i >> 1;
-		public Node Child0 => i << 1;
-		public Node Child1 => (i << 1) + 1;
+		public Node Parent => new Node(i >> 1, Length << 1);
+		public Node Child0 => new Node(i << 1, Length >> 1);
+		public Node Child1 => new Node((i << 1) + 1, Length >> 1);
+		public Node LastLeft => new Node(i * Length, 1);
+		public Node LastRight => new Node((i + 1) * Length, 1);
 	}
 
 	// Power of 2
 	public int n2 = 1;
 	public T[] a;
-	public int[] length;
+	public Node Root;
 
 	// (newOp, oldOp) => product
 	public Func<T, T, T> Multiply;
 	public T id;
+	Func<T, T, bool> TEquals = System.Collections.Generic.EqualityComparer<T>.Default.Equals;
 
 	// 全ノードを、恒等変換を表す値で初期化します。
 	public STR(int n, Func<T, T, T> multiply, T _id)
 	{
 		while (n2 < n) n2 <<= 1;
 		a = new T[n2 <<= 1];
-
-		length = new int[n2];
-		for (int f = 1, l = n2 >> 1; f < n2; f <<= 1, l >>= 1)
-			for (int i = 0; i < f; i++)
-				length[f + i] = l;
+		Root = new Node(1, n2 >> 1);
 
 		Multiply = multiply;
 		id = _id;
-		if (!Equals(id, default(T))) Init();
+		if (!TEquals(id, default(T))) Init();
 	}
 
-	public Node Actual(int i) => (n2 >> 1) + i;
+	public Node Actual(int i) => new Node((n2 >> 1) + i, 1);
 	public T this[Node n]
 	{
 		get { return a[n.i]; }
@@ -120,15 +120,15 @@ class STR<T>
 	public void Init() { for (int i = 1; i < n2; ++i) a[i] = id; }
 
 	// Top-down
-	public void Set(int lIn, int rEx, T v)
+	public void Set(int l_in, int r_ex, T v)
 	{
-		int al = Actual(lIn).i, ar = Actual(rEx).i;
+		int al = Actual(l_in).i, ar = Actual(r_ex).i;
 
 		Action<Node> Dfs = null;
 		Dfs = n =>
 		{
-			var nl = n.i * length[n.i];
-			var nr = nl + length[n.i];
+			var nl = n.LastLeft.i;
+			var nr = n.LastRight.i;
 
 			if (al <= nl && nr <= ar)
 			{
@@ -137,27 +137,33 @@ class STR<T>
 			}
 			else
 			{
-				this[n.Child0] = Multiply(this[n], this[n.Child0]);
-				this[n.Child1] = Multiply(this[n], this[n.Child1]);
-				this[n] = id;
+				if (!TEquals(this[n], id))
+				{
+					this[n.Child0] = Multiply(this[n], this[n.Child0]);
+					this[n.Child1] = Multiply(this[n], this[n.Child1]);
+					this[n] = id;
+				}
 
 				var nm = (nl + nr) >> 1;
 				if (al < nm && nl < ar) Dfs(n.Child0);
 				if (al < nr && nm < ar) Dfs(n.Child1);
 			}
 		};
-		Dfs(1);
+		Dfs(Root);
 	}
 
 	// Top-down
 	public T Get(int i)
 	{
 		var ai = Actual(i).i;
-		for (Node n = 1; n.i < ai; n = ai < n.Child1.i * length[n.Child1.i] ? n.Child0 : n.Child1)
+		for (var n = Root; n.i < ai; n = ai < n.Child1.LastLeft.i ? n.Child0 : n.Child1)
 		{
-			this[n.Child0] = Multiply(this[n], this[n.Child0]);
-			this[n.Child1] = Multiply(this[n], this[n.Child1]);
-			this[n] = id;
+			if (!TEquals(this[n], id))
+			{
+				this[n.Child0] = Multiply(this[n], this[n.Child0]);
+				this[n.Child1] = Multiply(this[n], this[n.Child1]);
+				this[n] = id;
+			}
 		}
 		return a[ai];
 	}
