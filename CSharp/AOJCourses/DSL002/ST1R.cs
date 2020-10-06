@@ -122,13 +122,13 @@ class STR<T>
 	// Top-down
 	public void Set(int l_in, int r_ex, T v)
 	{
-		int al = Actual(l_in).i, ar = Actual(r_ex).i;
+		int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
 
 		Action<Node> Dfs = null;
 		Dfs = n =>
 		{
 			var nl = n.LastLeft.i;
-			var nr = n.LastRight.i;
+			var nr = nl + n.Length;
 
 			if (al <= nl && nr <= ar)
 			{
@@ -137,16 +137,17 @@ class STR<T>
 			}
 			else
 			{
+				Node c0 = n.Child0, c1 = n.Child1;
 				if (!TEquals(this[n], id))
 				{
-					this[n.Child0] = Multiply(this[n], this[n.Child0]);
-					this[n.Child1] = Multiply(this[n], this[n.Child1]);
+					this[c0] = Multiply(this[n], this[c0]);
+					this[c1] = Multiply(this[n], this[c1]);
 					this[n] = id;
 				}
 
 				var nm = (nl + nr) >> 1;
-				if (al < nm && nl < ar) Dfs(n.Child0);
-				if (al < nr && nm < ar) Dfs(n.Child1);
+				if (al < nm && nl < ar) Dfs(c0);
+				if (al < nr && nm < ar) Dfs(c1);
 			}
 		};
 		Dfs(Root);
@@ -155,15 +156,17 @@ class STR<T>
 	// Top-down
 	public T Get(int i)
 	{
-		var ai = Actual(i).i;
-		for (var n = Root; n.i < ai; n = ai < n.Child1.LastLeft.i ? n.Child0 : n.Child1)
+		var ai = (n2 >> 1) + i;
+		for (var n = Root; n.i < ai;)
 		{
+			Node c0 = n.Child0, c1 = n.Child1;
 			if (!TEquals(this[n], id))
 			{
-				this[n.Child0] = Multiply(this[n], this[n.Child0]);
-				this[n.Child1] = Multiply(this[n], this[n.Child1]);
+				this[c0] = Multiply(this[n], this[c0]);
+				this[c1] = Multiply(this[n], this[c1]);
 				this[n] = id;
 			}
+			n = ai < c1.LastLeft.i ? c0 : c1;
 		}
 		return a[ai];
 	}
