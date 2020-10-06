@@ -75,17 +75,17 @@ class ST1<T>
 // T は作用素を表します。
 class STR<T>
 {
-	public struct Node
+	public struct STNode
 	{
 		public int i;
-		public static implicit operator Node(int i) => new Node { i = i };
+		public static implicit operator STNode(int i) => new STNode { i = i };
 		public override string ToString() => $"{i}";
 
-		public Node Parent => i >> 1;
-		public Node Child0 => i << 1;
-		public Node Child1 => (i << 1) + 1;
-		public Node LastLeft(int length) => i * length;
-		public Node LastRight(int length) => (i + 1) * length;
+		public STNode Parent => i >> 1;
+		public STNode Child0 => i << 1;
+		public STNode Child1 => (i << 1) + 1;
+		public STNode LastLeft(int length) => i * length;
+		public STNode LastRight(int length) => (i + 1) * length;
 	}
 
 	// Power of 2
@@ -108,8 +108,8 @@ class STR<T>
 		if (!TEquals(id, default(T))) Init();
 	}
 
-	public Node Actual(int i) => (n2 >> 1) + i;
-	public T this[Node n]
+	public STNode Actual(int i) => (n2 >> 1) + i;
+	public T this[STNode n]
 	{
 		get { return a[n.i]; }
 		set { a[n.i] = value; }
@@ -117,10 +117,10 @@ class STR<T>
 
 	public void Init() { for (int i = 1; i < n2; ++i) a[i] = id; }
 
-	void PushDown(Node n)
+	void PushDown(STNode n)
 	{
 		if (TEquals(a[n.i], id)) return;
-		Node c0 = n.Child0, c1 = n.Child1;
+		STNode c0 = n.Child0, c1 = n.Child1;
 		a[c0.i] = Multiply(a[n.i], a[c0.i]);
 		a[c1.i] = Multiply(a[n.i], a[c1.i]);
 		a[n.i] = id;
@@ -131,7 +131,7 @@ class STR<T>
 	{
 		int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
 
-		Action<Node, int> Dfs = null;
+		Action<STNode, int> Dfs = null;
 		Dfs = (n, length) =>
 		{
 			var nl = n.i * length;
@@ -158,7 +158,7 @@ class STR<T>
 	{
 		var ai = (n2 >> 1) + i;
 		var length = n2 >> 1;
-		for (Node n = 1; n.i < ai; n = ai < n.i * length + (length >> 1) ? n.Child0 : n.Child1, length >>= 1)
+		for (STNode n = 1; n.i < ai; n = ai < n.i * length + (length >> 1) ? n.Child0 : n.Child1, length >>= 1)
 			PushDown(n);
 		return a[ai];
 	}
