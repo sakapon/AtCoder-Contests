@@ -77,21 +77,20 @@ class STR<T>
 {
 	public struct Node
 	{
-		public int i, Length;
-		public Node(int _i, int length) { i = _i; Length = length; }
+		public int i;
+		public static implicit operator Node(int i) => new Node { i = i };
 		public override string ToString() => $"{i}";
 
-		public Node Parent => new Node(i >> 1, Length << 1);
-		public Node Child0 => new Node(i << 1, Length >> 1);
-		public Node Child1 => new Node((i << 1) + 1, Length >> 1);
-		public Node LastLeft => new Node(i * Length, 1);
-		public Node LastRight => new Node((i + 1) * Length, 1);
+		public Node Parent => i >> 1;
+		public Node Child0 => i << 1;
+		public Node Child1 => (i << 1) + 1;
+		public Node LastLeft(int length) => i * length;
+		public Node LastRight(int length) => (i + 1) * length;
 	}
 
 	// Power of 2
 	public int n2 = 1;
 	public T[] a;
-	public Node Root;
 
 	// (newOp, oldOp) => product
 	public Func<T, T, T> Multiply;
@@ -103,14 +102,13 @@ class STR<T>
 	{
 		while (n2 < n) n2 <<= 1;
 		a = new T[n2 <<= 1];
-		Root = new Node(1, n2 >> 1);
 
 		Multiply = multiply;
 		id = _id;
 		if (!TEquals(id, default(T))) Init();
 	}
 
-	public Node Actual(int i) => new Node((n2 >> 1) + i, 1);
+	public Node Actual(int i) => (n2 >> 1) + i;
 	public T this[Node n]
 	{
 		get { return a[n.i]; }
@@ -119,55 +117,49 @@ class STR<T>
 
 	public void Init() { for (int i = 1; i < n2; ++i) a[i] = id; }
 
+	void PushDown(Node n)
+	{
+		if (TEquals(a[n.i], id)) return;
+		Node c0 = n.Child0, c1 = n.Child1;
+		a[c0.i] = Multiply(a[n.i], a[c0.i]);
+		a[c1.i] = Multiply(a[n.i], a[c1.i]);
+		a[n.i] = id;
+	}
+
 	// Top-down
 	public void Set(int l_in, int r_ex, T v)
 	{
 		int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
 
-		Action<Node> Dfs = null;
-		Dfs = n =>
+		Action<Node, int> Dfs = null;
+		Dfs = (n, length) =>
 		{
-			var nl = n.LastLeft.i;
-			var nr = nl + n.Length;
+			var nl = n.i * length;
+			var nr = nl + length;
 
 			if (al <= nl && nr <= ar)
 			{
 				// 対象のノード
-				this[n] = Multiply(v, this[n]);
+				a[n.i] = Multiply(v, a[n.i]);
 			}
 			else
 			{
-				Node c0 = n.Child0, c1 = n.Child1;
-				if (!TEquals(this[n], id))
-				{
-					this[c0] = Multiply(this[n], this[c0]);
-					this[c1] = Multiply(this[n], this[c1]);
-					this[n] = id;
-				}
-
+				PushDown(n);
 				var nm = (nl + nr) >> 1;
-				if (al < nm && nl < ar) Dfs(c0);
-				if (al < nr && nm < ar) Dfs(c1);
+				if (al < nm && nl < ar) Dfs(n.Child0, length >> 1);
+				if (al < nr && nm < ar) Dfs(n.Child1, length >> 1);
 			}
 		};
-		Dfs(Root);
+		Dfs(1, n2 >> 1);
 	}
 
 	// Top-down
 	public T Get(int i)
 	{
 		var ai = (n2 >> 1) + i;
-		for (var n = Root; n.i < ai;)
-		{
-			Node c0 = n.Child0, c1 = n.Child1;
-			if (!TEquals(this[n], id))
-			{
-				this[c0] = Multiply(this[n], this[c0]);
-				this[c1] = Multiply(this[n], this[c1]);
-				this[n] = id;
-			}
-			n = ai < c1.LastLeft.i ? c0 : c1;
-		}
+		var length = n2 >> 1;
+		for (Node n = 1; n.i < ai; n = ai < n.i * length + (length >> 1) ? n.Child0 : n.Child1, length >>= 1)
+			PushDown(n);
 		return a[ai];
 	}
 }
