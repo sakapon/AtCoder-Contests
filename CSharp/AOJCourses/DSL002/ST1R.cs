@@ -4,69 +4,69 @@
 // T は値を表します。
 class ST1<T>
 {
-	public struct Node
+	public struct STNode
 	{
 		public int i;
-		public static implicit operator Node(int i) => new Node { i = i };
+		public static implicit operator STNode(int i) => new STNode { i = i };
+		public override string ToString() => $"{i}";
 
-		public Node Parent => i >> 1;
-		public Node Child0 => i << 1;
-		public Node Child1 => (i << 1) + 1;
+		public STNode Parent => i >> 1;
+		public STNode Child0 => i << 1;
+		public STNode Child1 => (i << 1) + 1;
+		public STNode LastLeft(int length) => i * length;
+		public STNode LastRight(int length) => (i + 1) * length;
 	}
 
 	// Power of 2
 	public int n2 = 1;
 	public T[] a;
 
-	public ST1(int n)
+	public Func<T, T, T> Union;
+	public T v0;
+
+	// 全ノードを、零元を表す値で初期化します (零元の Union もまた零元)。
+	public ST1(int n, Func<T, T, T> union, T _v0)
 	{
 		while (n2 < n) n2 <<= 1;
 		a = new T[n2 <<= 1];
+
+		Union = union;
+		v0 = _v0;
+		if (!Equals(v0, default(T))) Init();
 	}
 
-	public Node Actual(int i) => (n2 >> 1) + i;
-	public T this[Node n]
+	public STNode Actual(int i) => (n2 >> 1) + i;
+	public T this[STNode n]
 	{
 		get { return a[n.i]; }
 		set { a[n.i] = value; }
 	}
 	public T this[int i] => this[Actual(i)];
 
-	// Bottom-up
-	public void Init(T[] vs, T other, Func<T, T, T> union)
-	{
-		for (int i = 0; i < vs.Length; ++i)
-			a[(n2 >> 1) + i] = vs[i];
-		for (int i = (n2 >> 1) + vs.Length; i < n2; ++i)
-			a[i] = other;
-
-		for (int i = (n2 >> 1) - 1; i > 0; --i)
-		{
-			Node n = i;
-			this[n] = union(this[n.Child0], this[n.Child1]);
-		}
-	}
+	public void Init() { for (int i = 1; i < n2; ++i) a[i] = v0; }
 
 	// Bottom-up
-	public void Set(int i, T v, Func<T, T, T> union)
+	public void Set(int i, T v)
 	{
 		var n = Actual(i);
 		this[n] = v;
-		while ((n = n.Parent).i > 0) this[n] = union(this[n.Child0], this[n.Child1]);
+		while ((n = n.Parent).i > 0) this[n] = Union(this[n.Child0], this[n.Child1]);
 	}
 
 	// 範囲の昇順
-	public T Get(int minIn, int maxEx, T v0, Func<T, T, T> union)
+	public T Get(int l_in, int r_ex)
 	{
-		int l = (n2 >> 1) + minIn, r = (n2 >> 1) + maxEx;
+		int l = (n2 >> 1) + l_in, r = (n2 >> 1) + r_ex;
+
+		var v = v0;
 		while (l < r)
 		{
 			var length = l & -l;
 			while (l + length > r) length >>= 1;
-			v0 = union(v0, a[l / length]);
+			v = Union(v, a[l / length]);
 			l += length;
 		}
-		return v0;
+		return v;
 	}
 }
 
