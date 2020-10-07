@@ -2,6 +2,9 @@
 {
 	// 外見上は 1-indexed, 1 <= i <= n
 	// 内部では 1-indexed, 1 <= i <= n2
+	// RSQ として利用します。
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/2/DSL_2_B
+	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_b
 	class BIT
 	{
 		// Power of 2

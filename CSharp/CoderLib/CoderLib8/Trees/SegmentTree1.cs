@@ -4,6 +4,13 @@ namespace CoderLib8.Trees
 {
 	// 一点更新・範囲取得
 	// T は値を表します。
+	// 外見上は 0-indexed, 0 <= i < n
+	// 内部では 1-indexed, 1 <= i < n2
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/5/ALDS1_5_D
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/2/DSL_2_A
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/2/DSL_2_B
+	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_b
+	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_j
 	class ST1<T>
 	{
 		public struct STNode

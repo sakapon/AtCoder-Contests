@@ -5,6 +5,11 @@ namespace CoderLib8.Trees
 	// 範囲更新・一点取得
 	// ST1 の双対となる概念です。
 	// T は作用素を表します。
+	// 外見上は 0-indexed, 0 <= i < n
+	// 内部では 1-indexed, 1 <= i < n2
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/2/DSL_2_D
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/2/DSL_2_E
+	// Test: https://atcoder.jp/contests/abl/tasks/abl_d
 	class STR<T>
 	{
 		public struct STNode
