@@ -40,6 +40,8 @@ namespace CoderLib8.Trees
 			if (!TEquals(id, default(T))) Init();
 		}
 
+		public void Init() { for (int i = 1; i < n2; ++i) a[i] = id; }
+
 		public STNode Actual(int i) => (n2 >> 1) + i;
 		public int Original(STNode n) => n.i - (n2 >> 1);
 		public T this[STNode n]
@@ -47,8 +49,6 @@ namespace CoderLib8.Trees
 			get { return a[n.i]; }
 			set { a[n.i] = value; }
 		}
-
-		public void Init() { for (int i = 1; i < n2; ++i) a[i] = id; }
 
 		void PushDown(STNode n)
 		{

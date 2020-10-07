@@ -37,6 +37,8 @@ namespace CoderLib8.Trees
 			if (!Equals(v0, default(T))) Init();
 		}
 
+		public void Init() { for (int i = 1; i < n2; ++i) a[i] = v0; }
+
 		public STNode Actual(int i) => (n2 >> 1) + i;
 		public int Original(STNode n) => n.i - (n2 >> 1);
 		public T this[STNode n]
@@ -45,8 +47,6 @@ namespace CoderLib8.Trees
 			set { a[n.i] = value; }
 		}
 		public T this[int i] => a[(n2 >> 1) + i];
-
-		public void Init() { for (int i = 1; i < n2; ++i) a[i] = v0; }
 
 		// Bottom-up
 		public void Set(int i, T v)

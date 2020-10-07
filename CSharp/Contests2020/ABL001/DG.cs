@@ -11,18 +11,13 @@ class DG
 		var a = new int[n].Select(_ => int.Parse(Console.ReadLine())).ToArray();
 
 		var kM = 300000;
-		var r = 0;
 		var st = new STR<int>(kM + 1, Math.Max, 0);
 
 		for (int i = 0; i < n; i++)
 			st.Set(Math.Max(0, a[i] - k), Math.Min(kM + 1, a[i] + k + 1), st.Get(a[i]) + 1);
-		for (int x = 0; x <= kM; x++)
-			Chmax(ref r, st.Get(x));
 
-		Console.WriteLine(r);
+		Console.WriteLine(Enumerable.Range(0, kM + 1).Max(st.Get));
 	}
-
-	static int Chmax(ref int x, int v) => x < v ? x = v : x;
 }
 
 class STR<T>
@@ -60,6 +55,8 @@ class STR<T>
 		if (!TEquals(id, default(T))) Init();
 	}
 
+	public void Init() { for (int i = 1; i < n2; ++i) a[i] = id; }
+
 	public STNode Actual(int i) => (n2 >> 1) + i;
 	public int Original(STNode n) => n.i - (n2 >> 1);
 	public T this[STNode n]
@@ -67,8 +64,6 @@ class STR<T>
 		get { return a[n.i]; }
 		set { a[n.i] = value; }
 	}
-
-	public void Init() { for (int i = 1; i < n2; ++i) a[i] = id; }
 
 	void PushDown(STNode n)
 	{
