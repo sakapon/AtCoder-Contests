@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-class DT
+class DG
 {
 	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
@@ -61,6 +61,7 @@ class STR<T>
 	}
 
 	public STNode Actual(int i) => (n2 >> 1) + i;
+	public int Original(STNode n) => n.i - (n2 >> 1);
 	public T this[STNode n]
 	{
 		get { return a[n.i]; }
@@ -82,9 +83,9 @@ class STR<T>
 	public void Set(int l_in, int r_ex, T v)
 	{
 		int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
+		Dfs(1, n2 >> 1);
 
-		Action<STNode, int> Dfs = null;
-		Dfs = (n, length) =>
+		void Dfs(STNode n, int length)
 		{
 			var nl = n.i * length;
 			var nr = nl + length;
@@ -101,8 +102,7 @@ class STR<T>
 				if (al < nm && nl < ar) Dfs(n.Child0, length >> 1);
 				if (al < nr && nm < ar) Dfs(n.Child1, length >> 1);
 			}
-		};
-		Dfs(1, n2 >> 1);
+		}
 	}
 
 	// Top-down
