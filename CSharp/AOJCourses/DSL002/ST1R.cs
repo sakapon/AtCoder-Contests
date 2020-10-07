@@ -41,7 +41,7 @@ class ST1<T>
 		get { return a[n.i]; }
 		set { a[n.i] = value; }
 	}
-	public T this[int i] => this[Actual(i)];
+	public T this[int i] => a[(n2 >> 1) + i];
 
 	public void Init() { for (int i = 1; i < n2; ++i) a[i] = v0; }
 
@@ -49,8 +49,8 @@ class ST1<T>
 	public void Set(int i, T v)
 	{
 		var n = Actual(i);
-		this[n] = v;
-		while ((n = n.Parent).i > 0) this[n] = Union(this[n.Child0], this[n.Child1]);
+		a[n.i] = v;
+		while ((n = n.Parent).i > 0) a[n.i] = Union(a[n.Child0.i], a[n.Child1.i]);
 	}
 
 	// 範囲の昇順
@@ -64,6 +64,23 @@ class ST1<T>
 			var length = l & -l;
 			while (l + length > r) length >>= 1;
 			v = Union(v, a[l / length]);
+			l += length;
+		}
+		return v;
+	}
+
+	// 範囲の昇順
+	// (previous, node, length) => result
+	public TV Aggregate<TV>(int l_in, int r_ex, TV v0, Func<TV, STNode, int, TV> func)
+	{
+		int l = (n2 >> 1) + l_in, r = (n2 >> 1) + r_ex;
+
+		var v = v0;
+		while (l < r)
+		{
+			var length = l & -l;
+			while (l + length > r) length >>= 1;
+			v = func(v, l / length, length);
 			l += length;
 		}
 		return v;
