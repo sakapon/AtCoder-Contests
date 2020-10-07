@@ -10,10 +10,9 @@ class JG
 		var n = h[0];
 		var a = Read();
 
-		var st = new ST1<int>(n + 2, Math.Max, 0);
+		var st = new ST1<int>(n + 1, Math.Max, 0);
 		for (int i = 0; i < n; i++)
 			st.Set(i + 1, a[i]);
-		st.Set(n + 1, 1 << 30);
 
 		for (int k = 0; k < h[1]; k++)
 		{
@@ -23,7 +22,7 @@ class JG
 			else if (q[0] == 2)
 				Console.WriteLine(st.Get(q[1], q[2] + 1));
 			else
-				Console.WriteLine(st.Aggregate(q[1], n + 2, n + 1, (p, node, l) =>
+				Console.WriteLine(st.Aggregate(q[1], n + 1, n + 1, (p, node, l) =>
 				{
 					if (p <= n || st[node] < q[2]) return p;
 					while (node.i < st.n2 >> 1)

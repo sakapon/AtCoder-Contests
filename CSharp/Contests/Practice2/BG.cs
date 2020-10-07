@@ -79,20 +79,7 @@ class ST1<T>
 	}
 
 	// 範囲の昇順
-	public T Get(int l_in, int r_ex)
-	{
-		int l = (n2 >> 1) + l_in, r = (n2 >> 1) + r_ex;
-
-		var v = v0;
-		while (l < r)
-		{
-			var length = l & -l;
-			while (l + length > r) length >>= 1;
-			v = Union(v, a[l / length]);
-			l += length;
-		}
-		return v;
-	}
+	public T Get(int l_in, int r_ex) => Aggregate(l_in, r_ex, v0, (p, n, l) => Union(p, a[n.i]));
 
 	// 範囲の昇順
 	// (previous, node, length) => result
