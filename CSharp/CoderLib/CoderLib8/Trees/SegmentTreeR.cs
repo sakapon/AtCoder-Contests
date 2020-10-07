@@ -67,8 +67,7 @@ namespace CoderLib8.Trees
 
 			void Dfs(STNode n, int length)
 			{
-				var nl = n.i * length;
-				var nr = nl + length;
+				int nl = n.i * length, nr = nl + length;
 
 				if (al <= nl && nr <= ar)
 				{

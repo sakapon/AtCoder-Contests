@@ -35,6 +35,8 @@ class ST1<T>
 		if (!Equals(v0, default(T))) Init();
 	}
 
+	public void Init() { for (int i = 1; i < n2; ++i) a[i] = v0; }
+
 	public STNode Actual(int i) => (n2 >> 1) + i;
 	public int Original(STNode n) => n.i - (n2 >> 1);
 	public T this[STNode n]
@@ -43,8 +45,6 @@ class ST1<T>
 		set { a[n.i] = value; }
 	}
 	public T this[int i] => a[(n2 >> 1) + i];
-
-	public void Init() { for (int i = 1; i < n2; ++i) a[i] = v0; }
 
 	// Bottom-up
 	public void Set(int i, T v)
@@ -126,6 +126,8 @@ class STR<T>
 		if (!TEquals(id, default(T))) Init();
 	}
 
+	public void Init() { for (int i = 1; i < n2; ++i) a[i] = id; }
+
 	public STNode Actual(int i) => (n2 >> 1) + i;
 	public int Original(STNode n) => n.i - (n2 >> 1);
 	public T this[STNode n]
@@ -133,8 +135,6 @@ class STR<T>
 		get { return a[n.i]; }
 		set { a[n.i] = value; }
 	}
-
-	public void Init() { for (int i = 1; i < n2; ++i) a[i] = id; }
 
 	void PushDown(STNode n)
 	{
@@ -153,8 +153,7 @@ class STR<T>
 		Action<STNode, int> Dfs = null;
 		Dfs = (n, length) =>
 		{
-			var nl = n.i * length;
-			var nr = nl + length;
+			int nl = n.i * length, nr = nl + length;
 
 			if (al <= nl && nr <= ar)
 			{
