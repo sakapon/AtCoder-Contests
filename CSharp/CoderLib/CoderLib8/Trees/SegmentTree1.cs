@@ -38,6 +38,7 @@ namespace CoderLib8.Trees
 		}
 
 		public STNode Actual(int i) => (n2 >> 1) + i;
+		public int Original(STNode n) => n.i - (n2 >> 1);
 		public T this[STNode n]
 		{
 			get { return a[n.i]; }
