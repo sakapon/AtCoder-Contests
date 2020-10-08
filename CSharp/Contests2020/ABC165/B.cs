@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Linq;
 
 class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		long x = long.Parse(Console.ReadLine()), y = 0, c = 100;
+		while (c < x)
+		{
+			y++;
+			c += c / 100;
+		}
+		Console.WriteLine(y);
 	}
 }

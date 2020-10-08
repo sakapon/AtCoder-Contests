@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Linq;
 
 class D
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = Read();
-		var ps = new int[h[0]].Select(_ => Read()).ToArray();
-
-		Console.WriteLine(string.Join(" ", a));
+		var h = Array.ConvertAll(Console.ReadLine().Split(), decimal.Parse);
+		decimal a = h[0], b = h[1], n = h[2];
+		Console.WriteLine(Math.Floor(Math.Min(n, b - 1) * a / b));
 	}
 }
