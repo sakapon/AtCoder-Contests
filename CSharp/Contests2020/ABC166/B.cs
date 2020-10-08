@@ -3,14 +3,10 @@ using System.Linq;
 
 class B
 {
+	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		var h = Read();
+		Console.WriteLine(h[0] - new int[h[1]].SelectMany(_ => { Console.ReadLine(); return Read(); }).Distinct().Count());
 	}
 }

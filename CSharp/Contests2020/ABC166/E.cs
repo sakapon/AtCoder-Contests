@@ -3,16 +3,21 @@ using System.Linq;
 
 class E
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
 		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = Read();
-		var ps = new int[h[0]].Select(_ => Read()).ToArray();
 
-		Console.WriteLine(string.Join(" ", a));
+		var vs = a.Select((x, i) => i + x).Concat(a.Select((x, i) => i - x)).Distinct().OrderBy(v => v).ToArray();
+		var map = Enumerable.Range(0, vs.Length).ToDictionary(i => vs[i]);
+
+		var r = 0L;
+		var c = new int[vs.Length];
+		for (int i = 0; i < n; i++)
+		{
+			r += c[map[i - a[i]]];
+			c[map[i + a[i]]]++;
+		}
+		Console.WriteLine(r);
 	}
 }

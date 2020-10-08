@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Linq;
+using System.Numerics;
 
 class D
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = Read();
-		var ps = new int[h[0]].Select(_ => Read()).ToArray();
+		BigInteger x = BigInteger.Parse(Console.ReadLine());
 
-		Console.WriteLine(string.Join(" ", a));
+		for (BigInteger a = -1000; a <= 1000; a++)
+		{
+			for (BigInteger b = -1000; b <= 1000; b++)
+			{
+				if (BigInteger.Pow(a, 5) - BigInteger.Pow(b, 5) == x) { Console.WriteLine($"{a} {b}"); return; }
+			}
+		}
 	}
 }
