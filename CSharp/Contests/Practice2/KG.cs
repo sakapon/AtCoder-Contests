@@ -9,7 +9,7 @@ class KG
 		var h = Read();
 		var n = h[0];
 		var a = Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-		long M = 998244353;
+		const long M = 998244353;
 
 		var st = new LST<Affine, long>(n, (t, u) => t * u, Affine.E, (x, y) => (x + y) % M, 0, (t, p, _, l) => (t * p + t.c2 * (l - 1)) % M, a);
 
@@ -105,9 +105,9 @@ class LST<TO, TV>
 	public void Set(int l_in, int r_ex, TO op)
 	{
 		int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
+		Dfs(1, n2 >> 1);
 
-		Action<STNode, int> Dfs = null;
-		Dfs = (n, length) =>
+		void Dfs(STNode n, int length)
 		{
 			int nl = n.i * length, nr = nl + length;
 
@@ -124,17 +124,16 @@ class LST<TO, TV>
 				if (al < nr && nm < ar) Dfs(n.Child1, length >> 1);
 				a2[n.i] = Union(a2[n.Child0.i], a2[n.Child1.i]);
 			}
-		};
-		Dfs(1, n2 >> 1);
+		}
 	}
 
 	public TV Get(int i) => Get(i, i + 1);
 	public TV Get(int l_in, int r_ex)
 	{
 		int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
+		return Dfs(1, n2 >> 1);
 
-		Func<STNode, int, TV> Dfs = null;
-		Dfs = (n, length) =>
+		TV Dfs(STNode n, int length)
 		{
 			int nl = n.i * length, nr = nl + length;
 
@@ -151,7 +150,6 @@ class LST<TO, TV>
 				if (al < nr && nm < ar) v = Union(v, Dfs(n.Child1, length >> 1));
 				return v;
 			}
-		};
-		return Dfs(1, n2 >> 1);
+		}
 	}
 }

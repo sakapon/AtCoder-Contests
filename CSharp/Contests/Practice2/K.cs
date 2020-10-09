@@ -25,7 +25,7 @@ class K
 	}
 }
 
-struct Affine
+struct Affine : IEquatable<Affine>
 {
 	const long M = 998244353;
 	public static Affine E = (1, 0);
@@ -34,6 +34,12 @@ struct Affine
 	public Affine(long _c1, long _c2) => (c1, c2) = (_c1, _c2);
 	public override string ToString() => $"{c1} {c2}";
 	public static implicit operator Affine((long c1, long c2) v) => new Affine(v.c1, v.c2);
+
+	public bool Equals(Affine other) => c1 == other.c1 && c2 == other.c2;
+	public static bool operator ==(Affine v1, Affine v2) => v1.Equals(v2);
+	public static bool operator !=(Affine v1, Affine v2) => !v1.Equals(v2);
+	public override bool Equals(object obj) => obj is Affine v && Equals(v);
+	public override int GetHashCode() => (c1, c2).GetHashCode();
 
 	public static long operator *(Affine m, long v) => (m.c1 * v + m.c2) % M;
 	public static Affine operator *(Affine m1, Affine m2) => (m1.c1 * m2.c1 % M, (m1.c1 * m2.c2 + m1.c2) % M);
