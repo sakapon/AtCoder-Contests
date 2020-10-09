@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Numerics;
 
 class D
 {
 	static void Main()
 	{
-		BigInteger x = BigInteger.Parse(Console.ReadLine());
+		var x = long.Parse(Console.ReadLine());
 
-		for (BigInteger a = -1000; a <= 1000; a++)
-		{
-			for (BigInteger b = -1000; b <= 1000; b++)
-			{
-				if (BigInteger.Pow(a, 5) - BigInteger.Pow(b, 5) == x) { Console.WriteLine($"{a} {b}"); return; }
-			}
-		}
+		for (long a = -999; a < 999; a++)
+			for (long b = -999; b < 999; b++)
+				if (a * a * a * a * a - b * b * b * b * b == x) { Console.WriteLine($"{a} {b}"); return; }
 	}
 }
