@@ -27,6 +27,7 @@ class LST<TO, TV>
 	public Func<TV, TV, TV> Union;
 	public TV v0;
 
+	// (operator, currentValue, node, length) => newValue
 	public Func<TO, TV, STNode, int, TV> Operate;
 
 	public LST(int n, Func<TO, TO, TO> multiply, TO _id, Func<TV, TV, TV> union, TV _v0, Func<TO, TV, STNode, int, TV> operate)
