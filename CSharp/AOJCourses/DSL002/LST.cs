@@ -28,9 +28,9 @@ class LST<TO, TV>
 	public TV v0;
 
 	// (operator, currentValue, node, length) => newValue
-	public Func<TO, TV, STNode, int, TV> Operate;
+	public Func<TO, TV, STNode, int, TV> Transform;
 
-	public LST(int n, Func<TO, TO, TO> multiply, TO _id, Func<TV, TV, TV> union, TV _v0, Func<TO, TV, STNode, int, TV> operate)
+	public LST(int n, Func<TO, TO, TO> multiply, TO _id, Func<TV, TV, TV> union, TV _v0, Func<TO, TV, STNode, int, TV> transform, TV[] a0 = null)
 	{
 		while (n2 < n) n2 <<= 1;
 		n2 <<= 1;
@@ -39,19 +39,26 @@ class LST<TO, TV>
 
 		Multiply = multiply;
 		id = _id;
-		if (!TOEquals(id, default(TO))) Init();
-
 		Union = union;
 		v0 = _v0;
-		if (!Equals(v0, default(TV))) Init();
-
-		Operate = operate;
+		Transform = transform;
+		if (!TOEquals(id, default(TO)) || !Equals(v0, default(TV)) || a0 != null) Init(a0);
 	}
 
-	public void Init()
+	public void Init(TV[] a0 = null)
 	{
 		for (int i = 1; i < n2; ++i) a1[i] = id;
-		for (int i = 1; i < n2; ++i) a2[i] = v0;
+
+		if (a0 == null)
+		{
+			for (int i = 1; i < n2; ++i) a2[i] = v0;
+		}
+		else
+		{
+			Array.Copy(a0, 0, a2, n2 >> 1, a0.Length);
+			for (int i = (n2 >> 1) + a0.Length; i < n2; ++i) a2[i] = v0;
+			for (int i = (n2 >> 1) - 1; i > 0; --i) a2[i] = Union(a2[i << 1], a2[(i << 1) + 1]);
+		}
 	}
 
 	public STNode Actual(int i) => (n2 >> 1) + i;
@@ -64,8 +71,8 @@ class LST<TO, TV>
 		STNode c0 = n.Child0, c1 = n.Child1;
 		a1[c0.i] = Multiply(op, a1[c0.i]);
 		a1[c1.i] = Multiply(op, a1[c1.i]);
-		a2[c0.i] = Operate(op, a2[c0.i], c0, length >> 1);
-		a2[c1.i] = Operate(op, a2[c1.i], c1, length >> 1);
+		a2[c0.i] = Transform(op, a2[c0.i], c0, length >> 1);
+		a2[c1.i] = Transform(op, a2[c1.i], c1, length >> 1);
 		a1[n.i] = id;
 	}
 
@@ -82,7 +89,7 @@ class LST<TO, TV>
 			if (al <= nl && nr <= ar)
 			{
 				a1[n.i] = Multiply(op, a1[n.i]);
-				a2[n.i] = Operate(op, a2[n.i], n, length);
+				a2[n.i] = Transform(op, a2[n.i], n, length);
 			}
 			else
 			{
