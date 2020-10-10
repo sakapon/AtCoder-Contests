@@ -108,25 +108,52 @@ class LST<TO, TV>
 	{
 		int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
 
-		Func<STNode, int, TV> Dfs = null;
+		var v = v0;
+		Action<STNode, int> Dfs = null;
 		Dfs = (n, length) =>
 		{
 			int nl = n.i * length, nr = nl + length;
 
 			if (al <= nl && nr <= ar)
 			{
-				return a2[n.i];
+				v = Union(v, a2[n.i]);
 			}
 			else
 			{
 				PushDown(n, length);
-				var v = v0;
 				var nm = (nl + nr) >> 1;
-				if (al < nm && nl < ar) v = Union(v, Dfs(n.Child0, length >> 1));
-				if (al < nr && nm < ar) v = Union(v, Dfs(n.Child1, length >> 1));
-				return v;
+				if (al < nm && nl < ar) Dfs(n.Child0, length >> 1);
+				if (al < nr && nm < ar) Dfs(n.Child1, length >> 1);
 			}
 		};
-		return Dfs(1, n2 >> 1);
+		Dfs(1, n2 >> 1);
+		return v;
+	}
+
+	// (previous, node, length) => result
+	public TR Aggregate<TR>(int l_in, int r_ex, TR r0, Func<TR, STNode, int, TR> func)
+	{
+		int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
+
+		var r = r0;
+		Action<STNode, int> Dfs = null;
+		Dfs = (n, length) =>
+		{
+			int nl = n.i * length, nr = nl + length;
+
+			if (al <= nl && nr <= ar)
+			{
+				r = func(r, n, length);
+			}
+			else
+			{
+				PushDown(n, length);
+				var nm = (nl + nr) >> 1;
+				if (al < nm && nl < ar) Dfs(n.Child0, length >> 1);
+				if (al < nr && nm < ar) Dfs(n.Child1, length >> 1);
+			}
+		};
+		Dfs(1, n2 >> 1);
+		return r;
 	}
 }
