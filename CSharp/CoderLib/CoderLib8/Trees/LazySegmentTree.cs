@@ -82,9 +82,9 @@ namespace CoderLib8.Trees
 		public void Set(int l_in, int r_ex, TO op)
 		{
 			int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
+			Dfs(1, n2 >> 1);
 
-			Action<STNode, int> Dfs = null;
-			Dfs = (n, length) =>
+			void Dfs(STNode n, int length)
 			{
 				int nl = n.i * length, nr = nl + length;
 
@@ -101,45 +101,21 @@ namespace CoderLib8.Trees
 					if (al < nr && nm < ar) Dfs(n.Child1, length >> 1);
 					a2[n.i] = Union(a2[n.Child0.i], a2[n.Child1.i]);
 				}
-			};
-			Dfs(1, n2 >> 1);
+			}
 		}
 
 		public TV Get(int i) => Get(i, i + 1);
-		public TV Get(int l_in, int r_ex)
-		{
-			int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
-
-			var v = v0;
-			Action<STNode, int> Dfs = null;
-			Dfs = (n, length) =>
-			{
-				int nl = n.i * length, nr = nl + length;
-
-				if (al <= nl && nr <= ar)
-				{
-					v = Union(v, a2[n.i]);
-				}
-				else
-				{
-					PushDown(n, length);
-					var nm = (nl + nr) >> 1;
-					if (al < nm && nl < ar) Dfs(n.Child0, length >> 1);
-					if (al < nr && nm < ar) Dfs(n.Child1, length >> 1);
-				}
-			};
-			Dfs(1, n2 >> 1);
-			return v;
-		}
+		public TV Get(int l_in, int r_ex) => Aggregate(l_in, r_ex, v0, (p, n, l) => Union(p, a2[n.i]));
 
 		// (previous, node, length) => result
 		public TR Aggregate<TR>(int l_in, int r_ex, TR r0, Func<TR, STNode, int, TR> func)
 		{
 			int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
-
 			var r = r0;
-			Action<STNode, int> Dfs = null;
-			Dfs = (n, length) =>
+			Dfs(1, n2 >> 1);
+			return r;
+
+			void Dfs(STNode n, int length)
 			{
 				int nl = n.i * length, nr = nl + length;
 
@@ -154,9 +130,7 @@ namespace CoderLib8.Trees
 					if (al < nm && nl < ar) Dfs(n.Child0, length >> 1);
 					if (al < nr && nm < ar) Dfs(n.Child1, length >> 1);
 				}
-			};
-			Dfs(1, n2 >> 1);
-			return r;
+			}
 		}
 	}
 }
