@@ -9,9 +9,13 @@ class KG
 		var h = Read();
 		var n = h[0];
 		var a = Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-		const long M = 998244353;
 
-		var st = new LST<Affine, long>(n, (t, u) => t * u, Affine.E, (x, y) => (x + y) % M, 0, (t, p, _, l) => (t * p + t.c2 * (l - 1)) % M, a);
+		const long M = 998244353;
+		var st = new LST<(long c1, long c2), long>(n,
+			(m1, m2) => (m1.c1 * m2.c1 % M, (m1.c1 * m2.c2 + m1.c2) % M), (1, 0),
+			(x, y) => (x + y) % M, 0,
+			(m, p, _, l) => (m.c1 * p + m.c2 * l) % M,
+			a);
 
 		for (int k = 0; k < h[1]; k++)
 		{
