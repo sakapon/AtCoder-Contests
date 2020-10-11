@@ -1,16 +1,19 @@
 ﻿using System;
-using System.Linq;
 
 class C
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var p = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 
-		Console.WriteLine(string.Join(" ", h));
+		var u = new bool[200001];
+		var m = 0;
+		for (int i = 0; i < n; i++)
+		{
+			u[p[i]] = true;
+			while (u[m]) m++;
+			Console.WriteLine(m);
+		}
 	}
 }

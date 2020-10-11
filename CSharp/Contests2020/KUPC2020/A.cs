@@ -5,12 +5,8 @@ class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		Console.WriteLine(Enumerable.Range(0, n - 1).Sum(i => Math.Abs(ps[i + 1][0] - ps[i][0]) + Math.Abs(ps[i + 1][1] - ps[i][1])));
 	}
 }
