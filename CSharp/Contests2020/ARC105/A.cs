@@ -5,12 +5,15 @@ class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
 		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		if (h.Sum() % 2 == 1) { Console.WriteLine("No"); return; }
+		var s = h.Sum() / 2;
 
-		Console.WriteLine(string.Join(" ", h));
+		if (h.Any(x => x == s)) { Console.WriteLine("Yes"); return; }
+
+		for (int i = 0; i < 4; i++)
+			for (int j = i + 1; j < 4; j++)
+				if (h[i] + h[j] == s) { Console.WriteLine("Yes"); return; }
+		Console.WriteLine("No");
 	}
 }
