@@ -57,10 +57,11 @@ namespace CoderLib8.Trees
 
 		void PushDown(STNode n)
 		{
-			if (TOEquals(a1[n.i], id)) return;
+			var op = a1[n.i];
+			if (TOEquals(op, id)) return;
 			STNode c0 = n.Child0, c1 = n.Child1;
-			a1[c0.i] = Multiply(a1[n.i], a1[c0.i]);
-			a1[c1.i] = Multiply(a1[n.i], a1[c1.i]);
+			a1[c0.i] = Multiply(op, a1[c0.i]);
+			a1[c1.i] = Multiply(op, a1[c1.i]);
 			a1[n.i] = id;
 		}
 

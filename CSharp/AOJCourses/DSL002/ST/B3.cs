@@ -15,7 +15,7 @@ class B3
 		{
 			var q = Read();
 			if (q[0] == 0)
-				st.Set(q[1], st[q[1]] + q[2]);
+				st.Set(q[1], st.Get(q[1]) + q[2]);
 			else
 				Console.WriteLine(st.Get(q[1], q[2] + 1));
 		}

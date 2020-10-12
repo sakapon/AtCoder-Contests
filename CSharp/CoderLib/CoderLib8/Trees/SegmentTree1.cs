@@ -35,17 +35,29 @@ namespace CoderLib8.Trees
 		public TV v0;
 
 		// 全ノードを、零元を表す値で初期化します (零元の Union もまた零元)。
-		public ST1(int n, Func<TV, TV, TV> union, TV _v0)
+		public ST1(int n, Func<TV, TV, TV> union, TV _v0, TV[] a0 = null)
 		{
 			while (n2 < n) n2 <<= 1;
 			a2 = new TV[n2 <<= 1];
 
 			Union = union;
 			v0 = _v0;
-			if (!Equals(v0, default(TV))) Init();
+			if (!Equals(v0, default(TV)) || a0 != null) Init(a0);
 		}
 
-		public void Init() { for (int i = 1; i < n2; ++i) a2[i] = v0; }
+		public void Init(TV[] a0 = null)
+		{
+			if (a0 == null)
+			{
+				for (int i = 1; i < n2; ++i) a2[i] = v0;
+			}
+			else
+			{
+				Array.Copy(a0, 0, a2, n2 >> 1, a0.Length);
+				for (int i = (n2 >> 1) + a0.Length; i < n2; ++i) a2[i] = v0;
+				for (int i = (n2 >> 1) - 1; i > 0; --i) a2[i] = Union(a2[i << 1], a2[(i << 1) + 1]);
+			}
+		}
 
 		public STNode Actual(int i) => (n2 >> 1) + i;
 		public int Original(STNode n) => n.i - (n2 >> 1);
@@ -54,7 +66,6 @@ namespace CoderLib8.Trees
 			get { return a2[n.i]; }
 			set { a2[n.i] = value; }
 		}
-		public TV this[int i] => a2[(n2 >> 1) + i];
 
 		// Bottom-up
 		public void Set(int i, TV v)
@@ -64,6 +75,7 @@ namespace CoderLib8.Trees
 			while ((n = n.Parent).i > 0) a2[n.i] = Union(a2[n.Child0.i], a2[n.Child1.i]);
 		}
 
+		public TV Get(int i) => a2[(n2 >> 1) + i];
 		// 範囲の昇順
 		public TV Get(int l_in, int r_ex) => Aggregate(l_in, r_ex, v0, (p, n, l) => Union(p, a2[n.i]));
 
@@ -71,15 +83,15 @@ namespace CoderLib8.Trees
 		// (previous, node, length) => result
 		public TR Aggregate<TR>(int l_in, int r_ex, TR r0, Func<TR, STNode, int, TR> func)
 		{
-			int l = (n2 >> 1) + l_in, r = (n2 >> 1) + r_ex;
+			int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
 
 			var rv = r0;
-			while (l < r)
+			while (al < ar)
 			{
-				var length = l & -l;
-				while (l + length > r) length >>= 1;
-				rv = func(rv, l / length, length);
-				l += length;
+				var length = al & -al;
+				while (al + length > ar) length >>= 1;
+				rv = func(rv, al / length, length);
+				al += length;
 			}
 			return rv;
 		}
