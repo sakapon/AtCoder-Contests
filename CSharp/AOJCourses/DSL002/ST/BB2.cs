@@ -19,7 +19,7 @@ class BB2
 			if (q[0] == 0)
 				st.Add(q[1], q[2]);
 			else
-				r.Add(st.Subsum(q[1], q[2] + 1));
+				r.Add(st.Sum(q[1], q[2] + 1));
 		}
 		Console.WriteLine(string.Join("\n", r));
 	}
@@ -41,7 +41,7 @@ class BIT2
 
 	public long this[int i]
 	{
-		get { return Subsum(i) - Subsum(i - 1); }
+		get { return Sum(i) - Sum(i - 1); }
 		set { Add(i, value - this[i]); }
 	}
 
@@ -50,11 +50,11 @@ class BIT2
 		for (; i <= n; i += i & -i) a[i] += v;
 	}
 
-	public long Subsum(int minIn, int maxEx) => Subsum(maxEx - 1) - Subsum(minIn - 1);
-	public long Subsum(int maxIn)
+	public long Sum(int l_in, int r_ex) => Sum(r_ex - 1) - Sum(l_in - 1);
+	public long Sum(int r_in)
 	{
 		var r = 0L;
-		for (var i = maxIn; i > 0; i -= i & -i) r += a[i];
+		for (var i = r_in; i > 0; i -= i & -i) r += a[i];
 		return r;
 	}
 }

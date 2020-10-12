@@ -1,27 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 class BB1
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
 	{
-		var r = new List<long>();
+		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		var h = Read();
 		var n = h[0];
 
 		var st = new BIT(n);
 
-		for (int i = 0; i < h[1]; i++)
+		for (int k = 0; k < h[1]; k++)
 		{
 			var q = Read();
 			if (q[0] == 0)
 				st.Add(q[1], q[2]);
 			else
-				r.Add(st.Subsum(q[1], q[2] + 1));
+				Console.WriteLine(st.Sum(q[1], q[2] + 1));
 		}
-		Console.WriteLine(string.Join("\n", r));
+		Console.Out.Flush();
 	}
 }
 
@@ -39,19 +37,22 @@ class BIT
 		a = new long[n2 + 1];
 	}
 
-	public long this[int i] => Subsum(i) - Subsum(i - 1);
+	public long this[int i]
+	{
+		get { return Sum(i) - Sum(i - 1); }
+		set { Add(i, value - this[i]); }
+	}
 
-	public void Set(int i, long v) => Add(i, v - this[i]);
 	public void Add(int i, long v)
 	{
 		for (; i <= n2; i += i & -i) a[i] += v;
 	}
 
-	public long Subsum(int minIn, int maxEx) => Subsum(maxEx - 1) - Subsum(minIn - 1);
-	public long Subsum(int maxIn)
+	public long Sum(int l_in, int r_ex) => Sum(r_ex - 1) - Sum(l_in - 1);
+	public long Sum(int r_in)
 	{
 		var r = 0L;
-		for (var i = maxIn; i > 0; i -= i & -i) r += a[i];
+		for (var i = r_in; i > 0; i -= i & -i) r += a[i];
 		return r;
 	}
 }
