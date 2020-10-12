@@ -20,7 +20,7 @@ class DG
 	}
 }
 
-class STR<T>
+class STR<TO>
 {
 	public struct STNode
 	{
@@ -37,58 +37,58 @@ class STR<T>
 
 	// Power of 2
 	public int n2 = 1;
-	public T[] a;
+	public TO[] a1;
 
 	// (newOp, oldOp) => product
-	public Func<T, T, T> Multiply;
-	public T id;
-	Func<T, T, bool> TEquals = System.Collections.Generic.EqualityComparer<T>.Default.Equals;
+	public Func<TO, TO, TO> Multiply;
+	public TO id;
+	Func<TO, TO, bool> TOEquals = System.Collections.Generic.EqualityComparer<TO>.Default.Equals;
 
 	// 全ノードを、恒等変換を表す値で初期化します。
-	public STR(int n, Func<T, T, T> multiply, T _id)
+	public STR(int n, Func<TO, TO, TO> multiply, TO _id)
 	{
-		while (n2 < n) n2 <<= 1;
-		a = new T[n2 <<= 1];
+		while (n2 < n << 1) n2 <<= 1;
+		a1 = new TO[n2];
 
 		Multiply = multiply;
 		id = _id;
-		if (!TEquals(id, default(T))) Init();
+		if (!TOEquals(id, default(TO))) Init();
 	}
 
-	public void Init() { for (int i = 1; i < n2; ++i) a[i] = id; }
+	public void Init() { for (int i = 1; i < n2; ++i) a1[i] = id; }
 
 	public STNode Actual(int i) => (n2 >> 1) + i;
 	public int Original(STNode n) => n.i - (n2 >> 1);
-	public T this[STNode n]
+	public TO this[STNode n]
 	{
-		get { return a[n.i]; }
-		set { a[n.i] = value; }
+		get { return a1[n.i]; }
+		set { a1[n.i] = value; }
 	}
 
 	void PushDown(STNode n)
 	{
-		if (TEquals(a[n.i], id)) return;
+		var op = a1[n.i];
+		if (TOEquals(op, id)) return;
 		STNode c0 = n.Child0, c1 = n.Child1;
-		a[c0.i] = Multiply(a[n.i], a[c0.i]);
-		a[c1.i] = Multiply(a[n.i], a[c1.i]);
-		a[n.i] = id;
+		a1[c0.i] = Multiply(op, a1[c0.i]);
+		a1[c1.i] = Multiply(op, a1[c1.i]);
+		a1[n.i] = id;
 	}
 
 	// Top-down
-	public void Set(int l_in, int r_ex, T v)
+	public void Set(int l_in, int r_ex, TO op)
 	{
 		int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
 		Dfs(1, n2 >> 1);
 
 		void Dfs(STNode n, int length)
 		{
-			var nl = n.i * length;
-			var nr = nl + length;
+			int nl = n.i * length, nr = nl + length;
 
 			if (al <= nl && nr <= ar)
 			{
 				// 対象のノード
-				a[n.i] = Multiply(v, a[n.i]);
+				a1[n.i] = Multiply(op, a1[n.i]);
 			}
 			else
 			{
@@ -101,12 +101,12 @@ class STR<T>
 	}
 
 	// Top-down
-	public T Get(int i)
+	public TO Get(int i)
 	{
 		var ai = (n2 >> 1) + i;
 		var length = n2 >> 1;
 		for (STNode n = 1; n.i < ai; n = ai < n.i * length + (length >> 1) ? n.Child0 : n.Child1, length >>= 1)
 			PushDown(n);
-		return a[ai];
+		return a1[ai];
 	}
 }
