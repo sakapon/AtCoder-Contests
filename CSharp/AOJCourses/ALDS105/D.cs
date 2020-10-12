@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 class D
@@ -7,74 +6,96 @@ class D
 	static void Main()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).Select((x, i) => new { x, i }).OrderBy(_ => _.x).Select(_ => _.i).ToArray();
+		var a = Console.ReadLine().Split().Select(int.Parse).Select((x, i) => new { x, i }).OrderBy(_ => _.x).ToArray();
 
-		var st = new ST_Subsum(n);
+		var st = new ST1<long>(n, (x, y) => x + y, 0);
 		var r = 0L;
 		for (int i = 0; i < n; i++)
 		{
-			r += st.Subsum(a[i], n);
-			st.Add(a[i], 1);
+			r += st.Get(a[i].i, n);
+			st.Set(a[i].i, 1);
 		}
 		Console.WriteLine(r);
 	}
 }
 
-class ST
+class ST1<TV>
 {
-	public struct Node
+	public struct STNode
 	{
-		public int k, i;
-		public Node(int _k, int _i) { k = _k; i = _i; }
+		public int i;
+		public static implicit operator STNode(int i) => new STNode { i = i };
+		public override string ToString() => $"{i}";
+
+		public STNode Parent => i >> 1;
+		public STNode Child0 => i << 1;
+		public STNode Child1 => (i << 1) + 1;
+		public STNode LastLeft(int length) => i * length;
+		public STNode LastRight(int length) => (i + 1) * length;
 	}
 
-	int kMax;
-	List<long[]> vs = new List<long[]> { new long[1] };
+	// Power of 2
+	public int n2 = 1;
+	public TV[] a2;
 
-	public ST(int n)
+	public Func<TV, TV, TV> Union;
+	public TV v0;
+
+	// 全ノードを、零元を表す値で初期化します (零元の Union もまた零元)。
+	public ST1(int n, Func<TV, TV, TV> union, TV _v0, TV[] a0 = null)
 	{
-		for (int c = 1; c < n; vs.Add(new long[c <<= 1])) ;
-		kMax = vs.Count - 1;
+		while (n2 < n << 1) n2 <<= 1;
+		a2 = new TV[n2];
+
+		Union = union;
+		v0 = _v0;
+		if (!Equals(v0, default(TV)) || a0 != null) Init(a0);
 	}
 
-	public long this[int i] => vs[kMax][i];
-	public long this[Node n]
+	public void Init(TV[] a0 = null)
 	{
-		get { return vs[n.k][n.i]; }
-		set { vs[n.k][n.i] = value; }
-	}
-
-	public void Clear()
-	{
-		for (int k = 0; k <= kMax; ++k) Array.Clear(vs[k], 0, vs[k].Length);
-	}
-
-	public void ForLevels(int i, Action<Node> action)
-	{
-		for (int k = kMax; k >= 0; --k, i >>= 1) action(new Node(k, i));
-	}
-
-	public void ForRange(int minIn, int maxEx, Action<Node> action)
-	{
-		for (int k = kMax, f = 1; k >= 0 && minIn < maxEx; --k, f <<= 1)
+		if (a0 == null)
 		{
-			if ((minIn & f) != 0) action(new Node(k, (minIn += f) / f - 1));
-			if ((maxEx & f) != 0) action(new Node(k, (maxEx -= f) / f));
+			for (int i = 1; i < n2; ++i) a2[i] = v0;
+		}
+		else
+		{
+			Array.Copy(a0, 0, a2, n2 >> 1, a0.Length);
+			for (int i = (n2 >> 1) + a0.Length; i < n2; ++i) a2[i] = v0;
+			for (int i = (n2 >> 1) - 1; i > 0; --i) a2[i] = Union(a2[i << 1], a2[(i << 1) + 1]);
 		}
 	}
-}
 
-class ST_Subsum : ST
-{
-	public ST_Subsum(int n) : base(n) { }
-
-	public void Set(int i, long v) => Add(i, v - this[i]);
-	public void Add(int i, long v) => ForLevels(i, n => this[n] += v);
-
-	public long Subsum(int minIn, int maxEx)
+	public STNode Actual(int i) => (n2 >> 1) + i;
+	public int Original(STNode n) => n.i - (n2 >> 1);
+	public TV this[STNode n]
 	{
-		var r = 0L;
-		ForRange(minIn, maxEx, n => r += this[n]);
-		return r;
+		get { return a2[n.i]; }
+		set { a2[n.i] = value; }
+	}
+
+	// Bottom-up
+	public void Set(int i, TV v)
+	{
+		var n = Actual(i);
+		a2[n.i] = v;
+		while ((n = n.Parent).i > 0) a2[n.i] = Union(a2[n.Child0.i], a2[n.Child1.i]);
+	}
+
+	public TV Get(int i) => a2[(n2 >> 1) + i];
+	// 範囲の昇順
+	public TV Get(int l_in, int r_ex)
+	{
+		int l = (n2 >> 1) + l_in, r = (n2 >> 1) + r_ex;
+
+		var v = v0;
+		while (l < r)
+		{
+			var length = l & -l;
+			while (l + length > r) length >>= 1;
+			v = Union(v, a2[l / length]);
+			l += length;
+		}
+		return v;
 	}
 }
