@@ -2,6 +2,18 @@
 
 namespace CoderLib8.Trees
 {
+	// 範囲更新・範囲取得
+	// TO は作用素を表します。
+	// TV は値を表します。
+	// 外見上は 0-indexed, 0 <= i < n
+	// 内部では 1-indexed, 1 <= i < n2
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/2/DSL_2_F
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/2/DSL_2_G
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/2/DSL_2_H
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/2/DSL_2_I
+	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_k
+	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_l
+	// Test: https://atcoder.jp/contests/abl/tasks/abl_e
 	class LST<TO, TV>
 	{
 		public struct STNode
@@ -111,9 +123,9 @@ namespace CoderLib8.Trees
 		public TR Aggregate<TR>(int l_in, int r_ex, TR r0, Func<TR, STNode, int, TR> func)
 		{
 			int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
-			var r = r0;
+			var rv = r0;
 			Dfs(1, n2 >> 1);
-			return r;
+			return rv;
 
 			void Dfs(STNode n, int length)
 			{
@@ -121,7 +133,7 @@ namespace CoderLib8.Trees
 
 				if (al <= nl && nr <= ar)
 				{
-					r = func(r, n, length);
+					rv = func(rv, n, length);
 				}
 				else
 				{

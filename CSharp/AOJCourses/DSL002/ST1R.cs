@@ -1,8 +1,9 @@
 ﻿using System;
 
 // 一点更新・範囲取得
-// T は値を表します。
-class ST1<T>
+// STR の双対となる概念です。
+// TV は値を表します。
+class ST1<TV>
 {
 	public struct STNode
 	{
@@ -19,43 +20,43 @@ class ST1<T>
 
 	// Power of 2
 	public int n2 = 1;
-	public T[] a;
+	public TV[] a2;
 
-	public Func<T, T, T> Union;
-	public T v0;
+	public Func<TV, TV, TV> Union;
+	public TV v0;
 
 	// 全ノードを、零元を表す値で初期化します (零元の Union もまた零元)。
-	public ST1(int n, Func<T, T, T> union, T _v0)
+	public ST1(int n, Func<TV, TV, TV> union, TV _v0)
 	{
 		while (n2 < n) n2 <<= 1;
-		a = new T[n2 <<= 1];
+		a2 = new TV[n2 <<= 1];
 
 		Union = union;
 		v0 = _v0;
-		if (!Equals(v0, default(T))) Init();
+		if (!Equals(v0, default(TV))) Init();
 	}
 
-	public void Init() { for (int i = 1; i < n2; ++i) a[i] = v0; }
+	public void Init() { for (int i = 1; i < n2; ++i) a2[i] = v0; }
 
 	public STNode Actual(int i) => (n2 >> 1) + i;
 	public int Original(STNode n) => n.i - (n2 >> 1);
-	public T this[STNode n]
+	public TV this[STNode n]
 	{
-		get { return a[n.i]; }
-		set { a[n.i] = value; }
+		get { return a2[n.i]; }
+		set { a2[n.i] = value; }
 	}
-	public T this[int i] => a[(n2 >> 1) + i];
+	public TV this[int i] => a2[(n2 >> 1) + i];
 
 	// Bottom-up
-	public void Set(int i, T v)
+	public void Set(int i, TV v)
 	{
 		var n = Actual(i);
-		a[n.i] = v;
-		while ((n = n.Parent).i > 0) a[n.i] = Union(a[n.Child0.i], a[n.Child1.i]);
+		a2[n.i] = v;
+		while ((n = n.Parent).i > 0) a2[n.i] = Union(a2[n.Child0.i], a2[n.Child1.i]);
 	}
 
 	// 範囲の昇順
-	public T Get(int l_in, int r_ex)
+	public TV Get(int l_in, int r_ex)
 	{
 		int l = (n2 >> 1) + l_in, r = (n2 >> 1) + r_ex;
 
@@ -64,7 +65,7 @@ class ST1<T>
 		{
 			var length = l & -l;
 			while (l + length > r) length >>= 1;
-			v = Union(v, a[l / length]);
+			v = Union(v, a2[l / length]);
 			l += length;
 		}
 		return v;
@@ -72,26 +73,26 @@ class ST1<T>
 
 	// 範囲の昇順
 	// (previous, node, length) => result
-	public TV Aggregate<TV>(int l_in, int r_ex, TV v0, Func<TV, STNode, int, TV> func)
+	public TR Aggregate<TR>(int l_in, int r_ex, TR r0, Func<TR, STNode, int, TR> func)
 	{
 		int l = (n2 >> 1) + l_in, r = (n2 >> 1) + r_ex;
 
-		var v = v0;
+		var rv = r0;
 		while (l < r)
 		{
 			var length = l & -l;
 			while (l + length > r) length >>= 1;
-			v = func(v, l / length, length);
+			rv = func(rv, l / length, length);
 			l += length;
 		}
-		return v;
+		return rv;
 	}
 }
 
 // 範囲更新・一点取得
 // ST1 の双対となる概念です。
-// T は作用素を表します。
-class STR<T>
+// TO は作用素を表します。
+class STR<TO>
 {
 	public struct STNode
 	{
@@ -108,45 +109,45 @@ class STR<T>
 
 	// Power of 2
 	public int n2 = 1;
-	public T[] a;
+	public TO[] a1;
 
 	// (newOp, oldOp) => product
-	public Func<T, T, T> Multiply;
-	public T id;
-	Func<T, T, bool> TEquals = System.Collections.Generic.EqualityComparer<T>.Default.Equals;
+	public Func<TO, TO, TO> Multiply;
+	public TO id;
+	Func<TO, TO, bool> TOEquals = System.Collections.Generic.EqualityComparer<TO>.Default.Equals;
 
 	// 全ノードを、恒等変換を表す値で初期化します。
-	public STR(int n, Func<T, T, T> multiply, T _id)
+	public STR(int n, Func<TO, TO, TO> multiply, TO _id)
 	{
 		while (n2 < n) n2 <<= 1;
-		a = new T[n2 <<= 1];
+		a1 = new TO[n2 <<= 1];
 
 		Multiply = multiply;
 		id = _id;
-		if (!TEquals(id, default(T))) Init();
+		if (!TOEquals(id, default(TO))) Init();
 	}
 
-	public void Init() { for (int i = 1; i < n2; ++i) a[i] = id; }
+	public void Init() { for (int i = 1; i < n2; ++i) a1[i] = id; }
 
 	public STNode Actual(int i) => (n2 >> 1) + i;
 	public int Original(STNode n) => n.i - (n2 >> 1);
-	public T this[STNode n]
+	public TO this[STNode n]
 	{
-		get { return a[n.i]; }
-		set { a[n.i] = value; }
+		get { return a1[n.i]; }
+		set { a1[n.i] = value; }
 	}
 
 	void PushDown(STNode n)
 	{
-		if (TEquals(a[n.i], id)) return;
+		if (TOEquals(a1[n.i], id)) return;
 		STNode c0 = n.Child0, c1 = n.Child1;
-		a[c0.i] = Multiply(a[n.i], a[c0.i]);
-		a[c1.i] = Multiply(a[n.i], a[c1.i]);
-		a[n.i] = id;
+		a1[c0.i] = Multiply(a1[n.i], a1[c0.i]);
+		a1[c1.i] = Multiply(a1[n.i], a1[c1.i]);
+		a1[n.i] = id;
 	}
 
 	// Top-down
-	public void Set(int l_in, int r_ex, T v)
+	public void Set(int l_in, int r_ex, TO op)
 	{
 		int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
 
@@ -158,7 +159,7 @@ class STR<T>
 			if (al <= nl && nr <= ar)
 			{
 				// 対象のノード
-				a[n.i] = Multiply(v, a[n.i]);
+				a1[n.i] = Multiply(op, a1[n.i]);
 			}
 			else
 			{
@@ -172,12 +173,12 @@ class STR<T>
 	}
 
 	// Top-down
-	public T Get(int i)
+	public TO Get(int i)
 	{
 		var ai = (n2 >> 1) + i;
 		var length = n2 >> 1;
 		for (STNode n = 1; n.i < ai; n = ai < n.i * length + (length >> 1) ? n.Child0 : n.Child1, length >>= 1)
 			PushDown(n);
-		return a[ai];
+		return a1[ai];
 	}
 }

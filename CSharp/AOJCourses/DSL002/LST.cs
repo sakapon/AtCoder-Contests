@@ -1,5 +1,8 @@
 ﻿using System;
 
+// 範囲更新・範囲取得
+// TO は作用素を表します。
+// TV は値を表します。
 class LST<TO, TV>
 {
 	public struct STNode
@@ -135,7 +138,7 @@ class LST<TO, TV>
 	{
 		int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
 
-		var r = r0;
+		var rv = r0;
 		Action<STNode, int> Dfs = null;
 		Dfs = (n, length) =>
 		{
@@ -143,7 +146,7 @@ class LST<TO, TV>
 
 			if (al <= nl && nr <= ar)
 			{
-				r = func(r, n, length);
+				rv = func(rv, n, length);
 			}
 			else
 			{
@@ -154,6 +157,6 @@ class LST<TO, TV>
 			}
 		};
 		Dfs(1, n2 >> 1);
-		return r;
+		return rv;
 	}
 }
