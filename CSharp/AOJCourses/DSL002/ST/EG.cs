@@ -1,6 +1,6 @@
 ﻿using System;
 
-class D3
+class EG
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
@@ -9,8 +9,8 @@ class D3
 		var h = Read();
 		var n = h[0];
 
-		var st = new STR<int?>(n, (x, y) => x.HasValue ? x : y, null);
-		st.Set(0, n, int.MaxValue);
+		var st = new STR<long>(n + 1, (x, y) => x + y, 0);
+
 		for (int k = 0; k < h[1]; k++)
 		{
 			var q = Read();

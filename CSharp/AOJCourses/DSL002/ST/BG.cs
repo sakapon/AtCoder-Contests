@@ -1,6 +1,6 @@
 ﻿using System;
 
-class B3
+class BG
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
