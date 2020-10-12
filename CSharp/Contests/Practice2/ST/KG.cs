@@ -2,6 +2,7 @@
 
 class KG
 {
+	const long M = 998244353;
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
 	{
@@ -10,7 +11,6 @@ class KG
 		var n = h[0];
 		var a = Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 
-		const long M = 998244353;
 		var st = new LST<(long c1, long c2), long>(n,
 			(m1, m2) => (m1.c1 * m2.c1 % M, (m1.c1 * m2.c2 + m1.c2) % M), (1, 0),
 			(x, y) => (x + y) % M, 0,
@@ -61,8 +61,7 @@ class LST<TO, TV>
 
 	public LST(int n, Func<TO, TO, TO> multiply, TO _id, Func<TV, TV, TV> union, TV _v0, Func<TO, TV, STNode, int, TV> transform, TV[] a0 = null)
 	{
-		while (n2 < n) n2 <<= 1;
-		n2 <<= 1;
+		while (n2 < n << 1) n2 <<= 1;
 		a1 = new TO[n2];
 		a2 = new TV[n2];
 
@@ -138,9 +137,9 @@ class LST<TO, TV>
 	public TR Aggregate<TR>(int l_in, int r_ex, TR r0, Func<TR, STNode, int, TR> func)
 	{
 		int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
-		var r = r0;
+		var rv = r0;
 		Dfs(1, n2 >> 1);
-		return r;
+		return rv;
 
 		void Dfs(STNode n, int length)
 		{
@@ -148,7 +147,7 @@ class LST<TO, TV>
 
 			if (al <= nl && nr <= ar)
 			{
-				r = func(r, n, length);
+				rv = func(rv, n, length);
 			}
 			else
 			{

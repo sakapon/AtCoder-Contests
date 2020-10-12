@@ -8,17 +8,15 @@ class BG
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		var h = Read();
 		var n = h[0];
-		var a = Read();
+		var a = Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 
-		var st = new ST1<long>(n, (x, y) => x + y, 0);
-		for (int i = 0; i < n; i++)
-			st.Set(i, a[i]);
+		var st = new ST1<long>(n, (x, y) => x + y, 0, a);
 
 		for (int k = 0; k < h[1]; k++)
 		{
 			var q = Read();
 			if (q[0] == 0)
-				st.Set(q[1], st[q[1]] + q[2]);
+				st.Set(q[1], st.Get(q[1]) + q[2]);
 			else
 				Console.WriteLine(st.Get(q[1], q[2]));
 		}
@@ -26,7 +24,7 @@ class BG
 	}
 }
 
-class ST1<T>
+class ST1<TV>
 {
 	public struct STNode
 	{
@@ -43,58 +41,70 @@ class ST1<T>
 
 	// Power of 2
 	public int n2 = 1;
-	public T[] a;
+	public TV[] a2;
 
-	public Func<T, T, T> Union;
-	public T v0;
+	public Func<TV, TV, TV> Union;
+	public TV v0;
 
 	// 全ノードを、零元を表す値で初期化します (零元の Union もまた零元)。
-	public ST1(int n, Func<T, T, T> union, T _v0)
+	public ST1(int n, Func<TV, TV, TV> union, TV _v0, TV[] a0 = null)
 	{
-		while (n2 < n) n2 <<= 1;
-		a = new T[n2 <<= 1];
+		while (n2 < n << 1) n2 <<= 1;
+		a2 = new TV[n2];
 
 		Union = union;
 		v0 = _v0;
-		if (!Equals(v0, default(T))) Init();
+		if (!Equals(v0, default(TV)) || a0 != null) Init(a0);
+	}
+
+	public void Init(TV[] a0 = null)
+	{
+		if (a0 == null)
+		{
+			for (int i = 1; i < n2; ++i) a2[i] = v0;
+		}
+		else
+		{
+			Array.Copy(a0, 0, a2, n2 >> 1, a0.Length);
+			for (int i = (n2 >> 1) + a0.Length; i < n2; ++i) a2[i] = v0;
+			for (int i = (n2 >> 1) - 1; i > 0; --i) a2[i] = Union(a2[i << 1], a2[(i << 1) + 1]);
+		}
 	}
 
 	public STNode Actual(int i) => (n2 >> 1) + i;
 	public int Original(STNode n) => n.i - (n2 >> 1);
-	public T this[STNode n]
+	public TV this[STNode n]
 	{
-		get { return a[n.i]; }
-		set { a[n.i] = value; }
+		get { return a2[n.i]; }
+		set { a2[n.i] = value; }
 	}
-	public T this[int i] => a[(n2 >> 1) + i];
-
-	public void Init() { for (int i = 1; i < n2; ++i) a[i] = v0; }
 
 	// Bottom-up
-	public void Set(int i, T v)
+	public void Set(int i, TV v)
 	{
 		var n = Actual(i);
-		a[n.i] = v;
-		while ((n = n.Parent).i > 0) a[n.i] = Union(a[n.Child0.i], a[n.Child1.i]);
+		a2[n.i] = v;
+		while ((n = n.Parent).i > 0) a2[n.i] = Union(a2[n.Child0.i], a2[n.Child1.i]);
 	}
 
+	public TV Get(int i) => a2[(n2 >> 1) + i];
 	// 範囲の昇順
-	public T Get(int l_in, int r_ex) => Aggregate(l_in, r_ex, v0, (p, n, l) => Union(p, a[n.i]));
+	public TV Get(int l_in, int r_ex) => Aggregate(l_in, r_ex, v0, (p, n, l) => Union(p, a2[n.i]));
 
 	// 範囲の昇順
 	// (previous, node, length) => result
-	public TV Aggregate<TV>(int l_in, int r_ex, TV v0, Func<TV, STNode, int, TV> func)
+	public TR Aggregate<TR>(int l_in, int r_ex, TR r0, Func<TR, STNode, int, TR> func)
 	{
-		int l = (n2 >> 1) + l_in, r = (n2 >> 1) + r_ex;
+		int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
 
-		var v = v0;
-		while (l < r)
+		var rv = r0;
+		while (al < ar)
 		{
-			var length = l & -l;
-			while (l + length > r) length >>= 1;
-			v = func(v, l / length, length);
-			l += length;
+			var length = al & -al;
+			while (al + length > ar) length >>= 1;
+			rv = func(rv, al / length, length);
+			al += length;
 		}
-		return v;
+		return rv;
 	}
 }
