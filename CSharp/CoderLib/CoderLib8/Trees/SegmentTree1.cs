@@ -37,8 +37,8 @@ namespace CoderLib8.Trees
 		// 全ノードを、零元を表す値で初期化します (零元の Union もまた零元)。
 		public ST1(int n, Func<TV, TV, TV> union, TV _v0, TV[] a0 = null)
 		{
-			while (n2 < n) n2 <<= 1;
-			a2 = new TV[n2 <<= 1];
+			while (n2 < n << 1) n2 <<= 1;
+			a2 = new TV[n2];
 
 			Union = union;
 			v0 = _v0;

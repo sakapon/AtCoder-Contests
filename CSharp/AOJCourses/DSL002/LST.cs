@@ -35,8 +35,7 @@ class LST<TO, TV>
 
 	public LST(int n, Func<TO, TO, TO> multiply, TO _id, Func<TV, TV, TV> union, TV _v0, Func<TO, TV, STNode, int, TV> transform, TV[] a0 = null)
 	{
-		while (n2 < n) n2 <<= 1;
-		n2 <<= 1;
+		while (n2 < n << 1) n2 <<= 1;
 		a1 = new TO[n2];
 		a2 = new TV[n2];
 

@@ -28,8 +28,8 @@ class ST1<TV>
 	// 全ノードを、零元を表す値で初期化します (零元の Union もまた零元)。
 	public ST1(int n, Func<TV, TV, TV> union, TV _v0, TV[] a0 = null)
 	{
-		while (n2 < n) n2 <<= 1;
-		a2 = new TV[n2 <<= 1];
+		while (n2 < n << 1) n2 <<= 1;
+		a2 = new TV[n2];
 
 		Union = union;
 		v0 = _v0;
@@ -131,8 +131,8 @@ class STR<TO>
 	// 全ノードを、恒等変換を表す値で初期化します。
 	public STR(int n, Func<TO, TO, TO> multiply, TO _id)
 	{
-		while (n2 < n) n2 <<= 1;
-		a1 = new TO[n2 <<= 1];
+		while (n2 < n << 1) n2 <<= 1;
+		a1 = new TO[n2];
 
 		Multiply = multiply;
 		id = _id;

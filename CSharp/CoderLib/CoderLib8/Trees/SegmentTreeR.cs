@@ -37,8 +37,8 @@ namespace CoderLib8.Trees
 		// 全ノードを、恒等変換を表す値で初期化します。
 		public STR(int n, Func<TO, TO, TO> multiply, TO _id)
 		{
-			while (n2 < n) n2 <<= 1;
-			a1 = new TO[n2 <<= 1];
+			while (n2 < n << 1) n2 <<= 1;
+			a1 = new TO[n2];
 
 			Multiply = multiply;
 			id = _id;
