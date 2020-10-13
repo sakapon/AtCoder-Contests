@@ -9,7 +9,10 @@ class FG
 		var h = Read();
 		var n = h[0];
 
-		var st = new LST<int, int>(n, (x, y) => x == -1 ? y : x, -1, Math.Min, int.MaxValue, (x, p, _, l) => x == -1 ? p : x);
+		var st = new LST<int, int>(n,
+			(x, y) => x == int.MinValue ? y : x, int.MinValue,
+			Math.Min, int.MaxValue,
+			(x, p, _, l) => x == int.MinValue ? p : x);
 
 		for (int k = 0; k < h[1]; k++)
 		{

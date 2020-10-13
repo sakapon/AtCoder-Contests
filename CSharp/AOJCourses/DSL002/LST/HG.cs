@@ -9,7 +9,11 @@ class HG
 		var h = Read();
 		var n = h[0];
 
-		var st = new LST<long, long>(n, (x, y) => x + y, 0, Math.Min, int.MaxValue, (x, p, _, l) => p + x, new long[n]);
+		var st = new LST<long, long>(n,
+			(x, y) => x + y, 0,
+			Math.Min, int.MaxValue,
+			(x, p, _, l) => p + x,
+			new long[n]);
 
 		for (int k = 0; k < h[1]; k++)
 		{

@@ -9,7 +9,10 @@ class GG
 		var h = Read();
 		var n = h[0];
 
-		var st = new LST<long, long>(n + 1, (x, y) => x + y, 0, (x, y) => x + y, 0, (x, p, _, l) => p + x * l);
+		var st = new LST<long, long>(n + 1,
+			(x, y) => x + y, 0,
+			(x, y) => x + y, 0,
+			(x, p, _, l) => p + x * l);
 
 		for (int k = 0; k < h[1]; k++)
 		{

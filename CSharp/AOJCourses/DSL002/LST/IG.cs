@@ -9,7 +9,10 @@ class IG
 		var h = Read();
 		var n = h[0];
 
-		var st = new LST<long, long>(n, (x, y) => x == 1 << 30 ? y : x, 1 << 30, (x, y) => x + y, 0, (x, p, _, l) => x == 1 << 30 ? p : x * l);
+		var st = new LST<long, long>(n,
+			(x, y) => x == int.MinValue ? y : x, int.MinValue,
+			(x, y) => x + y, 0,
+			(x, p, _, l) => x == int.MinValue ? p : x * l);
 
 		for (int k = 0; k < h[1]; k++)
 		{
