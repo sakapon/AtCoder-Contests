@@ -3,14 +3,14 @@ using System.Linq;
 
 class DG
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
+	const int kM = 300000;
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
 	{
 		var h = Read();
 		int n = h[0], k = h[1];
-		var a = new int[n].Select(_ => int.Parse(Console.ReadLine())).ToArray();
+		var a = Array.ConvertAll(new int[n], _ => int.Parse(Console.ReadLine()));
 
-		var kM = 300000;
 		var st = new STR<int>(kM + 1, Math.Max, 0);
 
 		for (int i = 0; i < n; i++)

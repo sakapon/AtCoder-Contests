@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Linq;
 
 class EG
 {
 	const long M = 998244353;
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
 	{
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
