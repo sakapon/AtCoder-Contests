@@ -3,6 +3,7 @@
 namespace CoderLib6.Collections
 {
 	// いもす法
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/5/DSL_5_A
 	class StaticRAQ
 	{
 		long[] d;
@@ -26,6 +27,7 @@ namespace CoderLib6.Collections
 		}
 	}
 
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/5/DSL_5_B
 	class StaticRAQ2
 	{
 		int nx, ny;
