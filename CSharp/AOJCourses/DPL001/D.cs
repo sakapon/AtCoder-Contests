@@ -5,14 +5,22 @@ class D
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		var ps = new int[h[0]].Select(_ => read()).ToArray();
+		var a = Array.ConvertAll(new int[n], _ => int.Parse(Console.ReadLine()));
 
-		Console.WriteLine(string.Join(" ", a));
+		var dp = new int[n];
+		for (int i = 0; i < n; i++)
+			dp[i] = 1 << 30;
+
+		for (int i = 0; i < n; i++)
+			dp[First(0, n, x => dp[x] >= a[i])] = a[i];
+		Console.WriteLine(dp.Count(x => x < 1 << 30));
+	}
+
+	static int First(int l, int r, Func<int, bool> f)
+	{
+		int m;
+		while (l < r) if (f(m = l + (r - l - 1) / 2)) r = m; else l = m + 1;
+		return r;
 	}
 }
