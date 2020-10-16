@@ -19,6 +19,7 @@ class A
 
 		var dp = NewArray2(1 << n, n, max);
 		dp[0][0] = 0;
+
 		for (int x = 0; x < 1 << n; x++)
 		{
 			for (int v = 0; v < n; v++)
@@ -26,8 +27,9 @@ class A
 				if (dp[x][v] == max) continue;
 				foreach (var e in map[v])
 				{
-					if ((x & (1 << e[1])) != 0) continue;
-					dp[x | (1 << e[1])][e[1]] = Math.Min(dp[x | (1 << e[1])][e[1]], dp[x][v] + e[2]);
+					var nv = e[1];
+					if ((x & (1 << nv)) != 0) continue;
+					dp[x | (1 << nv)][nv] = Math.Min(dp[x | (1 << nv)][nv], dp[x][v] + e[2]);
 				}
 			}
 		}
