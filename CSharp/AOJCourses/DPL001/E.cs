@@ -8,6 +8,7 @@ class E
 		var t = Console.ReadLine();
 		int n = s.Length, m = t.Length;
 
+		// d(s[0..i], t[0..j])
 		var dp = new int[n + 1, m + 1];
 		for (int i = 0; i <= n; i++) dp[i, 0] = i;
 		for (int j = 0; j <= m; j++) dp[0, j] = j;

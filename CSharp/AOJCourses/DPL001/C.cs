@@ -3,6 +3,7 @@ using System.Linq;
 
 class C
 {
+	const int min = -1 << 30;
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
 	{
@@ -11,9 +12,16 @@ class C
 		var ps = Array.ConvertAll(new int[n], _ => Read());
 
 		var dp = new int[w + 1000];
+		for (int i = 0; i < dp.Length; i++)
+			dp[i] = min;
+		dp[0] = 0;
+
 		foreach (var p in ps)
 			for (int i = 0; i < w; i++)
+			{
+				if (dp[i] == min) continue;
 				dp[i + p[1]] = Math.Max(dp[i + p[1]], dp[i] + p[0]);
-		Console.WriteLine(dp[w]);
+			}
+		Console.WriteLine(dp.Take(w + 1).Max());
 	}
 }
