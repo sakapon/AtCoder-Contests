@@ -1,16 +1,52 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 
 class B
 {
+	struct P
+	{
+		public int i, length;
+		public P(int _i, int _l) { i = _i; length = _l; }
+	}
+
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var z = Read();
+		int h = z[0], w = z[1];
+		var c = Array.ConvertAll(new int[h], _ => Read());
 
-		Console.WriteLine(string.Join(" ", h));
+		// Histogram
+		var a = new int[w];
+		var M = 0L;
+
+		for (int i = 0; i < h; i++)
+		{
+			var q = new Stack<P>();
+
+			for (int j = 0; j < w; j++)
+			{
+				if (c[i][j] == 0) a[j]++;
+				else a[j] = 0;
+
+				var p = new P(j, a[j]);
+				while (q.Count > 0 && q.Peek().length > a[j])
+				{
+					p = q.Pop();
+					M = Math.Max(M, (long)(j - p.i) * p.length);
+				}
+
+				if (q.Count == 0 || q.Peek().length < a[j])
+					q.Push(new P(p.i, a[j]));
+			}
+
+			// right bound
+			while (q.Count > 0)
+			{
+				var p = q.Pop();
+				M = Math.Max(M, (long)(w - p.i) * p.length);
+			}
+		}
+		Console.WriteLine(M);
 	}
 }
