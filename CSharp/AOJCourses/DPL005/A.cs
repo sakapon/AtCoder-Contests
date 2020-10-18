@@ -1,16 +1,21 @@
 ﻿using System;
-using System.Linq;
 
 class A
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
 		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		int n = h[0], k = h[1];
+		Console.WriteLine(MPow(k, n));
+	}
 
-		Console.WriteLine(string.Join(" ", h));
+	const long M = 1000000007;
+	static long MPow(long b, long i)
+	{
+		for (var r = 1L; ; b = b * b % M)
+		{
+			if (i % 2 > 0) r = r * b % M;
+			if ((i /= 2) < 1) return r;
+		}
 	}
 }
