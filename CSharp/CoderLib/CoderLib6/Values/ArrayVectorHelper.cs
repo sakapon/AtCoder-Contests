@@ -18,6 +18,12 @@ namespace CoderLib6.Values
 		static long NormMax(long[] v) => v.Max(x => Math.Abs(x));
 
 		static long Dot(long[] v1, long[] v2) => v1.Zip(v2, (x, y) => x * y).Sum();
+		static long Dot_0(long[] v1, long[] v2)
+		{
+			var r = 0L;
+			for (var i = 0; i < v1.Length; ++i) r += v1[i] * v2[i];
+			return r;
+		}
 		static bool IsOrthogonal(long[] v1, long[] v2) => Dot(v1, v2) == 0;
 	}
 }

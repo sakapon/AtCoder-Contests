@@ -2,6 +2,7 @@
 
 namespace CoderLib6.Collections
 {
+	[Obsolete]
 	static class ArrayHelper
 	{
 		static void Swap<T>(T[] a, int i, int j) { var o = a[i]; a[i] = a[j]; a[j] = o; }

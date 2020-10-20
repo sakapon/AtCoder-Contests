@@ -27,6 +27,20 @@ namespace CoderLib8.Collections
 			return a;
 		}
 
+		static int[] Range(int start, int count)
+		{
+			var a = new int[count];
+			for (var i = 0; i < count; ++i) a[i] = start + i;
+			return a;
+		}
+
+		static int[] Range2(int l_in, int r_ex)
+		{
+			var a = new int[r_ex - l_in];
+			for (var i = l_in; i < r_ex; ++i) a[i - l_in] = i;
+			return a;
+		}
+
 		static (T, T) ToTuple2<T>(T[] a) => (a[0], a[1]);
 		static (T, T, T) ToTuple3<T>(T[] a) => (a[0], a[1], a[2]);
 	}
