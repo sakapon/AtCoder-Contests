@@ -21,7 +21,10 @@ namespace CoderLib6.Collections
 
 		// C# 8.0
 		//public long Sum(Range r) => Sum(r.Start.GetOffset(a.Length), r.End.GetOffset(a.Length));
+	}
 
+	static class SeqHelper
+	{
 		// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/3/DSL_3_D
 		public static int[] SlideMin(int[] a, int k)
 		{
