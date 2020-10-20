@@ -163,9 +163,10 @@ namespace CoderLib6.Graphs
 
 			foreach (var e in es)
 			{
-				d[e[0]][e[1]] = e[2];
+				// 多重辺の場合に対応するため、Min を使います。
+				d[e[0]][e[1]] = Math.Min(d[e[0]][e[1]], e[2]);
 				// 有向グラフの場合、ここを削除します。
-				d[e[1]][e[0]] = e[2];
+				d[e[1]][e[0]] = Math.Min(d[e[1]][e[0]], e[2]);
 			}
 
 			for (int k = 0; k <= n; k++)

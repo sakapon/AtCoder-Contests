@@ -3,6 +3,7 @@
 namespace CoderLib8.Collections
 {
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/7/DPL/1
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/7/DPL/2
 	static class ArrayHelper
 	{
 		//const long max = 1L << 60;

@@ -8,6 +8,11 @@ public class BasicTest
 {
 	// Tabs for indentation.
 
+	static int Chmax(ref int x, int v) => x < v ? x = v : x;
+	static int Chmin(ref int x, int v) => x > v ? x = v : x;
+	static long Chmax(ref long x, long v) => x < v ? x = v : x;
+	static long Chmin(ref long x, long v) => x > v ? x = v : x;
+
 	static int[] CumSum(int[] a)
 	{
 		var s = new int[a.Length + 1];
@@ -47,13 +52,20 @@ public class BasicTest
 		return t * t * PowR(b, i % 2);
 	}
 
-	static long Pow(long b, int i)
+	static long Pow(long b, long i)
 	{
-		for (var r = 1L; ; b *= b)
+		for (long r = 1; ; b *= b)
 		{
-			if (i % 2 > 0) r *= b;
-			if ((i /= 2) < 1) return r;
+			if ((i & 1) != 0) r *= b;
+			if ((i >>= 1) == 0) return r;
 		}
+	}
+
+	static int FlagCount(int x)
+	{
+		var r = 0;
+		for (; x != 0; x >>= 1) if ((x & 1) != 0) r++;
+		return r;
 	}
 
 	// n >= 0
