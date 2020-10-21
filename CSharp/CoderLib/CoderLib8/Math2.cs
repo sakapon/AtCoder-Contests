@@ -30,6 +30,15 @@ namespace CoderLib8
 			return t * t * PowR(b, i % 2);
 		}
 
+		// n >= 0
+		public static long Factorial(int n) { for (long x = 1, i = 1; ; x *= ++i) if (i >= n) return x; }
+		public static long Npr(int n, int r)
+		{
+			if (n < r) return 0;
+			for (long x = 1, i = n - r; ; x *= ++i) if (i >= n) return x;
+		}
+		public static long Ncr(int n, int r) => n < r ? 0 : n - r < r ? Ncr(n, n - r) : Npr(n, r) / Factorial(r);
+
 		static int Chmax(ref int x, int v) => x < v ? x = v : x;
 		static int Chmin(ref int x, int v) => x > v ? x = v : x;
 		static long Chmax(ref long x, long v) => x < v ? x = v : x;

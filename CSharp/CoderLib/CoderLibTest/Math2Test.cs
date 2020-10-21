@@ -5,7 +5,7 @@ using CoderLib8;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
-public class BasicTest
+public class Math2Test
 {
 	// Tabs for indentation.
 
@@ -40,15 +40,6 @@ public class BasicTest
 		return p;
 	}
 
-	// n >= 0
-	static long Factorial(int n) { for (long x = 1, i = 1; ; x *= ++i) if (i >= n) return x; }
-	static long Npr(int n, int r)
-	{
-		if (n < r) return 0;
-		for (long x = 1, i = n - r; ; x *= ++i) if (i >= n) return x;
-	}
-	static long Ncr(int n, int r) => n < r ? 0 : n - r < r ? Ncr(n, n - r) : Npr(n, r) / Factorial(r);
-
 	#region Test Methods
 
 	[TestMethod]
@@ -80,40 +71,40 @@ public class BasicTest
 	[TestMethod]
 	public void Factorial()
 	{
-		Assert.AreEqual(1, Factorial(0));
-		Assert.AreEqual(1, Factorial(1));
-		Assert.AreEqual(2, Factorial(2));
-		Assert.AreEqual(6, Factorial(3));
-		Assert.AreEqual(24, Factorial(4));
-		Assert.AreEqual(2432902008176640000, Factorial(20));
+		Assert.AreEqual(1, Math2.Factorial(0));
+		Assert.AreEqual(1, Math2.Factorial(1));
+		Assert.AreEqual(2, Math2.Factorial(2));
+		Assert.AreEqual(6, Math2.Factorial(3));
+		Assert.AreEqual(24, Math2.Factorial(4));
+		Assert.AreEqual(2432902008176640000, Math2.Factorial(20));
 	}
 
 	[TestMethod]
 	public void Npr()
 	{
-		Assert.AreEqual(1, Npr(0, 0));
-		Assert.AreEqual(1, Npr(1, 0));
-		Assert.AreEqual(1, Npr(1, 1));
-		Assert.AreEqual(0, Npr(1, 2));
-		Assert.AreEqual(1, Npr(3, 0));
-		Assert.AreEqual(3, Npr(3, 1));
-		Assert.AreEqual(6, Npr(3, 2));
-		Assert.AreEqual(6, Npr(3, 3));
-		Assert.AreEqual(151200, Npr(10, 6));
+		Assert.AreEqual(1, Math2.Npr(0, 0));
+		Assert.AreEqual(1, Math2.Npr(1, 0));
+		Assert.AreEqual(1, Math2.Npr(1, 1));
+		Assert.AreEqual(0, Math2.Npr(1, 2));
+		Assert.AreEqual(1, Math2.Npr(3, 0));
+		Assert.AreEqual(3, Math2.Npr(3, 1));
+		Assert.AreEqual(6, Math2.Npr(3, 2));
+		Assert.AreEqual(6, Math2.Npr(3, 3));
+		Assert.AreEqual(151200, Math2.Npr(10, 6));
 	}
 
 	[TestMethod]
 	public void Ncr()
 	{
-		Assert.AreEqual(1, Ncr(0, 0));
-		Assert.AreEqual(1, Ncr(1, 0));
-		Assert.AreEqual(1, Ncr(1, 1));
-		Assert.AreEqual(0, Ncr(1, 2));
-		Assert.AreEqual(1, Ncr(3, 0));
-		Assert.AreEqual(3, Ncr(3, 1));
-		Assert.AreEqual(3, Ncr(3, 2));
-		Assert.AreEqual(1, Ncr(3, 3));
-		Assert.AreEqual(210, Ncr(10, 6));
+		Assert.AreEqual(1, Math2.Ncr(0, 0));
+		Assert.AreEqual(1, Math2.Ncr(1, 0));
+		Assert.AreEqual(1, Math2.Ncr(1, 1));
+		Assert.AreEqual(0, Math2.Ncr(1, 2));
+		Assert.AreEqual(1, Math2.Ncr(3, 0));
+		Assert.AreEqual(3, Math2.Ncr(3, 1));
+		Assert.AreEqual(3, Math2.Ncr(3, 2));
+		Assert.AreEqual(1, Math2.Ncr(3, 3));
+		Assert.AreEqual(210, Math2.Ncr(10, 6));
 	}
 	#endregion
 }
