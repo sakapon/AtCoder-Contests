@@ -1,28 +1,28 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CoderLibTest.Values
+namespace CoderLib6.Values
 {
-	[TestClass]
-	public class Modulo2Test
+	// Square Matrix
+	static class ModuloMatrixHelper
 	{
-		const int M = 1000000007;
+		const long M = 1000000007;
 
-		// Matrix
-		static long[,] UnitMatrix(int n)
+		static long[,] Unit(int n)
 		{
 			var r = new long[n, n];
 			for (int i = 0; i < n; i++) r[i, i] = 1;
 			return r;
 		}
+
 		static long[,] MPow(long[,] b, long i)
 		{
-			for (var r = UnitMatrix(b.GetLength(0)); ; b = MMul(b, b))
+			for (var r = Unit(b.GetLength(0)); ; b = MMul(b, b))
 			{
 				if (i % 2 > 0) r = MMul(r, b);
 				if ((i /= 2) < 1) return r;
 			}
 		}
+
 		static long[,] MMul(long[,] a, long[,] b)
 		{
 			var n = a.GetLength(0);
@@ -33,6 +33,7 @@ namespace CoderLibTest.Values
 						r[i, j] = (r[i, j] + a[i, k] * b[k, j]) % M;
 			return r;
 		}
+
 		static long[] MMul(long[,] a, long[] v)
 		{
 			var n = v.Length;
