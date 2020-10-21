@@ -4,6 +4,7 @@ namespace CoderLib6.Values
 {
 	// M が素数のときに限定されるメソッド: MInv, MNcr
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/7/DPL/5
+	// Test: https://atcoder.jp/contests/atc002/tasks/atc002_b
 	static class ModuloHelper
 	{
 		//const long M = 998244353;
