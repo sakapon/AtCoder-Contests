@@ -12,10 +12,8 @@ class A
 	const long M = 1000000007;
 	static long MPow(long b, long i)
 	{
-		for (var r = 1L; ; b = b * b % M)
-		{
-			if (i % 2 > 0) r = r * b % M;
-			if ((i /= 2) < 1) return r;
-		}
+		long r = 1;
+		for (; i != 0; b = b * b % M, i >>= 1) if ((i & 1) != 0) r = r * b % M;
+		return r;
 	}
 }

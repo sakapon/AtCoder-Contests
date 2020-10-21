@@ -2,7 +2,7 @@
 
 namespace CoderLib6.Values
 {
-	// M が素数に限定されるメソッド: MInv, MNcr
+	// M が素数のときに限定されるメソッド: MInv, MNcr
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/7/DPL/5
 	static class ModuloHelper
 	{
@@ -15,6 +15,15 @@ namespace CoderLib6.Values
 			return r;
 		}
 		static long MInv(long x) => MPow(x, M - 2);
+
+		// n >= 0
+		static long MFactorial(int n) { for (long x = 1, i = 1; ; x = x * ++i % M) if (i >= n) return x; }
+		static long MNpr(int n, int r)
+		{
+			if (n < r) return 0;
+			for (long x = 1, i = n - r; ; x = x * ++i % M) if (i >= n) return x;
+		}
+		static long MNcr(int n, int r) => n < r ? 0 : n - r < r ? MNcr(n, n - r) : MNpr(n, r) * MInv(MFactorial(r)) % M;
 
 		static long MInt(long x) => (x %= M) < 0 ? x + M : x;
 		static long MNeg(long x) => MInt(-x);
@@ -30,14 +39,5 @@ namespace CoderLib6.Values
 			for (int i = 0; i < n; ++i) p[i + 1] = p[i] * b % M;
 			return p;
 		}
-
-		// n >= 0
-		static long MFactorial(int n) { for (long x = 1, i = 1; ; x = x * ++i % M) if (i >= n) return x; }
-		static long MNpr(int n, int r)
-		{
-			if (n < r) return 0;
-			for (long x = 1, i = n - r; ; x = x * ++i % M) if (i >= n) return x;
-		}
-		static long MNcr(int n, int r) => n < r ? 0 : n - r < r ? MNcr(n, n - r) : MNpr(n, r) * MInv(MFactorial(r)) % M;
 	}
 }
