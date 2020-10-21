@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,7 +33,7 @@ namespace CoderLib8.Linq
 			public G(TK key, TE[] values) { Key = key; Values = values; }
 
 			public IEnumerator<TE> GetEnumerator() => Values.GetEnumerator();
-			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 		}
 	}
 }
