@@ -39,14 +39,14 @@ namespace CoderLib6.Collections
 			return s;
 		}
 
-		public static int[] Pows(int n, int b)
+		public static int[] Pows(int b, int n)
 		{
 			var p = new int[n + 1];
 			p[0] = 1;
 			for (int i = 0; i < n; ++i) p[i + 1] = p[i] * b;
 			return p;
 		}
-		public static long[] Pows(int n, long b)
+		public static long[] PowsL(long b, int n)
 		{
 			var p = new long[n + 1];
 			p[0] = 1;

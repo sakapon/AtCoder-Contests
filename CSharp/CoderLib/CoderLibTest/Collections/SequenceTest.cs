@@ -31,9 +31,9 @@ namespace CoderLibTest.Collections
 		[TestMethod]
 		public void Pows()
 		{
-			CollectionAssert.AreEqual(SeqHelper.Pows2(), SeqHelper.Pows(30, 2));
-			CollectionAssert.AreEqual(SeqHelper.Pows2L(), SeqHelper.Pows(62, 2L));
-			Assert.AreEqual(4052555153018976267, SeqHelper.Pows(39, 3L)[39]);
+			CollectionAssert.AreEqual(SeqHelper.Pows2(), SeqHelper.Pows(2, 30));
+			CollectionAssert.AreEqual(SeqHelper.Pows2L(), SeqHelper.PowsL(2, 62));
+			Assert.AreEqual(4052555153018976267, SeqHelper.PowsL(3, 39)[39]);
 		}
 
 		[TestMethod]
