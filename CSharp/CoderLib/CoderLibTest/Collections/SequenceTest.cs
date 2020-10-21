@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CoderLib6.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -18,6 +19,21 @@ namespace CoderLibTest.Collections
 			Assert.AreEqual(9, seq.Sum(1, 4));
 			Assert.AreEqual(14, seq.Sum(1, 5));
 			Assert.AreEqual(15, seq.Sum(0, 5));
+		}
+
+		[TestMethod]
+		public void CumSum()
+		{
+			Assert.AreEqual(500500, SeqHelper.CumSum(Enumerable.Range(1, 1000).ToArray())[1000]);
+			Assert.AreEqual(5000050000, SeqHelper.CumSumL(Enumerable.Range(1, 100000).ToArray())[100000]);
+		}
+
+		[TestMethod]
+		public void Pows()
+		{
+			CollectionAssert.AreEqual(SeqHelper.Pows2(), SeqHelper.Pows(30, 2));
+			CollectionAssert.AreEqual(SeqHelper.Pows2L(), SeqHelper.Pows(62, 2L));
+			Assert.AreEqual(4052555153018976267, SeqHelper.Pows(39, 3L)[39]);
 		}
 
 		[TestMethod]

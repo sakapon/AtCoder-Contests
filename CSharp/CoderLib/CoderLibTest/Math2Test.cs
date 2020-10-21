@@ -1,62 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using CoderLib8;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
 public class Math2Test
 {
-	// Tabs for indentation.
-
-	static int[] CumSum(int[] a)
-	{
-		var s = new int[a.Length + 1];
-		for (int i = 0; i < a.Length; ++i) s[i + 1] = s[i] + a[i];
-		return s;
-	}
-	static long[] CumSumL(int[] a)
-	{
-		var s = new long[a.Length + 1];
-		for (int i = 0; i < a.Length; ++i) s[i + 1] = s[i] + a[i];
-		return s;
-	}
-
-	static int[] Pow2() => Enumerable.Range(0, 31).Select(i => 1 << i).ToArray();
-	static long[] Pow2L() => Enumerable.Range(0, 63).Select(i => 1L << i).ToArray();
-
-	static int[] Powers(int n, int b)
-	{
-		var p = new int[n + 1];
-		p[0] = 1;
-		for (int i = 0; i < n; ++i) p[i + 1] = p[i] * b;
-		return p;
-	}
-	static long[] Powers(int n, long b)
-	{
-		var p = new long[n + 1];
-		p[0] = 1;
-		for (int i = 0; i < n; ++i) p[i + 1] = p[i] * b;
-		return p;
-	}
-
-	#region Test Methods
-
-	[TestMethod]
-	public void CumSum()
-	{
-		Assert.AreEqual(500500, CumSum(Enumerable.Range(1, 1000).ToArray())[1000]);
-		Assert.AreEqual(5000050000, CumSumL(Enumerable.Range(1, 100000).ToArray())[100000]);
-	}
-
-	[TestMethod]
-	public void Powers()
-	{
-		CollectionAssert.AreEqual(Pow2(), Powers(30, 2));
-		CollectionAssert.AreEqual(Pow2L(), Powers(62, 2L));
-		Assert.AreEqual(4052555153018976267, Powers(39, 3L)[39]);
-	}
-
 	[TestMethod]
 	public void Pow()
 	{
@@ -106,5 +54,4 @@ public class Math2Test
 		Assert.AreEqual(1, Math2.Ncr(3, 3));
 		Assert.AreEqual(210, Math2.Ncr(10, 6));
 	}
-	#endregion
 }
