@@ -16,11 +16,9 @@ namespace CoderLib6.Values
 
 		static long[,] MPow(long[,] b, long i)
 		{
-			for (var r = Unit(b.GetLength(0)); ; b = MMul(b, b))
-			{
-				if (i % 2 > 0) r = MMul(r, b);
-				if ((i /= 2) < 1) return r;
-			}
+			var r = Unit(b.GetLength(0));
+			for (; i != 0; b = MMul(b, b), i >>= 1) if ((i & 1) != 0) r = MMul(r, b);
+			return r;
 		}
 
 		static long[,] MMul(long[,] a, long[,] b)
@@ -28,7 +26,7 @@ namespace CoderLib6.Values
 			var n = a.GetLength(0);
 			var r = new long[n, n];
 			for (var i = 0; i < n; i++)
-				for (int j = 0; j < n; j++)
+				for (var j = 0; j < n; j++)
 					for (var k = 0; k < n; k++)
 						r[i, j] = (r[i, j] + a[i, k] * b[k, j]) % M;
 			return r;
