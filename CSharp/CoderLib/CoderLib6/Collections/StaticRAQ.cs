@@ -55,5 +55,16 @@ namespace CoderLib6.Collections
 				for (int i = 1; i < nx; ++i) a[i, j] += a[i - 1, j];
 			return a;
 		}
+
+		// O(nx ny)
+		// d をそのまま使います。
+		public long[,] GetAll0()
+		{
+			for (int i = 0; i < nx; ++i)
+				for (int j = 1; j < ny; ++j) d[i, j] += d[i, j - 1];
+			for (int j = 0; j < ny; ++j)
+				for (int i = 1; i < nx; ++i) d[i, j] += d[i - 1, j];
+			return d;
+		}
 	}
 }
