@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CoderLibTest.Maths
+namespace CoderLibTest.Numerics
 {
 	[TestClass]
-	public class Combination0Test
+	public class CombinatoricsLabTest
 	{
 		static IEnumerable<int[]> Comb2(int n)
 		{

@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CoderLibTest.Values
 {
 	[TestClass]
-	public class ModuloTest
+	public class ModuloLabTest
 	{
 		// For negative integers.
 		static int Mod(int v, int mod) => (v %= mod) < 0 ? v + mod : v;
