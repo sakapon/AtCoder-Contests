@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CoderLibTest.Values
 {
+	// 等値比較は V で。
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/7/DPL/5
 	struct MInt
 	{
 		const int M = 1000000007;
@@ -10,7 +12,6 @@ namespace CoderLibTest.Values
 		public MInt(long v) { V = (v %= M) < 0 ? v + M : v; }
 
 		public static implicit operator MInt(long v) => new MInt(v);
-		public static MInt operator +(MInt x) => x;
 		public static MInt operator -(MInt x) => -x.V;
 		public static MInt operator +(MInt x, MInt y) => x.V + y.V;
 		public static MInt operator -(MInt x, MInt y) => x.V - y.V;
@@ -60,6 +61,12 @@ namespace CoderLibTest.Values
 		{
 			for (var i = 1; i <= 100000; i++)
 				Assert.AreEqual(1, (new MInt(i).Inv() * i).V);
+		}
+
+		[TestMethod]
+		public void Div()
+		{
+			Assert.AreEqual(312500008, ((MInt)93) / 16);
 		}
 	}
 }
