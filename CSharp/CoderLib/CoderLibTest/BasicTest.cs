@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CoderLib8;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
 public class BasicTest
 {
 	// Tabs for indentation.
-
-	static int Chmax(ref int x, int v) => x < v ? x = v : x;
-	static int Chmin(ref int x, int v) => x > v ? x = v : x;
-	static long Chmax(ref long x, long v) => x < v ? x = v : x;
-	static long Chmin(ref long x, long v) => x > v ? x = v : x;
 
 	static int[] CumSum(int[] a)
 	{
@@ -42,30 +38,6 @@ public class BasicTest
 		p[0] = 1;
 		for (int i = 0; i < n; ++i) p[i + 1] = p[i] * b;
 		return p;
-	}
-
-	static long PowR(long b, int i)
-	{
-		if (i == 0) return 1;
-		if (i == 1) return b;
-		var t = PowR(b, i / 2);
-		return t * t * PowR(b, i % 2);
-	}
-
-	static long Pow(long b, long i)
-	{
-		for (long r = 1; ; b *= b)
-		{
-			if ((i & 1) != 0) r *= b;
-			if ((i >>= 1) == 0) return r;
-		}
-	}
-
-	static int FlagCount(int x)
-	{
-		var r = 0;
-		for (; x != 0; x >>= 1) if ((x & 1) != 0) r++;
-		return r;
 	}
 
 	// n >= 0
@@ -99,10 +71,10 @@ public class BasicTest
 	{
 		var b = 2;
 		for (var i = 0; i <= 62; i++)
-			Assert.AreEqual((long)Math.Pow(b, i), Pow(b, i));
+			Assert.AreEqual((long)Math.Pow(b, i), Math2.Pow(b, i));
 		b = 3;
 		for (var i = 0; i <= 33; i++)
-			Assert.AreEqual((long)Math.Pow(b, i), Pow(b, i));
+			Assert.AreEqual((long)Math.Pow(b, i), Math2.Pow(b, i));
 	}
 
 	[TestMethod]
