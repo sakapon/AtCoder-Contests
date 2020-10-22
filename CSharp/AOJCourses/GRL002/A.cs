@@ -10,7 +10,7 @@ class A
 		var h = Read();
 		var es = new int[h[1]].Select(_ => Read()).ToArray();
 
-		Console.WriteLine(Kruskal(h[0] - 1, es).Sum(e => e[2]));
+		Console.WriteLine(Kruskal(h[0], es).Sum(e => e[2]));
 	}
 
 	static int[][] Kruskal(int n, int[][] es)
@@ -31,7 +31,7 @@ class A
 class UF
 {
 	int[] p;
-	public UF(int n) { p = Enumerable.Range(0, n + 1).ToArray(); }
+	public UF(int n) { p = Enumerable.Range(0, n).ToArray(); }
 
 	public void Unite(int a, int b) { if (!AreUnited(a, b)) p[p[b]] = p[a]; }
 	public bool AreUnited(int a, int b) => GetRoot(a) == GetRoot(b);
