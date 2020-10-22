@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoderLib8
+namespace CoderLib8.Numerics
 {
 	static class Math2
 	{
