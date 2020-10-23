@@ -19,9 +19,9 @@ class D2
 		foreach (var q in qs)
 		{
 			if (q[0] == 0)
-				st.Set(et.order[q[1]][0], et.order[q[1]].Last() + 1, q[2]);
+				st.Set(et.ordersMap[q[1]][0], et.ordersMap[q[1]].Last() + 1, q[2]);
 			else
-				Console.WriteLine(st.Get(et.order[q[1]][0]));
+				Console.WriteLine(st.Get(et.ordersMap[q[1]][0]));
 		}
 		Console.Out.Flush();
 	}
@@ -30,29 +30,30 @@ class D2
 // n: 個数
 class EulerTour
 {
+	// vertex -> children
 	List<int>[] map;
 	// order -> vertex
 	public List<int> tour;
 	// vertex -> orders
-	public List<int>[] order;
+	public List<int>[] ordersMap;
 
 	public EulerTour(int n, int root, List<int>[] _map)
 	{
 		map = _map;
 		tour = new List<int>();
-		order = Array.ConvertAll(new int[n], _ => new List<int>());
+		ordersMap = Array.ConvertAll(new int[n], _ => new List<int>());
 		Dfs(root, 0);
 	}
 
 	void Dfs(int v, int depth)
 	{
-		order[v].Add(tour.Count);
+		ordersMap[v].Add(tour.Count);
 		foreach (var nv in map[v])
 		{
 			tour.Add(v);
 			Dfs(nv, depth + 1);
 			tour.Add(-nv);
-			order[v].Add(tour.Count);
+			ordersMap[v].Add(tour.Count);
 		}
 	}
 }

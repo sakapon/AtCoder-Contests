@@ -23,7 +23,7 @@ class Lca
 	// IList<IList<int>> などでは TLE。
 	List<int>[] map;
 	List<int> tour;
-	List<int>[] orderMap;
+	List<int>[] ordersMap;
 	List<int> depths;
 	ST1<int> depthST;
 
@@ -31,23 +31,27 @@ class Lca
 	{
 		map = _map;
 		tour = new List<int>();
-		orderMap = Array.ConvertAll(new int[n], _ => new List<int>());
+		ordersMap = Array.ConvertAll(new int[n], _ => new List<int>());
 		depths = new List<int>();
 		EulerTourDfs(root, 0);
 		depthST = new ST1<int>(2 * n, Math.Min, int.MaxValue, depths.ToArray());
 	}
 
-	// TODO: 再考の余地あり
+	// 頂点と辺で 1 セット。
 	void EulerTourDfs(int v, int depth)
 	{
-		orderMap[v].Add(tour.Count);
+		// Vertex
+		ordersMap[v].Add(tour.Count);
 		depths.Add(depth);
 		foreach (var nv in map[v])
 		{
+			// Edge
 			tour.Add(v);
 			EulerTourDfs(nv, depth + 1);
 			tour.Add(-nv);
-			orderMap[v].Add(tour.Count);
+
+			// Vertex
+			ordersMap[v].Add(tour.Count);
 			depths.Add(depth);
 		}
 	}
@@ -55,11 +59,11 @@ class Lca
 	public int GetLca(int u, int v)
 	{
 		if (u == v) return u;
-		if (orderMap[u][0] > orderMap[v][0]) { var t = u; u = v; v = t; }
-		if (orderMap[u].Last() > orderMap[v][0]) return u;
+		if (ordersMap[u][0] > ordersMap[v][0]) { var t = u; u = v; v = t; }
+		if (ordersMap[u].Last() > ordersMap[v][0]) return u;
 
-		var minDepth = depthST.Get(orderMap[u].Last(), orderMap[v][0]);
-		var lcaOrder = depthST.Aggregate(orderMap[u].Last(), orderMap[v][0], -1, (p, n, l) =>
+		var minDepth = depthST.Get(ordersMap[u].Last(), ordersMap[v][0]);
+		var lcaOrder = depthST.Aggregate(ordersMap[u].Last(), ordersMap[v][0], -1, (p, n, l) =>
 		{
 			if (p != -1 || depthST[n] != minDepth) return p;
 			while (l > 1)
