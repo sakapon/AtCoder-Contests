@@ -11,26 +11,28 @@ class E
 		int n = h[0], k = h[1];
 		var a = new int[n].Select(_ => Read()).ToArray();
 
-		var sv = n * n + 2 * n;
+		var sv = 2 * n;
 		var ev = sv + 1;
 
 		var dg = new List<long[]>();
 		for (int i = 0; i < n; i++)
 		{
-			dg.Add(new[] { sv, n * n + i, k, 0L });
-			dg.Add(new[] { n * n + n + i, ev, k, 0L });
+			dg.Add(new[] { sv, i, k, 0L });
+			dg.Add(new[] { n + i, ev, k, 0L });
 		}
 
 		for (int i = 0; i < n; i++)
 			for (int j = 0; j < n; j++)
 			{
-				var v = n * i + j;
-				dg.Add(new[] { n * n + i, v, 1L, -a[i][j] });
-				dg.Add(new[] { v, n * n + n + j, 1L, 0 });
+				dg.Add(new[] { i, n + j, 1L, -a[i][j] });
 			}
 
-		var r = -MinCostFlow(ev, sv, ev, dg.ToArray(), n * k);
-		Console.WriteLine(r);
+		var M = 0L;
+		for (int q = n * k; q > 0; q--)
+		{
+			M = Math.Max(M, -MinCostFlow(ev, sv, ev, dg.ToArray(), q));
+		}
+		Console.WriteLine(M);
 	}
 
 	// dg: { from, to, capacity, cost }
