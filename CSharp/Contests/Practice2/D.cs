@@ -9,7 +9,7 @@ class D
 	{
 		var h = Read();
 		int n = h[0], m = h[1];
-		var s = new int[n].Select(_ => Console.ReadLine()).ToArray();
+		var s = new int[n].Select(_ => Console.ReadLine().ToCharArray()).ToArray();
 
 		var sv = n * m;
 		var ev = sv + 1;
@@ -21,20 +21,21 @@ class D
 		var dg = new List<long[]>();
 		for (int i = 0; i < n; i++)
 			for (int j = 0; j < m; j++)
-				if (s[i][j] == '.')
+			{
+				if (s[i][j] == '#') continue;
+
+				var v = m * i + j;
+				if ((i + j) % 2 == 0)
 				{
-					var v = n * i + j;
-					if ((i + j) % 2 == 0)
-					{
-						dg.Add(new[] { sv, v, 1L });
-						vs0.Add(v);
-					}
-					else
-					{
-						dg.Add(new[] { v, ev, 1L });
-						vs1.Add(v);
-					}
+					dg.Add(new[] { sv, v, 1L });
+					vs0.Add(v);
 				}
+				else
+				{
+					dg.Add(new[] { v, ev, 1L });
+					vs1.Add(v);
+				}
+			}
 
 		foreach (var v in vs0)
 		{
@@ -44,12 +45,39 @@ class D
 			if (v % m != m - 1 && vs1.Contains(v + 1)) dg.Add(new[] { v, v + 1, 1L });
 		}
 
-		var r = MaxFlow(ev, sv, ev, dg.ToArray());
-		Console.WriteLine(r);
+		var (M, map) = MaxFlow(ev, sv, ev, dg.ToArray());
+
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < m; j++)
+			{
+				if (s[i][j] == '#') continue;
+
+				var v = m * i + j;
+				if ((i + j) % 2 == 0)
+				{
+					var v2 = map[v].FirstOrDefault(e => e[2] == 0 & e[1] != sv)?[1];
+					if (v2 == null) continue;
+
+					var (i2, j2) = ((int)v2 / m, (int)v2 % m);
+					if (i == i2)
+					{
+						s[i][Math.Min(j, j2)] = '>';
+						s[i][Math.Max(j, j2)] = '<';
+					}
+					else
+					{
+						s[Math.Min(i, i2)][j] = 'v';
+						s[Math.Max(i, i2)][j] = '^';
+					}
+				}
+			}
+
+		Console.WriteLine(M);
+		foreach (var r in s) Console.WriteLine(new string(r));
 	}
 
 	// dg: { from, to, capacity }
-	static long MaxFlow(int n, int sv, int ev, long[][] dg)
+	static (long, List<long[]>[]) MaxFlow(int n, int sv, int ev, long[][] dg)
 	{
 		var map = Array.ConvertAll(new int[n + 1], _ => new List<long[]>());
 		foreach (var e in dg)
@@ -90,6 +118,6 @@ class D
 
 		long M = 0, t;
 		while ((t = Bfs()) > 0) M += t;
-		return M;
+		return (M, map);
 	}
 }
