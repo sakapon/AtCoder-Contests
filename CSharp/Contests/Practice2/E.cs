@@ -26,14 +26,15 @@ class E
 			{
 				dg.Add(new[] { i, n + j, 1L, -a[i][j] });
 			}
+		var dga = dg.ToArray();
 
 		var M = 0L;
 		char[][] s = null;
 
 		for (int q = n * k; q > 0; q--)
 		{
-			var (t, map) = MinCostFlow(ev, sv, ev, dg.ToArray(), q);
-			if (-t <= M) continue;
+			var (t, map) = MinCostFlow(ev, sv, ev, dga, q);
+			if (-t <= M) break;
 
 			M = -t;
 			s = NewArray2(n, n, '.');
