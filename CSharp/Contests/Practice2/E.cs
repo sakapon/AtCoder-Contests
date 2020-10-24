@@ -27,9 +27,13 @@ class E
 				dg.Add(new[] { i, n + j, 1L, -a[i][j] });
 			}
 
+		var M = 0L;
 		char[][] s = null;
-		var M = -MinCostFlow(ev, sv, ev, dg.ToArray(), n * k, map =>
+		MinCostFlow(ev, sv, ev, dg.ToArray(), n * k, (cost, map) =>
 		{
+			if (-cost <= M) return;
+
+			M = -cost;
 			s = NewArray2(n, n, '.');
 			for (int i = 0; i < n; i++)
 				foreach (var e in map[i])
@@ -42,7 +46,7 @@ class E
 	}
 
 	// dg: { from, to, capacity, cost }
-	static long MinCostFlow(int n, int sv, int ev, long[][] dg, long f, Action<List<long[]>[]> action)
+	static long MinCostFlow(int n, int sv, int ev, long[][] dg, long f, Action<long, List<long[]>[]> action)
 	{
 		var map = Array.ConvertAll(new int[n + 1], _ => new List<long[]>());
 		foreach (var e in dg)
@@ -93,9 +97,8 @@ class E
 		while (f > 0)
 		{
 			if ((t = BellmanFord()) == long.MaxValue) return t;
-			if (t > 0) return r;
-			action(map);
 			r += t;
+			action(r, map);
 		}
 		return r;
 	}
