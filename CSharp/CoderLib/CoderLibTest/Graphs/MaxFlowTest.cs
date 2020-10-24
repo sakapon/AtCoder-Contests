@@ -4,6 +4,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CoderLibTest.Graphs
 {
+	// 値を更新するため、辺を構造体として定義すると煩雑になります。
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/6/GRL_6_A
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/6/GRL_6_B
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/7/GRL_7_A
+	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_d
+	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_e
 	[TestClass]
 	public class MaxFlowTest
 	{
