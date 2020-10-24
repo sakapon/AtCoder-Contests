@@ -28,15 +28,26 @@ class E
 			}
 
 		var M = 0L;
+		char[][] s = null;
+
 		for (int q = n * k; q > 0; q--)
 		{
-			M = Math.Max(M, -MinCostFlow(ev, sv, ev, dg.ToArray(), q));
+			var (t, map) = MinCostFlow(ev, sv, ev, dg.ToArray(), q);
+			if (-t <= M) continue;
+
+			M = -t;
+			s = NewArray2(n, n, '.');
+			for (int i = 0; i < n; i++)
+				foreach (var e in map[i].Where(e => e[2] == 0 && e[1] != sv))
+					s[i][e[1] - n] = 'X';
 		}
+
 		Console.WriteLine(M);
+		foreach (var r in s) Console.WriteLine(new string(r));
 	}
 
 	// dg: { from, to, capacity, cost }
-	static long MinCostFlow(int n, int sv, int ev, long[][] dg, long f)
+	static (long, List<long[]>[]) MinCostFlow(int n, int sv, int ev, long[][] dg, long f)
 	{
 		var map = Array.ConvertAll(new int[n + 1], _ => new List<long[]>());
 		foreach (var e in dg)
@@ -86,9 +97,24 @@ class E
 		long r = 0, t;
 		while (f > 0)
 		{
-			if ((t = BellmanFord()) == long.MaxValue) return t;
+			if ((t = BellmanFord()) == long.MaxValue) return (t, map);
 			r += t;
 		}
-		return r;
+		return (r, map);
+	}
+
+	static T[][] NewArray2<T>(int n1, int n2, T v = default(T)) => NewArrayF(n1, () => NewArray1(n2, v));
+	static T[] NewArray1<T>(int n, T v = default(T))
+	{
+		var a = new T[n];
+		for (int i = 0; i < n; ++i) a[i] = v;
+		return a;
+	}
+
+	static T[] NewArrayF<T>(int n, Func<T> newItem)
+	{
+		var a = new T[n];
+		for (int i = 0; i < n; ++i) a[i] = newItem();
+		return a;
 	}
 }
