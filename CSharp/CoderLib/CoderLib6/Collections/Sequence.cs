@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace CoderLib6.Collections
 {
+	// Test: https://judge.yosupo.jp/problem/static_range_sum
 	class Seq
 	{
 		int[] a;
