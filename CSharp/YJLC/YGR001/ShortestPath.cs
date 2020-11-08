@@ -42,7 +42,7 @@ class ShortestPath
 
 		var d = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
 		var from = Enumerable.Repeat(-1, n + 1).ToArray();
-		var q = PQ<int>.Create(v => d[v]);
+		var q = PQ<int>.CreateWithKey(v => d[v]);
 		d[sv] = 0;
 		q.Push(sv);
 

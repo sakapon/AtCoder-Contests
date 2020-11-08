@@ -11,7 +11,15 @@ class PQ<T> : List<T>
 			new PQ<T>(c.Compare);
 	}
 
-	public static PQ<T, TKey> Create<TKey>(Func<T, TKey> toKey, bool desc = false)
+	public static PQ<T> Create<TKey>(Func<T, TKey> toKey, bool desc = false)
+	{
+		var c = Comparer<TKey>.Default;
+		return desc ?
+			new PQ<T>((x, y) => c.Compare(toKey(y), toKey(x))) :
+			new PQ<T>((x, y) => c.Compare(toKey(x), toKey(y)));
+	}
+
+	public static PQ<T, TKey> CreateWithKey<TKey>(Func<T, TKey> toKey, bool desc = false)
 	{
 		var c = Comparer<TKey>.Default;
 		return desc ?

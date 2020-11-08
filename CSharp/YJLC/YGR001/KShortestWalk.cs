@@ -39,7 +39,7 @@ class KShortestWalk
 
 		while (q.Count > 0)
 		{
-			var (v, qd) = q.Pop().value;
+			var (v, qd) = q.Pop();
 			if (v == ev)
 			{
 				r.Add(qd);
