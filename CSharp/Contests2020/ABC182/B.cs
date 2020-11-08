@@ -6,11 +6,7 @@ class B
 	static void Main()
 	{
 		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
+		Console.WriteLine(Enumerable.Range(2, 999).OrderBy(k => -a.Count(x => x % k == 0)).First());
 	}
 }

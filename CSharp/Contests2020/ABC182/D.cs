@@ -1,18 +1,22 @@
 ﻿using System;
-using System.Linq;
 
 class D
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = Read();
-		var ps = new int[h[0]].Select(_ => Read()).ToArray();
+		var a = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 
-		Console.WriteLine(string.Join(" ", a));
+		var s = new long[n + 1];
+		for (int i = 0; i < n; ++i) s[i + 1] = s[i] + a[i];
+
+		long sMax = 0, xMax = 0, t = 0;
+		for (int i = 1; i <= n; i++)
+		{
+			sMax = Math.Max(sMax, s[i]);
+			xMax = Math.Max(xMax, t + sMax);
+			t += s[i];
+		}
+		Console.WriteLine(xMax);
 	}
 }
