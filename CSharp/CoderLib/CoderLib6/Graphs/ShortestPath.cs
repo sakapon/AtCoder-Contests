@@ -6,6 +6,7 @@ using CoderLib6.Trees;
 namespace CoderLib6.Graphs
 {
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/12/ALDS1_12_C
+	// Test: https://judge.yosupo.jp/problem/shortest_path
 	static class ShortestPath
 	{
 		// es: { from, to, weight }
@@ -24,13 +25,13 @@ namespace CoderLib6.Graphs
 			var from = Enumerable.Repeat(-1, n + 1).ToArray();
 			var d = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
 			var u = new bool[n + 1];
-			var pq = PQ<VC>.Create(_ => _.c);
+			var pq = PQ<int>.CreateWithKey(v => d[v]);
 			d[sv] = 0;
-			pq.Push(new VC { v = sv, c = d[sv] });
+			pq.Push(sv);
 
 			while (pq.Count > 0)
 			{
-				var v = pq.Pop().v;
+				var v = pq.Pop().Value;
 				// すべての頂点を探索する場合、ここを削除します。
 				if (v == ev) break;
 				if (u[v]) continue;
@@ -41,7 +42,7 @@ namespace CoderLib6.Graphs
 					if (d[e[0]] <= d[v] + e[1]) continue;
 					from[e[0]] = v;
 					d[e[0]] = d[v] + e[1];
-					pq.Push(new VC { v = e[0], c = d[e[0]] });
+					pq.Push(e[0]);
 				}
 			}
 
@@ -54,12 +55,6 @@ namespace CoderLib6.Graphs
 				path.Add(v);
 			path.Reverse();
 			return path.ToArray();
-		}
-
-		struct VC
-		{
-			public int v;
-			public long c;
 		}
 
 		// priority queue ではなく、queue を使うほうが速いことがあります。

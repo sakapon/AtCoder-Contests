@@ -35,7 +35,8 @@ namespace CoderLib6.Graphs
 
 			var u = new bool[n + 1];
 			u[sv] = true;
-			var pq = PQ<int[]>.Create(e => e[2], map[sv].ToArray());
+			var pq = PQ<int[]>.Create(e => e[2]);
+			pq.PushRange(map[sv].ToArray());
 			var minEdges = new List<int[]>();
 
 			while (pq.Count > 0 && minEdges.Count < n)
