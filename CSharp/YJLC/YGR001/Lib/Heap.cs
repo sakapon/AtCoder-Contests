@@ -11,12 +11,12 @@ public static class Heap
 			new Heap<T>(c.Compare);
 	}
 
-	public static Heap<T, TKey> Create<T, TKey>(Func<T, TKey> keySelector, bool descending = false)
+	public static Heap<T, TKey> CreateWithKey<T, TKey>(Func<T, TKey> keySelector, bool descending = false)
 	{
 		var c = Comparer<TKey>.Default;
 		return descending ?
-			new Heap<T, TKey>(keySelector, (x, y) => c.Compare(y.Item2, x.Item2)) :
-			new Heap<T, TKey>(keySelector, (x, y) => c.Compare(x.Item2, y.Item2));
+			new Heap<T, TKey>(keySelector, (x, y) => c.Compare(y.key, x.key)) :
+			new Heap<T, TKey>(keySelector, (x, y) => c.Compare(x.key, y.key));
 	}
 }
 
@@ -86,7 +86,7 @@ public class Heap<T, TKey> : Heap<(T value, TKey key)>
 {
 	Func<T, TKey> KeySelector;
 
-	internal Heap(Func<T, TKey> keySelector, Comparison<(T, TKey)> comparison) : base(comparison)
+	internal Heap(Func<T, TKey> keySelector, Comparison<(T value, TKey key)> comparison) : base(comparison)
 	{
 		KeySelector = keySelector ?? throw new ArgumentNullException(nameof(keySelector));
 	}
