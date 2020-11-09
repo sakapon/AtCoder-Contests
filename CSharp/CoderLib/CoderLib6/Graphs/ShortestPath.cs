@@ -7,54 +7,43 @@ namespace CoderLib6.Graphs
 {
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/12/ALDS1_12_C
 	// Test: https://judge.yosupo.jp/problem/shortest_path
+	// Test: https://codeforces.com/contest/20/problem/C
 	static class ShortestPath
 	{
-		// es: { from, to, weight }
-		// 経路: 到達不可能の場合、null を返します。
-		// コスト: 到達不可能の場合、MaxValue を返します。
-		static int[] Dijkstra(int n, int sv, int ev, int[][] es)
+		// es: { from, to, cost }
+		// 最小コスト: 到達不可能の場合、MaxValue。
+		// 入辺: 到達不可能の場合、null。
+		public static Tuple<long[], int[][]> Dijkstra(int n, int[][] es, bool directed, int sv, int ev = 1)
 		{
-			var map = Array.ConvertAll(new int[n + 1], _ => new List<int[]>());
+			var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
 			foreach (var e in es)
 			{
-				map[e[0]].Add(new[] { e[1], e[2] });
-				// 有向グラフの場合、ここを削除します。
-				map[e[1]].Add(new[] { e[0], e[2] });
+				map[e[0]].Add(new[] { e[0], e[1], e[2] });
+				if (!directed) map[e[1]].Add(new[] { e[1], e[0], e[2] });
 			}
 
-			var from = Enumerable.Repeat(-1, n + 1).ToArray();
-			var d = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
-			var u = new bool[n + 1];
-			var pq = PQ<int>.CreateWithKey(v => d[v]);
-			d[sv] = 0;
-			pq.Push(sv);
+			var cs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
+			var inEdges = new int[n][];
+			var q = PQ<int>.CreateWithKey(v => cs[v]);
+			cs[sv] = 0;
+			q.Push(sv);
 
-			while (pq.Count > 0)
+			while (q.Count > 0)
 			{
-				var v = pq.Pop().Value;
-				// すべての頂点を探索する場合、ここを削除します。
+				var vc = q.Pop();
+				var v = vc.Value;
 				if (v == ev) break;
-				if (u[v]) continue;
-				u[v] = true;
+				if (cs[v] < vc.Key) continue;
 
 				foreach (var e in map[v])
 				{
-					if (d[e[0]] <= d[v] + e[1]) continue;
-					from[e[0]] = v;
-					d[e[0]] = d[v] + e[1];
-					pq.Push(e[0]);
+					if (cs[e[1]] <= cs[v] + e[2]) continue;
+					cs[e[1]] = cs[v] + e[2];
+					inEdges[e[1]] = e;
+					q.Push(e[1]);
 				}
 			}
-
-			// コストを求める場合。
-			//return d[ev];
-
-			if (from[ev] == -1) return null;
-			var path = new List<int>();
-			for (var v = ev; v != -1; v = from[v])
-				path.Add(v);
-			path.Reverse();
-			return path.ToArray();
+			return Tuple.Create(cs, inEdges);
 		}
 
 		// priority queue ではなく、queue を使うほうが速いことがあります。
@@ -172,6 +161,23 @@ namespace CoderLib6.Graphs
 
 			if (Enumerable.Range(0, n + 1).Any(i => d[i][i] < 0)) return null;
 			return d;
+		}
+
+		public static int[] GetPathVertexes(int[][] inEdges, int ev)
+		{
+			var path = new Stack<int>();
+			path.Push(ev);
+			for (var e = inEdges[ev]; e != null; e = inEdges[e[0]])
+				path.Push(e[0]);
+			return path.ToArray();
+		}
+
+		public static int[][] GetPathEdges(int[][] inEdges, int ev)
+		{
+			var path = new Stack<int[]>();
+			for (var e = inEdges[ev]; e != null; e = inEdges[e[0]])
+				path.Push(e);
+			return path.ToArray();
 		}
 	}
 }
