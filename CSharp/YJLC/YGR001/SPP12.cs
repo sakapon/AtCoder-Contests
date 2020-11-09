@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-class ShortestPath
+class SPP12
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
@@ -11,7 +11,8 @@ class ShortestPath
 		int n = h[0], m = h[1], s = h[2], t = h[3];
 		var es = Array.ConvertAll(new bool[m], _ => Read());
 
-		var (d, from) = Dijkstra(n, s, es, true);
+		// TLE
+		var (d, from) = Dijklmna(n, s, es, true);
 		if (d[t] == long.MaxValue) { Console.WriteLine(-1); return; }
 
 		var path = GetPathEdges(from, t);
@@ -35,27 +36,26 @@ class ShortestPath
 		return map;
 	}
 
-	static (long[] d, int[] from) Dijkstra(int n, int sv, int[][] es, bool directed = false)
+	static (long[] d, int[] from) Dijklmna(int n, int sv, int[][] es, bool directed = false)
 	{
 		// 使われない頂点が存在してもかまいません (1-indexed でも可)。
 		var map = ToMap2(n, es, directed);
 
 		var d = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
 		var from = Enumerable.Repeat(-1, n + 1).ToArray();
-		var q = PQ<int>.CreateWithKey(v => d[v]);
+		var q = new Queue<int>();
 		d[sv] = 0;
-		q.Push(sv);
+		q.Enqueue(sv);
 
 		while (q.Count > 0)
 		{
-			var (v, qd) = q.Pop();
-			if (d[v] < qd) continue;
+			var v = q.Dequeue();
 			foreach (var e in map[v])
 			{
 				if (d[e.To] <= d[v] + e.Weight) continue;
 				d[e.To] = d[v] + e.Weight;
 				from[e.To] = v;
-				q.Push(e.To);
+				q.Enqueue(e.To);
 			}
 		}
 		return (d, from);
