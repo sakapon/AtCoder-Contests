@@ -4,74 +4,79 @@ using System.Linq;
 
 class A
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
 	{
 		var h = Read();
-		var es = new int[h[1]].Select(_ => Read()).ToArray();
+		var es = Array.ConvertAll(new bool[h[1]], _ => Read());
 
-		var d = Dijkstra(h[0] - 1, h[2], -1, es);
-		Console.WriteLine(string.Join("\n", d.Select(x => x == long.MaxValue ? "INF" : $"{x}")));
+		var r = Dijkstra(h[0], es, true, h[2]);
+		Console.WriteLine(string.Join("\n", r.Item1.Select(x => x == long.MaxValue ? "INF" : $"{x}")));
 	}
 
-	static long[] Dijkstra(int n, int sv, int ev, int[][] es)
+	static Tuple<long[], int[][]> Dijkstra(int n, int[][] es, bool directed, int sv, int ev = -1)
 	{
-		var map = Array.ConvertAll(new int[n + 1], _ => new List<int[]>());
+		var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
 		foreach (var e in es)
 		{
-			map[e[0]].Add(new[] { e[1], e[2] });
-			// 有向グラフの場合、ここを削除します。
-			//map[e[1]].Add(new[] { e[0], e[2] });
+			map[e[0]].Add(new[] { e[0], e[1], e[2] });
+			if (!directed) map[e[1]].Add(new[] { e[1], e[0], e[2] });
 		}
 
-		var from = Enumerable.Repeat(-1, n + 1).ToArray();
-		var d = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
-		var pq = PQ<VD>.Create(vd => vd.d);
-		d[sv] = 0;
-		pq.Push(new VD { v = sv, d = 0 });
+		var cs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
+		var inEdges = new int[n][];
+		var q = PQ<int>.CreateWithKey(v => cs[v]);
+		cs[sv] = 0;
+		q.Push(sv);
 
-		while (pq.Count > 0)
+		while (q.Count > 0)
 		{
-			var vd = pq.Pop();
-			var v = vd.v;
-			// すべての頂点を探索する場合、ここを削除します。
-			//if (v == ev) break;
+			var vc = q.Pop();
+			var v = vc.Value;
+			if (v == ev) break;
+			if (cs[v] < vc.Key) continue;
+
 			foreach (var e in map[v])
 			{
-				if (d[e[0]] <= d[v] + e[1]) continue;
-				from[e[0]] = v;
-				d[e[0]] = d[v] + e[1];
-				pq.Push(new VD { v = e[0], d = d[e[0]] });
+				if (cs[e[1]] <= cs[v] + e[2]) continue;
+				cs[e[1]] = cs[v] + e[2];
+				inEdges[e[1]] = e;
+				q.Push(e[1]);
 			}
 		}
-		return d;
-	}
-
-	struct VD
-	{
-		public int v;
-		public long d;
+		return Tuple.Create(cs, inEdges);
 	}
 }
 
 class PQ<T> : List<T>
 {
-	public static PQ<T> Create<TKey>(Func<T, TKey> getKey, T[] vs = null, bool desc = false)
+	public static PQ<T> Create(bool desc = false)
+	{
+		var c = Comparer<T>.Default;
+		return desc ?
+			new PQ<T>((x, y) => c.Compare(y, x)) :
+			new PQ<T>(c.Compare);
+	}
+
+	public static PQ<T> Create<TKey>(Func<T, TKey> toKey, bool desc = false)
 	{
 		var c = Comparer<TKey>.Default;
 		return desc ?
-			new PQ<T>(vs, (x, y) => c.Compare(getKey(y), getKey(x))) :
-			new PQ<T>(vs, (x, y) => c.Compare(getKey(x), getKey(y)));
+			new PQ<T>((x, y) => c.Compare(toKey(y), toKey(x))) :
+			new PQ<T>((x, y) => c.Compare(toKey(x), toKey(y)));
+	}
+
+	public static PQ<T, TKey> CreateWithKey<TKey>(Func<T, TKey> toKey, bool desc = false)
+	{
+		var c = Comparer<TKey>.Default;
+		return desc ?
+			new PQ<T, TKey>(toKey, (x, y) => c.Compare(y.Key, x.Key)) :
+			new PQ<T, TKey>(toKey, (x, y) => c.Compare(x.Key, y.Key));
 	}
 
 	Comparison<T> c;
 	public T First => this[0];
-
-	PQ(T[] vs, Comparison<T> _c)
-	{
-		c = _c;
-		if (vs != null) foreach (var v in vs) Push(v);
-	}
+	internal PQ(Comparison<T> _c) { c = _c; }
 
 	void Swap(int i, int j) { var o = this[i]; this[i] = this[j]; this[j] = o; }
 	void UpHeap(int i) { for (int j; i > 0 && c(this[j = (i - 1) / 2], this[i]) > 0; Swap(i, i = j)) ; }
@@ -89,6 +94,8 @@ class PQ<T> : List<T>
 		Add(v);
 		UpHeap(Count - 1);
 	}
+	public void PushRange(T[] vs) { foreach (var v in vs) Push(v); }
+
 	public T Pop()
 	{
 		var r = this[0];
@@ -97,4 +104,13 @@ class PQ<T> : List<T>
 		DownHeap(0);
 		return r;
 	}
+}
+
+class PQ<T, TKey> : PQ<KeyValuePair<TKey, T>>
+{
+	Func<T, TKey> ToKey;
+	internal PQ(Func<T, TKey> toKey, Comparison<KeyValuePair<TKey, T>> c) : base(c) { ToKey = toKey; }
+
+	public void Push(T v) => Push(new KeyValuePair<TKey, T>(ToKey(v), v));
+	public void PushRange(T[] vs) { foreach (var v in vs) Push(v); }
 }
