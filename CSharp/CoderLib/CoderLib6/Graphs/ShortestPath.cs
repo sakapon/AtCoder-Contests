@@ -13,7 +13,7 @@ namespace CoderLib6.Graphs
 		// es: { from, to, cost }
 		// 最小コスト: 到達不可能の場合、MaxValue。
 		// 入辺: 到達不可能の場合、null。
-		public static Tuple<long[], int[][]> Dijkstra(int n, int[][] es, bool directed, int sv, int ev = 1)
+		public static Tuple<long[], int[][]> Dijkstra(int n, int[][] es, bool directed, int sv, int ev = -1)
 		{
 			var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
 			foreach (var e in es)
@@ -47,45 +47,35 @@ namespace CoderLib6.Graphs
 		}
 
 		// priority queue ではなく、queue を使うほうが速いことがあります。
-		static int[] Dijklmna(int n, int sv, int ev, int[][] es)
+		[Obsolete("最悪計算量は O(E^2) です。")]
+		public static Tuple<long[], int[][]> Dijklmna(int n, int[][] es, bool directed, int sv, int ev = -1)
 		{
-			var map = Array.ConvertAll(new int[n + 1], _ => new List<int[]>());
+			var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
 			foreach (var e in es)
 			{
-				map[e[0]].Add(new[] { e[1], e[2] });
-				// 有向グラフの場合、ここを削除します。
-				map[e[1]].Add(new[] { e[0], e[2] });
+				map[e[0]].Add(new[] { e[0], e[1], e[2] });
+				if (!directed) map[e[1]].Add(new[] { e[1], e[0], e[2] });
 			}
 
-			var from = Enumerable.Repeat(-1, n + 1).ToArray();
-			var u = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
+			var cs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
+			var inEdges = new int[n][];
 			var q = new Queue<int>();
-			u[sv] = 0;
+			cs[sv] = 0;
 			q.Enqueue(sv);
 
 			while (q.Count > 0)
 			{
 				var v = q.Dequeue();
-				// すべての頂点を探索する場合、ここを削除します。
-				if (v == ev) break;
+
 				foreach (var e in map[v])
 				{
-					if (u[e[0]] <= u[v] + e[1]) continue;
-					from[e[0]] = v;
-					u[e[0]] = u[v] + e[1];
-					q.Enqueue(e[0]);
+					if (cs[e[1]] <= cs[v] + e[2]) continue;
+					cs[e[1]] = cs[v] + e[2];
+					inEdges[e[1]] = e;
+					q.Enqueue(e[1]);
 				}
 			}
-
-			// コストを求める場合。
-			//return u[ev];
-
-			if (from[ev] == -1) return null;
-			var path = new List<int>();
-			for (var v = ev; v != -1; v = from[v])
-				path.Add(v);
-			path.Reverse();
-			return path.ToArray();
+			return Tuple.Create(cs, inEdges);
 		}
 
 		// dag: { from, to, weight }
