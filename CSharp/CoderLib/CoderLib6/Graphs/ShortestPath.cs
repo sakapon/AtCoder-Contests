@@ -6,6 +6,7 @@ using CoderLib6.Trees;
 namespace CoderLib6.Graphs
 {
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/12/ALDS1_12_C
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/1
 	// Test: https://judge.yosupo.jp/problem/shortest_path
 	// Test: https://codeforces.com/contest/20/problem/C
 	static class ShortestPath

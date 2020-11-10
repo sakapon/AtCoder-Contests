@@ -11,39 +11,31 @@ class C
 			.Select(e => Enumerable.Range(1, e[1]).Select(i => new[] { e[2 * i], e[2 * i + 1] }).ToArray())
 			.ToArray();
 
-		var r = Dijkstra(n - 1, 0, -1, map);
-		Console.WriteLine(string.Join("\n", r.Select((v, i) => $"{i} {v}")));
+		var cs = Dijkstra(n, map, 0);
+		Console.WriteLine(string.Join("\n", cs.Select((c, v) => $"{v} {c}")));
 	}
 
-	static long[] Dijkstra(int n, int sv, int ev, int[][][] map)
+	static long[] Dijkstra(int n, int[][][] map, int sv, int ev = -1)
 	{
-		var d = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
-		var u = new bool[n + 1];
-		var pq = PQ<VC>.Create(_ => _.c);
-		d[sv] = 0;
-		pq.Push(new VC { v = sv, c = d[sv] });
+		var cs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
+		var q = PQ<int>.CreateWithKey(v => cs[v]);
+		cs[sv] = 0;
+		q.Push(sv);
 
-		while (pq.Count > 0)
+		while (q.Count > 0)
 		{
-			var vc = pq.Pop();
-			var v = vc.v;
-			if (u[v]) continue;
-			u[v] = true;
+			var vc = q.Pop();
+			var v = vc.Value;
+			if (v == ev) break;
+			if (cs[v] < vc.Key) continue;
 
 			foreach (var e in map[v])
 			{
-				if (d[e[0]] <= d[v] + e[1]) continue;
-				d[e[0]] = d[v] + e[1];
-				pq.Push(new VC { v = e[0], c = d[e[0]] });
+				if (cs[e[0]] <= cs[v] + e[1]) continue;
+				cs[e[0]] = cs[v] + e[1];
+				q.Push(e[0]);
 			}
 		}
-
-		return d;
-	}
-
-	struct VC
-	{
-		public int v;
-		public long c;
+		return cs;
 	}
 }
