@@ -49,7 +49,7 @@ namespace CoderLib6.Graphs
 		}
 
 		// priority queue ではなく、queue を使うほうが速いことがあります。
-		[Obsolete("最悪計算量は O(E^2) です。")]
+		[Obsolete("最悪計算量は O(VE) です。")]
 		public static Tuple<long[], int[][]> Dijklmna(int n, int[][] es, bool directed, int sv, int ev = -1)
 		{
 			var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
@@ -80,9 +80,10 @@ namespace CoderLib6.Graphs
 			return Tuple.Create(cs, inEdges);
 		}
 
-		// dag: { from, to, weight }
-		// 経路: 負閉路が存在する場合または到達不可能の場合、null を返します。
-		// コスト: 負閉路が存在する場合は MinValue を、到達不可能の場合は MaxValue を返します。
+		// des: { from, to, cost }
+		// 負閉路が存在する場合、(null, null)。
+		// 最小コスト: 到達不可能の場合、MaxValue。
+		// 入辺: 到達不可能の場合、null。
 		public static Tuple<long[], int[][]> BellmanFord(int n, int[][] des, int sv)
 		{
 			var cs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
