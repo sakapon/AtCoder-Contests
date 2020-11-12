@@ -5,6 +5,7 @@ using CoderLib6.Trees;
 
 namespace CoderLib6.Graphs
 {
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/12/ALDS1_12_B
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/12/ALDS1_12_C
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/1
 	// Test: https://judge.yosupo.jp/problem/shortest_path
@@ -82,46 +83,26 @@ namespace CoderLib6.Graphs
 		// dag: { from, to, weight }
 		// 経路: 負閉路が存在する場合または到達不可能の場合、null を返します。
 		// コスト: 負閉路が存在する場合は MinValue を、到達不可能の場合は MaxValue を返します。
-		static int[] BellmanFord(int n, int sv, int ev, int[][] dag)
+		public static Tuple<long[], int[][]> BellmanFord(int n, int[][] des, int sv)
 		{
-			var map = Array.ConvertAll(new int[n + 1], _ => new List<int[]>());
-			foreach (var e in dag)
-			{
-				map[e[0]].Add(new[] { e[1], e[2] });
-			}
-
-			var from = Enumerable.Repeat(-1, n + 1).ToArray();
-			var u = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
-			u[sv] = 0;
+			var cs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
+			var inEdges = new int[n][];
+			cs[sv] = 0;
 
 			var next = true;
-			for (int k = 0; k <= n && next; k++)
+			for (int k = 0; k < n && next; ++k)
 			{
 				next = false;
-				for (int v = 0; v <= n; v++)
+				foreach (var e in des)
 				{
-					if (u[v] == long.MaxValue) continue;
-					foreach (var e in map[v])
-					{
-						if (u[e[0]] <= u[v] + e[1]) continue;
-						from[e[0]] = v;
-						u[e[0]] = u[v] + e[1];
-						next = true;
-					}
+					if (cs[e[0]] == long.MaxValue || cs[e[1]] <= cs[e[0]] + e[2]) continue;
+					cs[e[1]] = cs[e[0]] + e[2];
+					inEdges[e[1]] = e;
+					next = true;
 				}
 			}
-
-			// コストを求める場合。
-			//if (next) return long.MinValue;
-			//return u[ev];
-
-			if (next) return null;
-			if (from[ev] == -1) return null;
-			var path = new List<int>();
-			for (var v = ev; v != -1; v = from[v])
-				path.Add(v);
-			path.Reverse();
-			return path.ToArray();
+			if (next) return Tuple.Create<long[], int[][]>(null, null);
+			return Tuple.Create(cs, inEdges);
 		}
 
 		// es: { from, to, weight }
