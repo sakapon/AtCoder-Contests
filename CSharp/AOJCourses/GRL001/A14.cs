@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-class A11
+class A14
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
