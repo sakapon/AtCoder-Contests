@@ -109,31 +109,30 @@ namespace CoderLib6.Graphs
 		// es: { from, to, weight }
 		// 負閉路が存在する場合、null を返します。
 		// 到達不可能のペアの値は MaxValue です。
-		static long[][] WarshallFloyd(int n, int[][] es)
+		public static Tuple<long[][], int[][]> WarshallFloyd(int n, int[][] es, bool directed)
 		{
-			var d = new long[n + 1][];
-			for (int i = 0; i <= n; i++)
-			{
-				d[i] = Array.ConvertAll(d, _ => long.MaxValue);
-				d[i][i] = 0;
-			}
+			var d = Array.ConvertAll(new bool[n], i => Array.ConvertAll(new bool[n], _ => long.MaxValue));
+			var inters = Array.ConvertAll(new bool[n], i => Array.ConvertAll(new bool[n], _ => -1));
+			for (int i = 0; i < n; ++i) d[i][i] = 0;
 
 			foreach (var e in es)
 			{
-				// 多重辺の場合に対応するため、Min を使います。
 				d[e[0]][e[1]] = Math.Min(d[e[0]][e[1]], e[2]);
-				// 有向グラフの場合、ここを削除します。
-				d[e[1]][e[0]] = Math.Min(d[e[1]][e[0]], e[2]);
+				if (!directed) d[e[1]][e[0]] = Math.Min(d[e[1]][e[0]], e[2]);
 			}
 
-			for (int k = 0; k <= n; k++)
-				for (int i = 0; i <= n; i++)
-					for (int j = 0; j <= n; j++)
-						if (d[i][k] < long.MaxValue && d[k][j] < long.MaxValue)
-							d[i][j] = Math.Min(d[i][j], d[i][k] + d[k][j]);
-
-			if (Enumerable.Range(0, n + 1).Any(i => d[i][i] < 0)) return null;
-			return d;
+			for (int k = 0; k < n; ++k)
+				for (int i = 0; i < n; ++i)
+					for (int j = 0; j < n; ++j)
+					{
+						if (d[i][k] == long.MaxValue || d[k][j] == long.MaxValue) continue;
+						var nc = d[i][k] + d[k][j];
+						if (d[i][j] <= nc) continue;
+						d[i][j] = nc;
+						inters[i][j] = k;
+					}
+			for (int i = 0; i < n; ++i) if (d[i][i] < 0) return Tuple.Create<long[][], int[][]>(null, null);
+			return Tuple.Create(d, inters);
 		}
 
 		public static int[] GetPathVertexes(int[][] inEdges, int ev)
