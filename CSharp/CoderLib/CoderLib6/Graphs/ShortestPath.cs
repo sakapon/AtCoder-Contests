@@ -106,33 +106,34 @@ namespace CoderLib6.Graphs
 			return Tuple.Create(cs, inEdges);
 		}
 
-		// es: { from, to, weight }
-		// 負閉路が存在する場合、null を返します。
-		// 到達不可能のペアの値は MaxValue です。
+		// es: { from, to, cost }
+		// 負閉路が存在する場合、(null, null)。
+		// 最小コスト: 到達不可能の場合、MaxValue。
+		// 中間地点: 到達不可能または直結の場合、-1。直結の場合に、端点のいずれかが設定されることがあります。
 		public static Tuple<long[][], int[][]> WarshallFloyd(int n, int[][] es, bool directed)
 		{
-			var d = Array.ConvertAll(new bool[n], i => Array.ConvertAll(new bool[n], _ => long.MaxValue));
+			var cs = Array.ConvertAll(new bool[n], i => Array.ConvertAll(new bool[n], _ => long.MaxValue));
 			var inters = Array.ConvertAll(new bool[n], i => Array.ConvertAll(new bool[n], _ => -1));
-			for (int i = 0; i < n; ++i) d[i][i] = 0;
+			for (int i = 0; i < n; ++i) cs[i][i] = 0;
 
 			foreach (var e in es)
 			{
-				d[e[0]][e[1]] = Math.Min(d[e[0]][e[1]], e[2]);
-				if (!directed) d[e[1]][e[0]] = Math.Min(d[e[1]][e[0]], e[2]);
+				cs[e[0]][e[1]] = Math.Min(cs[e[0]][e[1]], e[2]);
+				if (!directed) cs[e[1]][e[0]] = Math.Min(cs[e[1]][e[0]], e[2]);
 			}
 
 			for (int k = 0; k < n; ++k)
 				for (int i = 0; i < n; ++i)
 					for (int j = 0; j < n; ++j)
 					{
-						if (d[i][k] == long.MaxValue || d[k][j] == long.MaxValue) continue;
-						var nc = d[i][k] + d[k][j];
-						if (d[i][j] <= nc) continue;
-						d[i][j] = nc;
+						if (cs[i][k] == long.MaxValue || cs[k][j] == long.MaxValue) continue;
+						var nc = cs[i][k] + cs[k][j];
+						if (cs[i][j] <= nc) continue;
+						cs[i][j] = nc;
 						inters[i][j] = k;
 					}
-			for (int i = 0; i < n; ++i) if (d[i][i] < 0) return Tuple.Create<long[][], int[][]>(null, null);
-			return Tuple.Create(d, inters);
+			for (int i = 0; i < n; ++i) if (cs[i][i] < 0) return Tuple.Create<long[][], int[][]>(null, null);
+			return Tuple.Create(cs, inters);
 		}
 
 		public static int[] GetPathVertexes(int[][] inEdges, int ev)

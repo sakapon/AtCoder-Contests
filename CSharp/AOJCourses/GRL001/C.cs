@@ -3,40 +3,40 @@ using System.Linq;
 
 class C
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
 	{
 		var h = Read();
-		var es = new int[h[1]].Select(_ => Read()).ToArray();
+		var es = Array.ConvertAll(new bool[h[1]], _ => Read());
 
-		var d = WarshallFloyd(h[0] - 1, es);
-		if (d == null) { Console.WriteLine("NEGATIVE CYCLE"); return; }
-		Console.WriteLine(string.Join("\n", d.Select(a => string.Join(" ", a.Select(x => x == long.MaxValue ? "INF" : $"{x}")))));
+		var r = WarshallFloyd(h[0], es, true);
+		if (r.Item1 == null) { Console.WriteLine("NEGATIVE CYCLE"); return; }
+		Console.WriteLine(string.Join("\n", r.Item1.Select(a => string.Join(" ", a.Select(x => x == long.MaxValue ? "INF" : $"{x}")))));
 	}
 
-	static long[][] WarshallFloyd(int n, int[][] es)
+	static Tuple<long[][], int[][]> WarshallFloyd(int n, int[][] es, bool directed)
 	{
-		var d = new long[n + 1][];
-		for (int i = 0; i <= n; i++)
-		{
-			d[i] = Array.ConvertAll(d, _ => long.MaxValue);
-			d[i][i] = 0;
-		}
+		var cs = Array.ConvertAll(new bool[n], i => Array.ConvertAll(new bool[n], _ => long.MaxValue));
+		var inters = Array.ConvertAll(new bool[n], i => Array.ConvertAll(new bool[n], _ => -1));
+		for (int i = 0; i < n; ++i) cs[i][i] = 0;
 
 		foreach (var e in es)
 		{
-			d[e[0]][e[1]] = e[2];
-			// 有向グラフの場合、ここを削除します。
-			//d[e[1]][e[0]] = e[2];
+			cs[e[0]][e[1]] = Math.Min(cs[e[0]][e[1]], e[2]);
+			if (!directed) cs[e[1]][e[0]] = Math.Min(cs[e[1]][e[0]], e[2]);
 		}
 
-		for (int k = 0; k <= n; k++)
-			for (int i = 0; i <= n; i++)
-				for (int j = 0; j <= n; j++)
-					if (d[i][k] < long.MaxValue && d[k][j] < long.MaxValue)
-						d[i][j] = Math.Min(d[i][j], d[i][k] + d[k][j]);
-
-		if (Enumerable.Range(0, n + 1).Any(i => d[i][i] < 0)) return null;
-		return d;
+		for (int k = 0; k < n; ++k)
+			for (int i = 0; i < n; ++i)
+				for (int j = 0; j < n; ++j)
+				{
+					if (cs[i][k] == long.MaxValue || cs[k][j] == long.MaxValue) continue;
+					var nc = cs[i][k] + cs[k][j];
+					if (cs[i][j] <= nc) continue;
+					cs[i][j] = nc;
+					inters[i][j] = k;
+				}
+		for (int i = 0; i < n; ++i) if (cs[i][i] < 0) return Tuple.Create<long[][], int[][]>(null, null);
+		return Tuple.Create(cs, inters);
 	}
 }
