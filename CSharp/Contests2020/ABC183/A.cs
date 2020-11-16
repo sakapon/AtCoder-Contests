@@ -2,9 +2,5 @@
 
 class A
 {
-	static void Main()
-	{
-		var x = int.Parse(Console.ReadLine());
-		Console.WriteLine(x >= 0 ? x : 0);
-	}
+	static void Main() => Console.WriteLine(Math.Max(0, int.Parse(Console.ReadLine())));
 }
