@@ -12,9 +12,9 @@ namespace CoderLib6.Trees
 		int[] p;
 		public UF(int n) { p = Enumerable.Range(0, n).ToArray(); }
 
-		public void Unite(int a, int b) { if (!AreUnited(a, b)) p[p[b]] = p[a]; }
-		public bool AreUnited(int a, int b) => GetRoot(a) == GetRoot(b);
-		public int GetRoot(int a) => p[a] == a ? a : p[a] = GetRoot(p[a]);
+		public int GetRoot(int x) => p[x] == x ? x : p[x] = GetRoot(p[x]);
+		public bool AreUnited(int x, int y) => GetRoot(x) == GetRoot(y);
+		public void Unite(int x, int y) { if (!AreUnited(x, y)) p[p[y]] = p[x]; }
 		public int[][] ToGroups() => Enumerable.Range(0, p.Length).GroupBy(GetRoot).Select(g => g.ToArray()).ToArray();
 	}
 
@@ -33,6 +33,8 @@ namespace CoderLib6.Trees
 			Merge = merge;
 		}
 
+		public int GetRoot(int x) => p[x] == x ? x : p[x] = GetRoot(p[x]);
+		public bool AreUnited(int x, int y) => GetRoot(x) == GetRoot(y);
 		public void Unite(int x, int y)
 		{
 			var px = GetRoot(x);
@@ -46,8 +48,6 @@ namespace CoderLib6.Trees
 			sizes[px] += sizes[py];
 			a[px] = Merge(a[px], a[py]);
 		}
-		public bool AreUnited(int x, int y) => GetRoot(x) == GetRoot(y);
-		public int GetRoot(int x) => p[x] == x ? x : p[x] = GetRoot(p[x]);
 		public int[][] ToGroups() => Enumerable.Range(0, p.Length).GroupBy(GetRoot).Select(g => g.ToArray()).ToArray();
 		public int GetSize(int x) => sizes[GetRoot(x)];
 		public T GetValue(int x) => a[GetRoot(x)];
