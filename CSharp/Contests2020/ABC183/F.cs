@@ -32,6 +32,7 @@ class F
 		Console.Out.Flush();
 	}
 
+	// 項目数が多いほうにマージします。
 	static Dictionary<TK, int> Merge<TK>(Dictionary<TK, int> d1, Dictionary<TK, int> d2)
 	{
 		if (d1.Count < d2.Count) (d1, d2) = (d2, d1);
@@ -44,25 +45,33 @@ class F
 
 class UF<T>
 {
-	int[] p;
+	int[] p, sizes;
 	T[] a;
 	public Func<T, T, T> Merge;
 
 	// (parent, child) -> result
-	public UF(int n, Func<T, T, T> merge, T[] a)
+	public UF(int n, Func<T, T, T> merge, T[] a0)
 	{
 		p = Enumerable.Range(0, n).ToArray();
-		this.a = a;
+		sizes = Array.ConvertAll(new bool[n], _ => 1);
+		a = a0;
 		Merge = merge;
 	}
 
 	public void Unite(int x, int y)
 	{
-		if (AreUnited(x, y)) return;
-		a[p[x]] = Merge(a[p[x]], a[p[y]]);
-		p[p[y]] = p[x];
+		var px = GetRoot(x);
+		var py = GetRoot(y);
+		if (px == py) return;
+
+		// 要素数が多いほうのグループに合流します。
+		if (sizes[px] < sizes[py]) (px, py) = (py, px);
+		p[py] = px;
+		sizes[px] += sizes[py];
+		a[px] = Merge(a[px], a[py]);
 	}
 	public bool AreUnited(int x, int y) => GetRoot(x) == GetRoot(y);
 	public int GetRoot(int x) => p[x] == x ? x : p[x] = GetRoot(p[x]);
+	public int GetSize(int x) => sizes[GetRoot(x)];
 	public T GetValue(int x) => a[GetRoot(x)];
 }
