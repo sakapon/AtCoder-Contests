@@ -6,6 +6,44 @@ namespace CoderLib6.Graphs
 {
 	static class GraphHelper
 	{
+		// weighted
+		static List<int[]>[] EdgesToMap(int n, int[][] es, bool directed)
+		{
+			var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
+			foreach (var e in es)
+			{
+				map[e[0]].Add(new[] { e[0], e[1], e[2] });
+				if (!directed) map[e[1]].Add(new[] { e[1], e[0], e[2] });
+			}
+			return map;
+		}
+
+		// unweighted
+		static int[][] EdgesToMatrix1(int n, int[][] es, bool directed)
+		{
+			var m = Array.ConvertAll(new bool[n], _ => new int[n]);
+			//for (int i = 0; i < n; ++i) m[i][i] = 1;
+			foreach (var e in es)
+			{
+				m[e[0]][e[1]] = 1;
+				if (!directed) m[e[1]][e[0]] = 1;
+			}
+			return m;
+		}
+
+		// weighted
+		static long[][] EdgesToMatrix2(int n, int[][] es, bool directed)
+		{
+			var m = Array.ConvertAll(new bool[n], _ => Array.ConvertAll(new bool[n], __ => long.MaxValue));
+			for (int i = 0; i < n; ++i) m[i][i] = 0;
+			foreach (var e in es)
+			{
+				m[e[0]][e[1]] = Math.Min(m[e[0]][e[1]], e[2]);
+				if (!directed) m[e[1]][e[0]] = Math.Min(m[e[1]][e[0]], e[2]);
+			}
+			return m;
+		}
+
 		// unweighted
 		static int[][] ToUndirectedEdges1(int[][] des) => des.Concat(des.Select(e => new[] { e[1], e[0] })).ToArray();
 		// weighted
