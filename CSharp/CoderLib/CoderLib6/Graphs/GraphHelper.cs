@@ -18,32 +18,19 @@ namespace CoderLib6.Graphs
 			return map;
 		}
 
-		// unweighted
-		static int[][] EdgesToMatrix1(int n, int[][] es, bool directed)
+		// 単純
+		static int[][] EdgesToMatrix(int n, int[][] es, bool directed)
 		{
 			var m = Array.ConvertAll(new bool[n], _ => new int[n]);
-			//for (int i = 0; i < n; ++i) m[i][i] = 1;
 			foreach (var e in es)
 			{
-				m[e[0]][e[1]] = 1;
-				if (!directed) m[e[1]][e[0]] = 1;
+				m[e[0]][e[1]] = e.Length > 2 ? e[2] : 1;
+				if (!directed) m[e[1]][e[0]] = e.Length > 2 ? e[2] : 1;
 			}
 			return m;
 		}
 
-		// weighted
-		static long[][] EdgesToMatrix2(int n, int[][] es, bool directed)
-		{
-			var m = Array.ConvertAll(new bool[n], _ => Array.ConvertAll(new bool[n], __ => long.MaxValue));
-			for (int i = 0; i < n; ++i) m[i][i] = 0;
-			foreach (var e in es)
-			{
-				m[e[0]][e[1]] = Math.Min(m[e[0]][e[1]], e[2]);
-				if (!directed) m[e[1]][e[0]] = Math.Min(m[e[1]][e[0]], e[2]);
-			}
-			return m;
-		}
-
+		// 注意: オブジェクト参照を再利用しています。
 		static int[][] MapToEdges(List<int[]>[] map)
 		{
 			var r = new List<int[]>();
@@ -53,6 +40,7 @@ namespace CoderLib6.Graphs
 			return r.ToArray();
 		}
 
+		// 単純
 		static int[][] MapToMatrix(List<int[]>[] map)
 		{
 			var n = map.Length;
