@@ -44,6 +44,26 @@ namespace CoderLib6.Graphs
 			return m;
 		}
 
+		static int[][] MapToEdges(List<int[]>[] map)
+		{
+			var r = new List<int[]>();
+			foreach (var es in map)
+				foreach (var e in es)
+					r.Add(e);
+			return r.ToArray();
+		}
+
+		static int[][] MatrixToEdges(int[][] m)
+		{
+			var n = m.Length;
+			var r = new List<int[]>();
+			for (int i = 0; i < n; ++i)
+				for (int j = 0; j < n; ++j)
+					if (m[i][j] > 0)
+						r.Add(new[] { i, j, m[i][j] });
+			return r.ToArray();
+		}
+
 		// unweighted
 		static int[][] ToUndirectedEdges1(int[][] des) => des.Concat(des.Select(e => new[] { e[1], e[0] })).ToArray();
 		// weighted
