@@ -18,7 +18,7 @@ class B
 		var odds = Enumerable.Range(0, n).Where(v => map[v].Count % 2 == 1).ToArray();
 		if (odds.Length == 0) { Console.WriteLine(sum); return; }
 
-		var d = WarshallFloyd(n - 1, es);
+		var d = WarshallFloyd(n, es, false);
 		var oddsF = odds.Aggregate(0, (p, v) => p | (1 << v));
 
 		var dp = NewArray3(1 << n, n, 2, max);
@@ -56,33 +56,28 @@ class B
 		return map;
 	}
 
-	// es: { from, to, weight }
-	// 負閉路が存在する場合、null を返します。
-	// 到達不可能のペアの値は MaxValue です。
-	static long[][] WarshallFloyd(int n, int[][] es)
+	// es: { from, to, cost }
+	static long[][] WarshallFloyd(int n, int[][] es, bool directed)
 	{
-		var d = new long[n + 1][];
-		for (int i = 0; i <= n; i++)
-		{
-			d[i] = Array.ConvertAll(d, _ => long.MaxValue);
-			d[i][i] = 0;
-		}
+		var cs = Array.ConvertAll(new bool[n], i => Array.ConvertAll(new bool[n], _ => long.MaxValue));
+		for (int i = 0; i < n; ++i) cs[i][i] = 0;
 
 		foreach (var e in es)
 		{
-			// 多重辺の場合
-			d[e[0]][e[1]] = Math.Min(d[e[0]][e[1]], e[2]);
-			// 有向グラフの場合、ここを削除します。
-			d[e[1]][e[0]] = Math.Min(d[e[1]][e[0]], e[2]);
+			cs[e[0]][e[1]] = Math.Min(cs[e[0]][e[1]], e[2]);
+			if (!directed) cs[e[1]][e[0]] = Math.Min(cs[e[1]][e[0]], e[2]);
 		}
 
-		for (int k = 0; k <= n; k++)
-			for (int i = 0; i <= n; i++)
-				for (int j = 0; j <= n; j++)
-					if (d[i][k] < long.MaxValue && d[k][j] < long.MaxValue)
-						d[i][j] = Math.Min(d[i][j], d[i][k] + d[k][j]);
-
-		if (Enumerable.Range(0, n + 1).Any(i => d[i][i] < 0)) return null;
-		return d;
+		for (int k = 0; k < n; ++k)
+			for (int i = 0; i < n; ++i)
+				for (int j = 0; j < n; ++j)
+				{
+					if (cs[i][k] == long.MaxValue || cs[k][j] == long.MaxValue) continue;
+					var nc = cs[i][k] + cs[k][j];
+					if (cs[i][j] <= nc) continue;
+					cs[i][j] = nc;
+				}
+		for (int i = 0; i < n; ++i) if (cs[i][i] < 0) return null;
+		return cs;
 	}
 }
