@@ -9,15 +9,10 @@ class B
 	static void Main()
 	{
 		var h = Read();
-		int n = h[0];
-		var es = Array.ConvertAll(new int[h[1]], _ => Read());
+		int n = h[0], m = h[1];
+		var es = Array.ConvertAll(new bool[m], _ => Read());
 
-		var map = Array.ConvertAll(new int[n], _ => new List<int[]>());
-		foreach (var e in es)
-		{
-			map[e[0]].Add(e);
-			map[e[1]].Add(new[] { e[1], e[0], e[2] });
-		}
+		var map = EdgesToMap(n, es, false);
 
 		var sum = es.Sum(e => e[2]);
 		var odds = Enumerable.Range(0, n).Where(v => map[v].Count % 2 == 1).ToArray();
@@ -48,20 +43,17 @@ class B
 		Console.WriteLine(sum + dp[oddsF][odds[0]][0]);
 	}
 
-	static T[][][] NewArray3<T>(int n1, int n2, int n3, T v = default(T)) => NewArrayF(n1, () => NewArray2(n2, n3, v));
-	static T[][] NewArray2<T>(int n1, int n2, T v = default(T)) => NewArrayF(n1, () => NewArray1(n2, v));
-	static T[] NewArray1<T>(int n, T v = default(T))
-	{
-		var a = new T[n];
-		for (int i = 0; i < n; ++i) a[i] = v;
-		return a;
-	}
+	static T[][][] NewArray3<T>(int n1, int n2, int n3, T v = default(T)) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => Array.ConvertAll(new bool[n3], ___ => v)));
 
-	static T[] NewArrayF<T>(int n, Func<T> newItem)
+	static List<int[]>[] EdgesToMap(int n, int[][] es, bool directed)
 	{
-		var a = new T[n];
-		for (int i = 0; i < n; ++i) a[i] = newItem();
-		return a;
+		var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
+		foreach (var e in es)
+		{
+			map[e[0]].Add(new[] { e[0], e[1], e[2] });
+			if (!directed) map[e[1]].Add(new[] { e[1], e[0], e[2] });
+		}
+		return map;
 	}
 
 	// es: { from, to, weight }

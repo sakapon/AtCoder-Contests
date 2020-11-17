@@ -21,20 +21,6 @@ class C
 		Console.WriteLine(n == 2 ? dp[1][0] : Enumerable.Range(0, n - 2).Min(i => dp[n - 2][i] + Distance(ps[i], ps[n - 1])));
 	}
 
+	static T[][] NewArray2<T>(int n1, int n2, T v = default(T)) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
 	static double Distance(double[] p, double[] q) => Math.Sqrt((p[0] - q[0]) * (p[0] - q[0]) + (p[1] - q[1]) * (p[1] - q[1]));
-
-	static T[][] NewArray2<T>(int n1, int n2, T v = default(T)) => NewArrayF(n1, () => NewArray1(n2, v));
-	static T[] NewArray1<T>(int n, T v = default(T))
-	{
-		var a = new T[n];
-		for (int i = 0; i < n; ++i) a[i] = v;
-		return a;
-	}
-
-	static T[] NewArrayF<T>(int n, Func<T> newItem)
-	{
-		var a = new T[n];
-		for (int i = 0; i < n; ++i) a[i] = newItem();
-		return a;
-	}
 }
