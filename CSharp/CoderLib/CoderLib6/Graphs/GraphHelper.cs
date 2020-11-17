@@ -53,6 +53,16 @@ namespace CoderLib6.Graphs
 			return r.ToArray();
 		}
 
+		static int[][] MapToMatrix(List<int[]>[] map)
+		{
+			var n = map.Length;
+			var m = Array.ConvertAll(new bool[n], _ => new int[n]);
+			foreach (var es in map)
+				foreach (var e in es)
+					m[e[0]][e[1]] = e.Length > 2 ? e[2] : 1;
+			return m;
+		}
+
 		static int[][] MatrixToEdges(int[][] m)
 		{
 			var n = m.Length;
@@ -62,6 +72,17 @@ namespace CoderLib6.Graphs
 					if (m[i][j] > 0)
 						r.Add(new[] { i, j, m[i][j] });
 			return r.ToArray();
+		}
+
+		static List<int[]>[] MatrixToMap(int[][] m)
+		{
+			var n = m.Length;
+			var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
+			for (int i = 0; i < n; ++i)
+				for (int j = 0; j < n; ++j)
+					if (m[i][j] > 0)
+						map[i].Add(new[] { i, j, m[i][j] });
+			return map;
 		}
 
 		// unweighted
