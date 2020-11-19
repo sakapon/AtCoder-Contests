@@ -12,13 +12,13 @@ namespace CoderLibTest.Collections
 		[TestMethod]
 		public void Sum()
 		{
-			var seq = new Seq(new[] { 1, 2, 3, 4, 5 });
+			var s = new CumSum(new[] { 1, 2, 3, 4, 5 });
 
-			Assert.AreEqual(1, seq.Sum(0, 1));
-			Assert.AreEqual(3, seq.Sum(2, 3));
-			Assert.AreEqual(9, seq.Sum(1, 4));
-			Assert.AreEqual(14, seq.Sum(1, 5));
-			Assert.AreEqual(15, seq.Sum(0, 5));
+			Assert.AreEqual(1, s.Sum(0, 1));
+			Assert.AreEqual(3, s.Sum(2, 3));
+			Assert.AreEqual(9, s.Sum(1, 4));
+			Assert.AreEqual(14, s.Sum(1, 5));
+			Assert.AreEqual(15, s.Sum(0, 5));
 		}
 
 		[TestMethod]
