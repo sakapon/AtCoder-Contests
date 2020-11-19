@@ -15,17 +15,17 @@ class C
 		if (lvs.Min(lv => lv.v) < w.Max()) { Console.WriteLine(-1); return; }
 
 		lvs = lvs.OrderBy(lv => lv.v).ToArray();
-		var lmaxs = new Seq(lvs.Select(lv => lv.l).ToArray()).GetMaxs(0);
+		var lmaxs = Seq.GetMaxs(lvs.Select(lv => lv.l).ToArray(), 0);
 
 		int GetAllLength(int[] w)
 		{
 			var dp = new int[n];
-			var wseq = new Seq(w);
+			var wsum = Seq.GetCumSum(w);
 
 			for (int i = 0; i < n; i++)
 				for (int j = i + 1; j < n; j++)
 				{
-					var li = Last(-1, m - 1, x => lvs[x].v < wseq.Sum(i, j + 1));
+					var li = Last(-1, m - 1, x => lvs[x].v < wsum.Sum(i, j + 1));
 					dp[j] = Math.Max(dp[j], dp[i] + lmaxs[li + 1]);
 				}
 
@@ -71,26 +71,24 @@ class C
 	}
 }
 
-class Seq
+static class Seq
 {
-	int[] a;
-	long[] s;
-	public Seq(int[] _a) { a = _a; }
-
-	public long[] CumSum => s ??= InitCumSum();
-	long[] InitCumSum()
+	public static TR[] Aggregate<TS, TR>(TS[] a, TR r0, Func<TR, TS, TR> func)
 	{
-		var s = new long[a.Length + 1];
-		for (int i = 0; i < a.Length; ++i) s[i + 1] = s[i] + a[i];
-		return s;
-	}
-	public long Sum(int minIn, int maxEx) => CumSum[maxEx] - CumSum[minIn];
-
-	public int[] GetMaxs(int v0 = int.MinValue)
-	{
-		var r = new int[a.Length + 1];
-		r[0] = v0;
-		for (int i = 0; i < a.Length; ++i) r[i + 1] = Math.Max(r[i], a[i]);
+		var r = new TR[a.Length + 1];
+		r[0] = r0;
+		for (int i = 0; i < a.Length; ++i) r[i + 1] = func(r[i], a[i]);
 		return r;
 	}
+	public static CumSum GetCumSum(int[] a) => new CumSum(Aggregate(a, 0L, (x, y) => x + y));
+	public static int[] GetMaxs(int[] a, int v0 = int.MinValue) => Aggregate(a, v0, Math.Max);
+	public static int[] GetMins(int[] a, int v0 = int.MaxValue) => Aggregate(a, v0, Math.Min);
+}
+
+class CumSum
+{
+	long[] s;
+	public CumSum(long[] _s) { s = _s; }
+	public long Sum(int l_in, int r_ex) => s[r_ex] - s[l_in];
+	//public long Sum(Range r) => Sum(r.Start.GetOffset(s.Length - 1), r.End.GetOffset(s.Length - 1));
 }
