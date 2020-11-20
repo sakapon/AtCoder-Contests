@@ -8,6 +8,7 @@ namespace CoderLib6.Trees
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/1/DSL_1_A
 	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_a
 	// Test: https://atcoder.jp/contests/abl/tasks/abl_c
+	// Test: https://atcoder.jp/contests/abc183/tasks/abc183_f
 	class UF
 	{
 		int[] p, sizes;
@@ -48,7 +49,7 @@ namespace CoderLib6.Trees
 		T[] a;
 		// (parent, child) => result
 		Func<T, T, T> MergeData;
-		public UF(int n, T[] a0, Func<T, T, T> merge) : base(n)
+		public UF(int n, Func<T, T, T> merge, T[] a0) : base(n)
 		{
 			a = a0;
 			MergeData = merge;
