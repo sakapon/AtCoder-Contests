@@ -9,57 +9,43 @@ class D
 		var n = int.Parse(Console.ReadLine());
 		var s = Console.ReadLine();
 
-		var gs = s.GroupBySeq(c => c).ToList();
+		var x = s.IndexOf('#');
+		var y = n - 1 - s.LastIndexOf('#');
 
-		var l0 = 0;
-		if (gs[0].Key == '.')
-		{
-			l0 = gs[0].Count();
-			gs.RemoveAt(0);
-		}
-		var r0 = 0;
-		if (gs.Last().Key == '.')
-		{
-			r0 = gs.Last().Count();
-			gs.RemoveAt(gs.Count - 1);
-		}
-
-		var lrgs = gs.Where(g => g.Key == '.').ToArray();
-		var lr = lrgs.Any() ? Math.Max(0, lrgs.Max(g => g.Count()) - l0 - r0) : 0;
-
-		Console.WriteLine($"{l0 + lr} {r0}");
+		var q = s.GroupCountsBySeq(c => c).Where(p => p.Key == '.').ToArray();
+		var all = Math.Max(x + y, q.Any() ? q.Max(p => p.Value) : 0);
+		Console.WriteLine($"{x} {all - x}");
 	}
 }
 
 static class GE
 {
-	public static IEnumerable<IGrouping<TK, TS>> GroupBySeq<TS, TK>(this IEnumerable<TS> source, Func<TS, TK> toKey)
+	public static Dictionary<TK, int> GroupCounts<TS, TK>(this IEnumerable<TS> source, Func<TS, TK> toKey)
+	{
+		var d = new Dictionary<TK, int>();
+		TK k;
+		foreach (var o in source)
+			if (d.ContainsKey(k = toKey(o))) ++d[k];
+			else d[k] = 1;
+		return d;
+	}
+
+	public static IEnumerable<KeyValuePair<TK, int>> GroupCountsBySeq<TS, TK>(this IEnumerable<TS> source, Func<TS, TK> toKey)
 	{
 		var c = EqualityComparer<TK>.Default;
-		var k = default(TK);
-		var l = new List<TS>();
+		TK k = default(TK), kt;
+		var count = 0;
 
 		foreach (var o in source)
 		{
-			var kt = toKey(o);
-			if (!c.Equals(kt, k))
+			if (!c.Equals(k, kt = toKey(o)))
 			{
-				if (l.Count > 0) yield return new G<TK, TS>(k, l.ToArray());
+				if (count > 0) yield return new KeyValuePair<TK, int>(k, count);
 				k = kt;
-				l.Clear();
+				count = 0;
 			}
-			l.Add(o);
+			++count;
 		}
-		if (l.Count > 0) yield return new G<TK, TS>(k, l.ToArray());
-	}
-
-	class G<TK, TE> : IGrouping<TK, TE>
-	{
-		public TK Key { get; }
-		IEnumerable<TE> Values;
-		public G(TK key, TE[] values) { Key = key; Values = values; }
-
-		public IEnumerator<TE> GetEnumerator() => Values.GetEnumerator();
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+		if (count > 0) yield return new KeyValuePair<TK, int>(k, count);
 	}
 }
