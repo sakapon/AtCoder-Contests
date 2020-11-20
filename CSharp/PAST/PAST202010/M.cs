@@ -12,74 +12,52 @@ class M
 		var es = new bool[n - 1].Select(_ => Read()).Select((e, ei) => new[] { e[0], e[1], ei + 1 }).ToArray();
 		var map = EdgesToMap(n + 1, es, false);
 
-		var colorsMap = Array.ConvertAll(new bool[n + 1], _ => new List<(int qi, int c)>());
+		var colorsMap = Array.ConvertAll(new bool[n + 1], _ => PQ<(int qi, int c)>.Create(x => x.qi, true));
 		for (int qi = 0; qi < qc; qi++)
 		{
 			var q = Read();
-			colorsMap[q[0]].Add((qi, q[2]));
-			colorsMap[q[1]].Add((qi, q[2]));
+			colorsMap[q[0]].Push((qi, q[2]));
+			colorsMap[q[1]].Push((qi, q[2]));
 		}
+
+		var uf = new UF<PQ<(int qi, int c)>>(n + 1, (q1, q2) =>
+		{
+			if (q1.Count < q2.Count) (q1, q2) = (q2, q1);
+			q1.PushRange(q2.ToArray());
+			return q1;
+		},
+		colorsMap);
 
 		var colors = new int[n];
 
-		(PQ<(int qi, int c)>, HashSet<int>) Dfs(int v, int pv)
+		void Dfs(int v, int pv = -1)
 		{
-			PQ<(int qi, int c)> q = null;
-			HashSet<int> u = null;
-
 			foreach (var e in map[v])
 			{
 				if (e[1] == pv) continue;
 
-				var (rq, ru) = Dfs(e[1], v);
+				Dfs(e[1], v);
 
-				while (rq.Any() && !ru.Contains(rq.First.qi))
-					rq.Pop();
-				if (rq.Any())
-					colors[e[2]] = rq.First.c;
-
-				if (q == null)
+				var q = uf.GetValue(e[1]);
+				while (q.Any())
 				{
-					(q, u) = (rq, ru);
-				}
-				else
-				{
-					if (q.Count < rq.Count)
+					var (qi, c) = q.Pop();
+					if (q.Any() && q.First.qi == qi)
 					{
-						(q, rq) = (rq, q);
-						(u, ru) = (ru, u);
+						q.Pop();
 					}
-
-					foreach (var (qi, c) in rq)
+					else
 					{
-						if (!ru.Contains(qi)) continue;
-
-						if (!u.Remove(qi))
-						{
-							q.Push((qi, c));
-							u.Add(qi);
-						}
+						q.Push((qi, c));
+						break;
 					}
 				}
+				if (q.Any()) colors[e[2]] = q.First.c;
+				uf.Unite(e[1], v);
 			}
-
-			if (q == null)
-			{
-				q = PQ<(int qi, int c)>.Create(x => x.qi, true);
-				u = new HashSet<int>();
-			}
-			foreach (var (qi, c) in colorsMap[v])
-			{
-				if (!u.Remove(qi))
-				{
-					q.Push((qi, c));
-					u.Add(qi);
-				}
-			}
-			return (q, u);
 		}
 
-		Dfs(1, -1);
+		Dfs(1);
 		Console.WriteLine(string.Join("\n", colors.Skip(1)));
 	}
 
