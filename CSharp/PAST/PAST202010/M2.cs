@@ -12,7 +12,7 @@ class M2
 		var es = new bool[n - 1].Select(_ => Read()).Select((e, ei) => new[] { e[0], e[1], ei + 1 }).ToArray();
 		var map = EdgesToMap(n + 1, es, false);
 
-		var colorsMap = Array.ConvertAll(new bool[n + 1], _ => new SortedDictionary<int, int>());
+		var colorsMap = Array.ConvertAll(new bool[n + 1], _ => new SortedList<int, int>());
 		for (int qi = 0; qi < qc; qi++)
 		{
 			var q = Read();
@@ -20,7 +20,7 @@ class M2
 			colorsMap[q[1]][-qi] = q[2];
 		}
 
-		var uf = new UF<SortedDictionary<int, int>>(n + 1, (d1, d2) =>
+		var uf = new UF<SortedList<int, int>>(n + 1, (d1, d2) =>
 		{
 			if (d1.Count < d2.Count) (d1, d2) = (d2, d1);
 			foreach (var (qi, c) in d2)
@@ -40,8 +40,9 @@ class M2
 
 				Dfs(e[1], v);
 
+				// 先頭の要素にアクセスするため、SortedDictionary よりも SortedList が適しています。
 				var d = uf.GetValue(e[1]);
-				if (d.Any()) colors[e[2]] = d.First().Value;
+				if (d.Count > 0) colors[e[2]] = d.Values[0];
 				uf.Unite(e[1], v);
 			}
 		}
