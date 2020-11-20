@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CoderLib6.Graphs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CoderLibTest.Graphs
@@ -8,40 +9,20 @@ namespace CoderLibTest.Graphs
 	[TestClass]
 	public class GraphTest
 	{
-		static List<int>[] UndirectedMap(int n, int[][] rs)
-		{
-			var map = Array.ConvertAll(new int[n + 1], _ => new List<int>());
-			foreach (var r in rs)
-			{
-				map[r[0]].Add(r[1]);
-				map[r[1]].Add(r[0]);
-			}
-			return map;
-		}
-
 		// キーが含まれない可能性があります。
-		static Dictionary<int, int[]> UndirectedMap(int[][] rs) => rs.Concat(rs.Select(r => new[] { r[1], r[0] })).GroupBy(r => r[0], r => r[1]).ToDictionary(g => g.Key, g => g.ToArray());
-
-		static List<int>[] DirectedMap(int n, int[][] rs)
-		{
-			var map = Array.ConvertAll(new int[n + 1], _ => new List<int>());
-			foreach (var r in rs)
-				map[r[0]].Add(r[1]);
-			return map;
-		}
+		static Dictionary<int, int[]> DirectedMap(int[][] es) => es.GroupBy(e => e[0], e => e[1]).ToDictionary(g => g.Key, g => g.ToArray());
+		// キーが含まれない可能性があります。
+		static Dictionary<int, int[]> UndirectedMap(int[][] es) => es.Concat(es.Select(e => new[] { e[1], e[0] })).GroupBy(e => e[0], e => e[1]).ToDictionary(g => g.Key, g => g.ToArray());
 
 		// 値が null の可能性があります。
-		static List<int>[] DirectedMap2(int n, int[][] rs)
+		static List<int>[] DirectedMap2(int n, int[][] es)
 		{
 			var map = new List<int>[n + 1];
-			foreach (var r in rs)
-				if (map[r[0]] == null) map[r[0]] = new List<int> { r[1] };
-				else map[r[0]].Add(r[1]);
+			foreach (var e in es)
+				if (map[e[0]] == null) map[e[0]] = new List<int> { e[1] };
+				else map[e[0]].Add(e[1]);
 			return map;
 		}
-
-		// キーが含まれない可能性があります。
-		static Dictionary<int, int[]> DirectedMap(int[][] rs) => rs.GroupBy(r => r[0], r => r[1]).ToDictionary(g => g.Key, g => g.ToArray());
 
 		#region Test Methods
 
@@ -56,7 +37,7 @@ namespace CoderLibTest.Graphs
 				new[] { 4, 3 },
 				new[] { 2, 3 },
 			};
-			var map = UndirectedMap(n, rs);
+			var map = GraphHelper.EdgesToMap1(n + 1, rs, false);
 
 			var u = new int[n + 1];
 			var q = new Queue<int>();
@@ -88,7 +69,7 @@ namespace CoderLibTest.Graphs
 				new[] { 3, 4 },
 				new[] { 2, 3 },
 			};
-			map = DirectedMap(n, rs);
+			map = GraphHelper.EdgesToMap1(n + 1, rs, true);
 			u = new int[n + 1];
 			Dfs(2, 0);
 			Console.WriteLine(string.Join("\n", u.Select((x, i) => $"{i}: {x}")));

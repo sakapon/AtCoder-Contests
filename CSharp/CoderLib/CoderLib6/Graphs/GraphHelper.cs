@@ -6,8 +6,20 @@ namespace CoderLib6.Graphs
 {
 	static class GraphHelper
 	{
+		// unweighted
+		public static List<int>[] EdgesToMap1(int n, int[][] es, bool directed)
+		{
+			var map = Array.ConvertAll(new bool[n], _ => new List<int>());
+			foreach (var e in es)
+			{
+				map[e[0]].Add(e[1]);
+				if (!directed) map[e[1]].Add(e[0]);
+			}
+			return map;
+		}
+
 		// weighted
-		static List<int[]>[] EdgesToMap(int n, int[][] es, bool directed)
+		static List<int[]>[] EdgesToMap2(int n, int[][] es, bool directed)
 		{
 			var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
 			foreach (var e in es)
