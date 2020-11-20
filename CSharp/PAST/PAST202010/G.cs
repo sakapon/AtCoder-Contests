@@ -71,11 +71,9 @@ class UF
 	public bool AreUnited(int x, int y) => GetRoot(x) == GetRoot(y);
 	public bool Unite(int x, int y)
 	{
-		x = GetRoot(x);
-		y = GetRoot(y);
-		if (x == y) return false;
+		if ((x = GetRoot(x)) == (y = GetRoot(y))) return false;
 
-		// 要素数が大きいほうのグループに合流します。
+		// 要素数が大きいほうのグループにマージします。
 		if (sizes[x] < sizes[y]) Merge(y, x);
 		else Merge(x, y);
 		return true;
