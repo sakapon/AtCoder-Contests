@@ -12,16 +12,17 @@ namespace CoderLib8
 		{
 			Console.ReadLine();
 			var s = Console.ReadLine();
-
-			var n = int.Parse(Console.ReadLine());
-			var a = Read();
 			//var h = Read();
 			//int n = h[0], m = h[1];
+			var n = int.Parse(Console.ReadLine());
+			var a = Read();
 			var ps = Array.ConvertAll(new bool[n], _ => Read());
 
 			Console.WriteLine(string.Join(" ", a));
 		}
 	}
+	//var a = Console.ReadLine().Split().Select(int.Parse).ToList();
+	//var a = Console.ReadLine().Split().Select(long.Parse).ToList();
 
 	class Template_Graph
 	{
