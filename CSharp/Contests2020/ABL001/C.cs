@@ -3,27 +3,50 @@ using System.Linq;
 
 class C
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
 	{
 		var h = Read();
-		var n = h[0];
-		var ps = new int[h[1]].Select(_ => Read());
+		int n = h[0], m = h[1];
+		var es = Array.ConvertAll(new bool[m], _ => Read());
 
 		var uf = new UF(n + 1);
-		foreach (var p in ps)
-			uf.Unite(p[0], p[1]);
-		Console.WriteLine(uf.ToGroups().Length - 2);
+		foreach (var e in es)
+			uf.Unite(e[0], e[1]);
+		Console.WriteLine(uf.GroupsCount - 2);
 	}
 }
 
 class UF
 {
-	int[] p;
-	public UF(int n) { p = Enumerable.Range(0, n).ToArray(); }
+	int[] p, sizes;
+	public int GroupsCount;
+	public UF(int n)
+	{
+		p = Enumerable.Range(0, n).ToArray();
+		sizes = Array.ConvertAll(p, _ => 1);
+		GroupsCount = n;
+	}
 
-	public void Unite(int a, int b) { if (!AreUnited(a, b)) p[p[b]] = p[a]; }
-	public bool AreUnited(int a, int b) => GetRoot(a) == GetRoot(b);
-	public int GetRoot(int a) => p[a] == a ? a : p[a] = GetRoot(p[a]);
-	public int[][] ToGroups() => Enumerable.Range(0, p.Length).GroupBy(GetRoot).Select(g => g.ToArray()).ToArray();
+	public int GetRoot(int x) => p[x] == x ? x : p[x] = GetRoot(p[x]);
+	public int GetSize(int x) => sizes[GetRoot(x)];
+
+	public bool AreUnited(int x, int y) => GetRoot(x) == GetRoot(y);
+	public bool Unite(int x, int y)
+	{
+		x = GetRoot(x);
+		y = GetRoot(y);
+		if (x == y) return false;
+
+		// 要素数が大きいほうのグループに合流します。
+		if (sizes[x] < sizes[y]) Merge(y, x);
+		else Merge(x, y);
+		return true;
+	}
+	protected virtual void Merge(int x, int y)
+	{
+		p[y] = x;
+		sizes[x] += sizes[y];
+		--GroupsCount;
+	}
 }

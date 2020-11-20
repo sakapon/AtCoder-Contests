@@ -1,36 +1,57 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 class A
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
 	{
-		var r = new List<int>();
+		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		var h = Read();
-		var n = h[0];
+		int n = h[0], qc = h[1];
+		var qs = Array.ConvertAll(new bool[qc], _ => Read());
 
 		var uf = new UF(n);
 
-		for (int i = 0; i < h[1]; i++)
-		{
-			var q = Read();
+		foreach (var q in qs)
 			if (q[0] == 0)
 				uf.Unite(q[1], q[2]);
 			else
-				r.Add(uf.AreUnited(q[1], q[2]) ? 1 : 0);
-		}
-		Console.WriteLine(string.Join("\n", r));
+				Console.WriteLine(uf.AreUnited(q[1], q[2]) ? 1 : 0);
+		Console.Out.Flush();
 	}
 }
 
 class UF
 {
-	int[] p;
-	public UF(int n) { p = Enumerable.Range(0, n).ToArray(); }
+	int[] p, sizes;
+	public int GroupsCount;
+	public UF(int n)
+	{
+		p = Enumerable.Range(0, n).ToArray();
+		sizes = Array.ConvertAll(p, _ => 1);
+		GroupsCount = n;
+	}
 
-	public void Unite(int a, int b) { if (!AreUnited(a, b)) p[p[b]] = p[a]; }
-	public bool AreUnited(int a, int b) => GetRoot(a) == GetRoot(b);
-	public int GetRoot(int a) => p[a] == a ? a : p[a] = GetRoot(p[a]);
+	public int GetRoot(int x) => p[x] == x ? x : p[x] = GetRoot(p[x]);
+	public int GetSize(int x) => sizes[GetRoot(x)];
+
+	public bool AreUnited(int x, int y) => GetRoot(x) == GetRoot(y);
+	public bool Unite(int x, int y)
+	{
+		x = GetRoot(x);
+		y = GetRoot(y);
+		if (x == y) return false;
+
+		// 要素数が大きいほうのグループに合流します。
+		if (sizes[x] < sizes[y]) Merge(y, x);
+		else Merge(x, y);
+		return true;
+	}
+	protected virtual void Merge(int x, int y)
+	{
+		p[y] = x;
+		sizes[x] += sizes[y];
+		--GroupsCount;
+	}
 }
