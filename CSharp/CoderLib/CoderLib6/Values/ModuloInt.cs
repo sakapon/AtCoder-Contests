@@ -3,6 +3,7 @@
 namespace CoderLib6.Values
 {
 	// 比較には V を使います。
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/7/DPL/5/DPL_5_C
 	struct MInt
 	{
 		//const long M = 998244353;
