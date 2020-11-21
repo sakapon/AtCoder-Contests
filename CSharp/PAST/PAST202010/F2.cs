@@ -12,13 +12,7 @@ class F2
 		var s = Array.ConvertAll(new bool[n], _ => Console.ReadLine());
 
 		var ws = s.GroupCounts(w => w).OrderBy(p => -p.Value).ToArray();
-
-		if (k > 0 && ws[k].Value == ws[k - 1].Value || k + 1 < ws.Length && ws[k].Value == ws[k + 1].Value)
-		{
-			Console.WriteLine("AMBIGUOUS");
-			return;
-		}
-
-		Console.WriteLine(ws[k].Key);
+		var tie = ws.GroupCounts(p => p.Value);
+		Console.WriteLine(tie[ws[k].Value] == 1 ? ws[k].Key : "AMBIGUOUS");
 	}
 }
