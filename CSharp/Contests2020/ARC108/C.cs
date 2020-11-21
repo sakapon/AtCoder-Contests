@@ -1,19 +1,94 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 class C
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		//var h = Read();
-		//int n = h[0], m = h[1];
-		var n = int.Parse(Console.ReadLine());
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var h = Read();
+		int n = h[0], m = h[1];
+		var es = Array.ConvertAll(new bool[m], _ => Read());
 
-		Console.WriteLine(string.Join(" ", a));
+		es = Kruskal(n + 1, es);
+		var map = EdgesToMap2(n + 1, es, false);
+		var r = new int[n + 1];
+		r[1] = 1;
+
+		void Dfs(int v, int pv = -1)
+		{
+			foreach (var e in map[v])
+			{
+				if (e[1] == pv) continue;
+
+				if (e[2] == r[v])
+					r[e[1]] = e[2] == n ? 1 : e[2] + 1;
+				else
+					r[e[1]] = e[2];
+
+				Dfs(e[1], v);
+			}
+		}
+
+		Dfs(1);
+		Console.WriteLine(string.Join("\n", r.Skip(1)));
 	}
+
+	static List<int[]>[] EdgesToMap2(int n, int[][] es, bool directed)
+	{
+		var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
+		foreach (var e in es)
+		{
+			map[e[0]].Add(new[] { e[0], e[1], e[2] });
+			if (!directed) map[e[1]].Add(new[] { e[1], e[0], e[2] });
+		}
+		return map;
+	}
+
+	static int[][] Kruskal(int n, int[][] es)
+	{
+		var uf = new UF(n);
+		var minEdges = new List<int[]>();
+
+		foreach (var e in es.OrderBy(e => e[2]))
+		{
+			if (uf.AreUnited(e[0], e[1])) continue;
+			uf.Unite(e[0], e[1]);
+			minEdges.Add(e);
+		}
+		return minEdges.ToArray();
+	}
+}
+class UF
+{
+	int[] p, sizes;
+	public int GroupsCount;
+	public UF(int n)
+	{
+		p = Enumerable.Range(0, n).ToArray();
+		sizes = Array.ConvertAll(p, _ => 1);
+		GroupsCount = n;
+	}
+
+	public int GetRoot(int x) => p[x] == x ? x : p[x] = GetRoot(p[x]);
+	public int GetSize(int x) => sizes[GetRoot(x)];
+
+	public bool AreUnited(int x, int y) => GetRoot(x) == GetRoot(y);
+	public bool Unite(int x, int y)
+	{
+		if ((x = GetRoot(x)) == (y = GetRoot(y))) return false;
+
+		// 要素数が大きいほうのグループにマージします。
+		if (sizes[x] < sizes[y]) Merge(y, x);
+		else Merge(x, y);
+		return true;
+	}
+	protected virtual void Merge(int x, int y)
+	{
+		p[y] = x;
+		sizes[x] += sizes[y];
+		--GroupsCount;
+	}
+	public int[][] ToGroups() => Enumerable.Range(0, p.Length).GroupBy(GetRoot).Select(g => g.ToArray()).ToArray();
 }
