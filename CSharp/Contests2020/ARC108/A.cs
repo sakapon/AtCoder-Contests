@@ -8,11 +8,8 @@ class A
 		var h = ReadL();
 		long s = h[0], p = h[1];
 
-		for (long n = 1; n <= 1000000; n++)
-		{
-			var m = s - n;
-			if (n * m == p) { Console.WriteLine("Yes"); return; }
-		}
+		for (long n = 1; n * n <= p; n++)
+			if (n * (s - n) == p) { Console.WriteLine("Yes"); return; }
 		Console.WriteLine("No");
 	}
 }

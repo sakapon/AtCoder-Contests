@@ -11,8 +11,8 @@ class C
 		int n = h[0], m = h[1];
 		var es = Array.ConvertAll(new bool[m], _ => Read());
 
-		es = Kruskal(n + 1, es);
-		var map = EdgesToMap2(n + 1, es, false);
+		es = GetTree(n + 1, es, false, 1);
+		var map = EdgesToMap2(n + 1, es, true);
 		var r = new int[n + 1];
 		r[1] = 1;
 
@@ -46,49 +46,23 @@ class C
 		return map;
 	}
 
-	static int[][] Kruskal(int n, int[][] es)
+	static int[][] GetTree(int n, int[][] es, bool directed, int rv)
 	{
-		var uf = new UF(n);
-		var minEdges = new List<int[]>();
+		var map = EdgesToMap2(n, es, directed);
+		var des = new List<int[]>();
+		var u = new bool[n];
+		Dfs(rv);
+		return des.ToArray();
 
-		foreach (var e in es.OrderBy(e => e[2]))
+		void Dfs(int v)
 		{
-			if (uf.AreUnited(e[0], e[1])) continue;
-			uf.Unite(e[0], e[1]);
-			minEdges.Add(e);
+			u[v] = true;
+			foreach (var e in map[v])
+			{
+				if (u[e[1]]) continue;
+				des.Add(e);
+				Dfs(e[1]);
+			}
 		}
-		return minEdges.ToArray();
 	}
-}
-class UF
-{
-	int[] p, sizes;
-	public int GroupsCount;
-	public UF(int n)
-	{
-		p = Enumerable.Range(0, n).ToArray();
-		sizes = Array.ConvertAll(p, _ => 1);
-		GroupsCount = n;
-	}
-
-	public int GetRoot(int x) => p[x] == x ? x : p[x] = GetRoot(p[x]);
-	public int GetSize(int x) => sizes[GetRoot(x)];
-
-	public bool AreUnited(int x, int y) => GetRoot(x) == GetRoot(y);
-	public bool Unite(int x, int y)
-	{
-		if ((x = GetRoot(x)) == (y = GetRoot(y))) return false;
-
-		// 要素数が大きいほうのグループにマージします。
-		if (sizes[x] < sizes[y]) Merge(y, x);
-		else Merge(x, y);
-		return true;
-	}
-	protected virtual void Merge(int x, int y)
-	{
-		p[y] = x;
-		sizes[x] += sizes[y];
-		--GroupsCount;
-	}
-	public int[][] ToGroups() => Enumerable.Range(0, p.Length).GroupBy(GetRoot).Select(g => g.ToArray()).ToArray();
 }
