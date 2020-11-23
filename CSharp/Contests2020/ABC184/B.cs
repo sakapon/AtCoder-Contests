@@ -3,24 +3,15 @@
 class B
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static void Main()
 	{
-		var h = Read();
-		int n = h[0], x = h[1];
+		var (n, x) = Read2();
 		var s = Console.ReadLine();
 
 		foreach (var c in s)
-		{
-			if (c == 'o')
-			{
-				x++;
-			}
-			else
-			{
-				if (x > 0) x--;
-			}
-		}
+			if (c == 'o') x++;
+			else if (x > 0) x--;
 		Console.WriteLine(x);
 	}
 }

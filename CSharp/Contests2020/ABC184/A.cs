@@ -3,10 +3,11 @@
 class A
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static void Main()
 	{
-		var ab = Read();
-		var cd = Read();
-		Console.WriteLine(ab[0] * cd[1] - ab[1] * cd[0]);
+		var (a, b) = Read2();
+		var (c, d) = Read2();
+		Console.WriteLine(a * d - b * c);
 	}
 }
