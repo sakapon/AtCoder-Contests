@@ -16,18 +16,18 @@ class C
 		var r = new int[n + 1];
 		r[1] = 1;
 
-		void Dfs(int v, int pv = -1)
+		void Dfs(int v, int[] pe = null)
 		{
 			foreach (var e in map[v])
 			{
-				if (e[1] == pv) continue;
+				if (e[1] == pe?[0]) continue;
 
 				if (e[2] == r[v])
-					r[e[1]] = e[2] == n ? 1 : e[2] + 1;
+					r[e[1]] = e[2] % n + 1;
 				else
 					r[e[1]] = e[2];
 
-				Dfs(e[1], v);
+				Dfs(e[1], e);
 			}
 		}
 
