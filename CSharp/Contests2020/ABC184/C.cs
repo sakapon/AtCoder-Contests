@@ -10,17 +10,15 @@ class C
 	{
 		var (a, b) = Read2();
 		var (c, d) = Read2();
+		a = Abs(a - c);
+		b = Abs(b - d);
 
-		if ((a, b) == (c, d))
+		if ((a, b) == (0, 0))
 			return 0;
-
-		if (a + b == c + d || a - b == c - d || Abs(a - c) + Abs(b - d) <= 3)
+		if (a == b || a + b <= 3)
 			return 1;
-
-		if (Abs(a - b) % 2 == Abs(c - d) % 2 || Abs(a - c) + Abs(b - d) <= 6 ||
-			Abs(Abs(a - b) - Abs(c - d)) <= 3 || Abs(Abs(a + b) - Abs(c + d)) <= 3)
+		if (a % 2 == b % 2 || a + b <= 6 || Abs(a - b) <= 3)
 			return 2;
-
 		return 3;
 	}
 }
