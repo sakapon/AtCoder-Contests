@@ -2,18 +2,10 @@
 
 class A
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		//var h = Read();
-		//int n = h[0], m = h[1];
-		var n = int.Parse(Console.ReadLine());
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
-
-		Console.WriteLine(string.Join(" ", a));
+		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+		int a = h[0], b = h[1], x = h[2], y = h[3];
+		Console.WriteLine((a > b ? a - b - 1 : b - a) * Math.Min(2 * x, y) + x);
 	}
 }

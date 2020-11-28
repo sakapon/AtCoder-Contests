@@ -2,18 +2,18 @@
 
 class B
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		//var h = Read();
-		//int n = h[0], m = h[1];
-		var n = int.Parse(Console.ReadLine());
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var n = long.Parse(Console.ReadLine());
 
-		Console.WriteLine(string.Join(" ", a));
+		var k = Last(0, int.MaxValue, x => (long)x * (x + 1) - 2 * (n + 1) <= 0);
+		Console.WriteLine(n + 1 - k);
+	}
+
+	static int Last(int l, int r, Func<int, bool> f)
+	{
+		int m;
+		while (l < r) if (f(m = r - (r - l - 1) / 2)) l = m; else r = m - 1;
+		return l;
 	}
 }
