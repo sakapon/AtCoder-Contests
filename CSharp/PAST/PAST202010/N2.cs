@@ -11,6 +11,19 @@ class N2
 		s.Add(new int[6]);
 		s.Add(new int[6]);
 
+		var s2 = NewArray2(s.Count, 1 << 6, true);
+		for (int i = 0; i < s.Count; i++)
+			for (int x = 0; x < 1 << 6; x++)
+				for (int xi = 0; xi < 6; xi++)
+				{
+					var expected = (x >> xi) & 1;
+					if (s[i][xi] == 1 - expected)
+					{
+						s2[i][x] = false;
+						break;
+					}
+				}
+
 		var valid = Array.ConvertAll(new bool[1 << 18], _ => true);
 		for (int x = 0; x < 1 << 18; x++)
 		{
@@ -31,30 +44,18 @@ class N2
 
 		var dp = NewArray2<long>(21, 1 << 12);
 		dp[0][0] = 1;
-		for (int i = 1; i <= 20; i++)
-		{
+		for (int i = 0; i < 20; i++)
 			for (int x = 0; x < 1 << 12; x++)
 			{
-				if (dp[i - 1][x] == 0) continue;
+				if (dp[i][x] == 0) continue;
 				for (int y = 0; y < 1 << 6; y++)
 				{
-					if (valid[(y << 12) | x] && Matches(i + 1, y))
-						dp[i][(y << 6) | (x >> 6)] += dp[i - 1][x];
+					var xy = (y << 12) | x;
+					if (valid[xy] && s2[i + 2][y])
+						dp[i + 1][xy >> 6] += dp[i][x];
 				}
 			}
-		}
 		Console.WriteLine(dp[20][0]);
-
-		bool Matches(int i, int x)
-		{
-			for (int xi = 0; xi < 6; xi++)
-			{
-				var c = s[i][xi];
-				var expected = (x >> xi) & 1;
-				if (c == 1 - expected) return false;
-			}
-			return true;
-		}
 	}
 
 	static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
