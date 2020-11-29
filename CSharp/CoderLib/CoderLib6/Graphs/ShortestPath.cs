@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CoderLib6.Trees;
 
 namespace CoderLib6.Graphs
@@ -109,7 +108,7 @@ namespace CoderLib6.Graphs
 		// es: { from, to, cost }
 		// 負閉路が存在する場合、(null, null)。
 		// 最小コスト: 到達不可能の場合、MaxValue。
-		// 中間地点: 到達不可能または直結の場合、-1。直結の場合に、端点のいずれかが設定されることがあります。
+		// 中間点: 到達不可能または直結の場合、-1。
 		public static Tuple<long[][], int[][]> WarshallFloyd(int n, int[][] es, bool directed)
 		{
 			var cs = Array.ConvertAll(new bool[n], i => Array.ConvertAll(new bool[n], _ => long.MaxValue));
