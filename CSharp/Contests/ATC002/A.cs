@@ -1,41 +1,80 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 class A
 {
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static void Main()
 	{
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var a = read();
-		int h = a[0], w = a[1];
-		var s = read();
-		var g = read();
-		var sp = new P(s[0] - 1, s[1] - 1);
-		var gp = new P(g[0] - 1, g[1] - 1);
-		var c = new int[h].Select(_ => Console.ReadLine()).ToArray();
+		var (h, w) = Read2();
+		var (si, sj) = Read2();
+		var (gi, gj) = Read2();
+		var sv = new P(si - 1, sj - 1);
+		var gv = new P(gi - 1, gj - 1);
+		var c = Array.ConvertAll(new bool[h], _ => Console.ReadLine());
 
-		var t = new int[h, w];
-		var q = new Queue<P>();
-		t[sp.i, sp.j] = 1;
-		q.Enqueue(sp);
+		var r = GridHelper.GridBfs(h, w, c, sv, gv);
+		Console.WriteLine(r.GetByP(gv));
+	}
+}
 
-		Func<P, P[]> nexts = p => Array.FindAll(new[] { new P(p.i, p.j - 1), new P(p.i, p.j + 1), new P(p.i - 1, p.j), new P(p.i + 1, p.j) }, x => 0 <= x.i && x.i < h && 0 <= x.j && x.j < w && t[x.i, x.j] == 0);
-		while (q.Any())
+struct P
+{
+	public int i, j;
+	public P(int _i, int _j) { i = _i; j = _j; }
+	public bool IsInRange(int h, int w) => 0 <= i && i < h && 0 <= j && j < w;
+	public P[] Nexts() => new[] { new P(i - 1, j), new P(i + 1, j), new P(i, j - 1), new P(i, j + 1) };
+}
+
+static class GridHelper
+{
+	// 2次元インデックスでアクセスします。
+	public static T GetByP<T>(this T[][] a, P p) => a[p.i][p.j];
+	public static void SetByP<T>(this T[][] a, P p, T value) => a[p.i][p.j] = value;
+
+	// 辺のコストがすべて等しい場合
+	// ev: 終点を指定しない場合、new P(-1, -1)
+	public static int[][] Bfs(int h, int w, P[][] es, bool directed, P sv, P ev)
+	{
+		var map = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => new List<P>()));
+		foreach (var e in es)
 		{
-			var p = q.Dequeue();
-			foreach (var np in nexts(p))
+			map.GetByP(e[0]).Add(e[1]);
+			if (!directed) map.GetByP(e[1]).Add(e[0]);
+		}
+
+		var cs = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => int.MaxValue));
+		var q = new Queue<P>();
+		cs.SetByP(sv, 0);
+		q.Enqueue(sv);
+
+		while (q.Count > 0)
+		{
+			var v = q.Dequeue();
+			var nc = cs.GetByP(v) + 1;
+			foreach (var nv in map.GetByP(v))
 			{
-				t[np.i, np.j] = c[np.i][np.j] == '#' ? int.MaxValue : t[p.i, p.j] + 1;
-				if (np.i == gp.i && np.j == gp.j) { Console.WriteLine(t[p.i, p.j]); return; }
-				if (c[np.i][np.j] == '.') q.Enqueue(np);
+				if (cs.GetByP(nv) <= nc) continue;
+				cs.SetByP(nv, nc);
+				if (nv.Equals(ev)) return cs;
+				q.Enqueue(nv);
 			}
 		}
+		return cs;
 	}
 
-	struct P
+	public static int[][] GridBfs(int h, int w, string[] s, P sv, P ev)
 	{
-		public int i, j;
-		public P(int _i, int _j) { i = _i; j = _j; }
+		var es = new List<P[]>();
+		for (int i = 0; i < h; i++)
+			for (int j = 0; j < w; j++)
+			{
+				if (s[i][j] == '#') continue;
+				var v = new P(i, j);
+				if (i > 0 && s[i - 1][j] != '#') es.Add(new[] { v, new P(i - 1, j) });
+				if (j > 0 && s[i][j - 1] != '#') es.Add(new[] { v, new P(i, j - 1) });
+			}
+		return Bfs(h, w, es.ToArray(), false, sv, ev);
 	}
 }
