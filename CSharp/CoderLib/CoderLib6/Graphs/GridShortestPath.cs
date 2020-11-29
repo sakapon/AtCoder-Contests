@@ -42,17 +42,6 @@ namespace CoderLib6.Graphs
 
 		// 辺のコストがすべて等しい場合
 		// ev: 終点を指定しない場合、new P(-1, -1)
-		public static int[][] Bfs(int h, int w, P[][] es, bool directed, P sv, P ev)
-		{
-			var map = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => new List<P>()));
-			foreach (var e in es)
-			{
-				map.GetByP(e[0]).Add(e[1]);
-				if (!directed) map.GetByP(e[1]).Add(e[0]);
-			}
-			return Bfs(h, w, v => map.GetByP(v), sv, ev);
-		}
-
 		public static int[][] Bfs(int h, int w, Func<P, List<P>> toNexts, P sv, P ev)
 		{
 			var cs = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => int.MaxValue));
@@ -75,6 +64,17 @@ namespace CoderLib6.Graphs
 			return cs;
 		}
 
+		public static int[][] Bfs(int h, int w, P[][] es, bool directed, P sv, P ev)
+		{
+			var map = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => new List<P>()));
+			foreach (var e in es)
+			{
+				map.GetByP(e[0]).Add(e[1]);
+				if (!directed) map.GetByP(e[1]).Add(e[0]);
+			}
+			return Bfs(h, w, v => map.GetByP(v), sv, ev);
+		}
+
 		// 典型的な無向グリッド BFS
 		// ev: 終点を指定しない場合、new P(-1, -1)
 		public static int[][] UndirectedBfs(int h, int w, string[] s, P sv, P ev)
@@ -89,6 +89,19 @@ namespace CoderLib6.Graphs
 					if (j > 0 && s[i][j - 1] != '#') es.Add(new[] { v, new P(i, j - 1) });
 				}
 			return Bfs(h, w, es.ToArray(), false, sv, ev);
+		}
+
+		public static int[][] UndirectedBfs2(int h, int w, string[] s, P sv, P ev)
+		{
+			return Bfs(h, w, v =>
+			{
+				var nvs = new List<P>();
+				foreach (var nv in v.Nexts())
+					if (nv.IsInRange(h, w) && s[nv.i][nv.j] != '#')
+						nvs.Add(nv);
+				return nvs;
+			},
+			sv, ev);
 		}
 
 		public static P FindChar(int h, int w, string[] s, char c)
