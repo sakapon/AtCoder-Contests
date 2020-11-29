@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 
-class A
+class AL
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static void Main()
+	static void Main() => Console.WriteLine(Solve() ? "Yes" : "No");
+	static bool Solve()
 	{
 		var (h, w) = Read2();
-		var sv = Read2() - new P(1, 1);
-		var gv = Read2() - new P(1, 1);
 		var c = Array.ConvertAll(new bool[h], _ => Console.ReadLine());
 
+		var sv = GridShortestPath.FindChar(h, w, c, 's');
+		var gv = GridShortestPath.FindChar(h, w, c, 'g');
 		var r = GridShortestPath.UndirectedBfs(h, w, c, sv, gv);
-		Console.WriteLine(r.GetByP(gv));
+		return r.GetByP(gv) < int.MaxValue;
 	}
 }
 

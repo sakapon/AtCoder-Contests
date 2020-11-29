@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace CoderLib6.Graphs
 {
+	// Test: https://atcoder.jp/contests/atc001/tasks/dfs_a
+	// Test: https://atcoder.jp/contests/atc002/tasks/abc007_3
+
 	// i を縦方向、j を横方向として使うことが多いです。
 	struct P : IEquatable<P>
 	{
@@ -78,10 +81,18 @@ namespace CoderLib6.Graphs
 				{
 					if (s[i][j] == '#') continue;
 					var v = new P(i, j);
-					if (i > 0 && s[i - 1][j] != '#') es.Add(new[] { v, v - P.UnitX });
-					if (j > 0 && s[i][j - 1] != '#') es.Add(new[] { v, v - P.UnitY });
+					if (i > 0 && s[i - 1][j] != '#') es.Add(new[] { v, new P(i - 1, j) });
+					if (j > 0 && s[i][j - 1] != '#') es.Add(new[] { v, new P(i, j - 1) });
 				}
 			return Bfs(h, w, es.ToArray(), false, sv, ev);
+		}
+
+		public static P FindChar(int h, int w, string[] s, char c)
+		{
+			for (int i = 0; i < h; i++)
+				for (int j = 0; j < w; j++)
+					if (s[i][j] == c) return new P(i, j);
+			return new P(-1, -1);
 		}
 	}
 }
