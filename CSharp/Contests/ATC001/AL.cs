@@ -61,7 +61,11 @@ static class GridShortestPath
 			map.GetByP(e[0]).Add(e[1]);
 			if (!directed) map.GetByP(e[1]).Add(e[0]);
 		}
+		return Bfs(h, w, v => map.GetByP(v), sv, ev);
+	}
 
+	public static int[][] Bfs(int h, int w, Func<P, List<P>> toNexts, P sv, P ev)
+	{
 		var cs = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => int.MaxValue));
 		var q = new Queue<P>();
 		cs.SetByP(sv, 0);
@@ -71,7 +75,7 @@ static class GridShortestPath
 		{
 			var v = q.Dequeue();
 			var nc = cs.GetByP(v) + 1;
-			foreach (var nv in map.GetByP(v))
+			foreach (var nv in toNexts(v))
 			{
 				if (cs.GetByP(nv) <= nc) continue;
 				cs.SetByP(nv, nc);
