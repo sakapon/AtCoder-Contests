@@ -75,23 +75,31 @@ namespace CoderLib6.Graphs
 			return Bfs(h, w, v => map.GetByP(v), sv, ev);
 		}
 
-		// 典型的な無向グリッド BFS
-		// ev: 終点を指定しない場合、new P(-1, -1)
-		public static int[][] UndirectedBfs(int h, int w, string[] s, P sv, P ev)
+		[Obsolete]
+		public static int[][] UndirectedBfs0(int h, int w, string[] s, P sv, P ev)
 		{
-			var es = new List<P[]>();
+			var map = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => new List<P>()));
+
 			for (int i = 0; i < h; i++)
 				for (int j = 0; j < w; j++)
 				{
-					if (s[i][j] == '#') continue;
+					if ((i + j) % 2 == 1 || s[i][j] == '#') continue;
 					var v = new P(i, j);
-					if (i > 0 && s[i - 1][j] != '#') es.Add(new[] { v, new P(i - 1, j) });
-					if (j > 0 && s[i][j - 1] != '#') es.Add(new[] { v, new P(i, j - 1) });
+					foreach (var nv in v.Nexts())
+					{
+						if (nv.IsInRange(h, w) && s[nv.i][nv.j] != '#')
+						{
+							map.GetByP(v).Add(nv);
+							map.GetByP(nv).Add(v);
+						}
+					}
 				}
-			return Bfs(h, w, es.ToArray(), false, sv, ev);
+			return Bfs(h, w, v => map.GetByP(v), sv, ev);
 		}
 
-		public static int[][] UndirectedBfs2(int h, int w, string[] s, P sv, P ev)
+		// 典型的な無向グリッド BFS
+		// ev: 終点を指定しない場合、new P(-1, -1)
+		public static int[][] UndirectedBfs(int h, int w, string[] s, P sv, P ev)
 		{
 			return Bfs(h, w, v =>
 			{
