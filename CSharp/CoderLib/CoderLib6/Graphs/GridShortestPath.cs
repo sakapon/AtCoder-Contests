@@ -3,10 +3,30 @@ using System.Collections.Generic;
 
 namespace CoderLib6.Graphs
 {
-	struct P
+	// i を縦方向、j を横方向として使うことが多いです。
+	struct P : IEquatable<P>
 	{
+		public static P Zero = new P();
+		public static P UnitX = new P(1, 0);
+		public static P UnitY = new P(0, 1);
+
 		public int i, j;
 		public P(int _i, int _j) { i = _i; j = _j; }
+		public override string ToString() => $"{i} {j}";
+
+		//public static implicit operator P((int i, int j) v) => new P(v.i, v.j);
+		//public static explicit operator (int, int)(P v) => (v.i, v.j);
+
+		public bool Equals(P other) => i == other.i && j == other.j;
+		public static bool operator ==(P v1, P v2) => v1.Equals(v2);
+		public static bool operator !=(P v1, P v2) => !v1.Equals(v2);
+		public override bool Equals(object obj) => obj is P && Equals((P)obj);
+		public override int GetHashCode() => Tuple.Create(i, j).GetHashCode();
+
+		public static P operator -(P v) => new P(-v.i, -v.j);
+		public static P operator +(P v1, P v2) => new P(v1.i + v2.i, v1.j + v2.j);
+		public static P operator -(P v1, P v2) => new P(v1.i - v2.i, v1.j - v2.j);
+
 		public bool IsInRange(int h, int w) => 0 <= i && i < h && 0 <= j && j < w;
 		public P[] Nexts() => new[] { new P(i - 1, j), new P(i + 1, j), new P(i, j - 1), new P(i, j + 1) };
 	}
@@ -41,16 +61,16 @@ namespace CoderLib6.Graphs
 				{
 					if (cs.GetByP(nv) <= nc) continue;
 					cs.SetByP(nv, nc);
-					if (nv.Equals(ev)) return cs;
+					if (nv == ev) return cs;
 					q.Enqueue(nv);
 				}
 			}
 			return cs;
 		}
 
-		// 典型的な無向グリッドBFS
+		// 典型的な無向グリッド BFS
 		// ev: 終点を指定しない場合、new P(-1, -1)
-		public static int[][] GridBfs(int h, int w, string[] s, P sv, P ev)
+		public static int[][] UndirectedBfs(int h, int w, string[] s, P sv, P ev)
 		{
 			var es = new List<P[]>();
 			for (int i = 0; i < h; i++)
@@ -58,8 +78,8 @@ namespace CoderLib6.Graphs
 				{
 					if (s[i][j] == '#') continue;
 					var v = new P(i, j);
-					if (i > 0 && s[i - 1][j] != '#') es.Add(new[] { v, new P(i - 1, j) });
-					if (j > 0 && s[i][j - 1] != '#') es.Add(new[] { v, new P(i, j - 1) });
+					if (i > 0 && s[i - 1][j] != '#') es.Add(new[] { v, v - P.UnitX });
+					if (j > 0 && s[i][j - 1] != '#') es.Add(new[] { v, v - P.UnitY });
 				}
 			return Bfs(h, w, es.ToArray(), false, sv, ev);
 		}
