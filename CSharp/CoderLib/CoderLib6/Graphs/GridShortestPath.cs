@@ -42,7 +42,8 @@ namespace CoderLib6.Graphs
 
 		// 辺のコストがすべて等しい場合
 		// ev: 終点を指定しない場合、new P(-1, -1)
-		public static int[][] Bfs(int h, int w, Func<P, List<P>> toNexts, P sv, P ev)
+		// 境界チェックおよび壁チェックが含まれます。
+		public static int[][] Bfs(int h, int w, Func<P, IEnumerable<P>> toNexts, P sv, P ev, Func<P, bool> isWall = null)
 		{
 			var cs = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => int.MaxValue));
 			var q = new Queue<P>();
@@ -55,6 +56,8 @@ namespace CoderLib6.Graphs
 				var nc = cs.GetByP(v) + 1;
 				foreach (var nv in toNexts(v))
 				{
+					if (!nv.IsInRange(h, w)) continue;
+					if (isWall?.Invoke(nv) == true) continue;
 					if (cs.GetByP(nv) <= nc) continue;
 					cs.SetByP(nv, nc);
 					if (nv == ev) return cs;
@@ -83,33 +86,28 @@ namespace CoderLib6.Graphs
 			for (int i = 0; i < h; i++)
 				for (int j = 0; j < w; j++)
 				{
-					if ((i + j) % 2 == 1 || s[i][j] == '#') continue;
 					var v = new P(i, j);
-					foreach (var nv in v.Nexts())
+					if (i > 0)
 					{
-						if (nv.IsInRange(h, w) && s[nv.i][nv.j] != '#')
-						{
-							map.GetByP(v).Add(nv);
-							map.GetByP(nv).Add(v);
-						}
+						var nv = new P(i - 1, j);
+						map.GetByP(v).Add(nv);
+						map.GetByP(nv).Add(v);
+					}
+					if (j > 0)
+					{
+						var nv = new P(i, j - 1);
+						map.GetByP(v).Add(nv);
+						map.GetByP(nv).Add(v);
 					}
 				}
-			return Bfs(h, w, v => map.GetByP(v), sv, ev);
+			return Bfs(h, w, v => map.GetByP(v), sv, ev, v => s[v.i][v.j] == '#');
 		}
 
 		// 典型的な無向グリッド BFS
 		// ev: 終点を指定しない場合、new P(-1, -1)
 		public static int[][] UndirectedBfs(int h, int w, string[] s, P sv, P ev)
 		{
-			return Bfs(h, w, v =>
-			{
-				var nvs = new List<P>();
-				foreach (var nv in v.Nexts())
-					if (nv.IsInRange(h, w) && s[nv.i][nv.j] != '#')
-						nvs.Add(nv);
-				return nvs;
-			},
-			sv, ev);
+			return Bfs(h, w, v => v.Nexts(), sv, ev, v => s[v.i][v.j] == '#');
 		}
 
 		public static P FindChar(int h, int w, string[] s, char c)
