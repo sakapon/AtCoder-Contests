@@ -20,8 +20,8 @@ class A
 struct P : IEquatable<P>
 {
 	public static P Zero = new P();
-	public static P UnitX = new P(1, 0);
-	public static P UnitY = new P(0, 1);
+	public static P UnitI = new P(1, 0);
+	public static P UnitJ = new P(0, 1);
 
 	public int i, j;
 	public P(int _i, int _j) { i = _i; j = _j; }
@@ -42,6 +42,7 @@ struct P : IEquatable<P>
 
 	public bool IsInRange(int h, int w) => 0 <= i && i < h && 0 <= j && j < w;
 	public P[] Nexts() => new[] { new P(i - 1, j), new P(i + 1, j), new P(i, j - 1), new P(i, j + 1) };
+	public static P[] NextsByDelta() => new[] { new P(-1, 0), new P(1, 0), new P(0, -1), new P(0, 1) };
 }
 
 static class GridShortestPath
@@ -52,15 +53,9 @@ static class GridShortestPath
 
 	// 辺のコストがすべて等しい場合
 	// ev: 終点を指定しない場合、new P(-1, -1)
-	public static int[][] Bfs(int h, int w, P[][] es, bool directed, P sv, P ev)
+	// 境界チェックおよび壁チェックが含まれます。
+	public static int[][] Bfs(int h, int w, Func<P, IEnumerable<P>> toNexts, P sv, P ev, Func<P, bool> isWall = null)
 	{
-		var map = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => new List<P>()));
-		foreach (var e in es)
-		{
-			map.GetByP(e[0]).Add(e[1]);
-			if (!directed) map.GetByP(e[1]).Add(e[0]);
-		}
-
 		var cs = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => int.MaxValue));
 		var q = new Queue<P>();
 		cs.SetByP(sv, 0);
@@ -70,8 +65,10 @@ static class GridShortestPath
 		{
 			var v = q.Dequeue();
 			var nc = cs.GetByP(v) + 1;
-			foreach (var nv in map.GetByP(v))
+			foreach (var nv in toNexts(v))
 			{
+				if (!nv.IsInRange(h, w)) continue;
+				if (isWall?.Invoke(nv) == true) continue;
 				if (cs.GetByP(nv) <= nc) continue;
 				cs.SetByP(nv, nc);
 				if (nv == ev) return cs;
@@ -81,20 +78,57 @@ static class GridShortestPath
 		return cs;
 	}
 
+	public static int[][] Bfs(int h, int w, P[][] es, bool directed, P sv, P ev)
+	{
+		var map = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => new List<P>()));
+		foreach (var e in es)
+		{
+			map.GetByP(e[0]).Add(e[1]);
+			if (!directed) map.GetByP(e[1]).Add(e[0]);
+		}
+		return Bfs(h, w, v => map.GetByP(v), sv, ev);
+	}
+
+	public static int[][] BfsByDelta(int h, int w, Func<IEnumerable<P>> toNextsByDelta, P sv, P ev, Func<P, bool> isWall = null)
+	{
+		return Bfs(h, w, v => System.Linq.Enumerable.Select(toNextsByDelta(), d => v + d), sv, ev, isWall);
+	}
+
+	[Obsolete]
+	public static int[][] UndirectedBfs0(int h, int w, string[] s, P sv, P ev)
+	{
+		var map = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => new List<P>()));
+
+		for (int i = 0; i < h; i++)
+			for (int j = 0; j < w; j++)
+			{
+				var v = new P(i, j);
+				if (i > 0)
+				{
+					var nv = new P(i - 1, j);
+					map.GetByP(v).Add(nv);
+					map.GetByP(nv).Add(v);
+				}
+				if (j > 0)
+				{
+					var nv = new P(i, j - 1);
+					map.GetByP(v).Add(nv);
+					map.GetByP(nv).Add(v);
+				}
+			}
+		return Bfs(h, w, v => map.GetByP(v), sv, ev, v => s[v.i][v.j] == '#');
+	}
+
 	// 典型的な無向グリッド BFS
 	// ev: 終点を指定しない場合、new P(-1, -1)
 	public static int[][] UndirectedBfs(int h, int w, string[] s, P sv, P ev)
 	{
-		var es = new List<P[]>();
-		for (int i = 0; i < h; i++)
-			for (int j = 0; j < w; j++)
-			{
-				if (s[i][j] == '#') continue;
-				var v = new P(i, j);
-				if (i > 0 && s[i - 1][j] != '#') es.Add(new[] { v, new P(i - 1, j) });
-				if (j > 0 && s[i][j - 1] != '#') es.Add(new[] { v, new P(i, j - 1) });
-			}
-		return Bfs(h, w, es.ToArray(), false, sv, ev);
+		return Bfs(h, w, v => v.Nexts(), sv, ev, v => s[v.i][v.j] == '#');
+	}
+
+	public static int[][] UndirectedBfsByDelta(int h, int w, string[] s, P sv, P ev)
+	{
+		return BfsByDelta(h, w, P.NextsByDelta, sv, ev, v => s[v.i][v.j] == '#');
 	}
 
 	public static P FindChar(int h, int w, string[] s, char c)
