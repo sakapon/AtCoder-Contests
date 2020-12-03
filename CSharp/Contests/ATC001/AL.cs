@@ -21,8 +21,8 @@ class AL
 struct P : IEquatable<P>
 {
 	public static P Zero = new P();
-	public static P UnitX = new P(1, 0);
-	public static P UnitY = new P(0, 1);
+	public static P UnitI = new P(1, 0);
+	public static P UnitJ = new P(0, 1);
 
 	public int i, j;
 	public P(int _i, int _j) { i = _i; j = _j; }
@@ -43,6 +43,7 @@ struct P : IEquatable<P>
 
 	public bool IsInRange(int h, int w) => 0 <= i && i < h && 0 <= j && j < w;
 	public P[] Nexts() => new[] { new P(i - 1, j), new P(i + 1, j), new P(i, j - 1), new P(i, j + 1) };
+	public static P[] NextsByDelta() => new[] { new P(-1, 0), new P(1, 0), new P(0, -1), new P(0, 1) };
 }
 
 static class GridShortestPath
@@ -89,6 +90,11 @@ static class GridShortestPath
 		return Bfs(h, w, v => map.GetByP(v), sv, ev);
 	}
 
+	public static int[][] BfsByDelta(int h, int w, Func<IEnumerable<P>> toNextsByDelta, P sv, P ev, Func<P, bool> isWall = null)
+	{
+		return Bfs(h, w, v => System.Linq.Enumerable.Select(toNextsByDelta(), d => v + d), sv, ev, isWall);
+	}
+
 	[Obsolete]
 	public static int[][] UndirectedBfs0(int h, int w, string[] s, P sv, P ev)
 	{
@@ -119,6 +125,11 @@ static class GridShortestPath
 	public static int[][] UndirectedBfs(int h, int w, string[] s, P sv, P ev)
 	{
 		return Bfs(h, w, v => v.Nexts(), sv, ev, v => s[v.i][v.j] == '#');
+	}
+
+	public static int[][] UndirectedBfsByDelta(int h, int w, string[] s, P sv, P ev)
+	{
+		return BfsByDelta(h, w, P.NextsByDelta, sv, ev, v => s[v.i][v.j] == '#');
 	}
 
 	public static P FindChar(int h, int w, string[] s, char c)
