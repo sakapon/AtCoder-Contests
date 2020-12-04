@@ -8,10 +8,10 @@ class AD
 	static void Main()
 	{
 		var (h, w) = Read2();
-		var (i, j) = Read2();
-		var sv = (i - 1, j - 1);
-		(i, j) = Read2();
-		var gv = (i - 1, j - 1);
+		var (ti, tj) = Read2();
+		var sv = (ti - 1, tj - 1);
+		(ti, tj) = Read2();
+		var gv = (ti - 1, tj - 1);
 		var c = Array.ConvertAll(new bool[h], _ => Console.ReadLine());
 
 		var dp = new DP2<int>(h, w, MergeOp.Min(1 << 30));
@@ -19,10 +19,11 @@ class AD
 		dp.AddTransition(p =>
 		{
 			if (c[p.i][p.j] == '#') return;
-			p.MergeValue(-1, 0, p.GetValue() + 1);
-			p.MergeValue(1, 0, p.GetValue() + 1);
-			p.MergeValue(0, -1, p.GetValue() + 1);
-			p.MergeValue(0, 1, p.GetValue() + 1);
+			var nv = p.Value + 1;
+			p.Move(-1, 0).Merge(nv);
+			p.Move(1, 0).Merge(nv);
+			p.Move(0, -1).Merge(nv);
+			p.Move(0, 1).Merge(nv);
 		});
 
 		for (int k = 0; k < h * w; k++)
@@ -35,12 +36,14 @@ static class MergeOp
 {
 	public static MergeOp<int> Add => new MergeOp<int>((x, y) => x + y, 0);
 	public static MergeOp<long> AddL => new MergeOp<long>((x, y) => x + y, 0);
+	public static MergeOp<double> AddD => new MergeOp<double>((x, y) => x + y, 0);
 	public static MergeOp<int> Max(int v0 = int.MinValue) => new MergeOp<int>(Math.Max, v0);
 	public static MergeOp<long> MaxL(long v0 = long.MinValue) => new MergeOp<long>(Math.Max, v0);
 	public static MergeOp<int> Min(int v0 = int.MaxValue) => new MergeOp<int>(Math.Min, v0);
 	public static MergeOp<long> MinL(long v0 = long.MaxValue) => new MergeOp<long>(Math.Min, v0);
 	public static MergeOp<int> Update(int invalid = int.MinValue) => new MergeOp<int>((x, y) => x == invalid ? y : x, invalid);
 	public static MergeOp<long> UpdateL(long invalid = long.MinValue) => new MergeOp<long>((x, y) => x == invalid ? y : x, invalid);
+	public static MergeOp<double> UpdateD(double invalid = double.MinValue) => new MergeOp<double>((x, y) => x == invalid ? y : x, invalid);
 }
 
 struct MergeOp<T>
@@ -114,9 +117,17 @@ class DP2<T>
 
 		public bool IsInRange(int h, int w) => 0 <= i && i < h && 0 <= j && j < w;
 
+		public T Value
+		{
+			get => dp.GetValue(this);
+			set => dp.MergeValue(this, value);
+		}
+
+		public P Move(int di, int dj) => this + (di, dj);
+
 		public T GetValue() => dp.GetValue(this);
-		public T GetValue(int di, int dj) => dp.GetValue(this + (di, dj));
-		public void MergeValue(T value) => dp.MergeValue(this, value);
-		public void MergeValue(int di, int dj, T value) => dp.MergeValue(this + (di, dj), value);
+		//public T GetValue(int di, int dj) => dp.GetValue(this + (di, dj));
+		public void Merge(T value) => dp.MergeValue(this, value);
+		//public void Merge(int di, int dj, T value) => dp.MergeValue(this + (di, dj), value);
 	}
 }
