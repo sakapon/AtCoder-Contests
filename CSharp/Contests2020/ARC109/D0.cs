@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 class D0
 {
 	static void Main()
 	{
-		var n = 9;
+		var n = 15;
 		var dp = new DP3<int>(n, n, 4, MergeOp.Min());
 		dp[n / 2][n / 2][0] = 0;
 
@@ -58,12 +59,15 @@ class D0
 		for (int k = 0; k < n * n; k++)
 			dp.Execute(0, n, 0, n, 0, 4);
 
-		var rn = Enumerable.Range(0, n).ToArray();
-		for (int k = 0; k < 4; k++)
+		using (var writer = File.CreateText("D0.txt"))
 		{
-			for (int j = n - 1; j >= 0; j--)
-				Console.WriteLine(string.Join("", rn.Select(i => dp[i, j, k])));
-			Console.WriteLine();
+			var rn = Enumerable.Range(0, n).ToArray();
+			for (int k = 0; k < 4; k++)
+			{
+				for (int j = n - 1; j >= 0; j--)
+					writer.WriteLine(string.Join("", rn.Select(i => dp[i, j, k] % 10)));
+				writer.WriteLine();
+			}
 		}
 	}
 }
