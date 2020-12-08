@@ -7,7 +7,7 @@ class D0
 {
 	static void Main()
 	{
-		var n = 15;
+		var n = 9;
 		var dp = new DP3<int>(n, n, 4, MergeOp.Min());
 		dp[n / 2][n / 2][0] = 0;
 
