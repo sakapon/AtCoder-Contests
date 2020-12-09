@@ -1,74 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
-class D0
+class DD
 {
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static (int, int, int) Read3() { var a = Read(); return (a[0], a[1], a[2]); }
 	static void Main()
 	{
-		var n = 9;
-		var dp = new DP3<int>(n, n, 4, MergeOp.Min());
-		dp[n / 2][n / 2][0] = 0;
+		var (a, b, c) = Read3();
 
+		var dp = new DP3<double>(101, 101, 101, MergeOp.AddD);
 		dp.AddTransition(p =>
 		{
-			if (p.Value == int.MaxValue) return;
-			var nv = p.Value + 1;
-
-			p.Move(0, 0, -3).Merge(nv);
-			p.Move(0, 0, -1).Merge(nv);
-			p.Move(0, 0, 1).Merge(nv);
-			p.Move(0, 0, 3).Merge(nv);
-
-			switch (p.k)
-			{
-				case 0:
-					p.Move(1, 0).Jump(nk: 1).Merge(nv);
-					p.Move(1, 0).Jump(nk: 2).Merge(nv);
-					p.Move(0, 1).Jump(nk: 2).Merge(nv);
-					p.Move(0, 1).Jump(nk: 3).Merge(nv);
-					p.Move(1, 1).Jump(nk: 2).Merge(nv);
-					break;
-				case 1:
-					p.Move(-1, 0).Jump(nk: 0).Merge(nv);
-					p.Move(-1, 0).Jump(nk: 3).Merge(nv);
-					p.Move(0, 1).Jump(nk: 2).Merge(nv);
-					p.Move(0, 1).Jump(nk: 3).Merge(nv);
-					p.Move(-1, 1).Jump(nk: 3).Merge(nv);
-					break;
-				case 2:
-					p.Move(-1, 0).Jump(nk: 0).Merge(nv);
-					p.Move(-1, 0).Jump(nk: 3).Merge(nv);
-					p.Move(0, -1).Jump(nk: 0).Merge(nv);
-					p.Move(0, -1).Jump(nk: 1).Merge(nv);
-					p.Move(-1, -1).Jump(nk: 0).Merge(nv);
-					break;
-				case 3:
-					p.Move(1, 0).Jump(nk: 1).Merge(nv);
-					p.Move(1, 0).Jump(nk: 2).Merge(nv);
-					p.Move(0, -1).Jump(nk: 0).Merge(nv);
-					p.Move(0, -1).Jump(nk: 1).Merge(nv);
-					p.Move(1, -1).Jump(nk: 1).Merge(nv);
-					break;
-				default:
-					break;
-			}
+			var (i, j, k) = p;
+			var all = i + j + k;
+			p.Merge((p.Move(1).Value + 1) * i / all);
+			p.Merge((p.Move(0, 1).Value + 1) * j / all);
+			p.Merge((p.Move(0, 0, 1).Value + 1) * k / all);
 		});
+		dp.Execute(99, -1, 99, -1, 99, -1);
 
-		for (int k = 0; k < n * n; k++)
-			dp.Execute(0, n, 0, n, 0, 4);
-
-		using (var writer = File.CreateText("D0.txt"))
-		{
-			var rn = Enumerable.Range(0, n).ToArray();
-			for (int k = 0; k < 4; k++)
-			{
-				for (int j = n - 1; j >= 0; j--)
-					writer.WriteLine(string.Join("", rn.Select(i => dp[i, j, k] % 10)));
-				writer.WriteLine();
-			}
-		}
+		Console.WriteLine(dp[a][b][c]);
 	}
 }
 
