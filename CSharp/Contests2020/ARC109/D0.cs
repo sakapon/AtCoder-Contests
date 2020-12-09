@@ -108,6 +108,7 @@ class DP3<T>
 		MergeOp = mergeOp;
 		a = Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => Array.ConvertAll(new bool[n3], ___ => mergeOp.V0)));
 	}
+
 	public T[][] this[int i] => a[i];
 	public T this[int i, int j, int k]
 	{
@@ -118,17 +119,6 @@ class DP3<T>
 	{
 		get => a[p.i][p.j][p.k];
 		set => a[p.i][p.j][p.k] = value;
-	}
-
-	internal T GetValue(P p)
-	{
-		if (!p.IsInRange()) return MergeOp.V0;
-		return a[p.i][p.j][p.k];
-	}
-	internal void MergeValue(P p, T value)
-	{
-		if (!p.IsInRange()) return;
-		a[p.i][p.j][p.k] = MergeOp.Merge(value, a[p.i][p.j][p.k]);
 	}
 
 	public void AddTransition(Action<P> transition) => Transitions.Add(transition);
@@ -156,19 +146,26 @@ class DP3<T>
 
 		public static P operator +(P v1, (int i, int j, int k) v2) => new P(v1.i + v2.i, v1.j + v2.j, v1.k + v2.k, v1.dp);
 		public static P operator -(P v1, (int i, int j, int k) v2) => new P(v1.i - v2.i, v1.j - v2.j, v1.k - v2.k, v1.dp);
+		public P Move(int di, int dj, int dk) => this + (di, dj, dk);
 
 		public bool IsInRange() => IsInRange(dp.n1, dp.n2, dp.n3);
-		public bool IsInRange(int h, int w, int d) => 0 <= i && i < h && 0 <= j && j < w && 0 <= k && k < d;
+		public bool IsInRange(int n1, int n2, int n3) => 0 <= i && i < n1 && 0 <= j && j < n2 && 0 <= k && k < n3;
 
 		public T Value
 		{
-			get => dp.GetValue(this);
-			set => dp.MergeValue(this, value);
+			get => GetValue();
+			// 構造体における set property
+			//set => Merge(value);
 		}
-
-		public P Move(int di, int dj, int dk) => this + (di, dj, dk);
-
-		public T GetValue() => dp.GetValue(this);
-		public void Merge(T value) => dp.MergeValue(this, value);
+		public T GetValue()
+		{
+			if (!IsInRange()) return dp.MergeOp.V0;
+			return dp[i][j][k];
+		}
+		public void Merge(T value)
+		{
+			if (!IsInRange()) return;
+			dp[i][j][k] = dp.MergeOp.Merge(value, dp[i][j][k]);
+		}
 	}
 }
