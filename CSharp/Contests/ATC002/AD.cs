@@ -67,6 +67,7 @@ class DP2<T>
 		MergeOp = mergeOp;
 		a = Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => mergeOp.V0));
 	}
+
 	public T[] this[int i] => a[i];
 	public T this[int i, int j]
 	{
@@ -79,19 +80,10 @@ class DP2<T>
 		set => a[p.i][p.j] = value;
 	}
 
-	internal T GetValue(P p)
-	{
-		if (!p.IsInRange(n1, n2)) return MergeOp.V0;
-		return a[p.i][p.j];
-	}
-	internal void MergeValue(P p, T value)
-	{
-		if (!p.IsInRange(n1, n2)) return;
-		a[p.i][p.j] = MergeOp.Merge(value, a[p.i][p.j]);
-	}
+	public P GetPoint(int i, int j) => new P(i, j, this);
+	public void AddTransition(Action<P> t) => Transitions.Add(t);
 
-	public void AddTransition(Action<P> transition) => Transitions.Add(transition);
-
+	// end を含みません。
 	public void Execute(int si, int ei, int sj, int ej)
 	{
 		var di = Math.Sign(ei - si);
@@ -99,8 +91,8 @@ class DP2<T>
 
 		for (int i = si; i != ei; i += di)
 			for (int j = sj; j != ej; j += dj)
-				foreach (var transition in Transitions)
-					transition(new P(i, j, this));
+				foreach (var t in Transitions)
+					t(new P(i, j, this));
 	}
 
 	public struct P
@@ -108,26 +100,32 @@ class DP2<T>
 		public int i, j;
 		DP2<T> dp;
 		public P(int _i, int _j, DP2<T> _dp) { i = _i; j = _j; dp = _dp; }
+		public void Deconstruct(out int _i, out int _j) => (_i, _j) = (i, j);
 		public override string ToString() => $"{i} {j}";
-
-		public static explicit operator (int, int)(P v) => (v.i, v.j);
 
 		public static P operator +(P v1, (int i, int j) v2) => new P(v1.i + v2.i, v1.j + v2.j, v1.dp);
 		public static P operator -(P v1, (int i, int j) v2) => new P(v1.i - v2.i, v1.j - v2.j, v1.dp);
+		public P Move(int di = 0, int dj = 0) => this + (di, dj);
+		public P Jump(int ni = -1, int nj = -1) => new P(ni == -1 ? i : ni, nj == -1 ? j : nj, dp);
 
-		public bool IsInRange(int h, int w) => 0 <= i && i < h && 0 <= j && j < w;
+		public bool IsInRange() => IsInRange(dp.n1, dp.n2);
+		public bool IsInRange(int n1, int n2) => 0 <= i && i < n1 && 0 <= j && j < n2;
 
 		public T Value
 		{
-			get => dp.GetValue(this);
-			set => dp.MergeValue(this, value);
+			get => GetValue();
+			// 構造体における set property
+			//set => Merge(value);
 		}
-
-		public P Move(int di, int dj) => this + (di, dj);
-
-		public T GetValue() => dp.GetValue(this);
-		//public T GetValue(int di, int dj) => dp.GetValue(this + (di, dj));
-		public void Merge(T value) => dp.MergeValue(this, value);
-		//public void Merge(int di, int dj, T value) => dp.MergeValue(this + (di, dj), value);
+		public T GetValue()
+		{
+			if (!IsInRange()) return dp.MergeOp.V0;
+			return dp[i][j];
+		}
+		public void Merge(T value)
+		{
+			if (!IsInRange()) return;
+			dp[i][j] = dp.MergeOp.Merge(value, dp[i][j]);
+		}
 	}
 }

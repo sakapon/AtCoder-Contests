@@ -74,7 +74,7 @@ class DP3<T>
 	}
 
 	public P GetPoint(int i, int j, int k) => new P(i, j, k, this);
-	public void AddTransition(Action<P> transition) => Transitions.Add(transition);
+	public void AddTransition(Action<P> t) => Transitions.Add(t);
 
 	// end を含みません。
 	public void Execute(int si, int ei, int sj, int ej, int sk, int ek)
