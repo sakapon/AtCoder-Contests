@@ -24,32 +24,32 @@ class D0
 			switch (p.k)
 			{
 				case 0:
-					p.Move(1, 0, 1).Merge(nv);
-					p.Move(1, 0, 2).Merge(nv);
-					p.Move(0, 1, 3).Merge(nv);
-					p.Move(0, 1, 2).Merge(nv);
-					p.Move(1, 1, 2).Merge(nv);
+					p.Move(1, 0).Jump(nk: 1).Merge(nv);
+					p.Move(1, 0).Jump(nk: 2).Merge(nv);
+					p.Move(0, 1).Jump(nk: 2).Merge(nv);
+					p.Move(0, 1).Jump(nk: 3).Merge(nv);
+					p.Move(1, 1).Jump(nk: 2).Merge(nv);
 					break;
 				case 1:
-					p.Move(-1, 0, -1).Merge(nv);
-					p.Move(-1, 0, 2).Merge(nv);
-					p.Move(0, 1, 1).Merge(nv);
-					p.Move(0, 1, 2).Merge(nv);
-					p.Move(-1, 1, 2).Merge(nv);
+					p.Move(-1, 0).Jump(nk: 0).Merge(nv);
+					p.Move(-1, 0).Jump(nk: 3).Merge(nv);
+					p.Move(0, 1).Jump(nk: 2).Merge(nv);
+					p.Move(0, 1).Jump(nk: 3).Merge(nv);
+					p.Move(-1, 1).Jump(nk: 3).Merge(nv);
 					break;
 				case 2:
-					p.Move(-1, 0, 1).Merge(nv);
-					p.Move(-1, 0, -2).Merge(nv);
-					p.Move(0, -1, -1).Merge(nv);
-					p.Move(0, -1, -2).Merge(nv);
-					p.Move(-1, -1, -2).Merge(nv);
+					p.Move(-1, 0).Jump(nk: 0).Merge(nv);
+					p.Move(-1, 0).Jump(nk: 3).Merge(nv);
+					p.Move(0, -1).Jump(nk: 0).Merge(nv);
+					p.Move(0, -1).Jump(nk: 1).Merge(nv);
+					p.Move(-1, -1).Jump(nk: 0).Merge(nv);
 					break;
 				case 3:
-					p.Move(1, 0, -1).Merge(nv);
-					p.Move(1, 0, -2).Merge(nv);
-					p.Move(0, -1, -3).Merge(nv);
-					p.Move(0, -1, -2).Merge(nv);
-					p.Move(1, -1, -2).Merge(nv);
+					p.Move(1, 0).Jump(nk: 1).Merge(nv);
+					p.Move(1, 0).Jump(nk: 2).Merge(nv);
+					p.Move(0, -1).Jump(nk: 0).Merge(nv);
+					p.Move(0, -1).Jump(nk: 1).Merge(nv);
+					p.Move(1, -1).Jump(nk: 1).Merge(nv);
 					break;
 				default:
 					break;
@@ -121,6 +121,7 @@ class DP3<T>
 		set => a[p.i][p.j][p.k] = value;
 	}
 
+	public P GetPoint(int i, int j, int k) => new P(i, j, k, this);
 	public void AddTransition(Action<P> transition) => Transitions.Add(transition);
 
 	// end を含みません。
@@ -146,7 +147,8 @@ class DP3<T>
 
 		public static P operator +(P v1, (int i, int j, int k) v2) => new P(v1.i + v2.i, v1.j + v2.j, v1.k + v2.k, v1.dp);
 		public static P operator -(P v1, (int i, int j, int k) v2) => new P(v1.i - v2.i, v1.j - v2.j, v1.k - v2.k, v1.dp);
-		public P Move(int di, int dj, int dk) => this + (di, dj, dk);
+		public P Move(int di = 0, int dj = 0, int dk = 0) => this + (di, dj, dk);
+		public P Jump(int ni = -1, int nj = -1, int nk = -1) => new P(ni == -1 ? i : ni, nj == -1 ? j : nj, nk == -1 ? k : nk, dp);
 
 		public bool IsInRange() => IsInRange(dp.n1, dp.n2, dp.n3);
 		public bool IsInRange(int n1, int n2, int n3) => 0 <= i && i < n1 && 0 <= j && j < n2 && 0 <= k && k < n3;
