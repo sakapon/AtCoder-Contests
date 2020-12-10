@@ -5,14 +5,15 @@ class B
 	static void Main()
 	{
 		var n = long.Parse(Console.ReadLine());
-
-		var k = Last(0, int.MaxValue, x => (long)x * (x + 1) - 2 * (n + 1) <= 0);
-		Console.WriteLine(n + 1 - k);
+		Console.WriteLine(n + 1 - InverseFloor_NaturalSum()(n + 1));
 	}
 
-	static int Last(int l, int r, Func<int, bool> f)
+	static Func<long, long> InverseFloor(long l, long r, Func<long, long> f) => y => Last(l, r, x => f(x) <= y);
+	static Func<long, long> InverseFloor_NaturalSum() => InverseFloor(-1, 1L << 31, n => n * (n + 1) / 2);
+
+	static long Last(long l, long r, Func<long, bool> f)
 	{
-		int m;
+		long m;
 		while (l < r) if (f(m = r - (r - l - 1) / 2)) l = m; else r = m - 1;
 		return l;
 	}
