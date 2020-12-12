@@ -6,8 +6,7 @@ class B
 	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
 	{
-		var h = Read();
-		var m = h[1];
+		var m = Read()[1];
 		var a = Read();
 
 		var s = a.Sum();
