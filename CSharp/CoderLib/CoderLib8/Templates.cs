@@ -80,26 +80,28 @@ namespace CoderLib8
 	class Template_Independent
 	{
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+		static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 		static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+		//static void Main() => Console.WriteLine(Solve());
 		//static void Main() => Console.WriteLine(string.Join("\n", new int[int.Parse(Console.ReadLine())].Select(_ => Solve() ? "YES" : "NO")));
 		static void Main() => Console.WriteLine(string.Join("\n", new int[int.Parse(Console.ReadLine())].Select(_ => Solve())));
-		static long Solve()
+		static object Solve()
 		{
 			var n = int.Parse(Console.ReadLine());
-			var a = Read();
-			//var h = Read();
-			//int n = h[0], m = h[1];
+			//var (n, m) = Read2();
 			var s = Console.ReadLine();
+			var a = Read();
 			var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-			var r = 0L;
-			return r;
+			if (n == 0) return "NO";
+			return "YES\n" + string.Join(" ", a);
 		}
 	}
 
 	class Template_IndependentFull
 	{
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+		static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 		static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 		static void Main()
 		{
@@ -112,10 +114,9 @@ namespace CoderLib8
 		static void Solve()
 		{
 			var n = int.Parse(Console.ReadLine());
-			var a = Read();
-			//var h = Read();
-			//int n = h[0], m = h[1];
+			//var (n, m) = Read2();
 			var s = Console.ReadLine();
+			var a = Read();
 			var ps = Array.ConvertAll(new bool[n], _ => Read());
 
 			Console.WriteLine(string.Join(" ", a));
