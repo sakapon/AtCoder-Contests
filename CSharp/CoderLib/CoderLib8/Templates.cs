@@ -4,25 +4,48 @@ using System.Linq;
 
 namespace CoderLib8
 {
+	class Templates_Lab
+	{
+		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+		static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
+		static (int, int, int) Read3() { var a = Read(); return (a[0], a[1], a[2]); }
+
+		static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+		static (long, long) Read2L() { var a = ReadL(); return (a[0], a[1]); }
+		static (long, long, long) Read3L() { var a = ReadL(); return (a[0], a[1], a[2]); }
+
+		static decimal[] ReadDec() => Array.ConvertAll(Console.ReadLine().Split(), decimal.Parse);
+		static (decimal, decimal) Read2Dec() { var a = ReadDec(); return (a[0], a[1]); }
+
+		static void WriteYesNo(bool b) => Console.WriteLine(b ? "Yes" : "No");
+		static void Main()
+		{
+			var (n, m) = Read2();
+			(int x, long y) = Read2();
+			var (p, q) = ((int, long))Read2L();
+
+			var a = Console.ReadLine().Split().Select(int.Parse).ToList();
+			//var a = Console.ReadLine().Split().Select(long.Parse).ToList();
+		}
+	}
+
 	class Templates_00
 	{
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+		static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 		static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 		static void Main()
 		{
-			Console.ReadLine();
-			var s = Console.ReadLine();
-			//var h = Read();
-			//int n = h[0], m = h[1];
 			var n = int.Parse(Console.ReadLine());
+			//var (n, m) = Read2();
+			var s = Console.ReadLine();
+			Console.ReadLine();
 			var a = Read();
 			var ps = Array.ConvertAll(new bool[n], _ => Read());
 
 			Console.WriteLine(string.Join(" ", a));
 		}
 	}
-	//var a = Console.ReadLine().Split().Select(int.Parse).ToList();
-	//var a = Console.ReadLine().Split().Select(long.Parse).ToList();
 
 	class Template_Graph
 	{
