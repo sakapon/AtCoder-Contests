@@ -64,7 +64,7 @@ namespace CoderLib6.Graphs
 
 		// 辺のコストがすべて等しい場合
 		// ev: 終点を指定しない場合、new P(-1, -1)
-		// 境界チェックおよび壁チェックが含まれます。
+		// 壁チェックが含まれます。範囲チェックは含まれません。
 		public static int[][] Bfs(int h, int w, Func<P, IEnumerable<P>> toNexts, P sv, P ev, Func<P, bool> isWall = null)
 		{
 			var cs = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => int.MaxValue));
@@ -78,7 +78,6 @@ namespace CoderLib6.Graphs
 				var nc = cs.GetByP(v) + 1;
 				foreach (var nv in toNexts(v))
 				{
-					if (!nv.IsInRange(h, w)) continue;
 					if (isWall?.Invoke(nv) == true) continue;
 					if (cs.GetByP(nv) <= nc) continue;
 					cs.SetByP(nv, nc);
@@ -134,12 +133,12 @@ namespace CoderLib6.Graphs
 		// ev: 終点を指定しない場合、new P(-1, -1)
 		public static int[][] UndirectedBfs(int h, int w, string[] s, P sv, P ev)
 		{
-			return Bfs(h, w, v => v.Nexts(), sv, ev, v => s[v.i][v.j] == '#');
+			return Bfs(h, w, v => v.Nexts(), sv, ev, v => s.GetByP(v) == '#');
 		}
 
 		public static int[][] UndirectedBfsByDelta(int h, int w, string[] s, P sv, P ev)
 		{
-			return BfsByDelta(h, w, () => P.NextsByDelta, sv, ev, v => s[v.i][v.j] == '#');
+			return BfsByDelta(h, w, () => P.NextsByDelta, sv, ev, v => s.GetByP(v) == '#');
 		}
 	}
 }

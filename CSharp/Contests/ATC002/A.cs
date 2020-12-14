@@ -9,11 +9,11 @@ class A
 	{
 		var (h, w) = Read2();
 		var sv = Read2() - new P(1, 1);
-		var gv = Read2() - new P(1, 1);
-		var c = Array.ConvertAll(new bool[h], _ => Console.ReadLine());
+		var ev = Read2() - new P(1, 1);
+		var s = Array.ConvertAll(new bool[h], _ => Console.ReadLine());
 
-		var r = GridShortestPath.UndirectedBfs(h, w, c, sv, gv);
-		Console.WriteLine(r.GetByP(gv));
+		var r = GridShortestPath.UndirectedBfs(h, w, s, sv, ev);
+		Console.WriteLine(r.GetByP(ev));
 	}
 }
 
@@ -42,18 +42,39 @@ struct P : IEquatable<P>
 
 	public bool IsInRange(int h, int w) => 0 <= i && i < h && 0 <= j && j < w;
 	public P[] Nexts() => new[] { new P(i - 1, j), new P(i + 1, j), new P(i, j - 1), new P(i, j + 1) };
-	public static P[] NextsByDelta() => new[] { new P(-1, 0), new P(1, 0), new P(0, -1), new P(0, 1) };
+	public static P[] NextsByDelta = new[] { new P(-1, 0), new P(1, 0), new P(0, -1), new P(0, 1) };
 }
 
 static class GridShortestPath
 {
+	const char Road = '.';
+	const char Wall = '#';
+
 	// 2次元配列に2次元インデックスでアクセスします。
 	public static T GetByP<T>(this T[][] a, P p) => a[p.i][p.j];
 	public static void SetByP<T>(this T[][] a, P p, T value) => a[p.i][p.j] = value;
+	public static char GetByP(this string[] s, P p) => s[p.i][p.j];
+
+	public static string[] ReadEnclosedGrid(ref int h, ref int w, char c = '#')
+	{
+		var s = new string[h + 2];
+		s[h + 1] = s[0] = new string(c, w += 2);
+		for (int i = 1; i <= h; ++i) s[i] = c + Console.ReadLine() + c;
+		h += 2;
+		return s;
+	}
+
+	public static P FindChar(string[] s, char c)
+	{
+		for (int i = 0; i < s.Length; ++i)
+			for (int j = 0; j < s[0].Length; ++j)
+				if (s[i][j] == c) return new P(i, j);
+		return new P(-1, -1);
+	}
 
 	// 辺のコストがすべて等しい場合
 	// ev: 終点を指定しない場合、new P(-1, -1)
-	// 境界チェックおよび壁チェックが含まれます。
+	// 壁チェックが含まれます。範囲チェックは含まれません。
 	public static int[][] Bfs(int h, int w, Func<P, IEnumerable<P>> toNexts, P sv, P ev, Func<P, bool> isWall = null)
 	{
 		var cs = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => int.MaxValue));
@@ -67,7 +88,6 @@ static class GridShortestPath
 			var nc = cs.GetByP(v) + 1;
 			foreach (var nv in toNexts(v))
 			{
-				if (!nv.IsInRange(h, w)) continue;
 				if (isWall?.Invoke(nv) == true) continue;
 				if (cs.GetByP(nv) <= nc) continue;
 				cs.SetByP(nv, nc);
@@ -123,19 +143,11 @@ static class GridShortestPath
 	// ev: 終点を指定しない場合、new P(-1, -1)
 	public static int[][] UndirectedBfs(int h, int w, string[] s, P sv, P ev)
 	{
-		return Bfs(h, w, v => v.Nexts(), sv, ev, v => s[v.i][v.j] == '#');
+		return Bfs(h, w, v => v.Nexts(), sv, ev, v => s.GetByP(v) == '#');
 	}
 
 	public static int[][] UndirectedBfsByDelta(int h, int w, string[] s, P sv, P ev)
 	{
-		return BfsByDelta(h, w, P.NextsByDelta, sv, ev, v => s[v.i][v.j] == '#');
-	}
-
-	public static P FindChar(int h, int w, string[] s, char c)
-	{
-		for (int i = 0; i < h; i++)
-			for (int j = 0; j < w; j++)
-				if (s[i][j] == c) return new P(i, j);
-		return new P(-1, -1);
+		return BfsByDelta(h, w, () => P.NextsByDelta, sv, ev, v => s.GetByP(v) == '#');
 	}
 }
