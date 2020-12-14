@@ -40,5 +40,29 @@ namespace CoderLib6.Values
 			for (int i = 0; i < n; ++i) p[i + 1] = p[i] * b % M;
 			return p;
 		}
+
+		static MInt[] MFactorials(int n)
+		{
+			var f = new MInt[n + 1];
+			f[0] = 1;
+			for (int i = 0; i < n; ++i) f[i + 1] = f[i] * (i + 1);
+			return f;
+		}
+
+		static MInt[] MNprs(int n)
+		{
+			var p = new MInt[n + 1];
+			p[0] = 1;
+			for (int i = 0; i < n; ++i) p[i + 1] = p[i] * (n - i);
+			return p;
+		}
+
+		static MInt[] MNcrs(int n)
+		{
+			var c = new MInt[n + 1];
+			c[0] = 1;
+			for (int i = 0; i < n; ++i) c[i + 1] = c[i] * (n - i) / (i + 1);
+			return c;
+		}
 	}
 }
