@@ -32,14 +32,35 @@ namespace CoderLib6.Graphs
 
 		public bool IsInRange(int h, int w) => 0 <= i && i < h && 0 <= j && j < w;
 		public P[] Nexts() => new[] { new P(i - 1, j), new P(i + 1, j), new P(i, j - 1), new P(i, j + 1) };
-		public static P[] NextsByDelta() => new[] { new P(-1, 0), new P(1, 0), new P(0, -1), new P(0, 1) };
+		public static P[] NextsByDelta = new[] { new P(-1, 0), new P(1, 0), new P(0, -1), new P(0, 1) };
 	}
 
 	static class GridShortestPath
 	{
+		const char Road = '.';
+		const char Wall = '#';
+
 		// 2次元配列に2次元インデックスでアクセスします。
 		public static T GetByP<T>(this T[][] a, P p) => a[p.i][p.j];
 		public static void SetByP<T>(this T[][] a, P p, T value) => a[p.i][p.j] = value;
+		public static char GetByP(this string[] s, P p) => s[p.i][p.j];
+
+		public static string[] ReadEnclosedGrid(ref int h, ref int w, char c = '#')
+		{
+			var s = new string[h + 2];
+			s[h + 1] = s[0] = new string(c, w += 2);
+			for (int i = 1; i <= h; ++i) s[i] = c + Console.ReadLine() + c;
+			h += 2;
+			return s;
+		}
+
+		public static P FindChar(string[] s, char c)
+		{
+			for (int i = 0; i < s.Length; ++i)
+				for (int j = 0; j < s[0].Length; ++j)
+					if (s[i][j] == c) return new P(i, j);
+			return new P(-1, -1);
+		}
 
 		// 辺のコストがすべて等しい場合
 		// ev: 終点を指定しない場合、new P(-1, -1)
@@ -118,15 +139,7 @@ namespace CoderLib6.Graphs
 
 		public static int[][] UndirectedBfsByDelta(int h, int w, string[] s, P sv, P ev)
 		{
-			return BfsByDelta(h, w, P.NextsByDelta, sv, ev, v => s[v.i][v.j] == '#');
-		}
-
-		public static P FindChar(int h, int w, string[] s, char c)
-		{
-			for (int i = 0; i < h; i++)
-				for (int j = 0; j < w; j++)
-					if (s[i][j] == c) return new P(i, j);
-			return new P(-1, -1);
+			return BfsByDelta(h, w, () => P.NextsByDelta, sv, ev, v => s[v.i][v.j] == '#');
 		}
 	}
 }
