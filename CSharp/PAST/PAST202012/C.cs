@@ -2,17 +2,14 @@
 
 class C
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+	const string an = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	static void Main()
 	{
 		var n = int.Parse(Console.ReadLine());
-		//var (n, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		Console.WriteLine(string.Join(" ", a));
+		var r = "";
+		for (; n > 0; n /= 36)
+			r = an[n % 36] + r;
+		Console.WriteLine(r == "" ? "0" : r);
 	}
 }
