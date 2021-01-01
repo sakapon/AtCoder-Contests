@@ -9,8 +9,7 @@ class H2
 	{
 		var (h, w) = Read2();
 		var (si, sj) = Read2();
-		var s = Array.ConvertAll(new bool[h], _ => Console.ReadLine().ToCharArray());
-		EncloseGrid(ref h, ref w, ref s, '#');
+		var s = ReadEnclosedGrid(ref h, ref w);
 
 		Func<int, int, int> toHash = (i, j) => i * w + j;
 		Func<int, (int, int)> fromHash = hash => (hash / w, hash % w);
@@ -39,16 +38,18 @@ class H2
 		Console.Out.Flush();
 	}
 
-	static void EncloseGrid<T>(ref int height, ref int width, ref T[][] a, T value, int delta = 1)
+	static string[] ReadEnclosedGrid(ref int height, ref int width, char c = '#', int delta = 1)
 	{
 		var h = height + 2 * delta;
 		var w = width + 2 * delta;
+		var cw = new string(c, w);
+		var cd = new string(c, delta);
 
-		var t = Array.ConvertAll(new bool[h], _ => Array.ConvertAll(new bool[w], __ => value));
-		for (int i = 0; i < height; ++i)
-			for (int j = 0; j < width; ++j)
-				t[delta + i][delta + j] = a[i][j];
-		(height, width, a) = (h, w, t);
+		var s = new string[h];
+		for (int i = 0; i < delta; ++i) s[delta + height + i] = s[i] = cw;
+		for (int i = 0; i < height; ++i) s[delta + i] = cd + Console.ReadLine() + cd;
+		(height, width) = (h, w);
+		return s;
 	}
 
 	static long[] Bfs(int n, Func<int, int[]> getNexts, int sv, int ev = -1)
