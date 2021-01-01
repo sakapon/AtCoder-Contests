@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-static class H2
+class H2
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
@@ -16,25 +16,14 @@ static class H2
 
 		var r = Bfs(h * w, toHash, v =>
 		{
+			var (i, j) = v;
 			var nvs = new List<Point>();
-			Point nv;
+			char c;
 
-			{
-				var c = s.GetValue(nv = v + new Point(-1, 0));
-				if (c == '.' || c == 'v') nvs.Add(nv);
-			}
-			{
-				var c = s.GetValue(nv = v + new Point(1, 0));
-				if (c == '.' || c == '^') nvs.Add(nv);
-			}
-			{
-				var c = s.GetValue(nv = v + new Point(0, -1));
-				if (c == '.' || c == '>') nvs.Add(nv);
-			}
-			{
-				var c = s.GetValue(nv = v + new Point(0, 1));
-				if (c == '.' || c == '<') nvs.Add(nv);
-			}
+			if ((c = s[i - 1][j]) == '.' || c == 'v') nvs.Add(new Point(i - 1, j));
+			if ((c = s[i + 1][j]) == '.' || c == '^') nvs.Add(new Point(i + 1, j));
+			if ((c = s[i][j - 1]) == '.' || c == '>') nvs.Add(new Point(i, j - 1));
+			if ((c = s[i][j + 1]) == '.' || c == '<') nvs.Add(new Point(i, j + 1));
 
 			return nvs.ToArray();
 		}, sv, (-1, -1));
@@ -56,7 +45,6 @@ static class H2
 		Console.Out.Flush();
 	}
 
-	static T GetValue<T>(this T[][] a, Point p) => a[p.i][p.j];
 	static void EncloseGrid<T>(ref int height, ref int width, ref T[][] a, T value, int delta = 1)
 	{
 		var h = height + 2 * delta;
@@ -103,8 +91,5 @@ static class H2
 		public Point(int i, int j) { this.i = i; this.j = j; }
 		public void Deconstruct(out int i, out int j) { i = this.i; j = this.j; }
 		public static implicit operator Point((int i, int j) v) => new Point(v.i, v.j);
-
-		public static Point operator +(Point v1, Point v2) => new Point(v1.i + v2.i, v1.j + v2.j);
-		public static Point operator -(Point v1, Point v2) => new Point(v1.i - v2.i, v1.j - v2.j);
 	}
 }
