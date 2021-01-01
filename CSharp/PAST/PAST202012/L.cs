@@ -16,64 +16,64 @@ class L
 		{
 			if (!s.Contains(t)) return 0;
 
-			int r = 0, i = 0;
-			string nx;
 			var map = Array.ConvertAll(new bool[n / 3 + 1], _ => new HashSet<string>());
-			var all = new List<string>();
-			map[0].Add(t);
-			all.Add(t);
+			var all = new Stack<string>();
+			map[1].Add(t);
+			all.Push(t);
 
-			var (s11, s12) = (t.Substring(0, 1), t.Substring(1, 2));
-			var (s21, s22) = (t.Substring(0, 2), t.Substring(2, 1));
+			var (s11, s12) = (t[..1], t[1..]);
+			var (s21, s22) = (t[..2], t[2..]);
 
-			for (; i < map.Length && map[i].Count > 0; i++)
+			void Add(int i, string nx)
 			{
-				var p_all = all.ToArray();
-				foreach (var x in map[i])
+				if (!map[i].Contains(nx) && s.Contains(nx))
 				{
-					foreach (var p in p_all)
-					{
-						if (!map[i + 1].Contains(nx = p + x) && s.Contains(nx))
-						{
-							map[i + 1].Add(nx);
-							all.Add(nx);
-						}
-						if (!map[i + 1].Contains(nx = x + p) && s.Contains(nx))
-						{
-							map[i + 1].Add(nx);
-							all.Add(nx);
-						}
-					}
-
-					if (!map[i + 1].Contains(nx = $"{s11}{x}{s12}") && s.Contains(nx))
-					{
-						map[i + 1].Add(nx);
-						all.Add(nx);
-					}
-					if (!map[i + 1].Contains(nx = $"{s21}{x}{s22}") && s.Contains(nx))
-					{
-						map[i + 1].Add(nx);
-						all.Add(nx);
-					}
+					map[i].Add(nx);
+					all.Push(nx);
 				}
 			}
 
-			for (int j = i - 1; j >= 0; j--)
+			for (int i = 2; i < map.Length; i++)
 			{
-				foreach (var x in map[j])
+				foreach (var x in map[i - 1])
 				{
-					while ((i = s.IndexOf(x)) != -1)
-					{
-						r += x.Length / 3;
-						s = s.Remove(i, x.Length);
-					}
+					Add(i, $"{s11}{x}{s12}");
+					Add(i, $"{s21}{x}{s22}");
+				}
+
+				for (int j = 1; j < i - j; j++)
+					foreach (var x in map[j])
+						foreach (var y in map[i - j])
+						{
+							Add(i, x + y);
+							Add(i, y + x);
+						}
+
+				if (i % 2 == 0)
+				{
+					var a = map[i / 2].ToArray();
+					for (int xi = 0; xi < a.Length; xi++)
+						for (int yi = xi; yi < a.Length; yi++)
+						{
+							Add(i, a[xi] + a[yi]);
+							Add(i, a[yi] + a[xi]);
+						}
+				}
+
+				if (map[i].Count == 0) break;
+			}
+
+			foreach (var x in all)
+			{
+				for (int i; (i = s.IndexOf(x)) != -1;)
+				{
+					s = s.Remove(i, x.Length);
 				}
 			}
 		}
 		else
 		{
-			int i;
-			while ((i = s.IndexOf(t)) != -1)
+			for (int i; (i = s.IndexOf(t)) != -1;)
 			{
 				s = s.Remove(i, 3);
 			}
