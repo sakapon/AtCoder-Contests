@@ -8,38 +8,32 @@ class H2
 	static void Main()
 	{
 		var (h, w) = Read2();
-		Point sv = Read2();
+		var (si, sj) = Read2();
 		var s = Array.ConvertAll(new bool[h], _ => Console.ReadLine().ToCharArray());
 		EncloseGrid(ref h, ref w, ref s, '#');
 
-		Func<Point, int> toHash = p => p.i * w + p.j;
+		Func<int, int, int> toHash = (i, j) => i * w + j;
+		Func<int, (int, int)> fromHash = hash => (hash / w, hash % w);
 
-		var r = Bfs(h * w, toHash, v =>
+		var r = Bfs(h * w, v =>
 		{
-			var (i, j) = v;
-			var nvs = new List<Point>();
+			var (i, j) = fromHash(v);
+			var nvs = new List<int>();
 			char c;
 
-			if ((c = s[i - 1][j]) == '.' || c == 'v') nvs.Add(new Point(i - 1, j));
-			if ((c = s[i + 1][j]) == '.' || c == '^') nvs.Add(new Point(i + 1, j));
-			if ((c = s[i][j - 1]) == '.' || c == '>') nvs.Add(new Point(i, j - 1));
-			if ((c = s[i][j + 1]) == '.' || c == '<') nvs.Add(new Point(i, j + 1));
+			if ((c = s[i - 1][j]) == '.' || c == 'v') nvs.Add(toHash(i - 1, j));
+			if ((c = s[i + 1][j]) == '.' || c == '^') nvs.Add(toHash(i + 1, j));
+			if ((c = s[i][j - 1]) == '.' || c == '>') nvs.Add(toHash(i, j - 1));
+			if ((c = s[i][j + 1]) == '.' || c == '<') nvs.Add(toHash(i, j + 1));
 
 			return nvs.ToArray();
-		}, sv, (-1, -1));
-
-		for (int i = 0; i < h; i++)
-			for (int j = 0; j < w; j++)
-			{
-				if (s[i][j] == '#') continue;
-				s[i][j] = r[toHash(new Point(i, j))] != long.MaxValue ? 'o' : 'x';
-			}
+		}, toHash(si, sj));
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		for (int i = 1; i < h - 1; i++)
 		{
 			for (int j = 1; j < w - 1; j++)
-				Console.Write(s[i][j]);
+				Console.Write(s[i][j] == '#' ? '#' : r[toHash(i, j)] != long.MaxValue ? 'o' : 'x');
 			Console.WriteLine();
 		}
 		Console.Out.Flush();
@@ -57,39 +51,26 @@ class H2
 		(height, width, a) = (h, w, t);
 	}
 
-	static long[] Bfs<TVertex>(int vertexesCount, Func<TVertex, int> toHash, Func<TVertex, TVertex[]> getNextVertexes, TVertex startVertex, TVertex endVertex)
+	static long[] Bfs(int n, Func<int, int[]> getNexts, int sv, int ev = -1)
 	{
-		var startVertexId = toHash(startVertex);
-		var endVertexId = toHash(endVertex);
-
-		var costs = Array.ConvertAll(new bool[vertexesCount], _ => long.MaxValue);
-		var q = new Queue<TVertex>();
-		costs[startVertexId] = 0;
-		q.Enqueue(startVertex);
+		var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
+		var q = new Queue<int>();
+		costs[sv] = 0;
+		q.Enqueue(sv);
 
 		while (q.Count > 0)
 		{
 			var v = q.Dequeue();
-			var vid = toHash(v);
-			var nc = costs[vid] + 1;
+			var nc = costs[v] + 1;
 
-			foreach (var nv in getNextVertexes(v))
+			foreach (var nv in getNexts(v))
 			{
-				var nvid = toHash(nv);
-				if (costs[nvid] <= nc) continue;
-				costs[nvid] = nc;
-				if (nvid == endVertexId) return costs;
+				if (costs[nv] <= nc) continue;
+				costs[nv] = nc;
+				if (nv == ev) return costs;
 				q.Enqueue(nv);
 			}
 		}
 		return costs;
-	}
-
-	public struct Point
-	{
-		public int i, j;
-		public Point(int i, int j) { this.i = i; this.j = j; }
-		public void Deconstruct(out int i, out int j) { i = this.i; j = this.j; }
-		public static implicit operator Point((int i, int j) v) => new Point(v.i, v.j);
 	}
 }
