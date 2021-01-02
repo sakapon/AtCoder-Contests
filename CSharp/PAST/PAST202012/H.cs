@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Bang.Graphs.Spp;
 
 class H
@@ -11,8 +10,7 @@ class H
 	{
 		var (h, w) = Read2();
 		Point sv = Read2();
-		var s = GraphConsole.ReadGridAsChar(h);
-		GridHelper.EncloseGrid(ref h, ref w, ref s, '#');
+		var s = GraphConsole.ReadEnclosedGrid(ref h, ref w);
 
 		var spp = ShortestPath.ForGrid(h, w)
 			.ForUnweightedMap(v =>
@@ -48,7 +46,9 @@ class H
 				s2[i - 1][j - 1] = s[i][j] == '#' ? '#' : spp.IsConnected((i, j)) ? 'o' : 'x';
 			}
 
-		Console.WriteLine(string.Join("\n", s2.Select(l => string.Join("", l))));
+		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
+		foreach (var l in s2) Console.WriteLine(l);
+		Console.Out.Flush();
 	}
 
 	static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
