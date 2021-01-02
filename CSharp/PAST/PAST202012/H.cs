@@ -12,44 +12,29 @@ class H
 		Point sv = Read2();
 		var s = GraphConsole.ReadEnclosedGrid(ref h, ref w);
 
+		const string arrows = "v^><";
 		var spp = ShortestPath.ForGrid(h, w)
 			.ForUnweightedMap(v =>
 			{
 				var nvs = new List<Point>();
-				Point nv;
+				var nva = v.Nexts();
 
+				for (int k = 0; k < 4; k++)
 				{
-					var c = s.GetValue(nv = v + new Point(-1, 0));
-					if (c == '.' || c == 'v') nvs.Add(nv);
+					var (i, j) = nva[k];
+					if (s[i][j] == '.' || s[i][j] == arrows[k]) nvs.Add(nva[k]);
 				}
-				{
-					var c = s.GetValue(nv = v + new Point(1, 0));
-					if (c == '.' || c == '^') nvs.Add(nv);
-				}
-				{
-					var c = s.GetValue(nv = v + new Point(0, -1));
-					if (c == '.' || c == '>') nvs.Add(nv);
-				}
-				{
-					var c = s.GetValue(nv = v + new Point(0, 1));
-					if (c == '.' || c == '<') nvs.Add(nv);
-				}
-
 				return nvs.ToArray();
 			})
 			.Bfs(sv, (-1, -1));
 
-		var s2 = NewArray2<char>(h - 2, w - 2);
-		for (int i = 1; i < h - 1; i++)
-			for (int j = 1; j < w - 1; j++)
-			{
-				s2[i - 1][j - 1] = s[i][j] == '#' ? '#' : spp.IsConnected((i, j)) ? 'o' : 'x';
-			}
-
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
-		foreach (var l in s2) Console.WriteLine(l);
+		for (int i = 1; i < h - 1; i++)
+		{
+			for (int j = 1; j < w - 1; j++)
+				Console.Write(s[i][j] == '#' ? '#' : spp.IsConnected((i, j)) ? 'o' : 'x');
+			Console.WriteLine();
+		}
 		Console.Out.Flush();
 	}
-
-	static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
 }
