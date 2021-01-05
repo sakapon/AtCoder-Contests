@@ -11,40 +11,37 @@ class D
 		var (n, k) = Read2();
 		var a = Read();
 
-		var pa = new long[n, k + 1];
-		for (int i = 0; i < n; i++)
-		{
-			pa[i, 0] = 1;
-			for (int j = 0; j < k; j++)
-				pa[i, j + 1] = pa[i, j] * a[i] % M;
-		}
+		var pa1 = Array.ConvertAll(a, _ => 1L);
+		var pa2 = Array.ConvertAll(a, _ => 1L);
 
-		var p2 = MInt.MPows(2, k);
 		var f = MInt.MFactorials(k);
 		var f_ = Array.ConvertAll(f, v => (1 / v).V);
 
-		var p = new MInt[k + 1];
+		var p = new long[k + 1];
 		for (int x = 0; x <= k; x++)
 		{
 			var sum = 0L;
 			for (int i = 0; i < n; i++)
-				sum += pa[i, x] * f_[x] % M;
-			p[x] = sum;
+			{
+				sum += pa1[i] * f_[x] % M;
+				pa1[i] = pa1[i] * a[i] % M;
+			}
+			p[x] = sum % M;
 		}
 
 		for (int x = 1; x <= k; x++)
 		{
 			var sum = 0L;
 			for (int i = 0; i < n; i++)
-				sum += pa[i, x] * p2[x] % M;
+			{
+				pa2[i] = pa2[i] * (a[i] << 1) % M;
+				sum += pa2[i];
+			}
 
-			var r = f[x] * Enumerable.Range(0, x + 1).Select(i => p[i] * p[x - i]).Aggregate((x, y) => x + y);
-			r -= sum;
-			Console.WriteLine(r / 2);
+			var r = f[x] * Enumerable.Range(0, x + 1).Sum(i => p[i] * p[x - i] % M);
+			Console.WriteLine((r - sum) / 2);
 		}
 	}
-
-	static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
 }
 
 struct MInt
@@ -69,14 +66,6 @@ struct MInt
 	}
 	public MInt Pow(long i) => MPow(V, i);
 	public MInt Inv() => MPow(V, M - 2);
-
-	public static long[] MPows(long b, int n)
-	{
-		var p = new long[n + 1];
-		p[0] = 1;
-		for (int i = 0; i < n; ++i) p[i + 1] = p[i] * b % M;
-		return p;
-	}
 
 	public static MInt[] MFactorials(int n)
 	{
