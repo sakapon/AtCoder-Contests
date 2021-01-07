@@ -1,18 +1,23 @@
 ﻿using System;
+using System.Linq;
 
 class C
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main()
+	static void Main() => Console.WriteLine(string.Join("\n", new int[int.Parse(Console.ReadLine())].Select(_ => Solve())));
+	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		//var (n, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (n, m) = Read2();
+		var es = Array.ConvertAll(new bool[m], _ => Read2());
 
-		Console.WriteLine(string.Join(" ", a));
+		var c1 = new int[n + 1];
+		var c2 = new int[n + 1];
+		foreach (var (a, b) in es)
+		{
+			c1[a]++;
+			c2[b]++;
+		}
+		return m - c1.Zip(c2, Math.Min).Sum();
 	}
 }
