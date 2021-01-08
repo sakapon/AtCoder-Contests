@@ -7,12 +7,7 @@ class A
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main()
 	{
-		var n = int.Parse(Console.ReadLine());
-		//var (n, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
-
-		Console.WriteLine(string.Join(" ", a));
+		var n = Console.ReadLine();
+		Console.WriteLine((n.Length + 1) / 2);
 	}
 }
