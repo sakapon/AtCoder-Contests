@@ -7,27 +7,18 @@ class B
 	{
 		var n = long.Parse(Console.ReadLine()) * 2;
 
-		var m = long.MaxValue;
+		var m = n - 1;
 		foreach (var d1 in Divisors(n))
 		{
 			var d2 = n / d1;
 			if (Gcd(d1, d2) != 1) continue;
-			m = Math.Min(m, Crt(d1, d2, 0, -1));
+			var x = Crt(d1, d2, 0, -1);
+			m = Math.Min(m, x == 0 ? n : x);
 		}
 		Console.WriteLine(m);
 	}
 
-	static long MInt(long x, long M) => (x %= M) < 0 ? x + M : x;
 	static long Gcd(long a, long b) { for (long r; (r = a % b) > 0; a = b, b = r) ; return b; }
-
-	// 前提: m と n は互いに素。
-	static long Crt(long m, long n, long a, long b)
-	{
-		var e = ExtendedEuclid(m, n);
-		var x = a * n * e[1] + b * m * e[0];
-		x = MInt(x, m * n);
-		return x == 0 ? m * n : x;
-	}
 
 	// ax + by = 1 の解 (x, y)
 	// 前提: a と b は互いに素。
@@ -39,6 +30,15 @@ class B
 		var q = Math.DivRem(a, b, out r);
 		var t = ExtendedEuclid(b, r);
 		return new[] { t[1], t[0] - q * t[1] };
+	}
+
+	// a mod m かつ b mod n である値 (mod mn で唯一)
+	// 前提: m と n は互いに素。
+	static long Crt(long m, long n, long a, long b)
+	{
+		var v = ExtendedEuclid(m, n);
+		var r = a * n * v[1] + b * m * v[0];
+		return (r %= m * n) < 0 ? r + m * n : r;
 	}
 
 	// すべての約数 O(√n)
