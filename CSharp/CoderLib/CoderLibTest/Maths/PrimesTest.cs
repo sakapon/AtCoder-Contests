@@ -26,6 +26,15 @@ namespace CoderLibTest.Maths
 			return new[] { t[1], t[0] - q * t[1] };
 		}
 
+		// a mod m かつ b mod n である値 (mod mn で唯一)
+		// 前提: m と n は互いに素。
+		static long Crt(long m, long n, long a, long b)
+		{
+			var v = ExtendedEuclid(m, n);
+			var r = a * n * v[1] + b * m * v[0];
+			return (r %= m * n) < 0 ? r + m * n : r;
+		}
+
 		// 素因数分解 O(√n)
 		// n = 1 の場合は空の配列。
 		// √n を超える素因数はたかだか 1 個であり、その次数は 1。
