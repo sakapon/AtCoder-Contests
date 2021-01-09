@@ -26,6 +26,15 @@ namespace CoderLibTest.Maths
 			return new[] { t[1], t[0] - q * t[1] };
 		}
 
+		// a mod m かつ b mod n である値 (mod mn で唯一)
+		// 前提: m と n は互いに素。
+		static long Crt(long m, long n, long a, long b)
+		{
+			var v = ExtendedEuclid(m, n);
+			var r = a * n * v[1] + b * m * v[0];
+			return (r %= m * n) < 0 ? r + m * n : r;
+		}
+
 		// 素因数分解 O(√n)
 		// n = 1 の場合は空の配列。
 		// √n を超える素因数はたかだか 1 個であり、その次数は 1。
@@ -58,6 +67,7 @@ namespace CoderLibTest.Maths
 		}
 
 		// n 以下の素数 O(n)?
+		// b の値は、合成数のとき true です。
 		// 候補 x を奇数に限定することで高速化できます。
 		static int[] GetPrimes(int n)
 		{
@@ -68,8 +78,9 @@ namespace CoderLibTest.Maths
 			return r.ToArray();
 		}
 
-		// 範囲内の素数 O(√M)? or O(M - m)?
+		// 範囲内の素数 O(√M + (M - m))?
 		// M が大きい場合、誤差が生じる可能性があります。
+		// b の値は、合成数のとき true です。
 		static long[] GetPrimes(long m, long M)
 		{
 			var rM = (int)Math.Ceiling(Math.Sqrt(M));
@@ -86,6 +97,35 @@ namespace CoderLibTest.Maths
 			var r = new List<long>();
 			for (int x = 0; x < b2.Length; ++x) if (!b2[x]) r.Add(m + x);
 			return r.ToArray();
+		}
+
+		// オイラーの φ 関数 O(√n)
+		// Factorize をもとにしています。
+		// 候補 x を 2 または奇数に限定することで高速化できます。
+		static long Totient(long n)
+		{
+			var r = n;
+			for (long x = 2; x * x <= n && n > 1; ++x)
+				if (n % x == 0)
+				{
+					r = r / x * (x - 1);
+					while ((n /= x) % x == 0) ;
+				}
+			if (n > 1) r = r / n * (n - 1);
+			return r;
+		}
+
+		// n 以下のすべてのオイラーの φ 関数 O(n)?
+		// GetPrimes をもとにしています。
+		// 候補 x を奇数に限定することで高速化できます。
+		static int[] Totients(int n)
+		{
+			var b = new bool[n + 1];
+			for (int p = 2; p * p <= n; ++p) if (!b[p]) for (int x = p * p; x <= n; x += p) b[x] = true;
+			var r = new int[n + 1];
+			for (int x = 1; x <= n; ++x) r[x] = x;
+			for (int p = 2; p <= n; ++p) if (!b[p]) for (int x = p; x <= n; x += p) r[x] = r[x] / p * (p - 1);
+			return r;
 		}
 
 		#region Test Methods

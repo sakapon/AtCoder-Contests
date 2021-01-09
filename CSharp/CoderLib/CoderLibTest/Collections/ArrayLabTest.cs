@@ -74,6 +74,8 @@ namespace CoderLibTest.Collections
 			return l.ToArray();
 		}
 
+		static int DotProduct2(int[] a, int[] b) { for (int r = 0, i = -1; ; r += a[i] * b[i]) if (++i >= a.Length) return r; }
+
 		#region Test Methods
 
 		[TestMethod]
@@ -128,6 +130,13 @@ namespace CoderLibTest.Collections
 			var mi2 = MinWithIndexes(new[] { 1, 1, 3, 5, 5 });
 			Assert.AreEqual(0, mi2[0].Key); Assert.AreEqual(1, mi2[0].Value);
 			Assert.AreEqual(1, mi2[1].Key); Assert.AreEqual(1, mi2[1].Value);
+		}
+
+		[TestMethod]
+		public void DotProduct()
+		{
+			Assert.AreEqual(32, DotProduct2(new[] { 1, 2, 3 }, new[] { 4, 5, 6 }));
+			Assert.AreEqual(89, DotProduct2(new[] { 2, 3, 5, 7 }, new[] { 11, 7, 5, 3 }));
 		}
 		#endregion
 	}

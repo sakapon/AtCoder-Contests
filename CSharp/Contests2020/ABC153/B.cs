@@ -3,10 +3,10 @@ using System.Linq;
 
 class B
 {
+	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
 	static void Main()
 	{
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		Console.WriteLine(read().Sum() >= h[0] ? "Yes" : "No");
+		var z = Read();
+		Console.WriteLine(Read().Sum() >= z[0] ? "Yes" : "No");
 	}
 }

@@ -6,8 +6,8 @@ class C2
 	static void Main()
 	{
 		Console.ReadLine();
-		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var p = Math.Round(a.Average());
-		Console.WriteLine(a.Sum(x => (x - p) * (x - p)));
+		var x = Console.ReadLine().Split().Select(int.Parse).ToArray();
+		var p = Math.Round(x.Average());
+		Console.WriteLine(x.Sum(v => (v - p) * (v - p)));
 	}
 }
