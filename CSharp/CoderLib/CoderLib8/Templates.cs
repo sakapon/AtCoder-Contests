@@ -50,11 +50,11 @@ namespace CoderLib8
 	class Template_Graph
 	{
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+		static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 		static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 		static void Main()
 		{
-			var h = Read();
-			int n = h[0], m = h[1];
+			var (n, m) = Read2();
 			var es = Array.ConvertAll(new bool[m], _ => Read());
 		}
 	}
@@ -62,11 +62,11 @@ namespace CoderLib8
 	class Template_Grid
 	{
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+		static (int i, int j) Read2() { var a = Read(); return (a[0], a[1]); }
 		static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 		static void Main()
 		{
-			var z = Read();
-			int h = z[0], w = z[1];
+			var (h, w) = Read2();
 			var c = Array.ConvertAll(new bool[h], _ => Read());
 			var s = Array.ConvertAll(new bool[h], _ => Console.ReadLine());
 		}
@@ -75,12 +75,12 @@ namespace CoderLib8
 	class Template_Query
 	{
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+		static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 		static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 		static void Main()
 		{
 			Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
-			var h = Read();
-			int n = h[0], qc = h[1];
+			var (n, qc) = Read2();
 			var a = ReadL();
 			var qs = Array.ConvertAll(new bool[qc], _ => Read());
 
