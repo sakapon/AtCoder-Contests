@@ -1,65 +1,54 @@
 ﻿using System;
+using System.Linq;
 
 class H
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static (int, int, int) Read3() { var a = Read(); return (a[0], a[1], a[2]); }
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static (long, long, long) Read3L() { var a = ReadL(); return (a[0], a[1], a[2]); }
-	static void WriteYesNo(bool b) => Console.WriteLine(b ? "Yes" : "No");
-	static void Main()
+	static void Main() => Console.WriteLine(string.Join("\n", new int[int.Parse(Console.ReadLine())].Select(_ => Solve() ? "Yes" : "No")));
+	static bool Solve()
 	{
-		var t = int.Parse(Console.ReadLine());
-		var qs = Array.ConvertAll(new bool[t], _ => Read3L());
+		var (a, b, c) = Read3L();
 
-		foreach (var (a, b, c) in qs)
+		bool? isOdd = null;
+
+		for (int i = 0; i < 60; i++)
 		{
-			WriteYesNo(Check(a, b, c));
-		}
+			var f = 1 << i;
+			var af = (a & f) != 0;
+			var bf = (b & f) != 0;
+			var cf = (c & f) != 0;
 
-		bool Check(long a, long b, long c)
-		{
-			bool? isOdd = null;
-
-			for (int i = 0; i < 60; i++)
+			if (af)
 			{
-				var f = 1 << i;
-				var af = (a & f) != 0;
-				var bf = (b & f) != 0;
-				var cf = (c & f) != 0;
-
-				if (af)
+				if (bf)
 				{
-					if (bf)
+					if (isOdd == null || isOdd == cf)
 					{
-						if (isOdd == null || isOdd == cf)
-						{
-							isOdd = cf;
-						}
-						else
-						{
-							return false;
-						}
+						isOdd = cf;
 					}
 					else
 					{
-
+						return false;
 					}
 				}
 				else
 				{
-					if (bf)
-					{
-						return false;
-					}
-					else
-					{
-						if (cf) return false;
-					}
+
 				}
 			}
-			return true;
+			else
+			{
+				if (bf)
+				{
+					return false;
+				}
+				else
+				{
+					if (cf) return false;
+				}
+			}
 		}
+		return true;
 	}
 }
