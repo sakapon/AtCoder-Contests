@@ -2,17 +2,20 @@
 
 class F
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main()
 	{
-		var n = int.Parse(Console.ReadLine());
-		//var (n, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var p = int.Parse(Console.ReadLine());
+		if (p == 1) { Console.WriteLine(1); return; }
 
-		Console.WriteLine(string.Join(" ", a));
+		var n = 1 << 20;
+
+		var f = new int[n + 1];
+		f[2] = f[1] = 1;
+		for (int i = 3; i <= n; ++i)
+		{
+			f[i] = (f[i - 1] + f[i - 2]) % p;
+			if (f[i] == 0) { Console.WriteLine(i); return; }
+		}
+		Console.WriteLine(-1);
 	}
 }
