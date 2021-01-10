@@ -10,8 +10,8 @@ class E
 		var (x, y) = Read2L();
 
 		if ((x, y) == (0, 0)) return "1 1";
-		else if (x < y) return $"{x + 2 * y} {y}";
-		else if (x > y) return $"{x} {2 * x + y}";
-		else return -1;
+		if (x < y) return $"{x + 2 * y} {y}";
+		if (x > y) return $"{x} {2 * x + y}";
+		return -1;
 	}
 }
