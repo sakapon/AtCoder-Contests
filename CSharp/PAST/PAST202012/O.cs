@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 class O
 {
@@ -14,15 +13,15 @@ class O
 		var qc = int.Parse(Console.ReadLine());
 		var qs = Array.ConvertAll(new bool[qc], _ => Read2());
 
-		const int c = 1000;
+		var c = (int)Math.Sqrt(m);
 		var map = EdgesToMap1(n + 1, es, false);
-		var stars = Enumerable.Range(1, n).Where(v => map[v].Count > c).ToArray();
+		var map_stars = Array.ConvertAll(new bool[n + 1], _ => new List<int>());
 
-		var hs = new HashSet<long>();
-		foreach (var e in es)
+		for (int v = 1; v <= n; v++)
 		{
-			hs.Add((1L << 30) * e[0] + e[1]);
-			hs.Add((1L << 30) * e[1] + e[0]);
+			if (map[v].Count <= c) continue;
+			foreach (var nv in map[v])
+				map_stars[nv].Add(v);
 		}
 
 		var lazy = new int[n + 1];
@@ -46,9 +45,8 @@ class O
 			else
 			{
 				var sum = 0;
-				foreach (var y in stars)
-					if (hs.Contains((1L << 30) * x + y))
-						sum += lazy[y];
+				foreach (var y in map_stars[x])
+					sum += lazy[y];
 				Console.WriteLine(notes[x] + sum - ends[x]);
 
 				notes[x] = 0;
@@ -58,7 +56,7 @@ class O
 		Console.Out.Flush();
 	}
 
-	static List<int>[] EdgesToMap1(int n, int[][] es, bool directed)
+	public static List<int>[] EdgesToMap1(int n, int[][] es, bool directed)
 	{
 		var map = Array.ConvertAll(new bool[n], _ => new List<int>());
 		foreach (var e in es)
