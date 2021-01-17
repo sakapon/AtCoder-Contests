@@ -2,5 +2,5 @@
 
 class A
 {
-	static void Main() => Console.WriteLine((19 * 43 + 28 * 47) / 27);
+	static void Main() => Console.WriteLine(79);
 }
