@@ -5,6 +5,10 @@ namespace CoderLib8.Numerics
 {
 	static class Dft
 	{
+		public static int[] ToInt(this Complex[] a) => Array.ConvertAll(a, c => (int)Math.Round(c.Real));
+		public static long[] ToLong(this Complex[] a) => Array.ConvertAll(a, c => (long)Math.Round(c.Real));
+		public static double[] ToDouble(this Complex[] a) => Array.ConvertAll(a, c => c.Real);
+
 		static Complex[] NthRoots(int n)
 		{
 			var z = new Complex[n];
@@ -15,21 +19,7 @@ namespace CoderLib8.Numerics
 
 		// n: Power of 2
 		// { f(z^i) }
-		[Obsolete]
-		static Complex[] Dft0(Complex[] c, bool inverse = false)
-		{
-			var n = c.Length;
-			var r = new Complex[n];
-			for (int i = 0; i < n; ++i)
-			{
-				for (int j = 0; j < n; ++j)
-					r[i] += c[j] * Complex.Exp(new Complex(0, (inverse ? i : -i) * j * 2 * Math.PI / n));
-				if (inverse) r[i] /= n;
-			}
-			return r;
-		}
-
-		static Complex[] Fft(Complex[] c, bool inverse = false)
+		public static Complex[] Fft(Complex[] c, bool inverse = false)
 		{
 			var n = c.Length;
 			if (n == 1) return c;
@@ -57,6 +47,21 @@ namespace CoderLib8.Numerics
 					r[i] /= 2;
 					r[n2 + i] /= 2;
 				}
+			}
+			return r;
+		}
+
+		// n: Power of 2
+		// { f(z^i) }
+		public static Complex[] Dft0(Complex[] c, bool inverse = false)
+		{
+			var n = c.Length;
+			var r = new Complex[n];
+			for (int i = 0; i < n; ++i)
+			{
+				for (int j = 0; j < n; ++j)
+					r[i] += c[j] * Complex.Exp(new Complex(0, (inverse ? i : -i) * j * 2 * Math.PI / n));
+				if (inverse) r[i] /= n;
 			}
 			return r;
 		}
