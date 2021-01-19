@@ -8,24 +8,17 @@ class C
 	static void Main()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var n2 = 1;
-		while (n2 <= 2 * n) n2 *= 2;
-
-		var a = new Complex[n2];
-		var b = new Complex[n2];
+		var a = new long[n + 1];
+		var b = new long[n + 1];
 		for (int i = 1; i <= n; i++)
 		{
-			var x = Read();
-			a[i] = x[0];
-			b[i] = x[1];
+			var v = Read();
+			a[i] = v[0];
+			b[i] = v[1];
 		}
 
-		var fa = Fft(a);
-		var fb = Fft(b);
-		var fab = fa.Zip(fb, (x, y) => x * y).ToArray();
-		var ab = Fft(fab, true);
-
-		Console.WriteLine(string.Join("\n", ab.Skip(1).Take(2 * n).Select(c => $"{c.Real:F0}")));
+		var ab = Convolution(a, b);
+		Console.WriteLine(string.Join("\n", ab.Skip(1).Take(2 * n)));
 	}
 
 	static Complex[] Fft(Complex[] c, bool inverse = false)
@@ -58,5 +51,26 @@ class C
 			}
 		}
 		return r;
+	}
+
+	static Complex[] Convolution(Complex[] a, Complex[] b)
+	{
+		var fa = Fft(a);
+		var fb = Fft(b);
+		for (int i = 0; i < a.Length; ++i) fa[i] *= fb[i];
+		return Fft(fa, true);
+	}
+
+	static long[] Convolution(long[] a, long[] b)
+	{
+		var n = 1;
+		while (n <= a.Length + b.Length - 2) n *= 2;
+
+		var ac = new Complex[n];
+		var bc = new Complex[n];
+		for (int i = 0; i < a.Length; ++i) ac[i] = a[i];
+		for (int i = 0; i < b.Length; ++i) bc[i] = b[i];
+
+		return Array.ConvertAll(Convolution(ac, bc), c => (long)Math.Round(c.Real));
 	}
 }

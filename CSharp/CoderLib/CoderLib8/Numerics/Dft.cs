@@ -52,6 +52,28 @@ namespace CoderLib8.Numerics
 		}
 
 		// n: Power of 2
+		static Complex[] Convolution(Complex[] a, Complex[] b)
+		{
+			var fa = Fft(a);
+			var fb = Fft(b);
+			for (int i = 0; i < a.Length; ++i) fa[i] *= fb[i];
+			return Fft(fa, true);
+		}
+
+		public static long[] Convolution(long[] a, long[] b)
+		{
+			var n = 1;
+			while (n <= a.Length + b.Length - 2) n *= 2;
+
+			var ac = new Complex[n];
+			var bc = new Complex[n];
+			for (int i = 0; i < a.Length; ++i) ac[i] = a[i];
+			for (int i = 0; i < b.Length; ++i) bc[i] = b[i];
+
+			return Array.ConvertAll(Convolution(ac, bc), c => (long)Math.Round(c.Real));
+		}
+
+		// n: Power of 2
 		// { f(z^i) }
 		public static Complex[] Dft0(Complex[] c, bool inverse = false)
 		{
