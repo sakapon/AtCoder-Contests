@@ -39,7 +39,7 @@ namespace CoderLib8.Numerics
 			var r = new Complex[n];
 			for (int i = 0; i < n2; ++i)
 			{
-				var z = Complex.Exp(new Complex(0, (inverse ? i : -i) * 2 * Math.PI / n));
+				var z = Complex.Exp(new Complex(0, (inverse ? -i : i) * 2 * Math.PI / n));
 				r[i] = f1[i] + z * f2[i];
 				r[n2 + i] = f1[i] - z * f2[i];
 				if (inverse)
@@ -73,8 +73,6 @@ namespace CoderLib8.Numerics
 			return Array.ConvertAll(Convolution(ac, bc), c => (long)Math.Round(c.Real));
 		}
 
-		// n: Power of 2
-		// { f(z^i) }
 		public static Complex[] Dft0(Complex[] c, bool inverse = false)
 		{
 			var n = c.Length;
@@ -82,7 +80,7 @@ namespace CoderLib8.Numerics
 			for (int i = 0; i < n; ++i)
 			{
 				for (int j = 0; j < n; ++j)
-					r[i] += c[j] * Complex.Exp(new Complex(0, (inverse ? i : -i) * j * 2 * Math.PI / n));
+					r[i] += c[j] * Complex.Exp(new Complex(0, (inverse ? -i : i) * j * 2 * Math.PI / n));
 				if (inverse) r[i] /= n;
 			}
 			return r;
