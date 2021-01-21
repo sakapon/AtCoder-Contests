@@ -11,10 +11,16 @@ namespace CoderLib8.Numerics
 
 		static Complex[] NthRoots(int n)
 		{
-			var z = new Complex[n];
-			for (int i = 0; i < n; ++i)
+			var z = new Complex[n + 1];
+			for (int i = 0; i <= n; ++i)
 				z[i] = Complex.Exp(new Complex(0, i * 2 * Math.PI / n));
 			return z;
+		}
+
+		static Complex NthRoot(int n, int i)
+		{
+			var t = i * 2 * Math.PI / n;
+			return new Complex(Math.Cos(t), Math.Sin(t));
 		}
 
 		// n: Power of 2
@@ -84,6 +90,28 @@ namespace CoderLib8.Numerics
 				if (inverse) r[i] /= n;
 			}
 			return r;
+		}
+
+		// non-recursive
+		public static Complex[] Fft2(Complex[] c, bool inverse = false)
+		{
+			var n = c.Length;
+			var roots = NthRoots(n);
+			var p = (Complex[])c.Clone();
+			var t = new Complex[n];
+
+			for (int m = 2; m <= n; m <<= 1)
+			{
+				var m2 = m >> 1;
+				for (int i = 0; i < n; ++i)
+				{
+					var si = i / m; // section index
+					t[i] = p[si * m2 + i % m2] + p[si * m2 + i % m2 + (n >> 1)] * roots[inverse ? n - n / m * i % n : n / m * i % n];
+					if (inverse) t[i] /= 2;
+				}
+				(p, t) = (t, p);
+			}
+			return p;
 		}
 	}
 }
