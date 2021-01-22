@@ -41,7 +41,12 @@ struct RInt
 		var sb = new StringBuilder();
 		if (IsNegative) sb.Append('-');
 		sb.Append(C[C.Length - 1]);
-		for (int i = C.Length - 2; i >= 0; --i) sb.Append(C[i].ToString("D9"));
+		for (int i = C.Length - 2; i >= 0; --i)
+		{
+			var s = C[i].ToString();
+			if (s.Length < 9) sb.Append('0', 9 - s.Length);
+			sb.Append(s);
+		}
 		return sb.ToString();
 	}
 
