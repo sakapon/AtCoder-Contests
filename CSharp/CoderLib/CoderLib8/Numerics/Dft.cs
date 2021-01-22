@@ -3,6 +3,8 @@ using System.Numerics;
 
 namespace CoderLib8.Numerics
 {
+	// Test: https://atcoder.jp/contests/atc001/tasks/fft_c
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/6/NTL/2/NTL_2_F
 	static class Dft
 	{
 		public static int[] ToInt(this Complex[] a) => Array.ConvertAll(a, c => (int)Math.Round(c.Real));
@@ -45,7 +47,7 @@ namespace CoderLib8.Numerics
 			var r = new Complex[n];
 			for (int i = 0; i < n2; ++i)
 			{
-				var z = Complex.Exp(new Complex(0, (inverse ? -i : i) * 2 * Math.PI / n));
+				var z = NthRoot(n, inverse ? -i : i);
 				r[i] = f1[i] + z * f2[i];
 				r[n2 + i] = f1[i] - z * f2[i];
 				if (inverse)
@@ -86,7 +88,7 @@ namespace CoderLib8.Numerics
 			for (int i = 0; i < n; ++i)
 			{
 				for (int j = 0; j < n; ++j)
-					r[i] += c[j] * Complex.Exp(new Complex(0, (inverse ? -i : i) * j * 2 * Math.PI / n));
+					r[i] += c[j] * NthRoot(n, (inverse ? -i : i) * j);
 				if (inverse) r[i] /= n;
 			}
 			return r;
@@ -112,6 +114,49 @@ namespace CoderLib8.Numerics
 				(p, t) = (t, p);
 			}
 			return p;
+		}
+
+		// DFS
+		public static Complex[] Fft3(Complex[] c, bool inverse = false)
+		{
+			n_all = c.Length;
+			roots = NthRoots(n_all);
+			return Fft_Dfs(c, inverse);
+		}
+
+		static int n_all;
+		static Complex[] roots;
+		static Complex[] Fft_Dfs(Complex[] c, bool inverse)
+		{
+			var n = c.Length;
+			if (n == 1) return c;
+			var n2 = n / 2;
+			var zoom = n_all / n;
+			var c1 = new Complex[n2];
+			var c2 = new Complex[n2];
+
+			for (int i = 0; i < n2; ++i)
+			{
+				c1[i] = c[2 * i];
+				c2[i] = c[2 * i + 1];
+			}
+
+			var f1 = Fft_Dfs(c1, inverse);
+			var f2 = Fft_Dfs(c2, inverse);
+
+			var r = new Complex[n];
+			for (int i = 0; i < n2; ++i)
+			{
+				var z = roots[inverse ? n_all - zoom * i : zoom * i];
+				r[i] = f1[i] + z * f2[i];
+				r[n2 + i] = f1[i] - z * f2[i];
+				if (inverse)
+				{
+					r[i] /= 2;
+					r[n2 + i] /= 2;
+				}
+			}
+			return r;
 		}
 	}
 }

@@ -21,6 +21,12 @@ class C
 		Console.WriteLine(string.Join("\n", ab.Skip(1).Take(2 * n)));
 	}
 
+	static Complex NthRoot(int n, int i)
+	{
+		var t = i * 2 * Math.PI / n;
+		return new Complex(Math.Cos(t), Math.Sin(t));
+	}
+
 	static Complex[] Fft(Complex[] c, bool inverse = false)
 	{
 		var n = c.Length;
@@ -41,7 +47,7 @@ class C
 		var r = new Complex[n];
 		for (int i = 0; i < n2; ++i)
 		{
-			var z = Complex.Exp(new Complex(0, (inverse ? i : -i) * 2 * Math.PI / n));
+			var z = NthRoot(n, inverse ? -i : i);
 			r[i] = f1[i] + z * f2[i];
 			r[n2 + i] = f1[i] - z * f2[i];
 			if (inverse)
