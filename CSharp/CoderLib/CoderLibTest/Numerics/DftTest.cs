@@ -14,14 +14,38 @@ namespace CoderLibTest.Numerics
 		{
 			var a = Enumerable.Range(3, 1 << 4).ToArray();
 			var c = Array.ConvertAll(a, x => new Complex(x, 0));
+			var cd = Array.ConvertAll(a, x => new ComplexD(x, 0));
 
 			var t0 = Dft.Dft0(c);
 			var r0 = Dft.Dft0(t0, true).ToInt();
 			var t1 = Dft.Fft(c);
 			var r1 = Dft.Fft(t1, true).ToInt();
+			var t2 = DftD.Fft(cd);
+			var r2 = DftD.Fft(t2, true).ToInt();
 
 			CollectionAssert.AreEqual(a, r0);
 			CollectionAssert.AreEqual(a, r1);
+			CollectionAssert.AreEqual(a, r2);
+		}
+
+		[TestMethod]
+		public void Fft_Many()
+		{
+			var a = Enumerable.Range(3, 1 << 16).ToArray();
+			var c = Array.ConvertAll(a, x => new Complex(x, 0));
+			var t1 = Dft.Fft(c);
+			var r1 = Dft.Fft(t1, true).ToInt();
+			CollectionAssert.AreEqual(a, r1);
+		}
+
+		[TestMethod]
+		public void Fft_ManyD()
+		{
+			var a = Enumerable.Range(3, 1 << 16).ToArray();
+			var cd = Array.ConvertAll(a, x => new ComplexD(x, 0));
+			var t2 = DftD.Fft(cd);
+			var r2 = DftD.Fft(t2, true).ToInt();
+			CollectionAssert.AreEqual(a, r2);
 		}
 
 		[TestMethod]
