@@ -44,6 +44,29 @@ namespace CoderLib8.Numerics
 		static long Chmax(ref long x, long v) => x < v ? x = v : x;
 		static long Chmin(ref long x, long v) => x > v ? x = v : x;
 
+		// https://github.com/atcoder/ac-library/blob/master/atcoder/internal_math.hpp
+		static long FloorSum(long n, long m, long a, long b)
+		{
+			var r = 0L;
+			while (true)
+			{
+				if (a >= m)
+				{
+					r += n * (n - 1) / 2 * (a / m);
+					a %= m;
+				}
+				if (b >= m)
+				{
+					r += n * (b / m);
+					b %= m;
+				}
+
+				var yMax = a * n + b;
+				if (yMax < m) return r;
+				(n, m, a, b) = (yMax / m, a, m, yMax % m);
+			}
+		}
+
 		static int FlagCount(int x)
 		{
 			var r = 0;
