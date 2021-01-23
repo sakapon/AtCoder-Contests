@@ -67,6 +67,7 @@ namespace CoderLib8.Numerics
 			}
 		}
 
+		[Obsolete("Use BitOperations.PopCount method.")]
 		static int FlagCount(int x)
 		{
 			var r = 0;
