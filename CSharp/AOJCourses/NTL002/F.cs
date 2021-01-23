@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using System.Text;
 
 class F
 {
@@ -22,16 +23,24 @@ class F
 		var ab = Convolution(a, b);
 		for (int i = 0; i < ab.Length - 1; i++)
 		{
+			if (ab[i] < 10) continue;
 			ab[i + 1] += ab[i] / 10;
 			ab[i] %= 10;
 		}
 
-		Array.Reverse(ab);
-		var sab = string.Join("", ab);
-		sab = sab.TrimStart('0');
-		if (neg_ab && sab != "") sab = "-" + sab;
-		if (sab == "") sab = "0";
-		Console.WriteLine(sab);
+		Console.WriteLine(ToString(ab, neg_ab));
+	}
+
+	static string ToString(int[] c, bool neg)
+	{
+		var i = c.Length - 1;
+		while (i >= 0 && c[i] == 0) i--;
+		if (i == -1) return "0";
+
+		var sb = new StringBuilder();
+		if (neg) sb.Append('-');
+		while (i >= 0) sb.Append(c[i--]);
+		return sb.ToString();
 	}
 
 	static Complex NthRoot(int n, int i)
