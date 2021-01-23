@@ -34,16 +34,22 @@ class F
 		Console.WriteLine(sab);
 	}
 
+	static Complex NthRoot(int n, int i)
+	{
+		var t = i * 2 * Math.PI / n;
+		return new Complex(Math.Cos(t), Math.Sin(t));
+	}
+
 	// n: Power of 2
 	// { f(z^i) }
 	public static Complex[] Fft(Complex[] c, bool inverse = false)
 	{
 		var n = c.Length;
 		if (n == 1) return c;
+
 		var n2 = n / 2;
 		var c1 = new Complex[n2];
 		var c2 = new Complex[n2];
-
 		for (int i = 0; i < n2; ++i)
 		{
 			c1[i] = c[2 * i];
@@ -56,9 +62,9 @@ class F
 		var r = new Complex[n];
 		for (int i = 0; i < n2; ++i)
 		{
-			var z = Complex.Exp(new Complex(0, (inverse ? i : -i) * 2 * Math.PI / n));
-			r[i] = f1[i] + z * f2[i];
-			r[n2 + i] = f1[i] - z * f2[i];
+			var z = f2[i] * NthRoot(n, inverse ? -i : i);
+			r[i] = f1[i] + z;
+			r[n2 + i] = f1[i] - z;
 			if (inverse)
 			{
 				r[i] /= 2;

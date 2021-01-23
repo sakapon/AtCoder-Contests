@@ -14,10 +14,10 @@ namespace CoderLib8.Numerics
 		{
 			var n = c.Length;
 			if (n == 1) return c;
+
 			var n2 = n / 2;
 			var c1 = new ComplexD[n2];
 			var c2 = new ComplexD[n2];
-
 			for (int i = 0; i < n2; ++i)
 			{
 				c1[i] = c[2 * i];
@@ -30,9 +30,9 @@ namespace CoderLib8.Numerics
 			var r = new ComplexD[n];
 			for (int i = 0; i < n2; ++i)
 			{
-				var z = ComplexD.NthRoot(n, inverse ? -i : i);
-				r[i] = f1[i] + z * f2[i];
-				r[n2 + i] = f1[i] - z * f2[i];
+				var z = f2[i] * ComplexD.NthRoot(n, inverse ? -i : i);
+				r[i] = f1[i] + z;
+				r[n2 + i] = f1[i] - z;
 				if (inverse)
 				{
 					r[i] /= 2;
