@@ -3,26 +3,25 @@
 class C
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var a = Read();
-		Array.Sort(a);
+		var v = Read();
+		Array.Sort(v);
+		var (a, b, c) = (v[0], v[1], v[2]);
 
-		//if (a.Any(x => x == 1)) return 0;
-		if (Gcd(Gcd(a[0], a[1]), a[2]) > 1) return "INF";
+		if (Gcd(Gcd(a, b), c) > 1) return "INF";
+		if (Gcd(a, b) > 1) (b, c) = (c, b);
+		if (Gcd(a, b) > 1) (a, c) = (c, a);
 
-		var u = new bool[a[0] * a[1] + 5000000];
-		for (int k = 0; k < a[0]; k++)
-			for (int i = k * a[1]; i < u.Length; i += a[0])
+		var u = new bool[a * b];
+		for (int k = 0; k < a; k++)
+			for (int i = k * b; i < u.Length; i += a)
 				u[i] = true;
-		for (int i = 0; i < u.Length; i += a[2])
-			u[i] = true;
 
 		var r = 0;
-		for (int k = 1; k < a[2]; k++)
-			for (int i = k; i < u.Length && !u[i]; i += a[2])
+		for (int k = 0; k < c; k++)
+			for (int i = k; i < u.Length && !u[i]; i += c)
 				r++;
 		return r;
 	}
