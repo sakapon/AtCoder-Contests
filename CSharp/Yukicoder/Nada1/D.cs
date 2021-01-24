@@ -17,10 +17,10 @@ class D
 
 		for (int x = 0; x < 1 << n + 2; x++)
 		{
-			Array.Clear(b, 0, n * n);
 			var count = FlagCount(x);
-			if (count > m) continue;
+			if (count + n < m || count > m) continue;
 
+			Array.Clear(b, 0, n * n);
 			for (int j = 0; j < n; j++)
 			{
 				if ((x & (1 << j)) == 0) continue;
@@ -35,7 +35,13 @@ class D
 				for (int i = 0; i < n; i++) b[i, n - 1 - i] = true;
 			}
 
-			var rows = Array.ConvertAll(rn, i => rn.Sum(j => b[i, j] ? a[i][j] : 0));
+			var rows = Array.ConvertAll(rn, i =>
+			{
+				var s = 0;
+				for (int j = 0; j < n; j++)
+					if (b[i, j]) s += a[i][j];
+				return s;
+			});
 			var sum = rows.Sum();
 			if (count == m) { min = Math.Min(min, sum); continue; }
 
