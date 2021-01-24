@@ -37,10 +37,9 @@ class F
 
 				for (int f = 0; f < 60; f++)
 				{
-					if (yf[f] == null || (af[f] & null) == yf[f]) { }
-					else if ((af[f] & true) == yf[f]) t[f] = true;
-					else if ((af[f] & false) == yf[f]) t[f] = false;
-					else { ok = false; break; }
+					if (yf[f] == null) continue;
+					if (af[f]) t[f] = yf[f];
+					else if (yf[f] == true) { ok = false; break; }
 				}
 				if (ok)
 				{
@@ -55,10 +54,9 @@ class F
 
 				for (int f = 0; f < 60; f++)
 				{
-					if (yf[f] == null || (af[f] | null) == yf[f]) { }
-					else if ((af[f] | true) == yf[f]) t[f] = true;
-					else if ((af[f] | false) == yf[f]) t[f] = false;
-					else { ok = false; break; }
+					if (yf[f] == null) continue;
+					if (!af[f]) t[f] = yf[f];
+					else if (yf[f] == false) { ok = false; break; }
 				}
 				if (ok)
 				{
