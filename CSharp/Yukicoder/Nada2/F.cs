@@ -19,64 +19,58 @@ class F
 
 		var p = new Stack<int>();
 		var xf = ToBool(x);
+		var yf = ToBoolN(y);
 
-		bool Dfs(int i, bool?[] yf)
+		for (int i = n - 1; i >= 0; i--)
 		{
-			if (i < 0)
+			var af = ToBool(a[i]);
+
+			if (Matches(af, yf))
 			{
-				return Matches(xf, yf);
+				p.Push(3);
+				while (p.Count < n) p.Push(1);
+				return string.Join(" ", p);
 			}
-			else
 			{
-				var af = ToBool(a[i]);
+				var ok = true;
+				var t = new bool?[60];
 
-				if (Matches(af, yf))
+				for (int f = 0; f < 60; f++)
 				{
-					p.Push(3);
-					while (p.Count < n) p.Push(1);
-					return true;
+					if (yf[f] == null || (af[f] & null) == yf[f]) { }
+					else if ((af[f] & true) == yf[f]) t[f] = true;
+					else if ((af[f] & false) == yf[f]) t[f] = false;
+					else { ok = false; break; }
 				}
+				if (ok)
 				{
-					var ok = true;
-					var t = new bool?[60];
-
-					for (int f = 0; f < 60; f++)
-					{
-						if (yf[f] == null || (af[f] & null) == yf[f]) { }
-						else if ((af[f] & true) == yf[f]) t[f] = true;
-						else if ((af[f] & false) == yf[f]) t[f] = false;
-						else { ok = false; break; }
-					}
-					if (ok)
-					{
-						p.Push(1);
-						if (Dfs(i - 1, t)) return true;
-						p.Pop();
-					}
+					p.Push(1);
+					yf = t;
+					continue;
 				}
-				{
-					var ok = true;
-					var t = new bool?[60];
-
-					for (int f = 0; f < 60; f++)
-					{
-						if (yf[f] == null || (af[f] | null) == yf[f]) { }
-						else if ((af[f] | true) == yf[f]) t[f] = true;
-						else if ((af[f] | false) == yf[f]) t[f] = false;
-						else { ok = false; break; }
-					}
-					if (ok)
-					{
-						p.Push(2);
-						if (Dfs(i - 1, t)) return true;
-						p.Pop();
-					}
-				}
-				return false;
 			}
+			{
+				var ok = true;
+				var t = new bool?[60];
+
+				for (int f = 0; f < 60; f++)
+				{
+					if (yf[f] == null || (af[f] | null) == yf[f]) { }
+					else if ((af[f] | true) == yf[f]) t[f] = true;
+					else if ((af[f] | false) == yf[f]) t[f] = false;
+					else { ok = false; break; }
+				}
+				if (ok)
+				{
+					p.Push(2);
+					yf = t;
+					continue;
+				}
+			}
+			return -1;
 		}
 
-		if (!Dfs(n - 1, ToBoolN(y))) return -1;
+		if (!Matches(xf, yf)) return -1;
 		return string.Join(" ", p);
 	}
 }
