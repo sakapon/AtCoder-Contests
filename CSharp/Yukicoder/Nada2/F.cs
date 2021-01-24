@@ -13,8 +13,8 @@ class F
 		var a = ReadL();
 
 		var r60 = Enumerable.Range(0, 60).ToArray();
-		bool[] ToBool(long v) => Array.ConvertAll(r60, i => (v & (1 << i)) != 0);
-		bool?[] ToBoolN(long v) => Array.ConvertAll(r60, i => (bool?)((v & (1 << i)) != 0));
+		bool[] ToBool(long v) => Array.ConvertAll(r60, i => (v & (1L << i)) != 0);
+		bool?[] ToBoolN(long v) => Array.ConvertAll(r60, i => (bool?)((v & (1L << i)) != 0));
 		bool Matches(bool[] x, bool?[] y) => Array.TrueForAll(r60, i => (x[i] ^ y[i]) != true);
 
 		var p = new Stack<int>();
@@ -77,16 +77,6 @@ class F
 		}
 
 		if (!Dfs(n - 1, ToBoolN(y))) return -1;
-
-		{
-			var pa = p.ToArray();
-			for (int i = 0; i < n; i++)
-				if (pa[i] == 1) x &= a[i];
-				else if (pa[i] == 2) x |= a[i];
-				else x = a[i];
-			if (x != y) throw new InvalidOperationException();
-		}
-
 		return string.Join(" ", p);
 	}
 }
