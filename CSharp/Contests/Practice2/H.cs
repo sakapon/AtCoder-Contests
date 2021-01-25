@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 class H
 {
@@ -10,37 +11,64 @@ class H
 		var (n, d) = Read2();
 		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		var map = Array.ConvertAll(new int[2 * n], _ => new List<int>());
-
-		void AddConstraint(int x, bool xf, int y, bool yf)
-		{
-			var (a, a_) = (x, x + n);
-			if (xf) (a, a_) = (a_, a);
-			var (b, b_) = (y, y + n);
-			if (yf) (b, b_) = (b_, b);
-			map[a].Add(b_);
-			map[b].Add(a_);
-		}
+		var sat = new TwoSat(n);
 
 		for (int i = 0; i < n; i++)
 			for (int j = i + 1; j < n; j++)
 			{
-				if (Math.Abs(ps[i][0] - ps[j][0]) < d) AddConstraint(i, false, j, false);
-				if (Math.Abs(ps[i][0] - ps[j][1]) < d) AddConstraint(i, false, j, true);
-				if (Math.Abs(ps[i][1] - ps[j][0]) < d) AddConstraint(i, true, j, false);
-				if (Math.Abs(ps[i][1] - ps[j][1]) < d) AddConstraint(i, true, j, true);
+				Prop pi = i, pj = j;
+				// 0: F, 1: T
+				// !(x & y)
+				if (Math.Abs(ps[i][0] - ps[j][0]) < d) sat.AddOr(pi, pj);
+				if (Math.Abs(ps[i][0] - ps[j][1]) < d) sat.AddOr(pi, !pj);
+				if (Math.Abs(ps[i][1] - ps[j][0]) < d) sat.AddOr(!pi, pj);
+				if (Math.Abs(ps[i][1] - ps[j][1]) < d) sat.AddOr(!pi, !pj);
 			}
 
-		var g = Scc(2 * n, map);
-		var r = new int[n];
+		var r = sat.Execute();
+		if (r == null) { Console.WriteLine("No"); return; }
 
-		for (int v = 0; v < n; v++)
-		{
-			if (g[v] == g[v + n]) { Console.WriteLine("No"); return; }
-			r[v] = ps[v][g[v] < g[v + n] ? 0 : 1];
-		}
 		Console.WriteLine("Yes");
-		Console.WriteLine(string.Join("\n", r));
+		Console.WriteLine(string.Join("\n", r.Select((v, i) => ps[i][v ? 1 : 0])));
+	}
+}
+
+public struct Prop
+{
+	public int Id;
+	public bool Value;
+	public Prop(int id, bool value = true) { Id = id; Value = value; }
+	public static implicit operator Prop(int id) => new Prop(id);
+	public static Prop operator !(Prop v) => new Prop(v.Id, !v.Value);
+}
+
+public class TwoSat
+{
+	int n;
+	List<int>[] map;
+	public TwoSat(int n)
+	{
+		this.n = n;
+		map = Array.ConvertAll(new int[2 * n], _ => new List<int>());
+	}
+
+	public void AddOr(Prop x, Prop y)
+	{
+		map[x.Value ? x.Id + n : x.Id].Add(y.Value ? y.Id : y.Id + n);
+		map[y.Value ? y.Id + n : y.Id].Add(x.Value ? x.Id : x.Id + n);
+	}
+
+	public bool[] Execute()
+	{
+		var g = Scc(2 * n, map);
+		var r = new bool[n];
+
+		for (int v = 0; v < n; ++v)
+		{
+			if (g[v] == g[v + n]) return null;
+			r[v] = g[v] < g[v + n];
+		}
+		return r;
 	}
 
 	// 結果のグループ ID は逆順。
