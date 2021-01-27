@@ -46,15 +46,14 @@ public class Ntt
 		roots = NthRoots(n);
 	}
 
-	long MthRoot(int m, int i) => roots[n / m * i];
-
-	// { f(z^i) }
+	// { f(ω^i) }
 	public void Transform(long[] c, bool inverse = false)
 	{
 		var m = c.Length;
 		if (m == 1) return;
 
 		var n2 = m / 2;
+		var nm = n / m;
 		var c1 = new long[n2];
 		var c2 = new long[n2];
 		for (int i = 0; i < n2; ++i)
@@ -68,7 +67,7 @@ public class Ntt
 
 		for (int i = 0; i < n2; ++i)
 		{
-			var z = c2[i] * MthRoot(m, inverse ? m - i : i) % p;
+			var z = c2[i] * roots[nm * (inverse ? m - i : i)] % p;
 			c[i] = (c1[i] + z) % p;
 			c[n2 + i] = (c1[i] - z + p) % p;
 			if (inverse)
