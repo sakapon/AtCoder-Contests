@@ -16,16 +16,33 @@ class F
 		Console.WriteLine(string.Join(" ", c.Take(n + m - 1)));
 	}
 
+	const long p = 998244353;
+	const long g = 3;
+	const long half = (p + 1) / 2;
+
+	static long MInt(long x, long M) => (x %= M) < 0 ? x + M : x;
+	static long MPow(long b, long i)
+	{
+		long r = 1;
+		for (; i != 0; b = b * b % p, i >>= 1) if ((i & 1) != 0) r = r * b % p;
+		return r;
+	}
+
+	static long NthRoot(int n, int i)
+	{
+		return MPow(g, (p - 1) / n * MInt(i, n));
+	}
+
 	// n: Power of 2
 	// { f(z^i) }
-	public static ComplexD[] Fft(ComplexD[] c, bool inverse = false)
+	public static long[] Fft(long[] c, bool inverse = false)
 	{
 		var n = c.Length;
 		if (n == 1) return c;
 
 		var n2 = n / 2;
-		var c1 = new ComplexD[n2];
-		var c2 = new ComplexD[n2];
+		var c1 = new long[n2];
+		var c2 = new long[n2];
 		for (int i = 0; i < n2; ++i)
 		{
 			c1[i] = c[2 * i];
@@ -35,77 +52,40 @@ class F
 		var f1 = Fft(c1, inverse);
 		var f2 = Fft(c2, inverse);
 
-		var r = new ComplexD[n];
+		var r = new long[n];
 		for (int i = 0; i < n2; ++i)
 		{
-			var z = f2[i] * ComplexD.NthRoot(n, inverse ? -i : i);
-			r[i] = f1[i] + z;
-			r[n2 + i] = f1[i] - z;
+			var z = f2[i] * NthRoot(n, inverse ? -i : i) % p;
+			r[i] = (f1[i] + z) % p;
+			r[n2 + i] = (f1[i] - z + p) % p;
 			if (inverse)
 			{
-				r[i] /= 2;
-				r[n2 + i] /= 2;
+				r[i] = r[i] * half % p;
+				r[n2 + i] = r[n2 + i] * half % p;
 			}
 		}
 		return r;
 	}
 
 	// n: Power of 2
-	static ComplexD[] Convolution(ComplexD[] a, ComplexD[] b)
+	static long[] Convolution_In(long[] a, long[] b)
 	{
 		var fa = Fft(a);
 		var fb = Fft(b);
-		for (int i = 0; i < a.Length; ++i) fa[i] *= fb[i];
+		for (int i = 0; i < a.Length; ++i) fa[i] = fa[i] * fb[i] % p;
 		return Fft(fa, true);
 	}
 
-	const long M = 998244353;
-	public static decimal[] Convolution(long[] a, long[] b)
+	public static long[] Convolution(long[] a, long[] b)
 	{
 		var n = 1;
 		while (n <= a.Length + b.Length - 2) n *= 2;
 
-		var ac = new ComplexD[n];
-		var bc = new ComplexD[n];
-		for (int i = 0; i < a.Length; ++i) ac[i] = a[i];
-		for (int i = 0; i < b.Length; ++i) bc[i] = b[i];
+		var ac = new long[n];
+		var bc = new long[n];
+		a.CopyTo(ac, 0);
+		b.CopyTo(bc, 0);
 
-		return Array.ConvertAll(Convolution(ac, bc), c => Math.Round(c.X) % M);
-	}
-}
-
-struct ComplexD
-{
-	public decimal X, Y;
-	public ComplexD(decimal x, decimal y) => (X, Y) = (x, y);
-	public void Deconstruct(out decimal x, out decimal y) => (x, y) = (X, Y);
-	public override string ToString() => $"{X:F9} {Y:F9}";
-
-	public static implicit operator ComplexD(int v) => new ComplexD(v, 0);
-	public static implicit operator ComplexD(long v) => new ComplexD(v, 0);
-	public static implicit operator ComplexD(decimal v) => new ComplexD(v, 0);
-
-	public static ComplexD operator -(ComplexD v) => new ComplexD(-v.X, -v.Y);
-	public static ComplexD operator +(ComplexD v1, ComplexD v2) => new ComplexD(v1.X + v2.X, v1.Y + v2.Y);
-	public static ComplexD operator -(ComplexD v1, ComplexD v2) => new ComplexD(v1.X - v2.X, v1.Y - v2.Y);
-	public static ComplexD operator *(ComplexD v1, ComplexD v2) => new ComplexD(v1.X * v2.X - v1.Y * v2.Y, v1.X * v2.Y + v1.Y * v2.X);
-	public static ComplexD operator *(decimal c, ComplexD v) => v * c;
-	public static ComplexD operator *(ComplexD v, decimal c) => new ComplexD(v.X * c, v.Y * c);
-	public static ComplexD operator /(ComplexD v, decimal c) => new ComplexD(v.X / c, v.Y / c);
-
-	public static ComplexD NthRoot(int n, int i)
-	{
-		var a = i * 2 * Math.PI / n;
-		return new ComplexD((decimal)Math.Cos(a), (decimal)Math.Sin(a));
-	}
-
-	public double Angle => Math.Atan2((double)Y, (double)X);
-	public decimal Tan => Y / X;
-
-	public ComplexD Rotate(double angle)
-	{
-		var cos = (decimal)Math.Cos(angle);
-		var sin = (decimal)Math.Sin(angle);
-		return new ComplexD(cos * X - sin * Y, sin * X + cos * Y);
+		return Convolution_In(ac, bc);
 	}
 }
