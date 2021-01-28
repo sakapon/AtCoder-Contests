@@ -73,21 +73,24 @@ public class Ntt
 		}
 	}
 
-	// { f(ω^i) }
-	public void Fft(long[] c, bool inverse = false)
+	// { f(w^i) }
+	// 長さは n 以下で OK。
+	public long[] Fft(long[] c, bool inverse = false)
 	{
-		FftInternal(c, inverse);
-		if (inverse) for (int i = 0; i < n; ++i) c[i] = c[i] * nInv % p;
+		var r = new long[n];
+		c.CopyTo(r, 0);
+		FftInternal(r, inverse);
+		if (inverse) for (int i = 0; i < n; ++i) r[i] = r[i] * nInv % p;
+		return r;
 	}
 
-	// n: Power of 2
+	// 長さは n 以下で OK。
 	long[] ConvolutionInternal(long[] a, long[] b)
 	{
-		Fft(a);
-		Fft(b);
-		for (int i = 0; i < n; ++i) a[i] = a[i] * b[i] % p;
-		Fft(a, true);
-		return a;
+		var fa = Fft(a);
+		var fb = Fft(b);
+		for (int i = 0; i < n; ++i) fa[i] = fa[i] * fb[i] % p;
+		return Fft(fa, true);
 	}
 
 	public static long[] Convolution(long[] a, long[] b)
@@ -95,10 +98,6 @@ public class Ntt
 		var n = 1;
 		while (n <= a.Length + b.Length - 2) n *= 2;
 
-		var ac = new long[n];
-		var bc = new long[n];
-		a.CopyTo(ac, 0);
-		b.CopyTo(bc, 0);
-		return new Ntt(n).ConvolutionInternal(ac, bc);
+		return new Ntt(n).ConvolutionInternal(a, b);
 	}
 }
