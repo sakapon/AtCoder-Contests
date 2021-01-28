@@ -20,6 +20,13 @@ public class Ntt
 {
 	const long p = 998244353, g = 3;
 
+	public static int ToPowerOf2(int length)
+	{
+		var n = 1;
+		while (n < length) n <<= 1;
+		return n;
+	}
+
 	static long MPow(long b, long i)
 	{
 		long r = 1;
@@ -36,13 +43,12 @@ public class Ntt
 		return r;
 	}
 
-	// n: Power of 2
 	int n;
 	long nInv;
 	long[] roots;
-	public Ntt(int n)
+	public Ntt(int length)
 	{
-		this.n = n;
+		n = ToPowerOf2(length);
 		nInv = MPow(n, p - 2);
 		roots = NthRoots(n);
 	}
@@ -85,19 +91,12 @@ public class Ntt
 	}
 
 	// 長さは n 以下で OK。
-	long[] ConvolutionInternal(long[] a, long[] b)
-	{
-		var fa = Fft(a);
-		var fb = Fft(b);
-		for (int i = 0; i < n; ++i) fa[i] = fa[i] * fb[i] % p;
-		return Fft(fa, true);
-	}
-
 	public static long[] Convolution(long[] a, long[] b)
 	{
-		var n = 1;
-		while (n <= a.Length + b.Length - 2) n *= 2;
-
-		return new Ntt(n).ConvolutionInternal(a, b);
+		var ntt = new Ntt(a.Length + b.Length - 1);
+		var fa = ntt.Fft(a);
+		var fb = ntt.Fft(b);
+		for (int i = 0; i < ntt.n; ++i) fa[i] = fa[i] * fb[i] % p;
+		return ntt.Fft(fa, true);
 	}
 }
