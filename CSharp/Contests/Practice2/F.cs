@@ -19,7 +19,6 @@ class F
 public class Ntt
 {
 	const long p = 998244353, g = 3;
-	const long half = (p + 1) / 2;
 
 	static long MPow(long b, long i)
 	{
@@ -30,61 +29,64 @@ public class Ntt
 
 	static long[] NthRoots(int n)
 	{
-		var z = MPow(g, (p - 1) / n);
+		var w = MPow(g, (p - 1) / n);
 		var r = new long[n + 1];
 		r[0] = 1;
-		for (int i = 0; i < n; ++i) r[i + 1] = r[i] * z % p;
+		for (int i = 0; i < n; ++i) r[i + 1] = r[i] * w % p;
 		return r;
 	}
 
 	// n: Power of 2
 	int n;
+	long nInv;
 	long[] roots;
 	public Ntt(int n)
 	{
 		this.n = n;
+		nInv = MPow(n, p - 2);
 		roots = NthRoots(n);
 	}
 
-	// { f(ω^i) }
-	public void Transform(long[] c, bool inverse = false)
+	void FftInternal(long[] c, bool inverse)
 	{
 		var m = c.Length;
 		if (m == 1) return;
 
-		var n2 = m / 2;
+		var m2 = m / 2;
 		var nm = n / m;
-		var c1 = new long[n2];
-		var c2 = new long[n2];
-		for (int i = 0; i < n2; ++i)
+		var c1 = new long[m2];
+		var c2 = new long[m2];
+		for (int i = 0; i < m2; ++i)
 		{
 			c1[i] = c[2 * i];
 			c2[i] = c[2 * i + 1];
 		}
 
-		Transform(c1, inverse);
-		Transform(c2, inverse);
+		FftInternal(c1, inverse);
+		FftInternal(c2, inverse);
 
-		for (int i = 0; i < n2; ++i)
+		for (int i = 0; i < m2; ++i)
 		{
 			var z = c2[i] * roots[nm * (inverse ? m - i : i)] % p;
 			c[i] = (c1[i] + z) % p;
-			c[n2 + i] = (c1[i] - z + p) % p;
-			if (inverse)
-			{
-				c[i] = c[i] * half % p;
-				c[n2 + i] = c[n2 + i] * half % p;
-			}
+			c[m2 + i] = (c1[i] - z + p) % p;
 		}
 	}
 
-	// n: Power of 2
-	long[] Convolution_In(long[] a, long[] b)
+	// { f(ω^i) }
+	public void Fft(long[] c, bool inverse = false)
 	{
-		Transform(a);
-		Transform(b);
+		FftInternal(c, inverse);
+		if (inverse) for (int i = 0; i < n; ++i) c[i] = c[i] * nInv % p;
+	}
+
+	// n: Power of 2
+	long[] ConvolutionInternal(long[] a, long[] b)
+	{
+		Fft(a);
+		Fft(b);
 		for (int i = 0; i < n; ++i) a[i] = a[i] * b[i] % p;
-		Transform(a, true);
+		Fft(a, true);
 		return a;
 	}
 
@@ -97,6 +99,6 @@ public class Ntt
 		var bc = new long[n];
 		a.CopyTo(ac, 0);
 		b.CopyTo(bc, 0);
-		return new Ntt(n).Convolution_In(ac, bc);
+		return new Ntt(n).ConvolutionInternal(ac, bc);
 	}
 }
