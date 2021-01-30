@@ -16,10 +16,10 @@ namespace CoderLibTest.Numerics
 			var c = Array.ConvertAll(a, x => new Complex(x, 0));
 			var cd = Array.ConvertAll(a, x => new ComplexD(x, 0));
 
-			var t0 = Dft.Dft0(c);
-			var r0 = Dft.Dft0(t0, true).ToInt();
-			var t1 = Dft.Fft(c);
-			var r1 = Dft.Fft(t1, true).ToInt();
+			var t0 = Dft0.Naive(c);
+			var r0 = Dft0.Naive(t0, true).ToInt();
+			var t1 = Dft0.Fft(c);
+			var r1 = Dft0.Fft(t1, true).ToInt();
 			var t2 = DftD.Fft(cd);
 			var r2 = DftD.Fft(t2, true).ToInt();
 
@@ -47,8 +47,8 @@ namespace CoderLibTest.Numerics
 		{
 			var a = Enumerable.Range(3, 1 << 16).ToArray();
 			var c = Array.ConvertAll(a, x => new Complex(x, 0));
-			var t1 = Dft.Fft(c);
-			var r1 = Dft.Fft(t1, true).ToInt();
+			var t1 = Dft0.Fft(c);
+			var r1 = Dft0.Fft(t1, true).ToInt();
 			CollectionAssert.AreEqual(a, r1);
 		}
 
@@ -78,7 +78,7 @@ namespace CoderLibTest.Numerics
 			var b = new long[] { 5, 6, 7, 8, 9 };
 			var expected = new long[] { 5, 16, 34, 60, 70, 70, 59, 36 };
 
-			var c = Dft.Convolution(a, b);
+			var c = Dft0.Convolution(a, b);
 			var cn = DftN.Convolution(a, b);
 			CollectionAssert.AreEqual(expected, c);
 			CollectionAssert.AreEqual(expected, cn);

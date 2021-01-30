@@ -5,7 +5,7 @@ namespace CoderLib8.Numerics
 {
 	// Test: https://atcoder.jp/contests/atc001/tasks/fft_c
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/6/NTL/2/NTL_2_F
-	static class Dft
+	static class Dft0
 	{
 		public static int[] ToInt(this Complex[] a) => Array.ConvertAll(a, c => (int)Math.Round(c.Real));
 		public static long[] ToLong(this Complex[] a) => Array.ConvertAll(a, c => (long)Math.Round(c.Real));
@@ -81,7 +81,7 @@ namespace CoderLib8.Numerics
 			return Array.ConvertAll(Convolution(ac, bc), c => (long)Math.Round(c.Real));
 		}
 
-		public static Complex[] Dft0(Complex[] c, bool inverse = false)
+		public static Complex[] Naive(Complex[] c, bool inverse = false)
 		{
 			var n = c.Length;
 			var r = new Complex[n];
