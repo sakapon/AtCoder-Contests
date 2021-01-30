@@ -10,12 +10,11 @@ namespace CoderLibTest.Numerics
 	public class DftTest
 	{
 		[TestMethod]
-		public void Fft()
+		public void Dft_Fft()
 		{
 			var n = 1 << 4;
 			var a = Enumerable.Range(3, n).ToArray();
 			var c = Array.ConvertAll(a, x => new Complex(x, 0));
-			var cd = Array.ConvertAll(a, x => new ComplexD(x, 0));
 
 			var t0 = Dft0.Naive(c);
 			var r0 = Dft0.Naive(t0, true).ToInt();
@@ -32,7 +31,7 @@ namespace CoderLibTest.Numerics
 		}
 
 		[TestMethod]
-		public void FftN()
+		public void Ntt_Fft()
 		{
 			var n = 1 << 4;
 			var a = Enumerable.Range(3, n).Select(x => (long)x).ToArray();
@@ -54,7 +53,7 @@ namespace CoderLibTest.Numerics
 		}
 
 		[TestMethod]
-		public void Fft_Many()
+		public void Dft_Fft_Many()
 		{
 			var n = 1 << 16;
 			var a = Enumerable.Range(3, n).ToArray();
@@ -77,7 +76,7 @@ namespace CoderLibTest.Numerics
 		}
 
 		[TestMethod]
-		public void Fft_ManyN()
+		public void Ntt_Fft_Many()
 		{
 			var n = 1 << 16;
 			var a = Enumerable.Range(3, n).Select(x => (long)x).ToArray();
@@ -95,10 +94,28 @@ namespace CoderLibTest.Numerics
 			var b = new long[] { 5, 6, 7, 8, 9 };
 			var expected = new long[] { 5, 16, 34, 60, 70, 70, 59, 36 };
 
-			var c = Dft.Convolution(a, b);
-			var cn = Ntt.Convolution(a, b);
-			CollectionAssert.AreEqual(expected, c);
-			CollectionAssert.AreEqual(expected, cn);
+			CollectionAssert.AreEqual(expected, Dft.Convolution(a, b));
+			CollectionAssert.AreEqual(expected, Dft0.Convolution(a, b));
+			CollectionAssert.AreEqual(expected, Ntt.Convolution(a, b));
+			CollectionAssert.AreEqual(expected, Ntt0.Convolution(a, b));
+		}
+
+		[TestMethod]
+		public void Dft_Convolution_Many()
+		{
+			var a = Enumerable.Range(3, 1 << 16).Select(x => (long)x).ToArray();
+			var b = Enumerable.Range(7, 1 << 16).Select(x => (long)x).ToArray();
+
+			Dft.Convolution(a, b);
+		}
+
+		[TestMethod]
+		public void Ntt_Convolution_Many()
+		{
+			var a = Enumerable.Range(3, 1 << 16).Select(x => (long)x).ToArray();
+			var b = Enumerable.Range(7, 1 << 16).Select(x => (long)x).ToArray();
+
+			Ntt.Convolution(a, b);
 		}
 	}
 }

@@ -61,7 +61,6 @@ namespace CoderLib8.Numerics
 		public static Complex[] Fft(Complex[] c, bool inverse = false)
 		{
 			var n = c.Length;
-
 			var r = new Complex[n];
 			c.CopyTo(r, 0);
 			FftInternal(r, inverse);

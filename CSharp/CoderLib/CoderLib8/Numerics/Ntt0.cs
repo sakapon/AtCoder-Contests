@@ -109,7 +109,7 @@ namespace CoderLib8.Numerics
 			for (int i = 0; i < n; ++i)
 			{
 				for (int j = 0; j < n; ++j)
-					r[i] = (r[i] + c[j] * roots[MInt(inverse ? -i * j : i * j, n)]) % p;
+					r[i] = (r[i] + c[j] * roots[MInt((inverse ? -i : i) * j, n)]) % p;
 				if (inverse) r[i] = r[i] * nInv % p;
 			}
 			return r;
