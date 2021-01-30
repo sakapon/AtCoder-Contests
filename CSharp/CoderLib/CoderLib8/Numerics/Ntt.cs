@@ -5,7 +5,7 @@ namespace CoderLib8.Numerics
 	// Test: https://atcoder.jp/contests/atc001/tasks/fft_c
 	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_f
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/6/NTL/2/NTL_2_F
-	class Ntt
+	public class Ntt
 	{
 		const long p = 998244353, g = 3;
 
