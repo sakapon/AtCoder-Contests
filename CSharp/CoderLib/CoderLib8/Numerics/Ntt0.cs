@@ -11,6 +11,13 @@ namespace CoderLib8.Numerics
 		const long g = 3;
 		const long half = (p + 1) / 2;
 
+		public static int ToPowerOf2(int length)
+		{
+			var n = 1;
+			while (n < length) n <<= 1;
+			return n;
+		}
+
 		static long MInt(long x, long M) => (x %= M) < 0 ? x + M : x;
 		static long MPow(long b, long i)
 		{
@@ -21,11 +28,10 @@ namespace CoderLib8.Numerics
 
 		static long[] NthRoots(int n)
 		{
-			var z = MPow(g, (p - 1) / n);
+			var w = MPow(g, (p - 1) / n);
 			var r = new long[n + 1];
 			r[0] = 1;
-			for (int i = 0; i < n; ++i)
-				r[i + 1] = r[i] * z % p;
+			for (int i = 0; i < n; ++i) r[i + 1] = r[i] * w % p;
 			return r;
 		}
 
@@ -34,12 +40,10 @@ namespace CoderLib8.Numerics
 			return MPow(g, (p - 1) / n * MInt(i, n));
 		}
 
-		// n: Power of 2
-		// { f(z^i) }
-		public static long[] Fft(long[] c, bool inverse = false)
+		static void FftInternal(long[] c, bool inverse)
 		{
 			var n = c.Length;
-			if (n == 1) return c;
+			if (n == 1) return;
 
 			var n2 = n / 2;
 			var c1 = new long[n2];
@@ -50,26 +54,33 @@ namespace CoderLib8.Numerics
 				c2[i] = c[2 * i + 1];
 			}
 
-			var f1 = Fft(c1, inverse);
-			var f2 = Fft(c2, inverse);
+			FftInternal(c1, inverse);
+			FftInternal(c2, inverse);
 
-			var r = new long[n];
 			for (int i = 0; i < n2; ++i)
 			{
-				var z = f2[i] * NthRoot(n, inverse ? -i : i) % p;
-				r[i] = (f1[i] + z) % p;
-				r[n2 + i] = (f1[i] - z + p) % p;
-				if (inverse)
-				{
-					r[i] = r[i] * half % p;
-					r[n2 + i] = r[n2 + i] * half % p;
-				}
+				var z = c2[i] * NthRoot(n, inverse ? -i : i) % p;
+				c[i] = (c1[i] + z) % p;
+				c[n2 + i] = (c1[i] - z + p) % p;
 			}
+		}
+
+		// { f(w^i) }
+		// n: Power of 2
+		public static long[] Fft(long[] c, bool inverse = false)
+		{
+			var n = c.Length;
+			var nInv = MPow(n, p - 2);
+
+			var r = new long[n];
+			c.CopyTo(r, 0);
+			FftInternal(r, inverse);
+			if (inverse) for (int i = 0; i < n; ++i) r[i] = r[i] * nInv % p;
 			return r;
 		}
 
 		// n: Power of 2
-		static long[] Convolution_In(long[] a, long[] b)
+		static long[] ConvolutionInternal(long[] a, long[] b)
 		{
 			var fa = Fft(a);
 			var fb = Fft(b);
@@ -77,17 +88,15 @@ namespace CoderLib8.Numerics
 			return Fft(fa, true);
 		}
 
+		// 長さは n 以下で OK。
 		public static long[] Convolution(long[] a, long[] b)
 		{
-			var n = 1;
-			while (n <= a.Length + b.Length - 2) n *= 2;
-
+			var n = ToPowerOf2(a.Length + b.Length - 1);
 			var ac = new long[n];
 			var bc = new long[n];
 			a.CopyTo(ac, 0);
 			b.CopyTo(bc, 0);
-
-			return Convolution_In(ac, bc);
+			return ConvolutionInternal(ac, bc);
 		}
 
 		public static long[] Naive(long[] c, bool inverse = false)
