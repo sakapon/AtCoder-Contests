@@ -7,9 +7,7 @@ namespace CoderLib8.Numerics
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/6/NTL/2/NTL_2_F
 	static class Ntt0
 	{
-		const long p = 998244353;
-		const long g = 3;
-		const long half = (p + 1) / 2;
+		const long p = 998244353, g = 3;
 
 		public static int ToPowerOf2(int length)
 		{
@@ -99,25 +97,20 @@ namespace CoderLib8.Numerics
 			return ConvolutionInternal(ac, bc);
 		}
 
+		// { f(w^i) }
+		// n: Power of 2
 		public static long[] Naive(long[] c, bool inverse = false)
 		{
 			var n = c.Length;
+			var nInv = MPow(n, p - 2);
 			var roots = NthRoots(n);
-
-			var n_ = 1L;
-			var tn = n;
-			while (tn > 1)
-			{
-				n_ = n_ * half % p;
-				tn /= 2;
-			}
 
 			var r = new long[n];
 			for (int i = 0; i < n; ++i)
 			{
 				for (int j = 0; j < n; ++j)
 					r[i] = (r[i] + c[j] * roots[MInt(inverse ? -i * j : i * j, n)]) % p;
-				if (inverse) r[i] = r[i] * n_ % p;
+				if (inverse) r[i] = r[i] * nInv % p;
 			}
 			return r;
 		}
