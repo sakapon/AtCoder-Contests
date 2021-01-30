@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 class CN
 {
@@ -17,7 +16,7 @@ class CN
 		}
 
 		var ab = Ntt.Convolution(a, b);
-		Console.WriteLine(string.Join("\n", ab.Skip(1).Take(2 * n)));
+		Console.WriteLine(string.Join("\n", ab[1..(2 * n + 1)]));
 	}
 }
 
