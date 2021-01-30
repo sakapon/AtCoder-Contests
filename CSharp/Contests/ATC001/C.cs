@@ -41,12 +41,10 @@ public class Dft
 	}
 
 	int n;
-	Complex nInv;
 	Complex[] roots;
 	public Dft(int length)
 	{
 		n = ToPowerOf2(length);
-		nInv = 1.0 / n;
 		roots = NthRoots(n);
 	}
 
@@ -83,7 +81,7 @@ public class Dft
 		var r = new Complex[n];
 		c.CopyTo(r, 0);
 		FftInternal(r, inverse);
-		if (inverse) for (int i = 0; i < n; ++i) r[i] *= nInv;
+		if (inverse) for (int i = 0; i < n; ++i) r[i] /= n;
 		return r;
 	}
 

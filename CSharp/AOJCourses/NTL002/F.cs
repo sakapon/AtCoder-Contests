@@ -13,14 +13,14 @@ class F
 		var neg_b = sb[0] == '-';
 		var neg_ab = neg_a ^ neg_b;
 
-		var a = Array.ConvertAll(sa, c => c - '0');
-		var b = Array.ConvertAll(sb, c => c - '0');
+		var a = Array.ConvertAll(sa, c => (long)(c - '0'));
+		var b = Array.ConvertAll(sb, c => (long)(c - '0'));
 		Array.Reverse(a);
 		Array.Reverse(b);
 		if (neg_a) Array.Resize(ref a, a.Length - 1);
 		if (neg_b) Array.Resize(ref b, b.Length - 1);
 
-		var ab = Convolution(a, b);
+		var ab = Dft.Convolution(a, b);
 		for (int i = 0; i < ab.Length - 1; i++)
 		{
 			if (ab[i] < 10) continue;
@@ -31,7 +31,7 @@ class F
 		Console.WriteLine(ToString(ab, neg_ab));
 	}
 
-	static string ToString(int[] c, bool neg)
+	static string ToString(long[] c, bool neg)
 	{
 		var i = c.Length - 1;
 		while (i >= 0 && c[i] == 0) i--;
@@ -42,66 +42,84 @@ class F
 		while (i >= 0) sb.Append(c[i--]);
 		return sb.ToString();
 	}
+}
 
-	static Complex NthRoot(int n, int i)
+public class Dft
+{
+	public static long[] ToLong(Complex[] a) => Array.ConvertAll(a, c => (long)Math.Round(c.Real));
+	public static Complex[] ToComplex(long[] a) => Array.ConvertAll(a, c => new Complex(c, 0));
+
+	public static int ToPowerOf2(int length)
 	{
-		var t = i * 2 * Math.PI / n;
-		return new Complex(Math.Cos(t), Math.Sin(t));
+		var n = 1;
+		while (n < length) n <<= 1;
+		return n;
 	}
 
-	// n: Power of 2
-	// { f(z^i) }
-	public static Complex[] Fft(Complex[] c, bool inverse = false)
+	static Complex[] NthRoots(int n)
 	{
-		var n = c.Length;
-		if (n == 1) return c;
+		var r = new Complex[n + 1];
+		for (int i = 0; i <= n; ++i) r[i] = Complex.Exp(new Complex(0, i * 2 * Math.PI / n));
+		return r;
+	}
 
-		var n2 = n / 2;
-		var c1 = new Complex[n2];
-		var c2 = new Complex[n2];
-		for (int i = 0; i < n2; ++i)
+	int n;
+	Complex[] roots;
+	public Dft(int length)
+	{
+		n = ToPowerOf2(length);
+		roots = NthRoots(n);
+	}
+
+	void FftInternal(Complex[] c, bool inverse)
+	{
+		var m = c.Length;
+		if (m == 1) return;
+
+		var m2 = m / 2;
+		var nm = n / m;
+		var c1 = new Complex[m2];
+		var c2 = new Complex[m2];
+		for (int i = 0; i < m2; ++i)
 		{
 			c1[i] = c[2 * i];
 			c2[i] = c[2 * i + 1];
 		}
 
-		var f1 = Fft(c1, inverse);
-		var f2 = Fft(c2, inverse);
+		FftInternal(c1, inverse);
+		FftInternal(c2, inverse);
 
-		var r = new Complex[n];
-		for (int i = 0; i < n2; ++i)
+		for (int i = 0; i < m2; ++i)
 		{
-			var z = f2[i] * NthRoot(n, inverse ? -i : i);
-			r[i] = f1[i] + z;
-			r[n2 + i] = f1[i] - z;
-			if (inverse)
-			{
-				r[i] /= 2;
-				r[n2 + i] /= 2;
-			}
+			var z = c2[i] * roots[nm * (inverse ? m - i : i)];
+			c[i] = c1[i] + z;
+			c[m2 + i] = c1[i] - z;
 		}
+	}
+
+	// { f(w^i) }
+	// 長さは n 以下で OK。
+	public Complex[] Fft(Complex[] c, bool inverse = false)
+	{
+		var r = new Complex[n];
+		c.CopyTo(r, 0);
+		FftInternal(r, inverse);
+		if (inverse) for (int i = 0; i < n; ++i) r[i] /= n;
 		return r;
 	}
 
-	// n: Power of 2
-	static Complex[] Convolution(Complex[] a, Complex[] b)
+	// 長さは n 以下で OK。
+	public static Complex[] Convolution(Complex[] a, Complex[] b)
 	{
-		var fa = Fft(a);
-		var fb = Fft(b);
-		for (int i = 0; i < a.Length; ++i) fa[i] *= fb[i];
-		return Fft(fa, true);
+		var dft = new Dft(a.Length + b.Length - 1);
+		var fa = dft.Fft(a);
+		var fb = dft.Fft(b);
+		for (int i = 0; i < dft.n; ++i) fa[i] *= fb[i];
+		return dft.Fft(fa, true);
 	}
 
-	public static int[] Convolution(int[] a, int[] b)
+	public static long[] Convolution(long[] a, long[] b)
 	{
-		var n = 1;
-		while (n <= a.Length + b.Length - 2) n *= 2;
-
-		var ac = new Complex[n];
-		var bc = new Complex[n];
-		for (int i = 0; i < a.Length; ++i) ac[i] = a[i];
-		for (int i = 0; i < b.Length; ++i) bc[i] = b[i];
-
-		return Array.ConvertAll(Convolution(ac, bc), c => (int)Math.Round(c.Real));
+		return ToLong(Convolution(ToComplex(a), ToComplex(b)));
 	}
 }
