@@ -12,7 +12,8 @@ namespace CoderLibTest.Numerics
 		[TestMethod]
 		public void Fft()
 		{
-			var a = Enumerable.Range(3, 1 << 4).ToArray();
+			var n = 1 << 4;
+			var a = Enumerable.Range(3, n).ToArray();
 			var c = Array.ConvertAll(a, x => new Complex(x, 0));
 			var cd = Array.ConvertAll(a, x => new ComplexD(x, 0));
 
@@ -20,8 +21,10 @@ namespace CoderLibTest.Numerics
 			var r0 = Dft0.Naive(t0, true).ToInt();
 			var t1 = Dft0.Fft(c);
 			var r1 = Dft0.Fft(t1, true).ToInt();
-			var t2 = DftD.Fft(cd);
-			var r2 = DftD.Fft(t2, true).ToInt();
+
+			var dft = new Dft(n);
+			var t2 = dft.Fft(c);
+			var r2 = dft.Fft(t2, true).ToInt();
 
 			CollectionAssert.AreEqual(a, r0);
 			CollectionAssert.AreEqual(a, r1);
@@ -31,25 +34,36 @@ namespace CoderLibTest.Numerics
 		[TestMethod]
 		public void FftN()
 		{
-			var a = Enumerable.Range(3, 1 << 4).Select(x => (long)x).ToArray();
+			var n = 1 << 4;
+			var a = Enumerable.Range(3, n).Select(x => (long)x).ToArray();
 
 			var t0 = Ntt0.Naive(a);
 			var r0 = Ntt0.Naive(t0, true);
 			var t1 = Ntt0.Fft(a);
 			var r1 = Ntt0.Fft(t1, true);
 
+			var ntt = new Ntt(n);
+			var t2 = ntt.Fft(a);
+			var r2 = ntt.Fft(t2, true);
+
+			CollectionAssert.AreEqual(t0, t1);
+			CollectionAssert.AreEqual(t0, t2);
 			CollectionAssert.AreEqual(a, r0);
 			CollectionAssert.AreEqual(a, r1);
+			CollectionAssert.AreEqual(a, r2);
 		}
 
 		[TestMethod]
 		public void Fft_Many()
 		{
-			var a = Enumerable.Range(3, 1 << 16).ToArray();
+			var n = 1 << 16;
+			var a = Enumerable.Range(3, n).ToArray();
 			var c = Array.ConvertAll(a, x => new Complex(x, 0));
-			var t1 = Dft0.Fft(c);
-			var r1 = Dft0.Fft(t1, true).ToInt();
-			CollectionAssert.AreEqual(a, r1);
+
+			var dft = new Dft(n);
+			var t = dft.Fft(c);
+			var r = dft.Fft(t, true).ToInt();
+			CollectionAssert.AreEqual(a, r);
 		}
 
 		[TestMethod]
@@ -65,10 +79,13 @@ namespace CoderLibTest.Numerics
 		[TestMethod]
 		public void Fft_ManyN()
 		{
-			var a = Enumerable.Range(3, 1 << 16).Select(x => (long)x).ToArray();
-			var t1 = Ntt0.Fft(a);
-			var r1 = Ntt0.Fft(t1, true);
-			CollectionAssert.AreEqual(a, r1);
+			var n = 1 << 16;
+			var a = Enumerable.Range(3, n).Select(x => (long)x).ToArray();
+
+			var ntt = new Ntt(n);
+			var t = ntt.Fft(a);
+			var r = ntt.Fft(t, true);
+			CollectionAssert.AreEqual(a, r);
 		}
 
 		[TestMethod]
@@ -78,8 +95,8 @@ namespace CoderLibTest.Numerics
 			var b = new long[] { 5, 6, 7, 8, 9 };
 			var expected = new long[] { 5, 16, 34, 60, 70, 70, 59, 36 };
 
-			var c = Dft0.Convolution(a, b);
-			var cn = Ntt0.Convolution(a, b);
+			var c = Dft.Convolution(a, b);
+			var cn = Ntt.Convolution(a, b);
 			CollectionAssert.AreEqual(expected, c);
 			CollectionAssert.AreEqual(expected, cn);
 		}
