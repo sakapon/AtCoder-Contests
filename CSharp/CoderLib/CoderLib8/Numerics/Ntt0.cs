@@ -5,7 +5,7 @@ namespace CoderLib8.Numerics
 	// Test: https://atcoder.jp/contests/atc001/tasks/fft_c
 	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_f
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/6/NTL/2/NTL_2_F
-	static class DftN
+	static class Ntt0
 	{
 		const long p = 998244353;
 		const long g = 3;
@@ -90,7 +90,7 @@ namespace CoderLib8.Numerics
 			return Convolution_In(ac, bc);
 		}
 
-		public static long[] Dft0(long[] c, bool inverse = false)
+		public static long[] Naive(long[] c, bool inverse = false)
 		{
 			var n = c.Length;
 			var roots = NthRoots(n);

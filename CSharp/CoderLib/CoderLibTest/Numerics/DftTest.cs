@@ -33,10 +33,10 @@ namespace CoderLibTest.Numerics
 		{
 			var a = Enumerable.Range(3, 1 << 4).Select(x => (long)x).ToArray();
 
-			var t0 = DftN.Dft0(a);
-			var r0 = DftN.Dft0(t0, true);
-			var t1 = DftN.Fft(a);
-			var r1 = DftN.Fft(t1, true);
+			var t0 = Ntt0.Naive(a);
+			var r0 = Ntt0.Naive(t0, true);
+			var t1 = Ntt0.Fft(a);
+			var r1 = Ntt0.Fft(t1, true);
 
 			CollectionAssert.AreEqual(a, r0);
 			CollectionAssert.AreEqual(a, r1);
@@ -66,8 +66,8 @@ namespace CoderLibTest.Numerics
 		public void Fft_ManyN()
 		{
 			var a = Enumerable.Range(3, 1 << 16).Select(x => (long)x).ToArray();
-			var t1 = DftN.Fft(a);
-			var r1 = DftN.Fft(t1, true);
+			var t1 = Ntt0.Fft(a);
+			var r1 = Ntt0.Fft(t1, true);
 			CollectionAssert.AreEqual(a, r1);
 		}
 
@@ -79,7 +79,7 @@ namespace CoderLibTest.Numerics
 			var expected = new long[] { 5, 16, 34, 60, 70, 70, 59, 36 };
 
 			var c = Dft0.Convolution(a, b);
-			var cn = DftN.Convolution(a, b);
+			var cn = Ntt0.Convolution(a, b);
 			CollectionAssert.AreEqual(expected, c);
 			CollectionAssert.AreEqual(expected, cn);
 		}
