@@ -11,12 +11,18 @@ namespace CoderLib8.Numerics
 		public static long[] ToLong(this Complex[] a) => Array.ConvertAll(a, c => (long)Math.Round(c.Real));
 		public static double[] ToDouble(this Complex[] a) => Array.ConvertAll(a, c => c.Real);
 
+		public static int ToPowerOf2(int length)
+		{
+			var n = 1;
+			while (n < length) n <<= 1;
+			return n;
+		}
+
 		static Complex[] NthRoots(int n)
 		{
-			var z = new Complex[n + 1];
-			for (int i = 0; i <= n; ++i)
-				z[i] = Complex.Exp(new Complex(0, i * 2 * Math.PI / n));
-			return z;
+			var r = new Complex[n + 1];
+			for (int i = 0; i <= n; ++i) r[i] = Complex.Exp(new Complex(0, i * 2 * Math.PI / n));
+			return r;
 		}
 
 		static Complex NthRoot(int n, int i)
@@ -25,12 +31,10 @@ namespace CoderLib8.Numerics
 			return new Complex(Math.Cos(t), Math.Sin(t));
 		}
 
-		// n: Power of 2
-		// { f(z^i) }
-		public static Complex[] Fft(Complex[] c, bool inverse = false)
+		static void FftInternal(Complex[] c, bool inverse)
 		{
 			var n = c.Length;
-			if (n == 1) return c;
+			if (n == 1) return;
 
 			var n2 = n / 2;
 			var c1 = new Complex[n2];
@@ -41,26 +45,32 @@ namespace CoderLib8.Numerics
 				c2[i] = c[2 * i + 1];
 			}
 
-			var f1 = Fft(c1, inverse);
-			var f2 = Fft(c2, inverse);
+			FftInternal(c1, inverse);
+			FftInternal(c2, inverse);
 
-			var r = new Complex[n];
 			for (int i = 0; i < n2; ++i)
 			{
-				var z = f2[i] * NthRoot(n, inverse ? -i : i);
-				r[i] = f1[i] + z;
-				r[n2 + i] = f1[i] - z;
-				if (inverse)
-				{
-					r[i] /= 2;
-					r[n2 + i] /= 2;
-				}
+				var z = c2[i] * NthRoot(n, inverse ? -i : i);
+				c[i] = c1[i] + z;
+				c[n2 + i] = c1[i] - z;
 			}
+		}
+
+		// { f(w^i) }
+		// n: Power of 2
+		public static Complex[] Fft(Complex[] c, bool inverse = false)
+		{
+			var n = c.Length;
+
+			var r = new Complex[n];
+			c.CopyTo(r, 0);
+			FftInternal(r, inverse);
+			if (inverse) for (int i = 0; i < n; ++i) r[i] /= n;
 			return r;
 		}
 
 		// n: Power of 2
-		static Complex[] Convolution(Complex[] a, Complex[] b)
+		static Complex[] ConvolutionInternal(Complex[] a, Complex[] b)
 		{
 			var fa = Fft(a);
 			var fb = Fft(b);
@@ -68,17 +78,15 @@ namespace CoderLib8.Numerics
 			return Fft(fa, true);
 		}
 
+		// 長さは n 以下で OK。
 		public static long[] Convolution(long[] a, long[] b)
 		{
-			var n = 1;
-			while (n <= a.Length + b.Length - 2) n *= 2;
-
+			var n = ToPowerOf2(a.Length + b.Length - 1);
 			var ac = new Complex[n];
 			var bc = new Complex[n];
 			for (int i = 0; i < a.Length; ++i) ac[i] = a[i];
 			for (int i = 0; i < b.Length; ++i) bc[i] = b[i];
-
-			return Array.ConvertAll(Convolution(ac, bc), c => (long)Math.Round(c.Real));
+			return ConvolutionInternal(ac, bc).ToLong();
 		}
 
 		public static Complex[] Naive(Complex[] c, bool inverse = false)
