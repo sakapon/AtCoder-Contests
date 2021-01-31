@@ -119,6 +119,14 @@ namespace CoderLibTest.Numerics
 		}
 
 		[TestMethod]
+		public void Ntt_FindPKs()
+		{
+			Ntt0.FindPKs(1 << 20, 1000);
+			Console.WriteLine();
+			Ntt0.FindPKs(1 << 24, 100);
+		}
+
+		[TestMethod]
 		public void Ntt_FindMinGenerator()
 		{
 			Assert.AreEqual(2, Ntt0.FindMinGenerator(3));
@@ -126,8 +134,10 @@ namespace CoderLibTest.Numerics
 			Assert.AreEqual(3, Ntt0.FindMinGenerator(17));
 			Assert.AreEqual(5, Ntt0.FindMinGenerator(97));
 			Assert.AreEqual(3, Ntt0.FindMinGenerator(65537));
+			//Assert.AreEqual(3, Ntt0.FindMinGenerator(104857601));
 			//Assert.AreEqual(3, Ntt0.FindMinGenerator(167772161));
 			//Assert.AreEqual(3, Ntt0.FindMinGenerator(469762049));
+			//Assert.AreEqual(11, Ntt0.FindMinGenerator(754974721));
 			//Assert.AreEqual(3, Ntt0.FindMinGenerator(998244353));
 		}
 	}

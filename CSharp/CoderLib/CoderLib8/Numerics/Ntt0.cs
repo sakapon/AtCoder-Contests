@@ -132,6 +132,15 @@ namespace CoderLib8.Numerics
 			}
 		}
 
+		public static void FindPKs(long n, long maxK)
+		{
+			for (long k = 1; k <= maxK; k++)
+			{
+				var p = k * n + 1;
+				if (IsPrime(p)) Console.WriteLine((p, k));
+			}
+		}
+
 		public static long FindMinGenerator(long p)
 		{
 			for (long g = 1; g < p; g++)
