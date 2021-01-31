@@ -8,6 +8,8 @@ namespace CoderLib8.Numerics
 	public class Ntt
 	{
 		//const long p = 469762049, g = 3;
+		//const long p = 754974721, g = 11;
+		//const long p = 1004535809, g = 3;
 		const long p = 998244353, g = 3;
 
 		public static int ToPowerOf2(int length)
