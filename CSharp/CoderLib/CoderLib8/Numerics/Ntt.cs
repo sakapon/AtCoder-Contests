@@ -7,6 +7,7 @@ namespace CoderLib8.Numerics
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/6/NTL/2/NTL_2_F
 	public class Ntt
 	{
+		//const long p = 469762049, g = 3;
 		const long p = 998244353, g = 3;
 
 		public static int ToPowerOf2(int length)

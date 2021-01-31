@@ -125,6 +125,9 @@ namespace CoderLibTest.Numerics
 			Assert.AreEqual(2, Ntt0.FindMinGenerator(5));
 			Assert.AreEqual(3, Ntt0.FindMinGenerator(17));
 			Assert.AreEqual(5, Ntt0.FindMinGenerator(97));
+			Assert.AreEqual(3, Ntt0.FindMinGenerator(65537));
+			//Assert.AreEqual(3, Ntt0.FindMinGenerator(167772161));
+			//Assert.AreEqual(3, Ntt0.FindMinGenerator(469762049));
 			//Assert.AreEqual(3, Ntt0.FindMinGenerator(998244353));
 		}
 	}
