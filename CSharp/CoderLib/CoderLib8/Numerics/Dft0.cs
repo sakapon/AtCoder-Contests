@@ -122,48 +122,5 @@ namespace CoderLib8.Numerics
 			}
 			return p;
 		}
-
-		// Internal DFS
-		public static Complex[] Fft3(Complex[] c, bool inverse = false)
-		{
-			n_all = c.Length;
-			roots = NthRoots(n_all);
-			return Fft_Dfs(c, inverse);
-		}
-
-		static int n_all;
-		static Complex[] roots;
-		static Complex[] Fft_Dfs(Complex[] c, bool inverse)
-		{
-			var n = c.Length;
-			if (n == 1) return c;
-			var n2 = n / 2;
-			var zoom = n_all / n;
-			var c1 = new Complex[n2];
-			var c2 = new Complex[n2];
-
-			for (int i = 0; i < n2; ++i)
-			{
-				c1[i] = c[2 * i];
-				c2[i] = c[2 * i + 1];
-			}
-
-			var f1 = Fft_Dfs(c1, inverse);
-			var f2 = Fft_Dfs(c2, inverse);
-
-			var r = new Complex[n];
-			for (int i = 0; i < n2; ++i)
-			{
-				var z = roots[inverse ? n_all - zoom * i : zoom * i];
-				r[i] = f1[i] + z * f2[i];
-				r[n2 + i] = f1[i] - z * f2[i];
-				if (inverse)
-				{
-					r[i] /= 2;
-					r[n2 + i] /= 2;
-				}
-			}
-			return r;
-		}
 	}
 }

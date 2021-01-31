@@ -66,16 +66,6 @@ namespace CoderLibTest.Numerics
 		}
 
 		[TestMethod]
-		public void Fft_ManyD()
-		{
-			var a = Enumerable.Range(3, 1 << 16).ToArray();
-			var cd = Array.ConvertAll(a, x => new ComplexD(x, 0));
-			var t2 = DftD.Fft(cd);
-			var r2 = DftD.Fft(t2, true).ToInt();
-			CollectionAssert.AreEqual(a, r2);
-		}
-
-		[TestMethod]
 		public void Ntt_Fft_Many()
 		{
 			var n = 1 << 16;
