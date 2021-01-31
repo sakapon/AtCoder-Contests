@@ -107,5 +107,25 @@ namespace CoderLibTest.Numerics
 
 			Ntt.Convolution(a, b);
 		}
+
+		[TestMethod]
+		public void Ntt_FindMinPK()
+		{
+			for (int n = 1; n > 0; n *= 2)
+			{
+				var (p, k) = Ntt0.FindMinPK(n);
+				Console.WriteLine($"{n}: k={k}, p={p}");
+			}
+		}
+
+		[TestMethod]
+		public void Ntt_FindMinGenerator()
+		{
+			Assert.AreEqual(2, Ntt0.FindMinGenerator(3));
+			Assert.AreEqual(2, Ntt0.FindMinGenerator(5));
+			Assert.AreEqual(3, Ntt0.FindMinGenerator(17));
+			Assert.AreEqual(5, Ntt0.FindMinGenerator(97));
+			//Assert.AreEqual(3, Ntt0.FindMinGenerator(998244353));
+		}
 	}
 }

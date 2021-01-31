@@ -114,5 +114,35 @@ namespace CoderLib8.Numerics
 			}
 			return r;
 		}
+
+		#region Constants Search
+
+		static bool IsPrime(long n)
+		{
+			for (long x = 2; x * x <= n; ++x) if (n % x == 0) return false;
+			return n > 1;
+		}
+
+		public static (long p, long k) FindMinPK(long n)
+		{
+			for (long k = 1; ; k++)
+			{
+				var p = k * n + 1;
+				if (IsPrime(p)) return (p, k);
+			}
+		}
+
+		public static long FindMinGenerator(long p)
+		{
+			for (long g = 1; g < p; g++)
+			{
+				var t = 1L;
+				var count = 1;
+				while ((t = t * g % p) != 1) count++;
+				if (count == p - 1) return g;
+			}
+			throw new InvalidOperationException();
+		}
+		#endregion
 	}
 }
