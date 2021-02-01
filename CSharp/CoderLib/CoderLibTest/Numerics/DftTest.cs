@@ -140,6 +140,12 @@ namespace CoderLibTest.Numerics
 			//Assert.AreEqual(11, Ntt0.FindMinGenerator(754974721));
 			//Assert.AreEqual(3, Ntt0.FindMinGenerator(998244353));
 			//Assert.AreEqual(3, Ntt0.FindMinGenerator(1004535809));
+
+			// Too large.
+			//Assert.AreEqual(5, Ntt0.FindMinGenerator(1001801121793));
+			//Assert.AreEqual(3, Ntt0.FindMinGenerator(1009317314561));
+
+			Console.WriteLine(Ntt0.FindMinGenerator(200003));
 		}
 	}
 }
