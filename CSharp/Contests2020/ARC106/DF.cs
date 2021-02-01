@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 class DF
 {
@@ -11,33 +10,38 @@ class DF
 		var (n, k) = Read2();
 		var a = ReadL();
 
+		var p2 = new long[k + 1];
+		var f = new long[k + 1];
+		var f_ = new long[k + 1];
+		p2[0] = f[0] = f_[0] = 1;
+		for (int x = 1; x <= k; x++)
+		{
+			p2[x] = p2[x - 1] * 2 % M;
+			f[x] = f[x - 1] * x % M;
+			f_[x] = f_[x - 1] * MInv(x) % M;
+		}
+
 		var pa = Array.ConvertAll(a, _ => 1L);
 		var s1 = new long[k + 1];
 		var s2 = new long[k + 1];
 		s1[0] = n;
-		long f = 1, p2 = 1;
 
 		for (int x = 1; x <= k; x++)
 		{
+			var sum = 0L;
 			for (int i = 0; i < n; i++)
-				pa[i] = pa[i] * a[i] % M;
-			var sum = pa.Sum() % M;
+				sum += pa[i] = pa[i] * a[i] % M;
+			sum %= M;
 
-			f = f * MInv(x) % M;
-			s1[x] = sum * f % M;
-			p2 = p2 * 2 % M;
-			s2[x] = sum * p2 % M;
+			s1[x] = sum * f_[x] % M;
+			s2[x] = sum * p2[x] % M;
 		}
 
 		var conv = Ntt.Convolution(s1, s1);
 
 		var half = MInv(2);
-		f = 1;
 		for (int x = 1; x <= k; x++)
-		{
-			f = f * x % M;
-			Console.WriteLine(MInt((f * conv[x] % M - s2[x]) * half));
-		}
+			Console.WriteLine(MInt((f[x] * conv[x] % M - s2[x]) * half));
 	}
 
 	const long M = 998244353;
