@@ -7,12 +7,8 @@ class A
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main()
 	{
+		var pon = new[] { "pon", "pon", "hon", "bon", "hon", "hon", "pon", "hon", "pon", "hon", };
 		var n = int.Parse(Console.ReadLine());
-		//var (n, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
-
-		Console.WriteLine(string.Join(" ", a));
+		Console.WriteLine(pon[n % 10]);
 	}
 }

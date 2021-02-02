@@ -7,12 +7,15 @@ class B
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main()
 	{
-		var n = int.Parse(Console.ReadLine());
-		//var (n, m) = Read2();
+		var k = int.Parse(Console.ReadLine());
 		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
-
-		Console.WriteLine(string.Join(" ", a));
+		if (s.Length <= k)
+		{
+			Console.WriteLine(s);
+		}
+		else
+		{
+			Console.WriteLine(s[..k] + "...");
+		}
 	}
 }
