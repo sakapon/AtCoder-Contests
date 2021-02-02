@@ -14,29 +14,27 @@ class C
 			return (c: v[0], a: v.Skip(1).ToArray());
 		});
 
-		var min = 1 << 30;
+		const int max = 1 << 30;
+		var min = max;
 
 		for (int f = 0; f < 1 << n; f++)
 		{
 			var cost = 0;
-			var comp = new int[m];
+			var exp = new int[m];
 
 			for (int i = 0; i < n; i++)
 			{
 				if ((f & (1 << i)) == 0) continue;
+
 				cost += ps[i].c;
 				for (int j = 0; j < m; j++)
-				{
-					comp[j] += ps[i].a[j];
-				}
+					exp[j] += ps[i].a[j];
 			}
 
-			if (comp.All(v => v >= x))
-			{
+			if (exp.All(v => v >= x))
 				min = Math.Min(min, cost);
-			}
 		}
 
-		Console.WriteLine(min == 1 << 30 ? -1 : min);
+		Console.WriteLine(min == max ? -1 : min);
 	}
 }

@@ -2,23 +2,17 @@
 
 class B
 {
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static (long, long, long, long) Read4L() { var a = ReadL(); return (a[0], a[1], a[2], a[3]); }
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static (int, int, int, int) Read4() { var a = Read(); return (a[0], a[1], a[2], a[3]); }
 	static void Main()
 	{
-		var (a, b, c, k) = Read4L();
-		var r = 0L;
+		var (a, b, c, k) = Read4();
+		int r = 0, t;
 
-		var t = Math.Min(a, k);
-		k -= t;
+		k -= t = Math.Min(a, k);
 		r += t;
-
-		t = Math.Min(b, k);
-		k -= t;
-
-		t = Math.Min(c, k);
-		k -= t;
-		r -= t;
+		k -= Math.Min(b, k);
+		r -= k;
 
 		Console.WriteLine(r);
 	}

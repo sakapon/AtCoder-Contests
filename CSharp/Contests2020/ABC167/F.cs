@@ -7,25 +7,17 @@ class F
 	static bool Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var s = Array.ConvertAll(new bool[n], _ => Console.ReadLine());
 
-		var count = 0;
-		foreach (var si in s)
-			foreach (var c in si)
-				if (c == '(') count--;
-				else count++;
-		if (count != 0) return false;
-
-		var lrs = new (int l, int r)[n];
-		for (int i = 0; i < n; i++)
+		var lrs = Array.ConvertAll(new bool[n], _ =>
 		{
+			var s = Console.ReadLine();
 			var (l, r) = (0, 0);
-			foreach (var c in s[i])
+			foreach (var c in s)
 				if (c == '(') l++;
 				else if (l > 0) l--;
 				else r++;
-			lrs[i] = (l, r);
-		}
+			return (l, r);
+		});
 
 		var al = 0;
 		var q1 = lrs.Where(lr => lr.l >= lr.r).OrderBy(lr => lr.r);
