@@ -46,11 +46,8 @@ class E
 		}
 
 		MInt r = 1, two = 2;
-		foreach (var (_, v) in d)
-		{
-			var (c1, c2) = v;
+		foreach (var (c1, c2) in d.Values)
 			r *= two.Pow(c1) + two.Pow(c2) - 1;
-		}
 		Console.WriteLine(r - 1 + c00);
 	}
 
