@@ -67,19 +67,41 @@ class F
 
 		Point sv = (xmap[0] << 1, ymap[0] << 1);
 		Point ev = (1, 1);
-		var r = ShortestPathCore.Bfs(map.Height, map.Width,
+		var r = Dfs(map.Height, map.Width,
 			v => Array.FindAll(v.Nexts(), nv => map[nv] != -1),
 			sv, ev);
 
 		var area = 0L;
-		if (r.IsConnected(ev)) return "INF";
+		if (r[ev]) return "INF";
 		for (int i = 1; i < map.Height; i += 2)
 			for (int j = 1; j < map.Width; j += 2)
 			{
-				if (r.RawCosts[i, j] == long.MaxValue) continue;
+				if (!r[i, j]) continue;
 				area += map[i, j];
 			}
 		return area;
+	}
+
+	public static GridMap<bool> Dfs(int height, int width, Func<Point, Point[]> getNextVertexes, Point startVertex, Point endVertex)
+	{
+		var u = GridMap.Create(height, width, false);
+		var q = new Stack<Point>();
+		u[startVertex] = true;
+		q.Push(startVertex);
+
+		while (q.Count > 0)
+		{
+			var v = q.Pop();
+
+			foreach (var nv in getNextVertexes(v))
+			{
+				if (u[nv]) continue;
+				u[nv] = true;
+				if (nv == endVertex) return u;
+				q.Push(nv);
+			}
+		}
+		return u;
 	}
 }
 
