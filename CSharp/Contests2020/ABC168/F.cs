@@ -62,13 +62,23 @@ class F
 
 		// regions
 		for (int i = 1; i < map.Height; i += 2)
+		{
+			var th = xmap.ReverseMap[(i >> 1) + 1] - xmap.ReverseMap[i >> 1];
 			for (int j = 1; j < map.Width; j += 2)
-				map[i, j] = (xmap.ReverseMap[i / 2 + 1] - xmap.ReverseMap[i / 2]) * (ymap.ReverseMap[j / 2 + 1] - ymap.ReverseMap[j / 2]);
+				map[i, j] = th * (ymap.ReverseMap[(j >> 1) + 1] - ymap.ReverseMap[j >> 1]);
+		}
 
 		Point sv = (xmap[0] << 1, ymap[0] << 1);
 		Point ev = (1, 1);
-		var r = Dfs(map.Height, map.Width,
-			v => Array.FindAll(v.Nexts(), nv => map[nv] != -1),
+		var r = Dfs2(map.Height, map.Width,
+			(v, action) =>
+			{
+				Point nv;
+				if (map[nv = new Point(v.i - 1, v.j)] != -1) action(nv);
+				if (map[nv = new Point(v.i + 1, v.j)] != -1) action(nv);
+				if (map[nv = new Point(v.i, v.j - 1)] != -1) action(nv);
+				if (map[nv = new Point(v.i, v.j + 1)] != -1) action(nv);
+			},
 			sv, ev);
 
 		var area = 0L;
@@ -100,6 +110,30 @@ class F
 				if (nv == endVertex) return u;
 				q.Push(nv);
 			}
+		}
+		return u;
+	}
+
+	public static GridMap<bool> Dfs2(int height, int width, Action<Point, Action<Point>> nextAction, Point startVertex, Point endVertex)
+	{
+		var u = GridMap.Create(height, width, false);
+		var q = new Stack<Point>();
+		u[startVertex] = true;
+		q.Push(startVertex);
+
+		while (q.Count > 0)
+		{
+			var v = q.Pop();
+
+			var end = false;
+			nextAction(v, nv =>
+			{
+				if (u[nv]) return;
+				u[nv] = true;
+				if (nv == endVertex) end = true;
+				q.Push(nv);
+			});
+			if (end) return u;
 		}
 		return u;
 	}
