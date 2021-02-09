@@ -86,19 +86,27 @@ class F
 	public static GridUF Unite(int height, int width, Func<Point, bool> isRoad)
 	{
 		var uf = new GridUF(height, width);
-		for (int i = 0; i < height; ++i)
+		for (int j = 1; j < width; ++j)
+		{
+			var p = new Point(0, j);
+			var p_ = new Point(0, j - 1);
+			if (isRoad(p) && isRoad(p_)) uf.Unite(p, p_);
+		}
+		for (int i = 1; i < height; ++i)
+		{
+			var p = new Point(i, 0);
+			var p_ = new Point(i - 1, 0);
+			if (isRoad(p) && isRoad(p_)) uf.Unite(p, p_);
+		}
+
+		Point np;
+		for (int i = 1; i < height; ++i)
 			for (int j = 1; j < width; ++j)
 			{
 				var p = new Point(i, j);
-				var p_ = new Point(i, j - 1);
-				if (isRoad(p) && isRoad(p_)) uf.Unite(p, p_);
-			}
-		for (int j = 0; j < width; ++j)
-			for (int i = 1; i < height; ++i)
-			{
-				var p = new Point(i, j);
-				var p_ = new Point(i - 1, j);
-				if (isRoad(p) && isRoad(p_)) uf.Unite(p, p_);
+				if (!isRoad(p)) continue;
+				if (isRoad(np = new Point(i, j - 1))) uf.Unite(p, np);
+				if (isRoad(np = new Point(i - 1, j))) uf.Unite(p, np);
 			}
 		return uf;
 	}
