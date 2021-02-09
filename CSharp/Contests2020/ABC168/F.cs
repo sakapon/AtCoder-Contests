@@ -32,54 +32,51 @@ class F
 		var xmap = new CompressionHashMap(xs.ToArray());
 		var ymap = new CompressionHashMap(ys.ToArray());
 
-		var map = GridMap.Create(2 * xmap.Count - 1, 2 * ymap.Count - 1, 0L);
-
-		// outer
-		for (int i = 0; i < map.Height; i++)
-		{
-			map[i, 0] = -1;
-			map[i, map.Width - 1] = -1;
-		}
-		for (int j = 0; j < map.Width; j++)
-		{
-			map[0, j] = -1;
-			map[map.Height - 1, j] = -1;
-		}
+		var map = GridMap.Create(xmap.Count - 1, ymap.Count - 1, 0L);
+		var lineMap_x = GridMap.Create(xmap.Count - 1, ymap.Count, false);
+		var lineMap_y = GridMap.Create(xmap.Count, ymap.Count - 1, false);
 
 		// lines
 		foreach (var (a, b, c) in ls_x)
 		{
-			var (ai, bi, cj) = (xmap[a] << 1, xmap[b] << 1, ymap[c] << 1);
-			for (int i = ai; i <= bi; i++)
-				map[i, cj] = -1;
+			var (ai, bi, cj) = (xmap[a], xmap[b], ymap[c]);
+			for (int i = ai; i < bi; i++)
+				lineMap_x[i, cj] = true;
 		}
 		foreach (var (d, e, f) in ls_y)
 		{
-			var (di, ej, fj) = (xmap[d] << 1, ymap[e] << 1, ymap[f] << 1);
-			for (int j = ej; j <= fj; j++)
-				map[di, j] = -1;
+			var (di, ej, fj) = (xmap[d], ymap[e], ymap[f]);
+			for (int j = ej; j < fj; j++)
+				lineMap_y[di, j] = true;
 		}
 
 		// regions
-		for (int i = 1; i < map.Height; i += 2)
+		for (int i = 0; i < map.Height; i++)
 		{
-			var th = xmap.ReverseMap[(i >> 1) + 1] - xmap.ReverseMap[i >> 1];
-			for (int j = 1; j < map.Width; j += 2)
-				map[i, j] = th * (ymap.ReverseMap[(j >> 1) + 1] - ymap.ReverseMap[j >> 1]);
+			var th = xmap.ReverseMap[i + 1] - xmap.ReverseMap[i];
+			for (int j = 0; j < map.Width; j++)
+				map[i, j] = th * (ymap.ReverseMap[j + 1] - ymap.ReverseMap[j]);
 		}
 
-		Point sv = (xmap[0] << 1, ymap[0] << 1);
-		Point ev = (1, 1);
-		var uf = Unite(map.Height, map.Width, p => map[p] != -1);
+		var uf = new GridUF(map.Height, map.Width);
+		for (int i = 0; i < map.Height; i++)
+			for (int j = 1; j < map.Width; j++)
+				if (!lineMap_x[i, j])
+					uf.Unite(new Point(i, j - 1), new Point(i, j));
+		for (int j = 0; j < map.Width; j++)
+			for (int i = 1; i < map.Height; i++)
+				if (!lineMap_y[i, j])
+					uf.Unite(new Point(i - 1, j), new Point(i, j));
+
+		Point sv = (xmap[0], ymap[0]);
+		Point ev = (0, 0);
 		if (uf.AreUnited(sv, ev)) return "INF";
 
 		var area = 0L;
-		for (int i = 1; i < map.Height; i += 2)
-			for (int j = 1; j < map.Width; j += 2)
-			{
-				if (!uf.AreUnited(sv, new Point(i, j))) continue;
-				area += map[i, j];
-			}
+		for (int i = 0; i < map.Height; i++)
+			for (int j = 0; j < map.Width; j++)
+				if (uf.AreUnited(sv, new Point(i, j)))
+					area += map[i, j];
 		return area;
 	}
 
