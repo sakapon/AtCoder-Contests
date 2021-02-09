@@ -70,26 +70,37 @@ class F
 
 		Point sv = (xmap[0] << 1, ymap[0] << 1);
 		Point ev = (1, 1);
-		var r = Dfs2(map.Height, map.Width,
-			(v, action) =>
-			{
-				Point nv;
-				if (map[nv = new Point(v.i - 1, v.j)] != -1) action(nv);
-				if (map[nv = new Point(v.i + 1, v.j)] != -1) action(nv);
-				if (map[nv = new Point(v.i, v.j - 1)] != -1) action(nv);
-				if (map[nv = new Point(v.i, v.j + 1)] != -1) action(nv);
-			},
-			sv, ev);
+		var uf = Unite(map.Height, map.Width, p => map[p] != -1);
+		if (uf.AreUnited(sv, ev)) return "INF";
 
 		var area = 0L;
-		if (r[ev]) return "INF";
 		for (int i = 1; i < map.Height; i += 2)
 			for (int j = 1; j < map.Width; j += 2)
 			{
-				if (!r[i, j]) continue;
+				if (!uf.AreUnited(sv, new Point(i, j))) continue;
 				area += map[i, j];
 			}
 		return area;
+	}
+
+	public static GridUF Unite(int height, int width, Func<Point, bool> isRoad)
+	{
+		var uf = new GridUF(height, width);
+		for (int i = 0; i < height; ++i)
+			for (int j = 1; j < width; ++j)
+			{
+				var p = new Point(i, j);
+				var p_ = new Point(i, j - 1);
+				if (isRoad(p) && isRoad(p_)) uf.Unite(p, p_);
+			}
+		for (int j = 0; j < width; ++j)
+			for (int i = 1; i < height; ++i)
+			{
+				var p = new Point(i, j);
+				var p_ = new Point(i - 1, j);
+				if (isRoad(p) && isRoad(p_)) uf.Unite(p, p_);
+			}
+		return uf;
 	}
 
 	public static GridMap<bool> Dfs(int height, int width, Func<Point, Point[]> getNextVertexes, Point startVertex, Point endVertex)
@@ -162,5 +173,41 @@ class CompressionHashMap
 		for (int i = 0; i < r.Length; ++i) map[r[i]] = i;
 
 		(Raw, ReverseMap, Map) = (a, r, map);
+	}
+}
+
+class GridUF
+{
+	GridMap<Point> p;
+	GridMap<int> sizes;
+	public int GroupsCount;
+	public GridUF(int h, int w)
+	{
+		p = GridMap.Create(h, w, new Point());
+		for (int i = 0; i < h; ++i)
+			for (int j = 0; j < w; ++j)
+				p[i, j] = new Point(i, j);
+		sizes = GridMap.Create(h, w, 1);
+		GroupsCount = h * w;
+	}
+
+	public Point GetRoot(Point x) => p[x] == x ? x : p[x] = GetRoot(p[x]);
+	public int GetSize(Point x) => sizes[GetRoot(x)];
+
+	public bool AreUnited(Point x, Point y) => GetRoot(x) == GetRoot(y);
+	public bool Unite(Point x, Point y)
+	{
+		if ((x = GetRoot(x)) == (y = GetRoot(y))) return false;
+
+		// 要素数が大きいほうのグループにマージします。
+		if (sizes[x] < sizes[y]) Merge(y, x);
+		else Merge(x, y);
+		return true;
+	}
+	protected virtual void Merge(Point x, Point y)
+	{
+		p[y] = x;
+		sizes[x] += sizes[y];
+		--GroupsCount;
 	}
 }
