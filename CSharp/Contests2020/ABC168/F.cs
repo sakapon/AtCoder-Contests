@@ -180,39 +180,3 @@ class CompressionHashMap
 		(Raw, ReverseMap, Map) = (a, r, map);
 	}
 }
-
-class GridUF
-{
-	GridMap<Point> p;
-	GridMap<int> sizes;
-	public int GroupsCount;
-	public GridUF(int h, int w)
-	{
-		p = GridMap.Create(h, w, new Point());
-		for (int i = 0; i < h; ++i)
-			for (int j = 0; j < w; ++j)
-				p[i, j] = new Point(i, j);
-		sizes = GridMap.Create(h, w, 1);
-		GroupsCount = h * w;
-	}
-
-	public Point GetRoot(Point x) => p[x] == x ? x : p[x] = GetRoot(p[x]);
-	public int GetSize(Point x) => sizes[GetRoot(x)];
-
-	public bool AreUnited(Point x, Point y) => GetRoot(x) == GetRoot(y);
-	public bool Unite(Point x, Point y)
-	{
-		if ((x = GetRoot(x)) == (y = GetRoot(y))) return false;
-
-		// 要素数が大きいほうのグループにマージします。
-		if (sizes[x] < sizes[y]) Merge(y, x);
-		else Merge(x, y);
-		return true;
-	}
-	protected virtual void Merge(Point x, Point y)
-	{
-		p[y] = x;
-		sizes[x] += sizes[y];
-		--GroupsCount;
-	}
-}
