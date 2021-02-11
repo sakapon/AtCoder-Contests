@@ -63,14 +63,18 @@ class F2
 		Point ev = (0, 0);
 		if (uf.AreUnited(sv, ev)) return "INF";
 
+		var delta_x = new long[h];
+		var delta_y = new long[w];
+		for (int i = 0; i < h; i++)
+			delta_x[i] = xmap.ReverseMap[i + 1] - xmap.ReverseMap[i];
+		for (int j = 0; j < w; j++)
+			delta_y[j] = ymap.ReverseMap[j + 1] - ymap.ReverseMap[j];
+
 		var area = 0L;
 		for (int i = 0; i < h; i++)
-		{
-			var th = xmap.ReverseMap[i + 1] - xmap.ReverseMap[i];
 			for (int j = 0; j < w; j++)
 				if (uf.AreUnited(sv, new Point(i, j)))
-					area += th * (ymap.ReverseMap[j + 1] - ymap.ReverseMap[j]);
-		}
+					area += delta_x[i] * delta_y[j];
 		return area;
 	}
 
@@ -110,10 +114,11 @@ class GridUF
 	public int GroupsCount;
 	public GridUF(int h, int w)
 	{
-		p = GridMap.Create(h, w, new Point());
+		var a = new Point[h, w];
 		for (int i = 0; i < h; ++i)
 			for (int j = 0; j < w; ++j)
-				p[i, j] = new Point(i, j);
+				a[i, j] = new Point(i, j);
+		p = new RectGridMap<Point>(a);
 		sizes = GridMap.Create(h, w, 1);
 		GroupsCount = h * w;
 	}
