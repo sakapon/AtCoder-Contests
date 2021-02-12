@@ -1,18 +1,32 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 class D
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main()
 	{
-		var n = int.Parse(Console.ReadLine());
-		//var (n, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var n = long.Parse(Console.ReadLine());
 
-		Console.WriteLine(string.Join(" ", a));
+		var f = Factorize(n).GroupBy(p => p).ToDictionary(g => g.Key, g => g.Count());
+		var r = 0;
+		foreach (var kv in f)
+		{
+			var c = kv.Value;
+			for (int i = 1; i <= c; i++)
+			{
+				r++;
+				c -= i;
+			}
+		}
+		Console.WriteLine(r);
+	}
+
+	static long[] Factorize(long n)
+	{
+		var r = new List<long>();
+		for (long x = 2; x * x <= n && n > 1; ++x) while (n % x == 0) { r.Add(x); n /= x; }
+		if (n > 1) r.Add(n);
+		return r.ToArray();
 	}
 }
