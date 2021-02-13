@@ -11,7 +11,12 @@ class Y
 		var (h, w, n) = Read3();
 		var ps = Array.ConvertAll(new bool[n], _ => Read2()).OrderBy(p => p.r).ThenBy(p => p.c).Append((r: h, c: w)).ToArray();
 
-		long DeltaNcr((int r, int c) p1, (int r, int c) p2) => MNcr(p2.r + p2.c - p1.r - p1.c, p2.r - p1.r);
+		// nCr を O(1) で求めるため、階乗を求めます。
+		var f = MFactorials(h + w);
+		var f_ = Array.ConvertAll(f, MInv);
+
+		long Ncr(int n, int r) => f[n] * f_[r] % M * f_[n - r] % M;
+		long DeltaNcr((int r, int c) p1, (int r, int c) p2) => Ncr(p2.r + p2.c - p1.r - p1.c, p2.r - p1.r);
 
 		var dp = Array.ConvertAll(ps, p => DeltaNcr((1, 1), p));
 		for (int i = 0; i <= n; i++)
@@ -38,12 +43,11 @@ class Y
 	}
 	static long MInv(long x) => MPow(x, M - 2);
 
-	// n >= 0
-	static long MFactorial(int n) { for (long x = 1, i = 1; ; x = x * ++i % M) if (i >= n) return x; }
-	static long MNpr(int n, int r)
+	static long[] MFactorials(int n)
 	{
-		if (n < r) return 0;
-		for (long x = 1, i = n - r; ; x = x * ++i % M) if (i >= n) return x;
+		var f = new long[n + 1];
+		f[0] = 1;
+		for (int i = 0; i < n; ++i) f[i + 1] = f[i] * (i + 1) % M;
+		return f;
 	}
-	static long MNcr(int n, int r) => n < r ? 0 : n - r < r ? MNcr(n, n - r) : MNpr(n, r) * MInv(MFactorial(r)) % M;
 }
