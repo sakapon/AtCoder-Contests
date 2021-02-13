@@ -11,30 +11,28 @@ class Y
 		var (h, w, n) = Read3();
 		var ps = Array.ConvertAll(new bool[n], _ => Read2()).OrderBy(p => p.r).ThenBy(p => p.c).Append((r: h, c: w)).ToArray();
 
-		// nCr を O(1) で求めるため、階乗を求めます。
-		var f = MFactorials(h + w);
-		var f_ = Array.ConvertAll(f, MInv);
-
-		long Ncr(int n, int r) => f[n] * f_[r] % M * f_[n - r] % M;
-		long DeltaNcr((int r, int c) p1, (int r, int c) p2) => Ncr(p2.r + p2.c - p1.r - p1.c, p2.r - p1.r);
+		var mc = new MCombination(h + w);
+		long DeltaNcr((int r, int c) p1, (int r, int c) p2) => mc.MNcr(p2.r + p2.c - p1.r - p1.c, p2.r - p1.r);
 
 		var dp = Array.ConvertAll(ps, p => DeltaNcr((1, 1), p));
 		for (int i = 0; i <= n; i++)
-		{
-			var (r, c) = ps[i];
 			for (int j = i + 1; j <= n; j++)
 			{
-				var (nr, nc) = ps[j];
-				if (c > nc) continue;
+				if (ps[i].c > ps[j].c) continue;
 				dp[j] -= dp[i] * DeltaNcr(ps[i], ps[j]);
 				dp[j] = MInt(dp[j]);
 			}
-		}
 		Console.WriteLine(dp[n]);
 	}
 
 	const long M = 1000000007;
 	static long MInt(long x) => (x %= M) < 0 ? x + M : x;
+}
+
+public class MCombination
+{
+	//const long M = 998244353;
+	const long M = 1000000007;
 	static long MPow(long b, long i)
 	{
 		long r = 1;
@@ -47,7 +45,20 @@ class Y
 	{
 		var f = new long[n + 1];
 		f[0] = 1;
-		for (int i = 0; i < n; ++i) f[i + 1] = f[i] * (i + 1) % M;
+		for (int i = 1; i <= n; ++i) f[i] = f[i - 1] * i % M;
 		return f;
 	}
+
+	// nPr, nCr を O(1) で求めるため、階乗を O(n) で求めておきます。
+	long[] f, f_;
+	public MCombination(int nMax)
+	{
+		f = MFactorials(nMax);
+		f_ = Array.ConvertAll(f, MInv);
+	}
+
+	public long MFactorial(int n) => f[n];
+	public long MInvFactorial(int n) => f_[n];
+	public long MNpr(int n, int r) => f[n] * f_[n - r] % M;
+	public long MNcr(int n, int r) => f[n] * f_[n - r] % M * f_[r] % M;
 }

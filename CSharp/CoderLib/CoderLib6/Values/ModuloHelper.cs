@@ -9,6 +9,7 @@ namespace CoderLib6.Values
 	{
 		//const long M = 998244353;
 		const long M = 1000000007;
+		const long MHalf = (M + 1) / 2;
 		static long MPow(long b, long i)
 		{
 			long r = 1;
