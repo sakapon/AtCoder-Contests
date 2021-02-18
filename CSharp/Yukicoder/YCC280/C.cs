@@ -11,7 +11,7 @@ class C
 		var a = Read().ToList();
 
 		var r = 0L;
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			r = Math.Max(r, GetMax(a.ToArray()));
 
@@ -28,13 +28,12 @@ class C
 			if (IsKadomatsu(a, i)) p[i] = a[i];
 
 		var dp = new long[a.Length];
-		dp[0] = p[0];
-		for (int i = 3; i < a.Length; i++)
+		for (int i = 0; i < a.Length; i++)
 		{
 			var max = 0L;
 			if (i - 5 >= 0) max = Math.Max(max, dp[i - 5]);
 			if (i - 4 >= 0) max = Math.Max(max, dp[i - 4]);
-			max = Math.Max(max, dp[i - 3]);
+			if (i - 3 >= 0) max = Math.Max(max, dp[i - 3]);
 			dp[i] = max + p[i];
 		}
 		return dp.Max();
