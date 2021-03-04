@@ -52,5 +52,22 @@ namespace CoderLib6.Values
 				r = MInt(r + (i % 2 == 0 ? 1 : -1) * MNcr(k, i) * MPow(k - i, balls));
 			return r;
 		}
+
+		// 球: 区別する、箱: 区別しない、箱に1個以上
+		public long Stirling(int balls) => f_[k] * Surjection(balls) % M;
+
+		// 球: 区別する、箱: 区別しない、箱に対する個数は自由
+		public long Bell(int balls)
+		{
+			var t = new long[k + 1];
+			t[0] = 1;
+			for (int i = 1; i <= k; ++i)
+				t[i] = MInt(t[i - 1] + (i % 2 == 0 ? 1 : -1) * f_[i]);
+
+			var r = 0L;
+			for (int i = 1; i <= k; ++i)
+				r = MInt(r + MPow(i, balls) * f_[i] % M * t[k - i]);
+			return r;
+		}
 	}
 }
