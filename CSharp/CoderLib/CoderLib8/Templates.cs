@@ -9,14 +9,27 @@ namespace CoderLib8
 		static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 		static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 		static (int, int, int) Read3() { var a = Read(); return (a[0], a[1], a[2]); }
+		static (int, int, int, int) Read4() { var a = Read(); return (a[0], a[1], a[2], a[3]); }
 
 		static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 		static (long, long) Read2L() { var a = ReadL(); return (a[0], a[1]); }
 		static (long, long, long) Read3L() { var a = ReadL(); return (a[0], a[1], a[2]); }
+		static (long, long, long, long) Read4L() { var a = ReadL(); return (a[0], a[1], a[2], a[3]); }
 
 		static decimal[] ReadDec() => Array.ConvertAll(Console.ReadLine().Split(), decimal.Parse);
 		static (decimal, decimal) Read2Dec() { var a = ReadDec(); return (a[0], a[1]); }
 
+		//const long M = 998244353;
+		const long M = 1000000007;
+		const int max = 1 << 30;
+		const int min = -1 << 30;
+		//const long max = 1L << 60;
+		//const long min = -1L << 60;
+
+		//static void Main() => Console.WriteLine(Solve());
+		//static object Solve()
+		//static void Main() => Console.WriteLine(Solve() ? "Yes" : "No");
+		//static bool Solve()
 		static void WriteYesNo(bool b) => Console.WriteLine(b ? "Yes" : "No");
 		static void Main()
 		{
