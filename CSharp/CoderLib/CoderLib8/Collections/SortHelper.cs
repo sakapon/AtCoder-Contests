@@ -5,6 +5,32 @@ namespace CoderLib8.Collections
 {
 	static class SortHelper
 	{
+		#region For String
+
+		static int[] Tally(string s)
+		{
+			var c = new int[1 << 7];
+			foreach (var x in s) ++c[x];
+			return c;
+		}
+
+		static char[] BucketSort(string s)
+		{
+			var c = Tally(s);
+			for (int i = 1; i < c.Length; ++i) c[i] += c[i - 1];
+			var r = new char[s.Length];
+			for (int i = s.Length - 1; i >= 0; --i) r[--c[s[i]]] = s[i];
+			return r;
+		}
+		#endregion
+
+		static int[] ToOrder(int[] a, int max)
+		{
+			var o = Array.ConvertAll(new bool[max + 1], _ => -1);
+			for (int i = 0; i < a.Length; ++i) o[a[i]] = i;
+			return o;
+		}
+
 		static int[] Tally(int[] a, int max)
 		{
 			var c = new int[max + 1];
