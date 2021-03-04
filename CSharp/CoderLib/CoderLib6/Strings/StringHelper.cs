@@ -2,6 +2,7 @@
 
 namespace CoderLib6.Strings
 {
+	// Test: https://codeforces.com/contest/1304/problem/B
 	static class StringHelper
 	{
 		static string Reverse(string s)
