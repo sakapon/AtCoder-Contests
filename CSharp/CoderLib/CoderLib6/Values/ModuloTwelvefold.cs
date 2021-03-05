@@ -69,5 +69,25 @@ namespace CoderLib6.Values
 				r = MInt(r + MPow(i, balls) * f_[i] % M * t[k - i]);
 			return r;
 		}
+
+		public long[,] PartitionDP(int balls)
+		{
+			var n = balls;
+			var dp = new long[n + 1, k + 1];
+			dp[0, 0] = 1;
+
+			for (int i = 0; i <= n; ++i)
+				for (int j = 1; j <= k; ++j)
+				{
+					dp[i, j] = dp[i, j - 1];
+					if (i >= j) dp[i, j] = (dp[i, j] + dp[i - j, j]) % M;
+				}
+			return dp;
+		}
+
+		// 球: 区別しない、箱: 区別しない、箱に対する個数は自由
+		public long Partition(int balls) => PartitionDP(balls)[balls, k];
+		// 球: 区別しない、箱: 区別しない、箱に1個以上
+		public long PartitionPositive(int balls) => balls < k ? 0 : Partition(balls - k);
 	}
 }
