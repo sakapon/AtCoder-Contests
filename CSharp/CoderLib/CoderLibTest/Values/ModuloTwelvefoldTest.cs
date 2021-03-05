@@ -23,6 +23,8 @@ namespace CoderLibTest.Values
 
 			Assert.AreEqual(9765625, tw.Power(10));
 			Assert.AreEqual(42525, tw.Stirling(10));
+			Assert.AreEqual(30, tw.Partition(10));
+			Assert.AreEqual(7, tw.PartitionPositive(10));
 		}
 
 		[TestMethod]
