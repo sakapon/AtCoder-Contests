@@ -158,4 +158,20 @@ namespace CoderLib8
 			Console.WriteLine(string.Join(" ", a));
 		}
 	}
+
+	class Template_Interactive
+	{
+		static int Query(int i)
+		{
+			Console.WriteLine($"? {i}");
+			return int.Parse(Console.ReadLine());
+		}
+		static void Main() => Console.WriteLine($"! {Solve()}");
+		static object Solve()
+		{
+			var n = int.Parse(Console.ReadLine());
+
+			return n;
+		}
+	}
 }
