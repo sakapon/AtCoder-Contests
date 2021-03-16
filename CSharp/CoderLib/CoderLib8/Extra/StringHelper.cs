@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoderLib6.Strings
+namespace CoderLib8.Extra
 {
 	// Test: https://codeforces.com/contest/1304/problem/B
 	static class StringHelper
