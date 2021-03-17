@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CoderLib8.Extra
 {
 	static class CollectionHelper
 	{
-		static int[] ToOrder(this int[] a, int max)
-		{
-			var o = Array.ConvertAll(new bool[max + 1], _ => -1);
-			for (int i = 0; i < a.Length; ++i) o[a[i]] = i;
-			return o;
-		}
-
 		static int[] Tally(this int[] a, int max)
 		{
 			var r = new int[max + 1];
@@ -27,6 +21,7 @@ namespace CoderLib8.Extra
 		}
 
 		// cf. Linq.GE.GroupCounts method
+		// a.GroupBy(x => x).ToDictionary(g => g.Key, g => g.Count());
 		static Dictionary<T, int> Tally<T>(this T[] a)
 		{
 			var d = new Dictionary<T, int>();
@@ -34,6 +29,29 @@ namespace CoderLib8.Extra
 				if (d.ContainsKey(o)) ++d[o];
 				else d[o] = 1;
 			return d;
+		}
+
+		static int[] ToOrderMap(this int[] a, int max)
+		{
+			var o = Array.ConvertAll(new bool[max + 1], _ => -1);
+			for (int i = 0; i < a.Length; ++i) o[a[i]] = i;
+			return o;
+		}
+
+		// Enumerable.Range(0, a.Length).ToDictionary(i => a[i]);
+		static Dictionary<T, int> ToOrderMap<T>(this T[] a)
+		{
+			var d = new Dictionary<T, int>();
+			for (int i = 0; i < a.Length; ++i) d[a[i]] = i;
+			return d;
+		}
+
+		// cf. Collections.CompressionHashMap class
+		static (int[] comp, Dictionary<int, int> map) Compress(this int[] a)
+		{
+			var c = a.Distinct().OrderBy(v => v).ToArray();
+			var d = Enumerable.Range(0, c.Length).ToDictionary(i => c[i]);
+			return (c, d);
 		}
 	}
 }
