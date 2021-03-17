@@ -7,6 +7,8 @@ namespace CoderLib8.Collections
 	{
 		// 解の候補が [1, 5] の場合、l = 0, r = 6 を指定します。
 		// f: (inside, outside) => isInsideMore
+		// 局所最小の例:
+		// ArgTrue(0, n + 1, (i, o) => Get(i) <= Get(o))
 		static int ArgTrue(int l, int r, Func<int, int, bool> f)
 		{
 			var m = l + (r - l) / 2;
