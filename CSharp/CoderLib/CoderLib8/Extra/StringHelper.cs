@@ -5,14 +5,17 @@ namespace CoderLib8.Extra
 	// Test: https://codeforces.com/contest/1304/problem/B
 	static class StringHelper
 	{
-		static int ToInt(this char c) => c - 48;
-		static char ToNumber(this int i) => (char)(i + 48);
+		// '0' == 48
+		static int FromNumberChar(this char c) => c - '0';
+		static char ToNumberChar(this int i) => (char)(i + '0');
 
-		static int ToIndexForUpper(this char c) => c - 65;
-		static char ToUpper(this int i) => (char)(i + 65);
+		// 'A' == 65
+		static int FromUpperChar(this char c) => c - 'A';
+		static char ToUpperChar(this int i) => (char)(i + 'A');
 
-		static int ToIndexForLower(this char c) => c - 97;
-		static char ToLower(this int i) => (char)(i + 97);
+		// 'a' == 97
+		static int FromLowerChar(this char c) => c - 'a';
+		static char ToLowerChar(this int i) => (char)(i + 'a');
 
 		static string Reverse(string s)
 		{
@@ -25,6 +28,16 @@ namespace CoderLib8.Extra
 		{
 			for (int i = 0; i < s.Length; ++i) if (s[i] != s[s.Length - 1 - i]) return false;
 			return true;
+		}
+
+		// ()(), (()), (()()), etc.
+		static bool IsRegularBracket(string s)
+		{
+			var t = 0;
+			foreach (var c in s)
+				if (c == '(') ++t;
+				else if (c == ')') if (--t < 0) return false;
+			return t == 0;
 		}
 	}
 }

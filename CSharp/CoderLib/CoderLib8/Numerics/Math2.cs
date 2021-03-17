@@ -44,7 +44,8 @@ namespace CoderLib8.Numerics
 		static long Chmax(ref long x, long v) => x < v ? x = v : x;
 		static long Chmin(ref long x, long v) => x > v ? x = v : x;
 
-		// https://github.com/atcoder/ac-library/blob/master/atcoder/internal_math.hpp
+		// From: https://github.com/atcoder/ac-library/blob/master/atcoder/internal_math.hpp
+		// Test: https://atcoder.jp/contests/practice2/tasks/practice2_c
 		static long FloorSum(long n, long m, long a, long b)
 		{
 			var r = 0L;
