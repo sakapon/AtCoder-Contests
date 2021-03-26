@@ -31,15 +31,15 @@ namespace CoderLib8.Extra
 			return d;
 		}
 
-		static int[] ToOrderMap(this int[] a, int max)
+		static int[] ToInverseMap(this int[] a, int max)
 		{
-			var o = Array.ConvertAll(new bool[max + 1], _ => -1);
-			for (int i = 0; i < a.Length; ++i) o[a[i]] = i;
-			return o;
+			var d = Array.ConvertAll(new bool[max + 1], _ => -1);
+			for (int i = 0; i < a.Length; ++i) d[a[i]] = i;
+			return d;
 		}
 
 		// Enumerable.Range(0, a.Length).ToDictionary(i => a[i]);
-		static Dictionary<T, int> ToOrderMap<T>(this T[] a)
+		static Dictionary<T, int> ToInverseMap<T>(this T[] a)
 		{
 			var d = new Dictionary<T, int>();
 			for (int i = 0; i < a.Length; ++i) d[a[i]] = i;

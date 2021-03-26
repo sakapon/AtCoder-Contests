@@ -8,10 +8,11 @@ namespace CoderLib8.Collections
 	public class StaticRangeUnion
 	{
 		// 値の範囲が小さい場合に使います (0 <= x <= 10^7)。
-		public static bool[] Tally((int l_in, int r_ex)[] ranges, int max)
+		// sorted: ranges が l の順に並んでいるかどうか
+		public static bool[] Tally((int l_in, int r_ex)[] ranges, int max, bool sorted = false)
 		{
 			// ソート済の場合は不要です。
-			ranges = ranges.OrderBy(t => t.l_in).ToArray();
+			if (!sorted) ranges = ranges.OrderBy(t => t.l_in).ToArray();
 
 			var b = new bool[max + 1];
 			var i = 0;
@@ -24,25 +25,20 @@ namespace CoderLib8.Collections
 		List<(int l, int r)> rs = new List<(int l, int r)>();
 
 		// 値の範囲を問いません。
-		public StaticRangeUnion((int l_in, int r_ex)[] ranges)
+		// sorted: ranges が l の順に並んでいるかどうか
+		public StaticRangeUnion((int l_in, int r_ex)[] ranges, bool sorted = false)
 		{
 			// ソート済の場合は不要です。
-			ranges = ranges.OrderBy(t => t.l_in).ToArray();
+			if (!sorted) ranges = ranges.OrderBy(t => t.l_in).ToArray();
 
 			foreach (var (l, r) in ranges)
 			{
 				if (l >= r) continue;
-				if (rs.Count == 0)
-				{
-					rs.Add((l, r));
-					continue;
-				}
+				if (rs.Count == 0) { rs.Add((l, r)); continue; }
 
 				var (l0, r0) = rs[rs.Count - 1];
-				if (r0 < l)
-					rs.Add((l, r));
-				else if (r0 < r)
-					rs[rs.Count - 1] = (l0, r);
+				if (r0 < l) rs.Add((l, r));
+				else if (r0 < r) rs[rs.Count - 1] = (l0, r);
 			}
 		}
 
