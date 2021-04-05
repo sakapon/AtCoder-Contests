@@ -9,9 +9,12 @@ namespace CoderLib8.Extra
 		// n 以下のすべての数に対する、素因数の種類の数 O(n)?
 		static int[] GetPrimeTypes(int n)
 		{
-			var t = new int[n + 1];
-			for (int p = 2; p <= n; ++p) if (t[p] == 0) for (int x = p; x <= n; x += p) ++t[x];
-			return t;
+			var c = new int[n + 1];
+			for (int p = 2; p <= n; ++p)
+				if (c[p] == 0)
+					for (int x = p; x <= n; x += p)
+						++c[x];
+			return c;
 		}
 
 		// n 以下のすべての数に対する、素因数の個数 O(n)?
@@ -47,6 +50,43 @@ namespace CoderLib8.Extra
 						++c[x];
 					}
 				}
+			return c;
+		}
+
+		// n 以下のすべての数に対する、約数の個数
+		static int[] GetDivisorCounts(int n)
+		{
+			var d = new int[n + 1];
+			var c = new int[n + 1];
+			c[1] = 1;
+
+			for (int p = 2; p <= n; ++p)
+				if (d[p] == 0)
+				{
+					var k = 2;
+					for (long q = p; q <= n; k++, q *= p)
+					{
+						c[q] = k;
+						for (var x = (int)(2 * q); x <= n; x += (int)q)
+							d[x] = (int)q;
+					}
+				}
+
+			for (int x = 2; x <= n; ++x)
+				if (c[x] == 0)
+					c[x] = c[d[x]] * c[x / d[x]];
+			return c;
+		}
+
+		// Naive
+		// 5_000_000 程度までなら速い
+		static int[] GetDivisorCounts0(int n)
+		{
+			var c = Array.ConvertAll(new bool[n + 1], _ => 1);
+			c[0] = 0;
+			for (int d = 2; d <= n; ++d)
+				for (int x = d; x <= n; x += d)
+					++c[x];
 			return c;
 		}
 	}
