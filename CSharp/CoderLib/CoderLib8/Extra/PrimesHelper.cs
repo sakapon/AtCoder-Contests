@@ -34,6 +34,7 @@ namespace CoderLib8.Extra
 		}
 
 		// Naive
+		// 5_000_000 程度までなら速い
 		static int[] GetFactorCounts0(int n)
 		{
 			var a = new int[n + 1];
@@ -53,7 +54,8 @@ namespace CoderLib8.Extra
 			return c;
 		}
 
-		// n 以下のすべての数に対する、約数の個数
+		// n 以下のすべての数に対する、約数の個数 O(n)?
+		// 10_000_000 程度までなら速い
 		static int[] GetDivisorCounts(int n)
 		{
 			var d = new int[n + 1];
@@ -67,7 +69,7 @@ namespace CoderLib8.Extra
 					for (long q = p; q <= n; k++, q *= p)
 					{
 						c[q] = k;
-						for (var x = (int)(2 * q); x <= n; x += (int)q)
+						for (var x = q + q; x <= n; x += q)
 							d[x] = (int)q;
 					}
 				}
