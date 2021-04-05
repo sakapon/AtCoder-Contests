@@ -16,6 +16,9 @@ namespace CoderLib8
 		static (long, long, long) Read3L() { var a = ReadL(); return (a[0], a[1], a[2]); }
 		static (long, long, long, long) Read4L() { var a = ReadL(); return (a[0], a[1], a[2], a[3]); }
 
+		static double[] ReadD() => Array.ConvertAll(Console.ReadLine().Split(), double.Parse);
+		static (double, double) Read2D() { var a = ReadD(); return (a[0], a[1]); }
+
 		static decimal[] ReadDec() => Array.ConvertAll(Console.ReadLine().Split(), decimal.Parse);
 		static (decimal, decimal) Read2Dec() { var a = ReadDec(); return (a[0], a[1]); }
 
@@ -25,6 +28,7 @@ namespace CoderLib8
 		const int min = -1 << 30;
 		//const long max = 1L << 60;
 		//const long min = -1L << 60;
+		static bool[] ft = new[] { false, true };
 
 		//static void Main() => Console.WriteLine(Solve());
 		//static object Solve()
@@ -39,6 +43,8 @@ namespace CoderLib8
 
 			var a = Console.ReadLine().Split().Select(int.Parse).ToList();
 			//var a = Console.ReadLine().Split().Select(long.Parse).ToList();
+
+			var rn = Enumerable.Range(0, n).ToArray();
 		}
 	}
 
