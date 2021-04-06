@@ -66,15 +66,12 @@ namespace CoderLib8.Extra
 
 			for (int p = 2; p <= n; ++p)
 				if (d[p] == 0)
-				{
-					var k = 2;
-					for (long q = p; q <= n; k++, q *= p)
+					for ((int k, long q) = (2, p); q <= n; k++, q *= p)
 					{
 						c[q] = k;
 						for (var x = q + q; x <= n; x += q)
 							d[x] = (int)q;
 					}
-				}
 
 			for (int x = 2; x <= n; ++x)
 				if (c[x] == 0)
@@ -101,16 +98,15 @@ namespace CoderLib8.Extra
 			var ps = new[] { 2, 3, 5, 7, 11, 13, 17, 19, 23 };
 			var xm = 1000000000L;
 			var r = new List<(long x, int c)>();
-			Dfs(0, 1, 1);
+			Dfs(0, 1, 1, 1 << 30);
 
-			void Dfs(int i, long x0, int c0)
+			void Dfs(int i, long x0, int c0, int km)
 			{
-				var c = c0;
-				for (long x = x0; x <= xm; x *= ps[i], c += c0)
+				for (var (x, k) = (x0, 1); x <= xm && k <= km; x *= ps[i], k++)
 					if (i + 1 < ps.Length)
-						Dfs(i + 1, x, c);
+						Dfs(i + 1, x, c0 * k, k);
 					else
-						r.Add((x, c));
+						r.Add((x, c0 * k));
 			}
 
 			var cm = 0;
