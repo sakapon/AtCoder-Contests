@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CoderLib8.Extra
 {
@@ -90,6 +92,34 @@ namespace CoderLib8.Extra
 				for (int x = d; x <= n; x += d)
 					++c[x];
 			return c;
+		}
+
+		// 高度合成数
+		// 735134400 の約数は 1344 個
+		static (long x, int c)[] GetHighlyComposite()
+		{
+			var ps = new[] { 2, 3, 5, 7, 11, 13, 17, 19, 23 };
+			var xm = 1000000000L;
+			var r = new List<(long x, int c)>();
+			Dfs(0, 1, 1);
+
+			void Dfs(int i, long x0, int c0)
+			{
+				var c = c0;
+				for (long x = x0; x <= xm; x *= ps[i], c += c0)
+					if (i + 1 < ps.Length)
+						Dfs(i + 1, x, c);
+					else
+						r.Add((x, c));
+			}
+
+			var cm = 0;
+			return r.OrderBy(t => t.x).Where(t =>
+			{
+				if (t.c <= cm) return false;
+				cm = t.c;
+				return true;
+			}).ToArray();
 		}
 	}
 }
