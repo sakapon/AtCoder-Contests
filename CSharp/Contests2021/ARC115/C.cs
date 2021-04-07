@@ -2,17 +2,19 @@
 
 class C
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main()
 	{
 		var n = int.Parse(Console.ReadLine());
-		//var (n, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		Console.WriteLine(string.Join(" ", a));
+		var a = new int[n + 1];
+		for (int i = 1; i <= n; ++i)
+		{
+			a[i] = a[i - 1] + (a[a[i]] == a[i - 1] ? 1 : 0);
+
+			for (int j = i + i; j <= n; j += i)
+				a[j] = i;
+		}
+
+		Console.WriteLine(string.Join(" ", a[1..]));
 	}
 }
