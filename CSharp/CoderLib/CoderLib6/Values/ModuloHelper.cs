@@ -17,7 +17,7 @@ namespace CoderLib6.Values
 			return r;
 		}
 		static long MInv(long x) => MPow(x, M - 2);
-		// M が素数に限定されない場合 (Euler の定理)
+		// x と M が互いに素の場合 (Euler の定理)
 		//static long MInv(long x) => MPow(x, Totient(M) - 1);
 
 		// n >= 0

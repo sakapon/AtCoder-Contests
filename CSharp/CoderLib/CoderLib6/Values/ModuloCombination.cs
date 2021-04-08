@@ -33,7 +33,7 @@ namespace CoderLib6.Values
 
 		public long MFactorial(int n) => f[n];
 		public long MInvFactorial(int n) => f_[n];
-		public long MNpr(int n, int r) => f[n] * f_[n - r] % M;
-		public long MNcr(int n, int r) => f[n] * f_[n - r] % M * f_[r] % M;
+		public long MNpr(int n, int r) => n < r ? 0 : f[n] * f_[n - r] % M;
+		public long MNcr(int n, int r) => n < r ? 0 : f[n] * f_[n - r] % M * f_[r] % M;
 	}
 }

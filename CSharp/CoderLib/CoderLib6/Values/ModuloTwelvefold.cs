@@ -2,6 +2,8 @@
 
 namespace CoderLib6.Values
 {
+	// MCombination クラスの機能を含んでいます。
+	// k! が必要ないものは静的メソッドです。
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/7/DPL/5
 	public class MTwelvefold
 	{
