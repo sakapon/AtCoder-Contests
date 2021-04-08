@@ -12,8 +12,8 @@ namespace CoderLibTest.Values
 		{
 			var tw = new MTwelvefold(3);
 
-			Assert.AreEqual(55980, tw.Surjection(10));
-			Assert.AreEqual(41, tw.Bell(5));
+			Assert.AreEqual(55980, tw.Surjection(10, 3));
+			Assert.AreEqual(41, tw.Bell(5, 3));
 		}
 
 		[TestMethod]
@@ -21,19 +21,19 @@ namespace CoderLibTest.Values
 		{
 			var tw = new MTwelvefold(5);
 
-			Assert.AreEqual(9765625, tw.Power(10));
-			Assert.AreEqual(42525, tw.Stirling(10));
-			Assert.AreEqual(30, tw.Partition(10));
-			Assert.AreEqual(7, tw.PartitionPositive(10));
+			Assert.AreEqual(9765625, MTwelvefold.Way01(10, 5));
+			Assert.AreEqual(42525, tw.Stirling(10, 5));
+			Assert.AreEqual(30, MTwelvefold.Partition(10, 5));
+			Assert.AreEqual(7, MTwelvefold.PartitionPositive(10, 5));
 		}
 
 		[TestMethod]
 		public void Factorial()
 		{
+			var tw = new MTwelvefold(1000);
 			for (var k = 1; k <= 1000; k++)
 			{
-				var tw = new MTwelvefold(k);
-				Assert.AreEqual(tw.MFactorial(k), tw.Surjection(k));
+				Assert.AreEqual(tw.MFactorial(k), tw.Surjection(k, k));
 			}
 		}
 	}

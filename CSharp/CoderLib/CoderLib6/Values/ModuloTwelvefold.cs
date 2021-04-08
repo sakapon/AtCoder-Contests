@@ -24,40 +24,33 @@ namespace CoderLib6.Values
 			return f;
 		}
 
-		// kPr, kCr を O(1) で求めるため、階乗を O(k) で求めておきます。
-		int k;
+		// xPr, xCr を O(1) で求めるため、階乗を O(k) で求めておきます。
 		long[] f, f_;
-		public MTwelvefold(int boxes)
+		public MTwelvefold(int kMax)
 		{
-			k = boxes;
-			f = MFactorials(k);
+			f = MFactorials(kMax);
 			f_ = Array.ConvertAll(f, MInv);
 		}
 
 		public long MFactorial(int n) => f[n];
 		public long MInvFactorial(int n) => f_[n];
-		public long MNpr(int n, int r) => f[n] * f_[n - r] % M;
-		public long MNcr(int n, int r) => f[n] * f_[n - r] % M * f_[r] % M;
+		public long MNpr(int n, int r) => n < r ? 0 : f[n] * f_[n - r] % M;
+		public long MNcr(int n, int r) => n < r ? 0 : f[n] * f_[n - r] % M * f_[r] % M;
 
-		// 球: 区別する、箱: 区別する、箱に対する個数は自由
-		// 各球に対し、独立に k 通りを選びます。
-		public long Power(int balls) => MPow(k, balls);
+		#region Calculation
 
-		// 球: 区別する、箱: 区別する、箱に1個以上
-		// 包除原理により、0個になる場合を除きます。
-		public long Surjection(int balls)
+		public long Surjection(int n, int k)
 		{
+			// 包除原理により、0個になる場合を除きます。
 			var r = 0L;
 			for (int i = 0; i < k; ++i)
-				r = MInt(r + (i % 2 == 0 ? 1 : -1) * MNcr(k, i) * MPow(k - i, balls));
+				r = MInt(r + (i % 2 == 0 ? 1 : -1) * MNcr(k, i) * MPow(k - i, n));
 			return r;
 		}
 
-		// 球: 区別する、箱: 区別しない、箱に1個以上
-		public long Stirling(int balls) => f_[k] * Surjection(balls) % M;
+		public long Stirling(int n, int k) => f_[k] * Surjection(n, k) % M;
 
-		// 球: 区別する、箱: 区別しない、箱に対する個数は自由
-		public long Bell(int balls)
+		public long Bell(int n, int k)
 		{
 			var t = new long[k + 1];
 			t[0] = 1;
@@ -66,13 +59,12 @@ namespace CoderLib6.Values
 
 			var r = 0L;
 			for (int i = 1; i <= k; ++i)
-				r = MInt(r + MPow(i, balls) * f_[i] % M * t[k - i]);
+				r = MInt(r + MPow(i, n) * f_[i] % M * t[k - i]);
 			return r;
 		}
 
-		public long[,] PartitionDP(int balls)
+		public static long[,] PartitionDP(int n, int k)
 		{
-			var n = balls;
 			var dp = new long[n + 1, k + 1];
 			dp[0, 0] = 1;
 
@@ -85,9 +77,61 @@ namespace CoderLib6.Values
 			return dp;
 		}
 
-		// 球: 区別しない、箱: 区別しない、箱に対する個数は自由
-		public long Partition(int balls) => PartitionDP(balls)[balls, k];
-		// 球: 区別しない、箱: 区別しない、箱に1個以上
-		public long PartitionPositive(int balls) => balls < k ? 0 : Partition(balls - k);
+		// k 個の非負整数への分割数です。
+		public static long Partition(int n, int k) => PartitionDP(n, k)[n, k];
+		// k 個の正整数への分割数です。
+		public static long PartitionPositive(int n, int k) => n < k ? 0 : Partition(n - k, k);
+
+		#endregion
+
+		#region Ways
+		// n balls, k boxes
+		// 箱に1個以下のとき、n <= k
+		// 箱に1個以上のとき、n >= k
+
+		// A: 球: 区別する、箱: 区別する、箱に対する個数は自由
+		// 各球に対し、独立に箱を選びます。
+		public static long Way01(int balls, int boxes) => MPow(boxes, balls);
+
+		// B: 球: 区別する、箱: 区別する、箱に1個以下
+		// 単射の数です。
+		// 各球の入る箱を順番に選びます。
+		public static long Way02(int balls, int boxes) => new MTwelvefold(boxes).MNpr(boxes, balls);
+
+		// C: 球: 区別する、箱: 区別する、箱に1個以上
+		// 全射の数です。
+		public static long Way03(int balls, int boxes) => new MTwelvefold(boxes).Surjection(balls, boxes);
+
+		// D: 球: 区別しない、箱: 区別する、箱に対する個数は自由
+		// 球と区切りを並べ替えます。
+		public static long Way04(int balls, int boxes) => new MTwelvefold(balls + boxes).MNcr(balls + boxes - 1, balls);
+
+		// E: 球: 区別しない、箱: 区別する、箱に1個以下
+		// 球の入る箱を選ぶ組合せを求めます。
+		public static long Way05(int balls, int boxes) => new MTwelvefold(boxes).MNcr(boxes, balls);
+
+		// F: 球: 区別しない、箱: 区別する、箱に1個以上
+		// 球を一列に並べ、区切る位置を選ぶ組合せを求めます。
+		public static long Way06(int balls, int boxes) => new MTwelvefold(balls).MNcr(balls - 1, boxes - 1);
+
+		// G: 球: 区別する、箱: 区別しない、箱に対する個数は自由
+		public static long Way07(int balls, int boxes) => new MTwelvefold(boxes).Bell(balls, boxes);
+
+		// H: 球: 区別する、箱: 区別しない、箱に1個以下
+		public static long Way08(int balls, int boxes) => balls > boxes ? 0 : 1;
+
+		// I: 球: 区別する、箱: 区別しない、箱に1個以上
+		public static long Way09(int balls, int boxes) => new MTwelvefold(boxes).Stirling(balls, boxes);
+
+		// J: 球: 区別しない、箱: 区別しない、箱に対する個数は自由
+		public static long Way10(int balls, int boxes) => Partition(balls, boxes);
+
+		// K: 球: 区別しない、箱: 区別しない、箱に1個以下
+		public static long Way11(int balls, int boxes) => balls > boxes ? 0 : 1;
+
+		// L: 球: 区別しない、箱: 区別しない、箱に1個以上
+		public static long Way12(int balls, int boxes) => PartitionPositive(balls, boxes);
+
+		#endregion
 	}
 }
