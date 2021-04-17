@@ -10,12 +10,15 @@ class C
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (a, b) = Read2();
 
-		return string.Join(" ", a);
+		for (int d = b - a; d > 0; d--)
+		{
+			if ((a - 1) / d + 1 < b / d)
+			{
+				return d;
+			}
+		}
+		return -1;
 	}
 }

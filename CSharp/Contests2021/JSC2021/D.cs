@@ -10,12 +10,15 @@ class D
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (n, p) = Read2();
+		return (p - 1) * MPow(p - 2, n - 1) % M;
+	}
 
-		return string.Join(" ", a);
+	const long M = 1000000007;
+	static long MPow(long b, long i)
+	{
+		long r = 1;
+		for (; i != 0; b = b * b % M, i >>= 1) if ((i & 1) != 0) r = r * b % M;
+		return r;
 	}
 }
