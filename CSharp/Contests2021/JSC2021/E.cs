@@ -38,41 +38,27 @@ class E
 
 			var r = 0;
 
-			// Center
-			if (n % 2 == 1)
-				r += all - s[n2].Max();
-
 			var selected = new int[n];
-			for (int i = 0; i < n2; i++)
+			for (int i = 0; i < n; i++)
 			{
-				var min = 1 << 30;
-				var c1 = s[i];
-				var c2 = s[^(i + 1)];
+				var max = -1;
 
-				for (int j1 = 0; j1 < 26; j1++)
+				for (int j = 0; j < 26; j++)
 				{
-					for (int j2 = 0; j2 < 26; j2++)
+					if (max < s[i][j])
 					{
-						var nr = 2 * all - c1[j1] - c2[j2];
-						if (min > nr)
-						{
-							min = nr;
-							selected[i] = j1;
-							selected[^(i + 1)] = j2;
-						}
+						max = s[i][j];
+						selected[i] = j;
 					}
 				}
-				r += min;
+				r += all - max;
 			}
 
-			// All same
-			if (selected.Distinct().Count() == 1)
+			if (IsPalindrome(selected))
 			{
-				var cj = selected[0];
-				var max = s
-					.Where((_, i) => n % 2 == 0 || i != n2)
-					.Max(cs => cs.Where((_, j) => j != cj).Max());
-				r += s[0][cj] - max;
+				r += Enumerable.Range(0, n)
+					.Where(i => n % 2 == 0 || i != n2)
+					.Min(i => s[i][selected[i]] - s[i].Where((_, j) => j != selected[i]).Max());
 			}
 
 			return r;
@@ -95,5 +81,11 @@ class E
 
 			return r;
 		}
+	}
+
+	static bool IsPalindrome(int[] s)
+	{
+		for (int i = 0; i < s.Length; ++i) if (s[i] != s[s.Length - 1 - i]) return false;
+		return true;
 	}
 }
