@@ -34,14 +34,27 @@ class F2
 		var n = a.Length;
 		var l = new List<long>();
 
-		for (int x = 0; x < 1 << n; ++x)
+		AllBoolCombination(n, b =>
 		{
 			var sum = 0L;
 			for (int i = 0; i < n; ++i)
-				if ((x & (1 << i)) != 0)
-					sum += a[i];
+				if (b[i]) sum += a[i];
 			if (sum <= t) l.Add(sum);
-		}
+			return false;
+		});
 		return l.ToArray();
+	}
+
+	static void AllBoolCombination(int n, Func<bool[], bool> action)
+	{
+		if (n > 30) throw new InvalidOperationException();
+		var pn = 1 << n;
+		var b = new bool[n];
+
+		for (int x = 0; x < pn; ++x)
+		{
+			for (int i = 0; i < n; ++i) b[i] = (x & (1 << i)) != 0;
+			if (action(b)) break;
+		}
 	}
 }
