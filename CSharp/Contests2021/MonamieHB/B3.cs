@@ -18,10 +18,9 @@ class B3
 		for (int i = a.Length - 1; i >= 0; i--)
 		{
 			r += a[i] * pk[i];
-			if (a[i] == k - 1) break;
-			if (i == 0) r++;
+			if (a[i] == k - 1) return r;
 		}
-		return r;
+		return r + 1;
 	}
 
 	static int[] Convert(long x, int b)
