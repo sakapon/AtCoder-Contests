@@ -15,7 +15,16 @@ namespace CoderLib8.Numerics
 			return r.ToArray();
 		}
 
+		public static long ConvertFrom(this int[] a, int b)
+		{
+			var r = 0L;
+			for (int i = a.Length - 1; i >= 0; --i) r = r * b + a[i];
+			return r;
+		}
+
 		const string AN = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		static readonly Dictionary<char, int> ANMap = AN.Select((c, i) => (c, i)).ToDictionary(_ => _.c, _ => _.i);
+
 		public static string ConvertAsString(this long x, int b)
 		{
 			if (x == 0) return "0";
@@ -25,14 +34,6 @@ namespace CoderLib8.Numerics
 			return new string(Array.ConvertAll(r, d => AN[d]));
 		}
 
-		public static long ConvertFrom(this int[] a, int b)
-		{
-			var (r, t) = (0L, 1L);
-			for (int i = 0; i < a.Length; ++i, t *= b) r += a[i] * t;
-			return r;
-		}
-
-		static readonly Dictionary<char, int> ANMap = AN.Select((c, i) => (c, i)).ToDictionary(_ => _.c, _ => _.i);
 		public static long ConvertFrom(this string s, int b)
 		{
 			if (s.StartsWith('-')) return -ConvertFrom(s.Substring(1), b);
