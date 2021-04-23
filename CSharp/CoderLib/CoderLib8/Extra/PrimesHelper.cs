@@ -19,6 +19,7 @@ namespace CoderLib8.Extra
 			return c;
 		}
 
+		// Test: https://atcoder.jp/contests/arc115/tasks/arc115_c
 		// n 以下のすべての数に対する、素因数の個数 O(n)?
 		// 10_000_000 程度までなら速い
 		static int[] GetFactorCounts(int n)
