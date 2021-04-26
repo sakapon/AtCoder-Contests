@@ -10,12 +10,11 @@ class DL
 
 		var dp = new MemoDP3<double>(101, 101, 101, -1, (dp, i, j, k) =>
 		{
-			var all = i + j + k;
 			var r = 0D;
-			r += (dp[i + 1, j, k] + 1) * i / all;
-			r += (dp[i, j + 1, k] + 1) * j / all;
-			r += (dp[i, j, k + 1] + 1) * k / all;
-			return r;
+			r += dp[i + 1, j, k] * i;
+			r += dp[i, j + 1, k] * j;
+			r += dp[i, j, k + 1] * k;
+			return r / (i + j + k) + 1;
 		});
 
 		for (int i = 0; i <= 100; i++)

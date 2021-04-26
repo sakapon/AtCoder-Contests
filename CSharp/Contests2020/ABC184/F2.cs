@@ -20,7 +20,7 @@ class F2
 		Array.Sort(s2);
 		Array.Reverse(s2);
 
-		var r = 0L;
+		var r = 0;
 		for (int i = 0, j = 0; i < s1.Length; i++)
 		{
 			while (s1[i] + s2[j] > t) j++;
@@ -29,32 +29,18 @@ class F2
 		Console.WriteLine(r);
 	}
 
-	static long[] CreateSums(int[] a, int t)
+	static int[] CreateSums(int[] a, int t)
 	{
-		var n = a.Length;
-		var l = new List<long>();
+		var l = new List<int> { 0 };
 
-		AllBoolCombination(n, b =>
+		for (int i = 0; i < a.Length; i++)
 		{
-			var sum = 0L;
-			for (int i = 0; i < n; ++i)
-				if (b[i]) sum += a[i];
-			if (sum <= t) l.Add(sum);
-			return false;
-		});
-		return l.ToArray();
-	}
-
-	static void AllBoolCombination(int n, Func<bool[], bool> action)
-	{
-		if (n > 30) throw new InvalidOperationException();
-		var pn = 1 << n;
-		var b = new bool[n];
-
-		for (int x = 0; x < pn; ++x)
-		{
-			for (int i = 0; i < n; ++i) b[i] = (x & (1 << i)) != 0;
-			if (action(b)) break;
+			for (int j = l.Count - 1; j >= 0; j--)
+			{
+				var v = a[i] + l[j];
+				if (v <= t) l.Add(v);
+			}
 		}
+		return l.ToArray();
 	}
 }
