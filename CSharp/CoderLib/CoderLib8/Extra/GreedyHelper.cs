@@ -1,9 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CoderLib8.Extra
 {
 	public static class GreedyHelper
 	{
+		// i に対して、たかだか 1 つの j が返ります。
+		static IEnumerable<(int i, int j)> TwoPointers(int n1, int n2, Func<int, int, bool> predicate)
+		{
+			for (int i = 0, j = 0; i < n1 && j < n2; ++i)
+				for (; j < n2; ++j)
+					if (predicate(i, j)) { yield return (i, j); break; }
+		}
+
+		// Test: https://atcoder.jp/contests/abc184/tasks/abc184_f
+		static IEnumerable<(T1 v1, T2 v2)> TwoPointers<T1, T2>(T1[] a1, T2[] a2, Func<T1, T2, bool> predicate)
+		{
+			for (int i = 0, j = 0; i < a1.Length && j < a2.Length; ++i)
+				for (; j < a2.Length; ++j)
+					if (predicate(a1[i], a2[j])) { yield return (a1[i], a2[j]); break; }
+		}
+
 		// k 回目に true となる日を求めます。
 		// k, day: 0-indexed
 		// 0 <= trueDay < period
