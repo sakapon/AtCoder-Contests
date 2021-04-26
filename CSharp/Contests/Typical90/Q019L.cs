@@ -39,16 +39,16 @@ class MemoDP2<T>
 	public MemoDP2(int n1, int n2, T iv, Func<MemoDP2<T>, int, int, T> rec)
 	{
 		Raw = new T[n1, n2];
-		for (int i1 = 0; i1 < n1; ++i1)
-			for (int i2 = 0; i2 < n2; ++i2)
-				Raw[i1, i2] = iv;
+		for (int i = 0; i < n1; ++i)
+			for (int j = 0; j < n2; ++j)
+				Raw[i, j] = iv;
 		this.iv = iv;
 		this.rec = rec;
 	}
 
-	public T this[int i1, int i2]
+	public T this[int i, int j]
 	{
-		get => TEquals(Raw[i1, i2], iv) ? Raw[i1, i2] = rec(this, i1, i2) : Raw[i1, i2];
-		set => Raw[i1, i2] = value;
+		get => TEquals(Raw[i, j], iv) ? Raw[i, j] = rec(this, i, j) : Raw[i, j];
+		set => Raw[i, j] = value;
 	}
 }
