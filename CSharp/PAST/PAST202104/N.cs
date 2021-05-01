@@ -1,21 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 class N
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+	static (int a, int b) Read2() { var a = Read(); return (a[0], a[1]); }
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (n, h) = Read2();
+		var ps = Array.ConvertAll(new bool[n], _ => Read2());
 
-		return string.Join(" ", a);
+		var dp = Array.ConvertAll(new bool[h + 1], _ => -1L);
+		dp[h] = 0;
+
+		foreach (var (a, b) in ps.OrderBy(p => -(decimal)p.a / p.b))
+		{
+			for (long i = 1; i <= h; i++)
+			{
+				if (dp[i] == -1) continue;
+
+				var ni = Math.Max(0, i - b);
+				dp[ni] = Math.Max(dp[ni], dp[i] + a * i);
+			}
+		}
+		return dp.Max();
 	}
 }
