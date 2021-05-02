@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-class Q003A
+class Q003W
 {
 	static int[] Read() => Array.ConvertAll((Console.ReadLine() + " 1").Split(), int.Parse);
 	static void Main() => Console.WriteLine(Solve());
