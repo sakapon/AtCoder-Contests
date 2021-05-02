@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CoderLib8.Graphs.Arrays
+namespace CoderLib6.Graphs.Arrays
 {
 	public class Tree
 	{
@@ -26,18 +26,21 @@ namespace CoderLib8.Graphs.Arrays
 			Map = map;
 			Depths = Array.ConvertAll(Map, _ => -1);
 			Parents = Array.ConvertAll(Map, _ => -1);
+			var q = new Stack<int>();
 
 			Depths[root] = 0;
-			Dfs(root, -1);
+			q.Push(root);
 
-			void Dfs(int v, int pv)
+			while (q.Count > 0)
 			{
+				var v = q.Pop();
+
 				foreach (var nv in Map[v])
 				{
-					if (nv == pv) continue;
+					if (Depths[nv] >= 0) continue;
 					Depths[nv] = Depths[v] + 1;
 					Parents[nv] = v;
-					Dfs(nv, v);
+					q.Push(nv);
 				}
 			}
 		}

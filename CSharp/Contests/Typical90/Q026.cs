@@ -40,10 +40,10 @@ public class Tree
 	public Tree(int n, int root, List<int>[] map)
 	{
 		Map = map;
-		Depths = new int[n];
-		Parents = new int[n];
-		Parents[root] = -1;
+		Depths = Array.ConvertAll(Map, _ => -1);
+		Parents = Array.ConvertAll(Map, _ => -1);
 
+		Depths[root] = 0;
 		Dfs(root, -1);
 
 		void Dfs(int v, int pv)
