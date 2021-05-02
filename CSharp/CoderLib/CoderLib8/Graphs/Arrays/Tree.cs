@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace CoderLib8.Graphs.Arrays
 {
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_z
 	public class Tree
 	{
 		static List<int>[] ToMap(int n, int[][] es, bool directed)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace CoderLib6.Graphs.Arrays
 {
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_z
 	public class Tree
 	{
 		static List<int>[] ToMap(int n, int[][] es, bool directed)
@@ -34,10 +35,9 @@ namespace CoderLib6.Graphs.Arrays
 			while (q.Count > 0)
 			{
 				var v = q.Pop();
-
 				foreach (var nv in Map[v])
 				{
-					if (Depths[nv] >= 0) continue;
+					if (nv == Parents[v]) continue;
 					Depths[nv] = Depths[v] + 1;
 					Parents[nv] = v;
 					q.Push(nv);
