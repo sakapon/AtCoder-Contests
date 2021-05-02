@@ -4,49 +4,71 @@ using System.Linq;
 
 class Q003A
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static int[] Read() => Array.ConvertAll((Console.ReadLine() + " 1").Split(), int.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
 		var es = Array.ConvertAll(new bool[n - 1], _ => Read());
 
-		return Diameter(n, 1, es.Select(e => new[] { e[0], e[1], 1 }).ToArray()) + 1;
+		return WeightedDiameter(n + 1, 1, es) + 1;
 	}
 
-	static long Diameter(int n, int sv, int[][] es)
+	static long WeightedDiameter(int n, int root, int[][] ues)
 	{
-		var map = Array.ConvertAll(new int[n + 1], _ => new List<int[]>());
+		var tree = new WeightedTree(n, root, ues);
+
+		var (mv, md) = (-1, -1L);
+		for (int v = 0; v < n; v++)
+		{
+			var d = tree.Costs[v];
+			if (md < d) (mv, md) = (v, d);
+		}
+		return new WeightedTree(n, mv, tree.Map).Depths.Max();
+	}
+}
+
+public class WeightedTree
+{
+	static List<int[]>[] ToMap(int n, int[][] es, bool directed)
+	{
+		var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
 		foreach (var e in es)
 		{
-			map[e[0]].Add(new[] { e[1], e[2] });
-			map[e[1]].Add(new[] { e[0], e[2] });
+			map[e[0]].Add(e);
+			if (!directed) map[e[1]].Add(new[] { e[1], e[0], e[2] });
 		}
-
-		var d = Distances(n, sv, map);
-		var ev = Enumerable.Range(0, n + 1).OrderBy(v => -d[v]).First();
-		return Distances(n, ev, map).Max();
+		return map;
 	}
 
-	static long[] Distances(int n, int sv, List<int[]>[] map)
-	{
-		var from = new int[n + 1];
-		var d = new long[n + 1];
-		var q = new Queue<int>();
-		from[sv] = -1;
-		q.Enqueue(sv);
+	public List<int[]>[] Map { get; }
+	public int[] Depths { get; }
+	public long[] Costs { get; }
+	public int[] Parents { get; }
 
-		while (q.Count > 0)
+	public WeightedTree(int n, int root, int[][] ues) : this(n, root, ToMap(n, ues, false)) { }
+	public WeightedTree(int n, int root, List<int[]>[] map)
+	{
+		Map = map;
+		Depths = Array.ConvertAll(Map, _ => -1);
+		Costs = Array.ConvertAll(Map, _ => -1L);
+		Parents = Array.ConvertAll(Map, _ => -1);
+
+		Depths[root] = 0;
+		Costs[root] = 0;
+		Dfs(root, -1);
+
+		void Dfs(int v, int pv)
 		{
-			var v = q.Dequeue();
-			foreach (var e in map[v])
+			foreach (var e in Map[v])
 			{
-				if (e[0] == from[v]) continue;
-				from[e[0]] = v;
-				d[e[0]] = d[v] + e[1];
-				q.Enqueue(e[0]);
+				var nv = e[1];
+				if (nv == pv) continue;
+				Depths[nv] = Depths[v] + 1;
+				Costs[nv] = Costs[v] + e[2];
+				Parents[nv] = v;
+				Dfs(nv, v);
 			}
 		}
-		return d;
 	}
 }
