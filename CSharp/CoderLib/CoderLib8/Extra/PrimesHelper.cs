@@ -6,6 +6,7 @@ namespace CoderLib8.Extra
 {
 	static class PrimesHelper
 	{
+		// Test: https://atcoder.jp/contests/typical90/tasks/typical90_ad
 		// n = 20000000 の例:
 		// Test: https://codeforces.com/contest/1499/problem/D
 		// n 以下のすべての数に対する、素因数の種類の数 O(n)?
