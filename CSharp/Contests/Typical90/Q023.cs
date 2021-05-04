@@ -11,8 +11,7 @@ class Q023
 	static object Solve()
 	{
 		var (h, w) = Read2();
-		// 左側 (j=0) に白を追加
-		var c = Array.ConvertAll(new bool[h], _ => '.' + Console.ReadLine());
+		var c = Array.ConvertAll(new bool[h], _ => Console.ReadLine());
 
 		var states = GetStates(w + 2);
 		var n = states.Length;
@@ -22,45 +21,36 @@ class Q023
 		// 厳密には、w=1 のとき、3 | f_last
 		var f_king = 7 | f_last;
 
-		// (i, j) 以前の w+2 マスの状態 k における方法
-		var dp = NewArray3<long>(h + 1, w + 1, n);
-		dp[0][0][0] = 1;
+		// 左側 (j=0) に壁が追加されているものとする
+		// マス (i, j) 以前の w+2 マスの状態 k における方法
+		var dp = new long[n];
+		dp[0] = 1;
+
 		for (int i = 0; i < h; i++)
 		{
 			for (int j = 0; j <= w; j++)
 			{
-				if (j == w)
-				{
-					var dp0 = dp[i][j];
-					var dp1 = dp[i + 1][0];
-
-					// 左側 (j=0) は常に空とする
-					for (int k = 0; k < n; k++)
-					{
-						var ns = states[k] >> 1;
-						dp1[statesMap[ns]] += dp0[k];
-					}
-				}
-				else
-				{
-					var dp0 = dp[i][j];
-					var dp1 = dp[i][j + 1];
-
-					for (int k = 0; k < n; k++)
-					{
-						var ns = states[k] >> 1;
-						dp1[statesMap[ns]] += dp0[k];
-
-						if ((states[k] & f_king) == 0 && c[i][j + 1] == '.')
-							dp1[statesMap[ns | f_last]] += dp0[k];
-					}
-
-					for (int k = 0; k < n; k++)
-						dp1[k] %= M;
-				}
+				dp = NextDP(dp, j < w && c[i][j] == '.');
 			}
 		}
-		return dp[h][0].Sum() % M;
+		return dp.Sum() % M;
+
+		long[] NextDP(long[] dp, bool isEmpty)
+		{
+			var t = new long[n];
+			for (int k = 0; k < n; k++)
+			{
+				var ns = states[k] >> 1;
+				t[statesMap[ns]] += dp[k];
+
+				if (isEmpty && (states[k] & f_king) == 0)
+					t[statesMap[ns | f_last]] += dp[k];
+			}
+
+			for (int k = 0; k < n; k++)
+				t[k] %= M;
+			return t;
+		}
 	}
 
 	static int[] GetStates(int length)
@@ -77,8 +67,6 @@ class Q023
 			if ((x & (1 << i)) != 0 && (x & (1 << (i - 1))) != 0) return false;
 		return true;
 	}
-
-	static T[][][] NewArray3<T>(int n1, int n2, int n3, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => Array.ConvertAll(new bool[n3], ___ => v)));
 
 	static int[] ToInverseMap(int[] a, int max)
 	{
