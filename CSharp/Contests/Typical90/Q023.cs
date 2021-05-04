@@ -24,20 +24,21 @@ class Q023
 		// 左側 (j=0) に壁が追加されているものとする
 		// マス (i, j) 以前の w+2 マスの状態 k における方法
 		var dp = new long[n];
+		var t = new long[n];
 		dp[0] = 1;
 
 		for (int i = 0; i < h; i++)
 		{
 			for (int j = 0; j <= w; j++)
 			{
-				dp = NextDP(dp, j < w && c[i][j] == '.');
+				NextDP(j < w && c[i][j] == '.');
 			}
 		}
 		return dp.Sum() % M;
 
-		long[] NextDP(long[] dp, bool isEmpty)
+		void NextDP(bool isEmpty)
 		{
-			var t = new long[n];
+			Array.Clear(t, 0, n);
 			for (int k = 0; k < n; k++)
 			{
 				var ns = states[k] >> 1;
@@ -49,7 +50,7 @@ class Q023
 
 			for (int k = 0; k < n; k++)
 				t[k] %= M;
-			return t;
+			(dp, t) = (t, dp);
 		}
 	}
 
