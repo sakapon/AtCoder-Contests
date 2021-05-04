@@ -16,7 +16,7 @@ class Q023
 
 		var states = GetStates(w + 2);
 		var n = states.Length;
-		var statesMap = Enumerable.Range(0, n).ToDictionary(i => states[i], i => i);
+		var statesMap = ToInverseMap(states, 1 << (w + 2));
 
 		var f_last = 1 << (w + 1);
 		// 厳密には、w=1 のとき、3 | f_last
@@ -31,26 +31,32 @@ class Q023
 			{
 				if (j == w)
 				{
+					var dp0 = dp[i][j];
+					var dp1 = dp[i + 1][0];
+
 					// 左側 (j=0) は常に空とする
 					for (int k = 0; k < n; k++)
 					{
 						var ns = states[k] >> 1;
-						dp[i + 1][0][statesMap[ns]] += dp[i][j][k];
+						dp1[statesMap[ns]] += dp0[k];
 					}
 				}
 				else
 				{
+					var dp0 = dp[i][j];
+					var dp1 = dp[i][j + 1];
+
 					for (int k = 0; k < n; k++)
 					{
 						var ns = states[k] >> 1;
-						dp[i][j + 1][statesMap[ns]] += dp[i][j][k];
+						dp1[statesMap[ns]] += dp0[k];
 
 						if ((states[k] & f_king) == 0 && c[i][j + 1] == '.')
-							dp[i][j + 1][statesMap[ns | f_last]] += dp[i][j][k];
+							dp1[statesMap[ns | f_last]] += dp0[k];
 					}
 
 					for (int k = 0; k < n; k++)
-						dp[i][j + 1][k] %= M;
+						dp1[k] %= M;
 				}
 			}
 		}
@@ -73,4 +79,11 @@ class Q023
 	}
 
 	static T[][][] NewArray3<T>(int n1, int n2, int n3, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => Array.ConvertAll(new bool[n3], ___ => v)));
+
+	static int[] ToInverseMap(int[] a, int max)
+	{
+		var d = Array.ConvertAll(new bool[max + 1], _ => -1);
+		for (int i = 0; i < a.Length; ++i) d[a[i]] = i;
+		return d;
+	}
 }
