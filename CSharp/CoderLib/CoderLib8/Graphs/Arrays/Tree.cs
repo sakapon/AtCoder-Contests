@@ -24,6 +24,12 @@ namespace CoderLib8.Graphs.Arrays
 		public int[] Depths { get; }
 		public int[] Parents { get; }
 
+		// この Euler Tour では方向を記録しません。
+		// order -> vertex
+		public int[] Tour { get; }
+		// vertex -> orders
+		public List<int>[] TourMap { get; }
+
 		public Tree(int n, int root, int[][] ues) : this(n, root, ToMap(n, ues, false)) { }
 		public Tree(int n, int root, List<int>[] map)
 		{
@@ -33,17 +39,28 @@ namespace CoderLib8.Graphs.Arrays
 			Depths = Array.ConvertAll(Map, _ => -1);
 			Parents = Array.ConvertAll(Map, _ => -1);
 
+			var tour = new List<int>();
+			TourMap = Array.ConvertAll(Map, _ => new List<int>());
+
 			Depths[root] = 0;
 			Dfs(root, -1);
 
+			Tour = tour.ToArray();
+
 			void Dfs(int v, int pv)
 			{
+				TourMap[v].Add(tour.Count);
+				tour.Add(v);
+
 				foreach (var nv in Map[v])
 				{
 					if (nv == pv) continue;
 					Depths[nv] = Depths[v] + 1;
 					Parents[nv] = v;
 					Dfs(nv, v);
+
+					TourMap[v].Add(tour.Count);
+					tour.Add(v);
 				}
 			}
 		}

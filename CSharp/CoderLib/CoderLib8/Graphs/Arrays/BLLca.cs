@@ -3,7 +3,7 @@
 namespace CoderLib8.Graphs.Arrays
 {
 	// Test: https://codeforces.com/contest/1304/problem/E
-	// Test: https://atcoder.jp/contests/past202104-open/tasks/past202104_o
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_ai
 	public class BLLca
 	{
 		Tree tree;
