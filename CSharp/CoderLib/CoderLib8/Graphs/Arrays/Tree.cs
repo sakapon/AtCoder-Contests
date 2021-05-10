@@ -18,6 +18,8 @@ namespace CoderLib8.Graphs.Arrays
 			return map;
 		}
 
+		public int Count { get; }
+		public int Root { get; }
 		public List<int>[] Map { get; }
 		public int[] Depths { get; }
 		public int[] Parents { get; }
@@ -25,6 +27,8 @@ namespace CoderLib8.Graphs.Arrays
 		public Tree(int n, int root, int[][] ues) : this(n, root, ToMap(n, ues, false)) { }
 		public Tree(int n, int root, List<int>[] map)
 		{
+			Count = n;
+			Root = root;
 			Map = map;
 			Depths = Array.ConvertAll(Map, _ => -1);
 			Parents = Array.ConvertAll(Map, _ => -1);
