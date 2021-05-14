@@ -11,7 +11,14 @@ class D
 		var (h, w) = Read2();
 		var a = Array.ConvertAll(new bool[h], _ => Read());
 
-		var d = new Dictionary<int, List<(int, int)>>();
+		var sv = h + w;
+		var ev = sv + 1;
+
+		var es = new List<long[]>();
+		es.AddRange(Enumerable.Range(0, h).Select(i => new[] { sv, i, 1L }));
+		es.AddRange(Enumerable.Range(0, w).Select(j => new[] { h + j, ev, 1L }));
+
+		var d = new Dictionary<int, List<long[]>>();
 
 		for (int i = 0; i < h; i++)
 		{
@@ -20,40 +27,68 @@ class D
 				var k = a[i][j];
 				if (k == 0) continue;
 
-				if (!d.ContainsKey(k)) d[k] = new List<(int, int)>();
-				d[k].Add((i, j));
+				if (!d.ContainsKey(k)) d[k] = new List<long[]>();
+				d[k].Add(new[] { i, h + j, 1L });
 			}
 		}
-		Console.WriteLine(d.Values.Sum(ForGroup));
+
+		var r = 0L;
+
+		foreach (var es2 in d.Values)
+		{
+			if (es2.Count == 1)
+			{
+				r++;
+				continue;
+			}
+
+			es2.AddRange(es);
+			r += MaxFlow(ev, sv, ev, es2.ToArray());
+		}
+		Console.WriteLine(r);
 	}
 
-	static int ForGroup(List<(int, int)> ps)
+	static long MaxFlow(int n, int sv, int ev, long[][] dg)
 	{
-		var r = 0;
-		var d = new Dictionary<int, HashSet<int>>();
-
-		foreach (var (i, j) in ps)
+		var map = Array.ConvertAll(new int[n + 1], _ => new List<long[]>());
+		foreach (var e in dg)
 		{
-			var j2 = 500 + j;
-
-			if (!d.ContainsKey(i)) d[i] = new HashSet<int>();
-			d[i].Add(j2);
-
-			if (!d.ContainsKey(j2)) d[j2] = new HashSet<int>();
-			d[j2].Add(i);
+			map[e[0]].Add(new[] { e[0], e[1], e[2], map[e[1]].Count });
+			map[e[1]].Add(new[] { e[1], e[0], 0, map[e[0]].Count - 1 });
 		}
 
-		while (d.Count > 0)
+		long M = 0, t;
+		while ((t = Bfs(n, sv, ev, map)) > 0) M += t;
+		return M;
+	}
+
+	static long Bfs(int n, int sv, int ev, List<long[]>[] map)
+	{
+		var from = new long[n + 1][];
+		var minFlow = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
+		var q = new Queue<long>();
+		q.Enqueue(sv);
+
+		while (q.Any())
 		{
-			var (i, l) = d.OrderBy(p => -p.Value.Count).First();
-			d.Remove(i);
-			foreach (var j in l)
+			var v = q.Dequeue();
+			if (v == ev) break;
+			foreach (var e in map[v])
 			{
-				d[j].Remove(i);
-				if (d[j].Count == 0) d.Remove(j);
+				if (from[e[1]] != null || e[2] == 0) continue;
+				from[e[1]] = e;
+				minFlow[e[1]] = Math.Min(minFlow[v], e[2]);
+				q.Enqueue(e[1]);
 			}
-			r++;
 		}
-		return r;
+
+		if (from[ev] == null) return 0;
+		for (long v = ev; v != sv; v = from[v][0])
+		{
+			var e = from[v];
+			e[2] -= minFlow[ev];
+			map[e[1]][(int)e[3]][2] += minFlow[ev];
+		}
+		return minFlow[ev];
 	}
 }
