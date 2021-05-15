@@ -14,11 +14,12 @@ class D
 		var sv = h + w;
 		var ev = sv + 1;
 
-		var es = new List<long[]>();
-		es.AddRange(Enumerable.Range(0, h).Select(i => new[] { sv, i, 1L }));
-		es.AddRange(Enumerable.Range(0, w).Select(j => new[] { h + j, ev, 1L }));
+		var rs = Enumerable.Range(0, h).Select(i => new[] { sv, i, 1L }).ToArray();
+		var cs = Enumerable.Range(0, w).Select(j => new[] { h + j, ev, 1L }).ToArray();
 
 		var d = new Dictionary<int, List<long[]>>();
+		var dr = new Dictionary<int, HashSet<int>>();
+		var dc = new Dictionary<int, HashSet<int>>();
 
 		for (int i = 0; i < h; i++)
 		{
@@ -27,23 +28,39 @@ class D
 				var k = a[i][j];
 				if (k == 0) continue;
 
-				if (!d.ContainsKey(k)) d[k] = new List<long[]>();
+				if (!d.ContainsKey(k))
+				{
+					d[k] = new List<long[]>();
+					dr[k] = new HashSet<int>();
+					dc[k] = new HashSet<int>();
+				}
+
 				d[k].Add(new[] { i, h + j, 1L });
+				dr[k].Add(i);
+				dc[k].Add(j);
 			}
 		}
 
 		var r = 0L;
 
-		foreach (var es2 in d.Values)
+		foreach (var (k, es) in d)
 		{
-			if (es2.Count == 1)
+			if (es.Count == 1)
 			{
 				r++;
 				continue;
 			}
 
-			es2.AddRange(es);
-			r += MaxFlow(ev, sv, ev, es2.ToArray());
+			foreach (var i in dr[k])
+			{
+				es.Add(rs[i]);
+			}
+			foreach (var j in dc[k])
+			{
+				es.Add(cs[j]);
+			}
+
+			r += MaxFlow(ev, sv, ev, es.ToArray());
 		}
 		Console.WriteLine(r);
 	}
