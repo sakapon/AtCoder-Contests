@@ -13,12 +13,12 @@ class A
 		Console.WriteLine(Kruskal(h[0], es).Sum(e => e[2]));
 	}
 
-	static int[][] Kruskal(int n, int[][] es)
+	static int[][] Kruskal(int n, int[][] ues)
 	{
 		var uf = new UF(n);
 		var minEdges = new List<int[]>();
 
-		foreach (var e in es.OrderBy(e => e[2]))
+		foreach (var e in ues.OrderBy(e => e[2]))
 		{
 			if (uf.AreUnited(e[0], e[1])) continue;
 			uf.Unite(e[0], e[1]);

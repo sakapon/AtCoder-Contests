@@ -10,26 +10,26 @@ class A2
 		var h = Read();
 		var es = Array.ConvertAll(new bool[h[1]], _ => Read());
 
-		Console.WriteLine(Prim(h[0], es, 0).Sum(e => e[2]));
+		Console.WriteLine(Prim(h[0], 0, es).Sum(e => e[2]));
 	}
 
-	static int[][] Prim(int n, int[][] es, int sv)
+	static int[][] Prim(int n, int root, int[][] ues) => Prim(n, root, ToMap(n, ues, false));
+	static int[][] Prim(int n, int root, List<int[]>[] map)
 	{
-		var map = ToMap(n, es, false);
 		var u = new bool[n];
-		u[sv] = true;
-		var pq = PQ<int[]>.Create(e => e[2], map[sv].ToArray());
+		u[root] = true;
+		var q = PQ<int[]>.Create(e => e[2], map[root].ToArray());
 		var minEdges = new List<int[]>();
 
-		while (pq.Count > 0 && minEdges.Count < n)
+		while (q.Count > 0 && minEdges.Count < n - 1)
 		{
-			var e = pq.Pop();
+			var e = q.Pop();
 			if (u[e[1]]) continue;
 			u[e[1]] = true;
 			minEdges.Add(e);
 			foreach (var ne in map[e[1]])
 				if (ne[1] != e[0])
-					pq.Push(ne);
+					q.Push(ne);
 		}
 		return minEdges.ToArray();
 	}
