@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using CoderLib6.Trees;
 
-namespace CoderLib6.Graphs
+namespace CoderLib6.Graphs.Arrays
 {
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/12/ALDS1_12_A
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/2/GRL_2_A
-	static class SpanningTree
+	static class SpanningTreeHelper
 	{
 		// n: 頂点の個数
 		// 結果は undirected
