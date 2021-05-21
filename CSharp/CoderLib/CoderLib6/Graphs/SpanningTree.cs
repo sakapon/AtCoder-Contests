@@ -6,12 +6,14 @@ using CoderLib6.Trees;
 namespace CoderLib6.Graphs
 {
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/12/ALDS1_12_A
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/2/GRL_2_A
 	static class SpanningTree
 	{
-		// n: 最後の番号
+		// n: 頂点の個数
+		// 結果は undirected
 		static int[][] Kruskal(int n, int[][] es)
 		{
-			var uf = new UF(n + 1);
+			var uf = new UF(n);
 			var minEdges = new List<int[]>();
 
 			foreach (var e in es.OrderBy(e => e[2]))
@@ -23,19 +25,20 @@ namespace CoderLib6.Graphs
 			return minEdges.ToArray();
 		}
 
-		// n: 最後の番号
-		static int[][] Prim(int n, int sv, int[][] es)
+		// n: 頂点の個数
+		// 結果は directed
+		static int[][] Prim(int n, int[][] es, int sv)
 		{
-			var map = Array.ConvertAll(new int[n + 1], _ => new List<int[]>());
+			var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
 			foreach (var e in es)
 			{
 				map[e[0]].Add(new[] { e[0], e[1], e[2] });
 				map[e[1]].Add(new[] { e[1], e[0], e[2] });
 			}
 
-			var u = new bool[n + 1];
-			u[sv] = true;
+			var u = new bool[n];
 			var pq = PQ<int[]>.Create(e => e[2]);
+			u[sv] = true;
 			pq.PushRange(map[sv].ToArray());
 			var minEdges = new List<int[]>();
 

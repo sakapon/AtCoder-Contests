@@ -4,25 +4,19 @@ using System.Linq;
 
 class A2
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
 	{
 		var h = Read();
-		var es = new int[h[1]].Select(_ => Read()).ToArray();
+		var es = Array.ConvertAll(new bool[h[1]], _ => Read());
 
-		Console.WriteLine(Prim(h[0] - 1, 0, es).Sum(e => e[2]));
+		Console.WriteLine(Prim(h[0], es, 0).Sum(e => e[2]));
 	}
 
-	static int[][] Prim(int n, int sv, int[][] es)
+	static int[][] Prim(int n, int[][] es, int sv)
 	{
-		var map = Array.ConvertAll(new int[n + 1], _ => new List<int[]>());
-		foreach (var e in es)
-		{
-			map[e[0]].Add(new[] { e[0], e[1], e[2] });
-			map[e[1]].Add(new[] { e[1], e[0], e[2] });
-		}
-
-		var u = new bool[n + 1];
+		var map = ToMap(n, es, false);
+		var u = new bool[n];
 		u[sv] = true;
 		var pq = PQ<int[]>.Create(e => e[2], map[sv].ToArray());
 		var minEdges = new List<int[]>();
@@ -38,6 +32,17 @@ class A2
 					pq.Push(ne);
 		}
 		return minEdges.ToArray();
+	}
+
+	static List<int[]>[] ToMap(int n, int[][] es, bool directed)
+	{
+		var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
+		foreach (var e in es)
+		{
+			map[e[0]].Add(e);
+			if (!directed) map[e[1]].Add(new[] { e[1], e[0], e[2] });
+		}
+		return map;
 	}
 }
 

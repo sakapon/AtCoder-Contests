@@ -4,11 +4,11 @@ using System.Linq;
 
 class A
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
 	{
 		var h = Read();
-		var es = new int[h[1]].Select(_ => Read()).ToArray();
+		var es = Array.ConvertAll(new bool[h[1]], _ => Read());
 
 		Console.WriteLine(Kruskal(h[0], es).Sum(e => e[2]));
 	}
