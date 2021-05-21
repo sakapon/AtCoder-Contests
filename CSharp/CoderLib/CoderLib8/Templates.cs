@@ -18,6 +18,7 @@ namespace CoderLib8
 
 		static double[] ReadD() => Array.ConvertAll(Console.ReadLine().Split(), double.Parse);
 		static (double, double) Read2D() { var a = ReadD(); return (a[0], a[1]); }
+		static (double, double, double) Read3D() { var a = ReadD(); return (a[0], a[1], a[2]); }
 
 		static decimal[] ReadDec() => Array.ConvertAll(Console.ReadLine().Split(), decimal.Parse);
 		static (decimal, decimal) Read2Dec() { var a = ReadDec(); return (a[0], a[1]); }
