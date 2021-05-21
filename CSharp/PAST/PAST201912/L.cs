@@ -1,50 +1,72 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 class L
 {
-	struct R
+	struct Edge
 	{
 		public int i, j;
-		public double Cost;
+		public double cost;
 	}
 
-	static void Main()
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
+	static void Main() => Console.WriteLine(Solve());
+	static object Solve()
 	{
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		n = h[0]; m = h[1];
-		ps1 = new int[n].Select(_ => read()).ToArray();
-		ps2 = new int[m].Select(_ => read()).ToArray();
+		var (n, m) = Read2();
+		var ps1 = Array.ConvertAll(new bool[n], _ => Read());
+		var ps2 = Array.ConvertAll(new bool[m], _ => Read());
 
-		Console.WriteLine(Enumerable.Range(0, (int)Math.Pow(2, m)).Min(i => Build(i)));
-	}
-
-	static int n, m;
-	static int[][] ps1, ps2;
-
-	static double Build(int f)
-	{
-		var fs = new BitArray(new[] { f });
-		var ps = ps1.Concat(ps2.Where((x, i) => fs[i])).ToArray();
-
-		var rs = new List<R>();
-		for (int i = 0; i < ps.Length; i++)
-			for (int j = i + 1; j < ps.Length; j++)
-				rs.Add(new R { i = i, j = j, Cost = Norm(ps[i], ps[j]) });
-		rs.Sort((x, y) => Math.Sign(x.Cost - y.Cost));
-
-		var uf = new UF(ps.Length);
-		var c = 0.0;
-		foreach (var r in rs)
+		var r = double.MaxValue;
+		AllCombination(ps2, ps3 =>
 		{
-			if (uf.AreUnited(r.i, r.j)) continue;
-			uf.Unite(r.i, r.j);
-			c += r.Cost;
+			var ps = ps1.Concat(ps3).ToArray();
+			var nm = ps.Length;
+
+			var es = new List<Edge>();
+			for (int i = 0; i < nm; i++)
+				for (int j = i + 1; j < nm; j++)
+					es.Add(new Edge { i = i, j = j, cost = Norm(ps[i], ps[j]) });
+
+			var mes = Kruskal(nm, es.ToArray());
+			r = Math.Min(r, mes.Sum(e => e.cost));
+
+			return false;
+		});
+
+		return r;
+	}
+
+	static void AllCombination<T>(T[] values, Func<T[], bool> action)
+	{
+		var n = values.Length;
+		if (n > 30) throw new InvalidOperationException();
+		var pn = 1 << n;
+
+		var rn = new int[n];
+		for (int i = 0; i < n; ++i) rn[i] = i;
+
+		for (int x = 0; x < pn; ++x)
+		{
+			var indexes = Array.FindAll(rn, i => (x & (1 << i)) != 0);
+			if (action(Array.ConvertAll(indexes, i => values[i]))) break;
 		}
-		return c;
+	}
+
+	static Edge[] Kruskal(int n, Edge[] ues)
+	{
+		var uf = new UF(n);
+		var mes = new List<Edge>();
+
+		foreach (var e in ues.OrderBy(e => e.cost))
+		{
+			if (uf.AreUnited(e.i, e.j)) continue;
+			uf.Unite(e.i, e.j);
+			mes.Add(e);
+		}
+		return mes.ToArray();
 	}
 
 	static double Norm(int[] p, int[] q)
