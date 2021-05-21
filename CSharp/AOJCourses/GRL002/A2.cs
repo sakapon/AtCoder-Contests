@@ -19,19 +19,19 @@ class A2
 		var u = new bool[n];
 		u[root] = true;
 		var q = PQ<int[]>.Create(e => e[2], map[root].ToArray());
-		var minEdges = new List<int[]>();
+		var mes = new List<int[]>();
 
-		while (q.Count > 0 && minEdges.Count < n - 1)
+		while (q.Count > 0 && mes.Count < n - 1)
 		{
 			var e = q.Pop();
 			if (u[e[1]]) continue;
 			u[e[1]] = true;
-			minEdges.Add(e);
+			mes.Add(e);
 			foreach (var ne in map[e[1]])
 				if (ne[1] != e[0])
 					q.Push(ne);
 		}
-		return minEdges.ToArray();
+		return mes.ToArray();
 	}
 
 	static List<int[]>[] ToMap(int n, int[][] es, bool directed)

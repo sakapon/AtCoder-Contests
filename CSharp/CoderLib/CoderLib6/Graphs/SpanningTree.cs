@@ -14,15 +14,18 @@ namespace CoderLib6.Graphs
 		static int[][] Kruskal(int n, int[][] ues)
 		{
 			var uf = new UF(n);
-			var minEdges = new List<int[]>();
+			var mes = new List<int[]>();
 
 			foreach (var e in ues.OrderBy(e => e[2]))
 			{
 				if (uf.AreUnited(e[0], e[1])) continue;
 				uf.Unite(e[0], e[1]);
-				minEdges.Add(e);
+				mes.Add(e);
+				// 実際の頂点数に注意。
+				// あまり実行速度に影響しませんでした。
+				//if (mes.Count == n - 1) break;
 			}
-			return minEdges.ToArray();
+			return mes.ToArray();
 		}
 
 		// n: 頂点の個数
@@ -34,20 +37,20 @@ namespace CoderLib6.Graphs
 			var q = PQ<int[]>.Create(e => e[2]);
 			u[root] = true;
 			q.PushRange(map[root].ToArray());
-			var minEdges = new List<int[]>();
+			var mes = new List<int[]>();
 
-			// 実際の頂点数に注意
-			while (q.Count > 0 && minEdges.Count < n - 1)
+			// 実際の頂点数に注意。
+			while (q.Count > 0 && mes.Count < n - 1)
 			{
 				var e = q.Pop();
 				if (u[e[1]]) continue;
 				u[e[1]] = true;
-				minEdges.Add(e);
+				mes.Add(e);
 				foreach (var ne in map[e[1]])
 					if (ne[1] != e[0])
 						q.Push(ne);
 			}
-			return minEdges.ToArray();
+			return mes.ToArray();
 		}
 
 		static List<int[]>[] ToMap(int n, int[][] es, bool directed)

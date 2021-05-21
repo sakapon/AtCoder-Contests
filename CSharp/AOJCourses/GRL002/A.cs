@@ -16,15 +16,15 @@ class A
 	static int[][] Kruskal(int n, int[][] ues)
 	{
 		var uf = new UF(n);
-		var minEdges = new List<int[]>();
+		var mes = new List<int[]>();
 
 		foreach (var e in ues.OrderBy(e => e[2]))
 		{
 			if (uf.AreUnited(e[0], e[1])) continue;
 			uf.Unite(e[0], e[1]);
-			minEdges.Add(e);
+			mes.Add(e);
 		}
-		return minEdges.ToArray();
+		return mes.ToArray();
 	}
 }
 
