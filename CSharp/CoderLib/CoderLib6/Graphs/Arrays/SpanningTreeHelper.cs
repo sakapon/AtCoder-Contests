@@ -7,11 +7,12 @@ namespace CoderLib6.Graphs.Arrays
 {
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/12/ALDS1_12_A
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/2/GRL_2_A
-	static class SpanningTreeHelper
+	// Test: https://atcoder.jp/contests/past201912-open/tasks/past201912_l
+	public static class SpanningTreeHelper
 	{
 		// n: 頂点の個数
 		// 結果は undirected
-		static int[][] Kruskal(int n, int[][] ues)
+		public static int[][] Kruskal(int n, int[][] ues)
 		{
 			var uf = new UF(n);
 			var mes = new List<int[]>();
@@ -22,7 +23,7 @@ namespace CoderLib6.Graphs.Arrays
 				uf.Unite(e[0], e[1]);
 				mes.Add(e);
 				// 実際の頂点数に注意。
-				// あまり実行速度に影響しませんでした。
+				// あまり実行速度に影響しないようです。
 				//if (mes.Count == n - 1) break;
 			}
 			return mes.ToArray();
@@ -30,8 +31,8 @@ namespace CoderLib6.Graphs.Arrays
 
 		// n: 頂点の個数
 		// 結果は directed
-		static int[][] Prim(int n, int root, int[][] ues) => Prim(n, root, ToMap(n, ues, false));
-		static int[][] Prim(int n, int root, List<int[]>[] map)
+		public static int[][] Prim(int n, int root, int[][] ues) => Prim(n, root, ToMap(n, ues, false));
+		public static int[][] Prim(int n, int root, List<int[]>[] map)
 		{
 			var u = new bool[n];
 			var q = PQ<int[]>.Create(e => e[2]);
