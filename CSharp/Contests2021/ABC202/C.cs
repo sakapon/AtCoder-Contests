@@ -11,11 +11,26 @@ class C
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
 		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var b = Read();
+		var c = Read();
 
-		return string.Join(" ", a);
+		var ac = Tally(a, n);
+
+		var r = 0L;
+
+		for (int i = 0; i < n; i++)
+		{
+			r += ac[b[c[i] - 1]];
+		}
+
+		return r;
+	}
+
+	static int[] Tally(int[] a, int max)
+	{
+		var r = new int[max + 1];
+		foreach (var x in a) ++r[x];
+		return r;
 	}
 }
