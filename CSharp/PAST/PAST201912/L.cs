@@ -4,12 +4,6 @@ using System.Linq;
 
 class L
 {
-	struct Edge
-	{
-		public int i, j;
-		public double cost;
-	}
-
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static void Main() => Console.WriteLine(Solve());
@@ -39,6 +33,12 @@ class L
 		return r;
 	}
 
+	struct Edge
+	{
+		public int i, j;
+		public double cost;
+	}
+
 	static void AllCombination<T>(T[] values, Func<T[], bool> action)
 	{
 		var n = values.Length;
@@ -55,6 +55,12 @@ class L
 		}
 	}
 
+	static double Norm(int[] p, int[] q)
+	{
+		int dx = p[0] - q[0], dy = p[1] - q[1];
+		return (p[2] == q[2] ? 1 : 10) * Math.Sqrt(dx * dx + dy * dy);
+	}
+
 	static Edge[] Kruskal(int n, Edge[] ues)
 	{
 		var uf = new UF(n);
@@ -67,12 +73,6 @@ class L
 			mes.Add(e);
 		}
 		return mes.ToArray();
-	}
-
-	static double Norm(int[] p, int[] q)
-	{
-		int dx = p[0] - q[0], dy = p[1] - q[1];
-		return (p[2] == q[2] ? 1 : 10) * Math.Sqrt(dx * dx + dy * dy);
 	}
 }
 

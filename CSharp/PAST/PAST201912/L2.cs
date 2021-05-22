@@ -1,58 +1,97 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 class L2
 {
-	struct R
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
+	static void Main() => Console.WriteLine(Solve());
+	static object Solve()
+	{
+		var (n, m) = Read2();
+		var ps1 = Array.ConvertAll(new bool[n], _ => Read());
+		var ps2 = Array.ConvertAll(new bool[m], _ => Read());
+
+		var r = double.MaxValue;
+		AllCombination(ps2, ps3 =>
+		{
+			var ps = ps1.Concat(ps3).ToArray();
+			var nm = ps.Length;
+
+			var es = new List<Edge>();
+			for (int i = 0; i < nm; i++)
+				for (int j = i + 1; j < nm; j++)
+					es.Add(new Edge { i = i, j = j, cost = Norm(ps[i], ps[j]) });
+
+			var mes = Prim(nm, 0, es.ToArray());
+			r = Math.Min(r, mes.Sum(e => e.cost));
+
+			return false;
+		});
+
+		return r;
+	}
+
+	struct Edge
 	{
 		public int i, j;
-		public double Cost;
+		public double cost;
 	}
 
-	static void Main()
+	static void AllCombination<T>(T[] values, Func<T[], bool> action)
 	{
-		Func<int[]> read = () => Console.ReadLine().Split().Select(int.Parse).ToArray();
-		var h = read();
-		n = h[0]; m = h[1];
-		ps1 = new int[n].Select(_ => read()).ToArray();
-		ps2 = new int[m].Select(_ => read()).ToArray();
+		var n = values.Length;
+		if (n > 30) throw new InvalidOperationException();
+		var pn = 1 << n;
 
-		Console.WriteLine(Enumerable.Range(0, (int)Math.Pow(2, m)).Min(i => Build(i)));
-	}
+		var rn = new int[n];
+		for (int i = 0; i < n; ++i) rn[i] = i;
 
-	static int n, m;
-	static int[][] ps1, ps2;
-
-	static double Build(int f)
-	{
-		var fs = new BitArray(new[] { f });
-		var ps = ps1.Concat(ps2.Where((x, i) => fs[i])).ToArray();
-		Func<int, int, R> ToR = (i, j) => new R { i = i, j = j, Cost = Norm(ps[i], ps[j]) };
-
-		var c = 0.0;
-		var pq = PQ<R>.Create(x => x.Cost, Enumerable.Range(1, ps.Length - 1).Select(i => ToR(0, i)).ToArray());
-		var u = new bool[ps.Length];
-		u[0] = true;
-		while (pq.Any)
+		for (int x = 0; x < pn; ++x)
 		{
-			var r = pq.Pop();
-			if (u[r.i] && u[r.j]) continue;
-
-			c += r.Cost;
-			var k = u[r.i] ? r.j : r.i;
-			for (int i = 1; i < ps.Length; i++)
-				if (!u[i]) pq.Push(ToR(k, i));
-			u[k] = true;
+			var indexes = Array.FindAll(rn, i => (x & (1 << i)) != 0);
+			if (action(Array.ConvertAll(indexes, i => values[i]))) break;
 		}
-		return c;
 	}
 
 	static double Norm(int[] p, int[] q)
 	{
 		int dx = p[0] - q[0], dy = p[1] - q[1];
 		return (p[2] == q[2] ? 1 : 10) * Math.Sqrt(dx * dx + dy * dy);
+	}
+
+	static Edge[] Prim(int n, int root, Edge[] ues) => Prim(n, root, ToMap(n, ues, false));
+	static Edge[] Prim(int n, int root, List<Edge>[] map)
+	{
+		var u = new bool[n];
+		var q = PQ<Edge>.Create(e => e.cost, map[root].ToArray());
+		u[root] = true;
+		var mes = new List<Edge>();
+
+		// 実際の頂点数に注意。
+		while (q.Count > 0 && mes.Count < n - 1)
+		{
+			var e = q.Pop();
+			if (u[e.j]) continue;
+			u[e.j] = true;
+			mes.Add(e);
+			foreach (var ne in map[e.j])
+				if (ne.j != e.i)
+					q.Push(ne);
+		}
+		return mes.ToArray();
+	}
+
+	static List<Edge>[] ToMap(int n, Edge[] es, bool directed)
+	{
+		var map = Array.ConvertAll(new bool[n], _ => new List<Edge>());
+		foreach (var e in es)
+		{
+			map[e.i].Add(e);
+			if (!directed) map[e.j].Add(new Edge { i = e.j, j = e.i, cost = e.cost });
+		}
+		return map;
 	}
 }
 
