@@ -1,46 +1,33 @@
 ﻿using System;
-using System.Text;
 
-class D
+class D2
 {
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static (long, long, long) Read3L() { var a = ReadL(); return (a[0], a[1], a[2]); }
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var (A, B, K) = ((int, int, long))Read3L();
+		var (a, b, k) = ((int, int, long))Read3L();
 
 		var ncr = GetNcr();
 
-		var sb = new StringBuilder();
-		Rec(A, B, K);
-		return sb.ToString();
-
-		void Rec(int a, int b, long k)
+		var r = "";
+		while (a > 0 || b > 0)
 		{
-			if (a == 0)
-			{
-				sb.Append('b', b);
-				return;
-			}
-			if (b == 0)
-			{
-				sb.Append('a', a);
-				return;
-			}
-
-			var c = ncr[a + b - 1, a - 1];
+			var c = a == 0 ? 0 : ncr[a + b - 1, a - 1];
 			if (k <= c)
 			{
-				sb.Append('a');
-				Rec(a - 1, b, k);
+				r += 'a';
+				a--;
 			}
 			else
 			{
-				sb.Append('b');
-				Rec(a, b - 1, k - c);
+				r += 'b';
+				b--;
+				k -= c;
 			}
 		}
+		return r;
 	}
 
 	static long[,] GetNcr()
