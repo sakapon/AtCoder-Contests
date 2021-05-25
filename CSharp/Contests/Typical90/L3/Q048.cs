@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 class Q048
@@ -12,20 +11,6 @@ class Q048
 		var (n, k) = Read2();
 		var ps = Array.ConvertAll(new bool[n], _ => Read2());
 
-		var r = 0L;
-		var q = PQ<(int i, int x)>.Create(_ => _.x, true);
-		q.PushRange(ps.Select((_, i) => (i, _.b)).ToArray());
-
-		for (int j = 0; j < k; j++)
-		{
-			var (i, x) = q.Pop();
-			r += x;
-			if (i != -1)
-			{
-				var (a, b) = ps[i];
-				q.Push((-1, a - b));
-			}
-		}
-		return r;
+		return ps.Select(p => (long)p.b).Concat(ps.Select(p => (long)p.a - p.b)).OrderBy(x => -x).Take(k).Sum();
 	}
 }

@@ -36,11 +36,11 @@ class Q045B
 		var dp = NewArray2(1 << n, k + 1, max);
 		dp[0][0] = 0;
 
-		for (int x = 0; x < 1 << n; x++)
+		for (int x = 1; x < 1 << n; x++)
 		{
-			for (int y = 0; y < x; y++)
+			// y ⊂ x (真部分集合)
+			for (int y = 0; y < x; y = (y - x) & x)
 			{
-				if ((x | y) != x) continue;
 				var y2 = x & ~y;
 
 				for (int j = 1; j <= k; j++)
