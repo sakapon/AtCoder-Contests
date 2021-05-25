@@ -30,6 +30,27 @@ namespace CoderLib8.Numerics
 			return t * t * PowR(b, i % 2);
 		}
 
+		// x が大きすぎると誤差が生じます。
+		static bool IsSquareNumber(long x)
+		{
+			var r = (long)Math.Sqrt(x);
+			return r * r == x;
+		}
+
+		// 66_C_33 は Int64 の範囲内です。
+		static long[,] GetNcrs()
+		{
+			var n = 66;
+			var dp = new long[n + 1, n + 1];
+			for (int i = 0; i <= n; i++)
+			{
+				dp[i, 0] = dp[i, i] = 1;
+				for (int j = 1; j < i; j++)
+					dp[i, j] = dp[i - 1, j - 1] + dp[i - 1, j];
+			}
+			return dp;
+		}
+
 		// n >= 0
 		public static long Factorial(int n) { for (long x = 1, i = 1; ; x *= ++i) if (i >= n) return x; }
 		public static long Npr(int n, int r)

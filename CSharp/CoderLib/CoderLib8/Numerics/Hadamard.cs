@@ -3,6 +3,7 @@
 namespace CoderLib8.Numerics
 {
 	// Test: https://yukicoder.me/problems/no/1304
+	// From: https://kazuma8128.hatenablog.com/entry/2018/05/31/144519
 	public static class Hadamard
 	{
 		const long M = 998244353;

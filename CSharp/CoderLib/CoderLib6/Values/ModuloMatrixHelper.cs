@@ -7,21 +7,21 @@ namespace CoderLib6.Values
 	{
 		const long M = 1000000007;
 
-		static long[,] Unit(int n)
+		public static long[,] Unit(int n)
 		{
 			var r = new long[n, n];
 			for (int i = 0; i < n; i++) r[i, i] = 1;
 			return r;
 		}
 
-		static long[,] MPow(long[,] b, long i)
+		public static long[,] MPow(long[,] b, long i)
 		{
 			var r = Unit(b.GetLength(0));
 			for (; i != 0; b = MMul(b, b), i >>= 1) if ((i & 1) != 0) r = MMul(r, b);
 			return r;
 		}
 
-		static long[,] MMul(long[,] a, long[,] b)
+		public static long[,] MMul(long[,] a, long[,] b)
 		{
 			var n = a.GetLength(0);
 			var r = new long[n, n];
@@ -32,7 +32,7 @@ namespace CoderLib6.Values
 			return r;
 		}
 
-		static long[] MMul(long[,] a, long[] v)
+		public static long[] MMul(long[,] a, long[] v)
 		{
 			var n = v.Length;
 			var r = new long[n];
