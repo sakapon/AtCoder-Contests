@@ -1,6 +1,6 @@
 ﻿using System;
 
-class Q045B
+class Q045A
 {
 	const long max = 1L << 60;
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
@@ -38,16 +38,16 @@ class Q045B
 
 		for (int x = 0; x < 1 << n; x++)
 		{
-			AllSubsets(n, x, y =>
+			AllSupersets(n, x, nx =>
 			{
-				if (y == x) return false;
-				var y2 = x & ~y;
+				if (nx == x) return false;
+				var y = nx & ~x;
 
-				for (int j = 1; j <= k; j++)
+				for (int j = 0; j < k; j++)
 				{
-					if (dp[y][j - 1] == max) continue;
+					if (dp[x][j] == max) continue;
 
-					dp[x][j] = Math.Min(dp[x][j], Math.Max(dp[y][j - 1], d[y2]));
+					dp[nx][j + 1] = Math.Min(dp[nx][j + 1], Math.Max(dp[x][j], d[y]));
 				}
 
 				return false;
@@ -58,12 +58,11 @@ class Q045B
 
 	static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
 
-	static void AllSubsets(int n, int s, Func<int, bool> action)
+	static void AllSupersets(int n, int s, Func<int, bool> action)
 	{
-		for (int x = 0; ; x = (x - s) & s)
+		for (int x = s; x < 1 << n; x = (x + 1) | s)
 		{
 			if (action(x)) break;
-			if (x == s) break;
 		}
 	}
 }

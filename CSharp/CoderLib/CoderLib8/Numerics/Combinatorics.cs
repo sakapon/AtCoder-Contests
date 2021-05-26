@@ -147,6 +147,7 @@ namespace CoderLib8.Numerics
 			return l.ToArray();
 		}
 
+		// Test: https://atcoder.jp/contests/typical90/tasks/typical90_as
 		public static void AllSubsets(int n, int s, Func<int, bool> action)
 		{
 			for (int x = 0; ; x = (x - s) & s)
