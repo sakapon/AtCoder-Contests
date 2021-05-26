@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using CoderLib8.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -87,6 +88,15 @@ namespace CoderLibTest.Numerics
 			Assert.AreEqual(3, Math2.Ncr(3, 2));
 			Assert.AreEqual(1, Math2.Ncr(3, 3));
 			Assert.AreEqual(210, Math2.Ncr(10, 6));
+		}
+
+		[TestMethod]
+		public void PopCount()
+		{
+			for (ulong x = 0; x < 1 << 10; x++)
+				Assert.AreEqual(BitOperations.PopCount(x), Math2.PopCount(x));
+			for (ulong x = 1L << 50; x < (1L << 50) + (1 << 10); x++)
+				Assert.AreEqual(BitOperations.PopCount(x), Math2.PopCount(x));
 		}
 	}
 }
