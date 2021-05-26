@@ -19,6 +19,38 @@ namespace CoderLibTest.Numerics
 		}
 
 		[TestMethod]
+		public void GetNprs()
+		{
+			var npr = Math2.GetNprs();
+			Assert.AreEqual(1, npr[0, 0]);
+			Assert.AreEqual(1, npr[1, 0]);
+			Assert.AreEqual(1, npr[1, 1]);
+			Assert.AreEqual(0, npr[1, 2]);
+			Assert.AreEqual(1, npr[3, 0]);
+			Assert.AreEqual(3, npr[3, 1]);
+			Assert.AreEqual(6, npr[3, 2]);
+			Assert.AreEqual(6, npr[3, 3]);
+			Assert.AreEqual(151200, npr[10, 6]);
+			Assert.AreEqual(2432902008176640000, npr[20, 20]);
+		}
+
+		[TestMethod]
+		public void GetNcrs()
+		{
+			var ncr = Math2.GetNcrs();
+			Assert.AreEqual(1, ncr[0, 0]);
+			Assert.AreEqual(1, ncr[1, 0]);
+			Assert.AreEqual(1, ncr[1, 1]);
+			Assert.AreEqual(0, ncr[1, 2]);
+			Assert.AreEqual(1, ncr[3, 0]);
+			Assert.AreEqual(3, ncr[3, 1]);
+			Assert.AreEqual(3, ncr[3, 2]);
+			Assert.AreEqual(1, ncr[3, 3]);
+			Assert.AreEqual(210, ncr[10, 6]);
+			Assert.AreEqual(7219428434016265740, ncr[66, 33]);
+		}
+
+		[TestMethod]
 		public void Factorial()
 		{
 			Assert.AreEqual(1, Math2.Factorial(0));
