@@ -146,5 +146,52 @@ namespace CoderLib8.Numerics
 			// Without distinct or sort
 			return l.ToArray();
 		}
+
+		public static void AllSubsets(int n, int s, Func<int, bool> action)
+		{
+			for (int x = 0; ; x = (x - s) & s)
+			{
+				if (action(x)) break;
+				if (x == s) break;
+			}
+		}
+		// 逆順
+		//public static void AllSubsets(int n, int s, Func<int, bool> action)
+		//{
+		//	for (int x = s; ; x = (x - 1) & s)
+		//	{
+		//		if (action(x)) break;
+		//		if (x == 0) break;
+		//	}
+		//}
+
+		public static void AllSubsets(int n, int s, Func<bool[], bool> action)
+		{
+			var b = new bool[n];
+			for (int x = 0; ; x = (x - s) & s)
+			{
+				for (int i = 0; i < n; ++i) b[i] = (x & (1 << i)) != 0;
+				if (action(b)) break;
+				if (x == s) break;
+			}
+		}
+
+		public static void AllSupersets(int n, int s, Func<int, bool> action)
+		{
+			for (int x = s; x < 1 << n; x = (x + 1) | s)
+			{
+				if (action(x)) break;
+			}
+		}
+
+		public static void AllSupersets(int n, int s, Func<bool[], bool> action)
+		{
+			var b = new bool[n];
+			for (int x = s; x < 1 << n; x = (x + 1) | s)
+			{
+				for (int i = 0; i < n; ++i) b[i] = (x & (1 << i)) != 0;
+				if (action(b)) break;
+			}
+		}
 	}
 }
