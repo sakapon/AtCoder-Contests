@@ -10,12 +10,19 @@ class D
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var n = long.Parse(Console.ReadLine());
+		var t = long.Parse(Console.ReadLine());
 
-		return string.Join(" ", a);
+		t %= 2 * (n - 1);
+
+		if (t < n - 1)
+		{
+			return 1 + t;
+		}
+		else
+		{
+			t -= n - 1;
+			return n - t;
+		}
 	}
 }

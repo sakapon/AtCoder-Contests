@@ -11,11 +11,23 @@ class F
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var x = ReadL();
+		var y = ReadL();
 
-		return string.Join(" ", a);
+		return GetSum(n, x) + GetSum(n, y);
+	}
+
+	static long GetSum(int n, long[] a)
+	{
+		Array.Sort(a);
+
+		var sum = 0L;
+		var l = 0L;
+		for (int i = 1; i < n; i++)
+		{
+			l++;
+			sum += l * (n - l) * (a[i] - a[i - 1]);
+		}
+		return sum;
 	}
 }

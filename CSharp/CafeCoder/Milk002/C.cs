@@ -10,12 +10,34 @@ class C
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
 		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var x = long.Parse(Console.ReadLine());
 
-		return string.Join(" ", a);
+		var d = Tally(s, '0', 10);
+
+		var r = 0;
+		var t = new int[10];
+		for (long v = 0; v < 100000000000000; v += x)
+		{
+			Array.Clear(t, 0, 10);
+
+			var ok = true;
+			foreach (var c in v.ToString())
+			{
+				var i = c - '0';
+				t[i]++;
+				if (t[i] > d[i]) { ok = false; break; }
+			}
+
+			if (ok) r++;
+		}
+		return r;
+	}
+
+	static int[] Tally(string s, char start = 'A', int count = 26)
+	{
+		var r = new int[count];
+		foreach (var c in s) ++r[c - start];
+		return r;
 	}
 }

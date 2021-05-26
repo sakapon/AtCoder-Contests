@@ -10,12 +10,13 @@ class E
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var n = long.Parse(Console.ReadLine());
 
-		return string.Join(" ", a);
+		var r = 0L;
+		for (int d = 1; d <= n; d++)
+		{
+			r += d * (n / d);
+		}
+		return r;
 	}
 }
