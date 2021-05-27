@@ -6,14 +6,13 @@ class D3
 {
 	static void Main()
 	{
-		long M = 1000000007;
 		var s = Console.ReadLine();
 		var n = s.Length;
 		var q = int.Parse(Console.ReadLine());
 		var ps = new int[q].Select(_ => Console.ReadLine());
 
 		var sa = ManberMyers(s);
-		var rh = new RH(s, M);
+		var rh = new RH(s);
 
 		Func<int, string, RH, int> compare = (i, p, prh) =>
 		{
@@ -25,7 +24,7 @@ class D3
 
 		Func<string, bool> match = p =>
 		{
-			var prh = new RH(p, M);
+			var prh = new RH(p);
 			var order = First(0, n + 1, o => compare(sa[o], p, prh) >= 0);
 			return order <= n && sa[order] + p.Length <= n && rh.Hash(sa[order], p.Length) == prh.Hash(0, p.Length);
 		};
@@ -113,16 +112,20 @@ class D3
 
 class RH
 {
+	const long B = 10007;
+	const long M = 1000000007;
+	static long MInt(long x) => (x %= M) < 0 ? x + M : x;
+
 	string s;
 	int n;
-	long p;
+	long b;
 	long[] pow, pre;
 
-	public RH(string _s, long _p)
+	public RH(string _s, long _b = B)
 	{
 		s = _s;
 		n = s.Length;
-		p = _p;
+		b = _b;
 
 		pow = new long[n + 1];
 		pow[0] = 1;
@@ -130,18 +133,19 @@ class RH
 
 		for (int i = 0; i < n; ++i)
 		{
-			pow[i + 1] = pow[i] * p;
-			pre[i + 1] = pre[i] * p + s[i];
+			pow[i + 1] = pow[i] * b % M;
+			pre[i + 1] = (pre[i] * b + s[i]) % M;
 		}
 	}
 
-	public long Hash(int start, int count) => pre[start + count] - pre[start] * pow[count];
+	public long Hash(int start, int count) => MInt(pre[start + count] - pre[start] * pow[count]);
+	public long Hash2(int minIn, int maxEx) => MInt(pre[maxEx] - pre[minIn] * pow[maxEx - minIn]);
 
-	public static long Hash(string s, long p) => Hash(s, 0, s.Length, p);
-	public static long Hash(string s, int start, int count, long p)
+	public static long Hash(string s, long b = B) => Hash(s, 0, s.Length, b);
+	public static long Hash(string s, int start, int count, long b = B)
 	{
 		var h = 0L;
-		for (int i = 0; i < count; ++i) h = h * p + s[start + i];
+		for (int i = 0; i < count; ++i) h = (h * b + s[start + i]) % M;
 		return h;
 	}
 }
