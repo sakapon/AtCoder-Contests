@@ -7,8 +7,9 @@ class B2
 	static object Solve()
 	{
 		var s = Console.ReadLine();
+		var m = s.Length % 3;
 
-		var q = s.Reverse().SelectMany((c, i) => i > 0 && i % 3 == 0 ? new[] { ',', c } : new[] { c }).Reverse();
+		var q = s.SelectMany((c, i) => i > 0 && i % 3 == m ? new[] { ',', c } : new[] { c });
 		return string.Join("", q);
 	}
 }
