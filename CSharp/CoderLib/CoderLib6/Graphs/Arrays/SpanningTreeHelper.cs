@@ -8,6 +8,7 @@ namespace CoderLib6.Graphs.Arrays
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/12/ALDS1_12_A
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/2/GRL_2_A
 	// Test: https://atcoder.jp/contests/past201912-open/tasks/past201912_l
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_aw
 	public static class SpanningTreeHelper
 	{
 		// n: 頂点の個数
