@@ -6,24 +6,34 @@ namespace CoderLib6.Collections
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/5/DSL_5_A
 	class StaticRAQ
 	{
+		int n;
 		long[] d;
-		public StaticRAQ(int n) { d = new long[n]; }
+		public StaticRAQ(int _n) { n = _n; d = new long[n]; }
 
 		// O(1)
 		// 範囲外のインデックスも可。
 		public void Add(int l_in, int r_ex, long v)
 		{
+			if (r_ex < 0 || n <= l_in) return;
 			d[Math.Max(0, l_in)] += v;
-			if (r_ex < d.Length) d[r_ex] -= v;
+			if (r_ex < n) d[r_ex] -= v;
 		}
 
 		// O(n)
 		public long[] GetAll()
 		{
-			var a = new long[d.Length];
+			var a = new long[n];
 			a[0] = d[0];
-			for (int i = 1; i < d.Length; ++i) a[i] = a[i - 1] + d[i];
+			for (int i = 1; i < n; ++i) a[i] = a[i - 1] + d[i];
 			return a;
+		}
+
+		// O(n)
+		// d をそのまま使います。
+		public long[] GetAll0()
+		{
+			for (int i = 1; i < n; ++i) d[i] += d[i - 1];
+			return d;
 		}
 	}
 
