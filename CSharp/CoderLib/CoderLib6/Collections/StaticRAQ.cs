@@ -2,13 +2,13 @@
 
 namespace CoderLib6.Collections
 {
-	// いもす法
+	// いもす法 (範囲に対する加算)
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/5/DSL_5_A
-	class StaticRAQ
+	class StaticRAQ1
 	{
 		int n;
 		long[] d;
-		public StaticRAQ(int _n) { n = _n; d = new long[n]; }
+		public StaticRAQ1(int _n) { n = _n; d = new long[n]; }
 
 		// O(1)
 		// 範囲外のインデックスも可。
@@ -38,6 +38,7 @@ namespace CoderLib6.Collections
 	}
 
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/5/DSL_5_B
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_ab
 	class StaticRAQ2
 	{
 		int nx, ny;
@@ -48,6 +49,8 @@ namespace CoderLib6.Collections
 		// 範囲外のインデックスも可。
 		public void Add(int x1, int y1, int x2, int y2, long v)
 		{
+			if (x2 < 0 || nx <= x1) return;
+			if (y2 < 0 || ny <= y1) return;
 			d[Math.Max(0, x1), Math.Max(0, y1)] += v;
 			if (y2 < ny) d[Math.Max(0, x1), y2] -= v;
 			if (x2 < nx) d[x2, Math.Max(0, y1)] -= v;

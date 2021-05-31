@@ -41,6 +41,8 @@ class StaticRAQ2
 	// 範囲外のインデックスも可。
 	public void Add(int x1, int y1, int x2, int y2, long v)
 	{
+		if (x2 < 0 || nx <= x1) return;
+		if (y2 < 0 || ny <= y1) return;
 		d[Math.Max(0, x1), Math.Max(0, y1)] += v;
 		if (y2 < ny) d[Math.Max(0, x1), y2] -= v;
 		if (x2 < nx) d[x2, Math.Max(0, y1)] -= v;
