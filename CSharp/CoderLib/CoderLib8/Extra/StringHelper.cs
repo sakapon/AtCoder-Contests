@@ -31,7 +31,7 @@ namespace CoderLib8.Extra
 		}
 
 		// ()(), (()), (()()), etc.
-		static bool IsRegularBracket(string s)
+		static bool IsRegularBracketSeq(string s)
 		{
 			var t = 0;
 			foreach (var c in s)

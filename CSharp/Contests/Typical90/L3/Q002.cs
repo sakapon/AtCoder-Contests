@@ -12,7 +12,7 @@ class Q002
 			var cs = Array.ConvertAll(b, f => f ? ')' : '(');
 			Array.Reverse(cs);
 			var s = new string(cs);
-			if (IsRegularBracket(s)) Console.WriteLine(s);
+			if (IsRegularBracketSeq(s)) Console.WriteLine(s);
 			return false;
 		});
 	}
@@ -30,7 +30,7 @@ class Q002
 		}
 	}
 
-	static bool IsRegularBracket(string s)
+	static bool IsRegularBracketSeq(string s)
 	{
 		var t = 0;
 		foreach (var c in s)
