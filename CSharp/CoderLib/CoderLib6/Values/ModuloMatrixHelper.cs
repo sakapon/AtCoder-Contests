@@ -2,7 +2,7 @@
 
 namespace CoderLib6.Values
 {
-	// Square Matrix
+	// Uses Square Matrices
 	static class ModuloMatrixHelper
 	{
 		const long M = 1000000007;

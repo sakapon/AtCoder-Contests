@@ -33,6 +33,7 @@ namespace CoderLib8.Numerics
 			}
 		}
 
+		// r が小さい場合、for の r 重ループを使います。
 		public static void Combination<T>(T[] values, int r, Action<T[]> action)
 		{
 			var n = values.Length;
@@ -55,6 +56,7 @@ namespace CoderLib8.Numerics
 		}
 
 		// n^r 通り
+		// r が小さい場合、for の r 重ループを使います。
 		public static void Power<T>(T[] values, int r, Action<T[]> action)
 		{
 			var n = values.Length;
