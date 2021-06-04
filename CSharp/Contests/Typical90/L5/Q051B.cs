@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-class Q051
+class Q051B
 {
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static (long, long, long) Read3L() { var a = ReadL(); return (a[0], a[1], a[2]); }
@@ -37,42 +37,40 @@ class Q051
 
 	static long[][] GetAll(int n, long[] a)
 	{
-		var map = Array.ConvertAll(new bool[n + 1], _ => new List<long>());
+		var r = new long[n + 1][];
 
-		AllBoolCombination(n, b =>
+		var pn = 1 << n;
+		var dp = NewArray2(n + 1, pn, -1L);
+		dp[0][0] = 0;
+
+		for (int i = 0; i < n; i++)
 		{
-			var c = 0;
-			var sum = 0L;
-			for (int i = 0; i < n; ++i)
+			var l = new List<long>();
+			for (int x = 0; x < pn; x++)
 			{
-				if (b[i])
+				if (dp[i][x] == -1) continue;
+
+				l.Add(dp[i][x]);
+
+				for (int j = 0; j < n; j++)
 				{
-					c++;
-					sum += a[i];
+					if ((x & (1 << j)) != 0) continue;
+
+					var nx = x | (1 << j);
+					if (dp[i + 1][nx] != -1) continue;
+					dp[i + 1][nx] = dp[i][x] + a[j];
 				}
 			}
-			map[c].Add(sum);
-			return false;
-		});
 
-		var r = Array.ConvertAll(map, l => l.ToArray());
-		for (int i = 0; i <= n; i++)
+			r[i] = l.ToArray();
 			Array.Sort(r[i]);
+		}
+
+		r[n] = new[] { dp[n][^1] };
 		return r;
 	}
 
-	static void AllBoolCombination(int n, Func<bool[], bool> action)
-	{
-		if (n > 30) throw new InvalidOperationException();
-		var pn = 1 << n;
-		var b = new bool[n];
-
-		for (int x = 0; x < pn; ++x)
-		{
-			for (int i = 0; i < n; ++i) b[i] = (x & (1 << i)) != 0;
-			if (action(b)) break;
-		}
-	}
+	static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
 
 	static IEnumerable<(int i, int j)> TwoPointers(int n1, int n2, Func<int, int, bool> predicate)
 	{
