@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 class Q051B
 {
@@ -37,40 +38,32 @@ class Q051B
 
 	static long[][] GetAll(int n, long[] a)
 	{
-		var r = new long[n + 1][];
-
 		var pn = 1 << n;
-		var dp = NewArray2(n + 1, pn, -1L);
-		dp[0][0] = 0;
+		var map = Array.ConvertAll(new bool[n + 1], _ => new List<long>());
+		var dp = new long[pn];
+		map[0].Add(0);
 
-		for (int i = 0; i < n; i++)
+		for (int x = 1; x < pn; x++)
 		{
-			var l = new List<long>();
-			for (int x = 0; x < pn; x++)
+			for (int i = 0; i < n; i++)
 			{
-				if (dp[i][x] == -1) continue;
-
-				l.Add(dp[i][x]);
-
-				for (int j = 0; j < n; j++)
+				if ((x & (1 << i)) != 0)
 				{
-					if ((x & (1 << j)) != 0) continue;
-
-					var nx = x | (1 << j);
-					if (dp[i + 1][nx] != -1) continue;
-					dp[i + 1][nx] = dp[i][x] + a[j];
+					var px = x ^ (1 << i);
+					dp[x] = dp[px] + a[i];
+					break;
 				}
 			}
 
-			r[i] = l.ToArray();
-			Array.Sort(r[i]);
+			var c = BitOperations.PopCount((uint)x);
+			map[c].Add(dp[x]);
 		}
 
-		r[n] = new[] { dp[n][^1] };
+		var r = Array.ConvertAll(map, l => l.ToArray());
+		foreach (var g in r)
+			Array.Sort(g);
 		return r;
 	}
-
-	static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
 
 	static IEnumerable<(int i, int j)> TwoPointers(int n1, int n2, Func<int, int, bool> predicate)
 	{
