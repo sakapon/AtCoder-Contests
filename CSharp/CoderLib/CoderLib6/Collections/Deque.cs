@@ -16,7 +16,11 @@
 		public int Length => liEx - fiIn;
 		public T First => a[fiIn];
 		public T Last => a[liEx - 1];
-		public T this[int i] => a[fiIn + i];
+		public T this[int i]
+		{
+			get { return a[fiIn + i]; }
+			set { a[fiIn + i] = value; }
+		}
 
 		public void PushFirst(T v)
 		{
