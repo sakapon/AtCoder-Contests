@@ -30,19 +30,22 @@ class F
 	static int[] CreateSums(int[] a, int t)
 	{
 		var n = a.Length;
-		var dp = NewArray1(1 << n, -1);
-		dp[0] = 0;
-		for (int x = 0; x < 1 << n; x++)
+		var dp = new int[1 << n];
+		for (int x = 1; x < 1 << n; x++)
 		{
-			if (dp[x] == -1) continue;
 			for (int i = 0; i < n; i++)
-				if (dp[x | (1 << i)] == -1 && dp[x] + a[i] <= t)
-					dp[x | (1 << i)] = dp[x] + a[i];
+			{
+				if ((x & (1 << i)) != 0)
+				{
+					var px = x ^ (1 << i);
+					var v = dp[px] + a[i];
+					dp[x] = dp[px] == -1 || v > t ? -1 : v;
+					break;
+				}
+			}
 		}
 		return Array.FindAll(dp, v => v != -1);
 	}
-
-	static T[] NewArray1<T>(int n, T v = default) => Array.ConvertAll(new bool[n], _ => v);
 
 	static int First(int l, int r, Func<int, bool> f)
 	{
