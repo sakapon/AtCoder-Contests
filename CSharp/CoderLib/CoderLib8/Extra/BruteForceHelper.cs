@@ -15,15 +15,6 @@ namespace CoderLib8.Extra
 			return r;
 		}
 
-		public static long[] CreateAllSums_List(int[] a)
-		{
-			var r = new List<long> { 0 };
-			for (int i = 0; i < a.Length; ++i)
-				for (int j = r.Count - 1; j >= 0; --j)
-					r.Add(r[j] + a[i]);
-			return r.ToArray();
-		}
-
 		// この bit DP では、配るよりも貰うほうが速いです。
 		public static long[] CreateAllSums_BitDP(int[] a)
 		{
@@ -37,6 +28,15 @@ namespace CoderLib8.Extra
 						break;
 					}
 			return dp;
+		}
+
+		public static long[] CreateAllSums_List(int[] a)
+		{
+			var r = new List<long> { 0 };
+			for (int i = 0; i < a.Length; ++i)
+				for (int j = r.Count - 1; j >= 0; --j)
+					r.Add(r[j] + a[i]);
+			return r.ToArray();
 		}
 	}
 }
