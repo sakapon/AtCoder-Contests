@@ -65,7 +65,7 @@ public static class BruteForceHelper
 
 				// BitOperations.PopCount に変更してください。
 				//ls[BitOperations.PopCount((uint)nx)].Add(nv);
-				ls[PopCount(nx)].Add(nv);
+				ls[PopCount((ulong)nx)].Add(nv);
 			}
 
 		var r = Array.ConvertAll(ls, l => l.ToArray());
@@ -89,7 +89,7 @@ public static class BruteForceHelper
 
 					// BitOperations.PopCount に変更してください。
 					//ls[BitOperations.PopCount((uint)x)].Add(nv);
-					ls[PopCount(x)].Add(nv);
+					ls[PopCount((ulong)x)].Add(nv);
 					break;
 				}
 
@@ -115,11 +115,21 @@ public static class BruteForceHelper
 		return r;
 	}
 
-	// Obsolete
-	static int PopCount(int x)
+	const ulong m1 = 0x5555555555555555;
+	const ulong m2 = 0x3333333333333333;
+	const ulong m4 = 0x0F0F0F0F0F0F0F0F;
+	const ulong m8 = 0x00FF00FF00FF00FF;
+	const ulong m16 = 0x0000FFFF0000FFFF;
+	const ulong m32 = 0x00000000FFFFFFFF;
+
+	public static int PopCount(ulong x)
 	{
-		var r = 0;
-		for (; x != 0; x >>= 1) if ((x & 1) != 0) ++r;
-		return r;
+		x = (x & m1) + ((x >> 1) & m1);
+		x = (x & m2) + ((x >> 2) & m2);
+		x = (x & m4) + ((x >> 4) & m4);
+		x = (x & m8) + ((x >> 8) & m8);
+		x = (x & m16) + ((x >> 16) & m16);
+		x = (x & m32) + ((x >> 32) & m32);
+		return (int)x;
 	}
 }
