@@ -66,7 +66,14 @@ class E
 
 	static int GetMinT(int d)
 	{
-		return (int)Math.Round(Math.Sqrt(d)) - 1;
+		if (d == 0) return 0;
+
+		var t0 = Math.Sqrt(d) - 1;
+		var t1 = (int)Math.Floor(t0);
+		var t2 = (int)Math.Ceiling(t0);
+
+		if (t1 == t2) return t1;
+		return d / (t1 + 1) <= 1 + d / (t2 + 1) ? t1 : t2;
 	}
 }
 
