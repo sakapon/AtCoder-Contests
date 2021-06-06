@@ -131,5 +131,14 @@ namespace CoderLib8.Numerics
 			for (; x != 0; x >>= 1) if ((x & 1) != 0) ++r;
 			return r;
 		}
+
+		public static int[] PopCounts(int n)
+		{
+			var r = new int[1 << n];
+			for (int i = 0, pi = 1; i < n; ++i, pi <<= 1)
+				for (int x = 0; x < pi; ++x)
+					r[x | pi] = r[x] + 1;
+			return r;
+		}
 	}
 }

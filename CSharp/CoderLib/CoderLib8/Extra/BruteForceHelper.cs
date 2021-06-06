@@ -41,6 +41,8 @@ namespace CoderLib8.Extra
 			return r.ToArray();
 		}
 
+		// 実行速度はどの関数も同じくらいです。
+		// Math2.PopCounts メソッドを使ってもよいです。
 		// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/7/DPL/4/DPL_4_B
 		// Test: https://atcoder.jp/contests/typical90/tasks/typical90_ay
 		// O(2^n)
