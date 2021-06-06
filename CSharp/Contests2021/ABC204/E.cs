@@ -66,14 +66,7 @@ class E
 
 	static int GetMinT(int d)
 	{
-		return Min(0, 1 << 30, t => d / (t + 1) - d / (t + 2) <= 1);
-	}
-
-	static int Min(int l, int r, Func<int, bool> f)
-	{
-		int m;
-		while (l < r) if (f(m = l + (r - l - 1) / 2)) r = m; else l = m + 1;
-		return r;
+		return (int)Math.Round(Math.Sqrt(d)) - 1;
 	}
 }
 
