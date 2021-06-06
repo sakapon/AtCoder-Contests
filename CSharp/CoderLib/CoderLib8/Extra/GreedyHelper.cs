@@ -5,6 +5,7 @@ namespace CoderLib8.Extra
 {
 	public static class GreedyHelper
 	{
+		// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/7/DPL/4/DPL_4_B
 		// Test: https://atcoder.jp/contests/typical90/tasks/typical90_ay
 		// i に対して、たかだか 1 つの j が返ります。
 		static IEnumerable<(int i, int j)> TwoPointers(int n1, int n2, Func<int, int, bool> predicate)
