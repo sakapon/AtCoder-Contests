@@ -8,12 +8,12 @@ class Q002B
 
 		for (int x = 0; x < 1 << n; x++)
 		{
-			var b = ToBrackets(x, n);
+			var b = ToBracketSeq(x, n);
 			if (IsRegularBracketSeq(b)) Console.WriteLine(b);
 		}
 	}
 
-	static string ToBrackets(int x, int n)
+	static string ToBracketSeq(int x, int n)
 	{
 		var s = new char[n];
 		for (int i = 0; i < n; i++)
