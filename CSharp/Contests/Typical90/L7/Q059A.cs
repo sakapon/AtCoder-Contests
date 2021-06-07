@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
-class Q059
+class Q059A
 {
-	const int Buffer = 8192;
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static (int, int, int) Read3() { var a = Read(); return (a[0], a[1], a[2]); }
@@ -15,40 +13,24 @@ class Q059
 		var es = Array.ConvertAll(new bool[m], _ => Read());
 
 		var map = ToMap(n + 1, es, true);
-		var u = Array.ConvertAll(new bool[n + 1], _ => new BitArray(Buffer));
-		var bs = new int[Buffer];
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
-		while (qc > 0)
+		while (qc-- > 0)
 		{
-			var c = Math.Min(qc, Buffer);
-			qc -= c;
+			var (a, b) = Read2();
 
-			for (int v = 1; v <= n; v++)
-			{
-				u[v].SetAll(false);
-			}
-
-			for (int i = 0; i < c; i++)
-			{
-				var (a, b) = Read2();
-				u[a][i] = true;
-				bs[i] = b;
-			}
+			var u = new bool[n + 1];
+			u[a] = true;
 
 			for (int v = 1; v < n; v++)
 			{
+				if (!u[v]) continue;
 				foreach (var nv in map[v])
 				{
-					u[nv].Or(u[v]);
+					u[nv] = true;
 				}
 			}
-
-			for (int i = 0; i < c; i++)
-			{
-				var b = bs[i];
-				WriteYesNo(u[b][i]);
-			}
+			WriteYesNo(u[b]);
 		}
 		Console.Out.Flush();
 	}
