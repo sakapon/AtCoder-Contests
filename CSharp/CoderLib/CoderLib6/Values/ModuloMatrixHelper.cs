@@ -11,7 +11,7 @@ namespace CoderLib6.Values
 		public static long[,] Unit(int n)
 		{
 			var r = new long[n, n];
-			for (int i = 0; i < n; i++) r[i, i] = 1;
+			for (var i = 0; i < n; ++i) r[i, i] = 1;
 			return r;
 		}
 
@@ -26,9 +26,9 @@ namespace CoderLib6.Values
 		{
 			var n = a.GetLength(0);
 			var r = new long[n, n];
-			for (var i = 0; i < n; i++)
-				for (var j = 0; j < n; j++)
-					for (var k = 0; k < n; k++)
+			for (var i = 0; i < n; ++i)
+				for (var j = 0; j < n; ++j)
+					for (var k = 0; k < n; ++k)
 						r[i, j] = MInt(r[i, j] + a[i, k] * b[k, j]);
 			return r;
 		}
@@ -37,8 +37,8 @@ namespace CoderLib6.Values
 		{
 			var n = v.Length;
 			var r = new long[n];
-			for (var i = 0; i < n; i++)
-				for (var k = 0; k < n; k++)
+			for (var i = 0; i < n; ++i)
+				for (var k = 0; k < n; ++k)
 					r[i] = MInt(r[i] + a[i, k] * v[k]);
 			return r;
 		}
