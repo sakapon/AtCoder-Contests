@@ -6,6 +6,7 @@ namespace CoderLib6.Values
 	static class ModuloMatrixHelper
 	{
 		const long M = 1000000007;
+		static long MInt(long x) => (x %= M) < 0 ? x + M : x;
 
 		public static long[,] Unit(int n)
 		{
@@ -28,7 +29,7 @@ namespace CoderLib6.Values
 			for (var i = 0; i < n; i++)
 				for (var j = 0; j < n; j++)
 					for (var k = 0; k < n; k++)
-						r[i, j] = (r[i, j] + a[i, k] * b[k, j]) % M;
+						r[i, j] = MInt(r[i, j] + a[i, k] * b[k, j]);
 			return r;
 		}
 
@@ -38,7 +39,7 @@ namespace CoderLib6.Values
 			var r = new long[n];
 			for (var i = 0; i < n; i++)
 				for (var k = 0; k < n; k++)
-					r[i] = (r[i] + a[i, k] * v[k]) % M;
+					r[i] = MInt(r[i] + a[i, k] * v[k]);
 			return r;
 		}
 	}
