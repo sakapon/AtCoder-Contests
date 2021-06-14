@@ -6,27 +6,24 @@ class C2
 	{
 		var q = int.Parse(Console.ReadLine());
 
-		for (int k = 0; k < q; k++)
+		while (q-- > 0)
 		{
-			var s = Console.ReadLine();
-			var t = Console.ReadLine();
-			var n = s.Length;
-			var m = t.Length;
-
-			var dp = NewArray0<int>(n + 1, m + 1);
-			for (int i = 0; i < n; i++)
-				for (int j = 0; j < m; j++)
-					dp[i + 1][j + 1] = s[i] == t[j] ? dp[i][j] + 1 : Math.Max(dp[i + 1][j], dp[i][j + 1]);
-			Console.WriteLine(dp[n][m]);
+			var s = Console.ReadLine().ToCharArray();
+			var t = Console.ReadLine().ToCharArray();
+			Console.WriteLine(Lcs(s, t));
 		}
 	}
 
-	static T[] NewArray<T>(int n, Func<T> newItem)
+	static int Lcs<T>(T[] a, T[] b)
 	{
-		var a = new T[n];
-		for (int i = 0; i < n; ++i) a[i] = newItem();
-		return a;
-	}
+		var n = a.Length;
+		var m = b.Length;
+		var c = System.Collections.Generic.EqualityComparer<T>.Default;
 
-	static T[][] NewArray0<T>(int n1, int n2) => NewArray(n1, () => new T[n2]);
+		var dp = new int[n + 1, m + 1];
+		for (int i = 0; i < n; ++i)
+			for (int j = 0; j < m; ++j)
+				dp[i + 1, j + 1] = c.Equals(a[i], b[j]) ? dp[i, j] + 1 : Math.Max(dp[i + 1, j], dp[i, j + 1]);
+		return dp[n, m];
+	}
 }
