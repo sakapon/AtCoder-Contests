@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CoderLib8.DataTrees;
 
 namespace CoderLib8.Graphs.Arrays
 {
@@ -52,6 +53,62 @@ namespace CoderLib8.Graphs.Arrays
 					prevs[nv] = v;
 					if (nv == ev) return (costs, prevs);
 					q.Enqueue(nv);
+				}
+			}
+			return (costs, prevs);
+		}
+
+		public static (long[] costs, int[][] prevs) Dijkstra(int n, Func<int, int[][]> nexts, int sv, int ev = -1)
+		{
+			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
+			var prevs = new int[n][];
+			var q = PriorityQueue<int>.CreateWithKey(v => costs[v]);
+			costs[sv] = 0;
+			q.Push(sv);
+
+			while (q.Any)
+			{
+				var (v, c) = q.Pop();
+				if (v == ev) break;
+				if (costs[v] < c) continue;
+
+				foreach (var e in nexts(v))
+				{
+					var (nv, nc) = (e[1], c + e[2]);
+					if (costs[nv] <= nc) continue;
+					costs[nv] = nc;
+					prevs[nv] = e;
+					q.Push(nv);
+				}
+			}
+			return (costs, prevs);
+		}
+
+		public static (long[] costs, int[][] prevs) BfsMod(int mod, int n, Func<int, int[][]> nexts, int sv, int ev = -1)
+		{
+			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
+			var prevs = new int[n][];
+			var qs = Array.ConvertAll(new bool[mod], _ => new Queue<int>());
+			costs[sv] = 0;
+			qs[0].Enqueue(sv);
+
+			for (long c = 0; Array.Exists(qs, q => q.Count > 0); ++c)
+			{
+				var q = qs[c % mod];
+				while (q.Count > 0)
+				{
+					var v = q.Dequeue();
+					if (v == ev) return (costs, prevs);
+					if (costs[v] < c) continue;
+
+					foreach (var e in nexts(v))
+					{
+						var (nv, nc) = (e[1], c + e[2]);
+						if (costs[nv] <= nc) continue;
+						costs[nv] = nc;
+						prevs[nv] = e;
+						qs[nc % mod].Enqueue(nv);
+					}
 				}
 			}
 			return (costs, prevs);
