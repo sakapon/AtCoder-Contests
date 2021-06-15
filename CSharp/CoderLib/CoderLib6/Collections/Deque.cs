@@ -1,5 +1,6 @@
 ﻿namespace CoderLib6.Collections
 {
+	// 自動拡張時に中央付近に寄せても、とくに変化は見られませんでした。
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/1/ITP2_1_B
 	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_ar
 	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_bi
