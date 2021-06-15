@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoderLib8.Trees
+namespace CoderLib8.DataTrees
 {
 	// 範囲更新・一点取得
 	// ST1 の双対となる概念です。
@@ -42,7 +42,7 @@ namespace CoderLib8.Trees
 
 			Multiply = multiply;
 			id = _id;
-			if (!TOEquals(id, default(TO))) Init();
+			if (!TOEquals(id, default)) Init();
 		}
 
 		public void Init() { for (int i = 1; i < n2; ++i) a1[i] = id; }
@@ -83,7 +83,7 @@ namespace CoderLib8.Trees
 				else
 				{
 					PushDown(n);
-					var nm = (nl + nr) >> 1;
+					var nm = nl + nr >> 1;
 					if (al < nm && nl < ar) Dfs(n.Child0, length >> 1);
 					if (al < nr && nm < ar) Dfs(n.Child1, length >> 1);
 				}

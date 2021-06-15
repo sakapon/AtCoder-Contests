@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoderLib8.Trees
+namespace CoderLib8.DataTrees
 {
 	// 一点更新・範囲取得
 	// STR の双対となる概念です。

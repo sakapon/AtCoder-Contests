@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoderLib8.Trees
+namespace CoderLib8.DataTrees
 {
 	// 範囲更新・範囲取得
 	// TO は作用素を表します。
@@ -55,7 +55,7 @@ namespace CoderLib8.Trees
 			Union = union;
 			v0 = _v0;
 			Transform = transform;
-			if (!TOEquals(id, default(TO)) || !Equals(v0, default(TV)) || a0 != null) Init(a0);
+			if (!TOEquals(id, default) || !Equals(v0, default(TV)) || a0 != null) Init(a0);
 		}
 
 		public void Init(TV[] a0 = null)
@@ -107,7 +107,7 @@ namespace CoderLib8.Trees
 				else
 				{
 					PushDown(n, length);
-					var nm = (nl + nr) >> 1;
+					var nm = nl + nr >> 1;
 					if (al < nm && nl < ar) Dfs(n.Child0, length >> 1);
 					if (al < nr && nm < ar) Dfs(n.Child1, length >> 1);
 					a2[n.i] = Union(a2[n.Child0.i], a2[n.Child1.i]);
@@ -137,7 +137,7 @@ namespace CoderLib8.Trees
 				else
 				{
 					PushDown(n, length);
-					var nm = (nl + nr) >> 1;
+					var nm = nl + nr >> 1;
 					if (al < nm && nl < ar) Dfs(n.Child0, length >> 1);
 					if (al < nr && nm < ar) Dfs(n.Child1, length >> 1);
 				}
