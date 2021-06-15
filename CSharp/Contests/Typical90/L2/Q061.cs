@@ -36,9 +36,9 @@ class DQ<T>
 	T[] a;
 	int fiIn, liEx;
 
-	public DQ(int size)
+	public DQ(int size = 8)
 	{
-		a = new T[2 * size];
+		a = new T[size << 1];
 		fiIn = liEx = size;
 	}
 
@@ -51,12 +51,8 @@ class DQ<T>
 		set { a[fiIn + i] = value; }
 	}
 
-	public void PushFirst(T v)
-	{
-		if (Length == 0) PushLast(v);
-		else a[--fiIn] = v;
-	}
+	public void PushFirst(T v) => a[--fiIn] = v;
 	public void PushLast(T v) => a[liEx++] = v;
-	public T PopFirst() => Length == 1 ? PopLast() : a[fiIn++];
+	public T PopFirst() => a[fiIn++];
 	public T PopLast() => a[--liEx];
 }
