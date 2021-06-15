@@ -53,5 +53,15 @@ namespace CoderLib8.Extra
 			var d = Enumerable.Range(0, c.Length).ToDictionary(i => c[i]);
 			return (c, d);
 		}
+
+		// O(n)
+		// a.Distinct().Count() == 1
+		static bool AreAllSame(int[] a)
+		{
+			if (a.Length == 0) return false;
+			for (int i = 1; i < a.Length; ++i)
+				if (a[i - 1] != a[i]) return false;
+			return true;
+		}
 	}
 }
