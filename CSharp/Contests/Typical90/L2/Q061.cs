@@ -9,7 +9,7 @@ class Q061
 		var qc = int.Parse(Console.ReadLine());
 		var qs = Array.ConvertAll(new bool[qc], _ => Read2());
 
-		var dq = new DQ<int>(qc);
+		var dq = new DQ<int>();
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		foreach (var (t, x) in qs)
@@ -51,8 +51,27 @@ class DQ<T>
 		set { a[fiIn + i] = value; }
 	}
 
-	public void PushFirst(T v) => a[--fiIn] = v;
-	public void PushLast(T v) => a[liEx++] = v;
+	public void PushFirst(T v)
+	{
+		if (fiIn == 0) Expand();
+		a[--fiIn] = v;
+	}
+	public void PushLast(T v)
+	{
+		if (liEx == a.Length) Expand();
+		a[liEx++] = v;
+	}
+
 	public T PopFirst() => a[fiIn++];
 	public T PopLast() => a[--liEx];
+
+	void Expand()
+	{
+		var b = new T[a.Length << 1];
+		var d = a.Length >> 1;
+		a.CopyTo(b, d);
+		a = b;
+		fiIn += d;
+		liEx += d;
+	}
 }

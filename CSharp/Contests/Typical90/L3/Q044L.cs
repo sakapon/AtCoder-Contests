@@ -11,7 +11,7 @@ class Q044L
 		var a = Read();
 		var qs = Array.ConvertAll(new bool[qc], _ => Read3());
 
-		var dq = new DQ<int>(n + qc);
+		var dq = new DQ<int>();
 		foreach (var x in a)
 			dq.PushLast(x);
 
