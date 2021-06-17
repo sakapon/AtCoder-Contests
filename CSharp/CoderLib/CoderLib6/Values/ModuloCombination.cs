@@ -35,5 +35,8 @@ namespace CoderLib6.Values
 		public long MInvFactorial(int n) => f_[n];
 		public long MNpr(int n, int r) => n < r ? 0 : f[n] * f_[n - r] % M;
 		public long MNcr(int n, int r) => n < r ? 0 : f[n] * f_[n - r] % M * f_[r] % M;
+
+		// nMax >= 2n としておく必要があります。
+		public long MCatalan(int n) => f[2 * n] * f_[n] % M * f_[n + 1] % M;
 	}
 }
