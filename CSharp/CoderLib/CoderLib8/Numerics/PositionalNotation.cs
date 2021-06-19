@@ -6,6 +6,7 @@ namespace CoderLib8.Numerics
 {
 	// Test: https://atcoder.jp/contests/monamieHB2021/tasks/monamieHB2021_b
 	// Test: https://atcoder.jp/contests/past202012-open/tasks/past202012_c
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_bo
 	public static class PositionalNotation
 	{
 		public static int[] Convert(this long x, int b)
