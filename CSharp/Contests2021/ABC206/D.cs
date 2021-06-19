@@ -12,17 +12,16 @@ class D
 		var n = int.Parse(Console.ReadLine());
 		var a = Read();
 
-		var d = Tally(a, max);
+		var d = TallyIndexes(a, max);
 		var uf = new UF(n);
 
 		for (int x = 0; x <= max; x++)
 		{
-			if (d[x].Count == 0) continue;
+			var l = d[x];
 
-			var root = d[x][0];
-			foreach (var i in d[x])
+			for (int i = 1; i < l.Count; i++)
 			{
-				uf.Unite(root, i);
+				uf.Unite(l[i - 1], l[i]);
 			}
 		}
 
@@ -30,23 +29,16 @@ class D
 
 		for (int i = 0; i < n; i++)
 		{
-			if (uf.Unite(i, n - 1 - i))
-			{
-				r++;
-			}
+			if (uf.Unite(i, n - 1 - i)) r++;
 		}
 
 		return r;
 	}
 
-	static List<int>[] Tally(int[] a, int max)
+	static List<int>[] TallyIndexes(int[] a, int max)
 	{
 		var d = Array.ConvertAll(new bool[max + 1], _ => new List<int>());
-
-		for (int i = 0; i < a.Length; i++)
-		{
-			d[a[i]].Add(i);
-		}
+		for (int i = 0; i < a.Length; ++i) d[a[i]].Add(i);
 		return d;
 	}
 }

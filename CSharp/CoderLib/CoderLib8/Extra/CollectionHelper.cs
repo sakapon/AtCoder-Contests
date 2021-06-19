@@ -31,6 +31,14 @@ namespace CoderLib8.Extra
 			return d;
 		}
 
+
+		static List<int>[] TallyIndexes(this int[] a, int max)
+		{
+			var d = Array.ConvertAll(new bool[max + 1], _ => new List<int>());
+			for (int i = 0; i < a.Length; ++i) d[a[i]].Add(i);
+			return d;
+		}
+
 		static int[] ToInverseMap(this int[] a, int max)
 		{
 			var d = Array.ConvertAll(new bool[max + 1], _ => -1);
