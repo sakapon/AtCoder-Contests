@@ -9,7 +9,6 @@ class E
 	static object Solve()
 	{
 		var (L, R) = Read2();
-		if (L == 1) L = 2;
 
 		var ps = GetPrimes(R);
 
@@ -36,7 +35,7 @@ class E
 		{
 			if (u[g] == 0) continue;
 
-			var l = Math.Max(2, (L + g - 1) / g);
+			var l = (L + g - 1) / g;
 			var r = R / g;
 
 			if (l >= r) continue;
