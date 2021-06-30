@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 class A
 {
@@ -10,13 +9,16 @@ class A
 		var h = Read();
 		var es = Array.ConvertAll(new bool[h[1]], _ => Read());
 
-		var r = DirectedGraph.TopologicalSort(h[0], es);
+		var r = DirectedGraphHelper.TopologicalSort(h[0], es);
 		Console.WriteLine(r == null ? 1 : 0);
 	}
 }
 
-class DirectedGraph
+public static class DirectedGraphHelper
 {
+	// 連結性および重みの有無を問いません。
+	// 閉路があるとき、null。
+	// DAG であるとき、ソートされた頂点集合。
 	public static int[] TopologicalSort(int n, int[][] des)
 	{
 		var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
@@ -29,10 +31,13 @@ class DirectedGraph
 
 		var r = new List<int>();
 		var q = new Queue<int>();
-		var svs = Enumerable.Range(0, n).Where(v => indeg[v] == 0).ToArray();
+		var svs = Array.ConvertAll(indeg, x => x == 0);
 
-		foreach (var sv in svs)
+		// 連結されたグループごとに探索します。
+		for (int sv = 0; sv < n; ++sv)
 		{
+			if (!svs[sv]) continue;
+
 			r.Add(sv);
 			q.Enqueue(sv);
 
@@ -47,6 +52,7 @@ class DirectedGraph
 				}
 			}
 		}
+
 		if (r.Count < n) return null;
 		return r.ToArray();
 	}
