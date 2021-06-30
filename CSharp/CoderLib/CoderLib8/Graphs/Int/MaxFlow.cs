@@ -40,20 +40,19 @@ namespace CoderLib8.Graphs.Int
 
 		void Bfs(int sv)
 		{
-			Array.Fill(depth, int.MaxValue);
-			depth[sv] = 0;
+			// Array.Fill が存在しない環境に対応するため、未到達点の深さを 0 とします。
+			Array.Clear(depth, 0, depth.Length);
+			depth[sv] = 1;
 			q.Enqueue(sv);
 
 			while (q.Count > 0)
 			{
 				var v = q.Dequeue();
-				var nd = depth[v] + 1;
-
 				foreach (var e in map[v])
 				{
 					if (e.Capacity == 0) continue;
-					if (depth[e.To] <= nd) continue;
-					depth[e.To] = nd;
+					if (depth[e.To] > 0) continue;
+					depth[e.To] = depth[v] + 1;
 					q.Enqueue(e.To);
 				}
 			}
@@ -83,7 +82,7 @@ namespace CoderLib8.Graphs.Int
 			while (true)
 			{
 				Bfs(sv);
-				if (depth[ev] == int.MaxValue) break;
+				if (depth[ev] == 0) break;
 				while ((t = Dfs(sv, ev, long.MaxValue)) > 0) M += t;
 			}
 			return M;
