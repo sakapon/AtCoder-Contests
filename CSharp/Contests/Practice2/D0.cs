@@ -55,7 +55,7 @@ class D0
 				var v = m * i + j;
 				if ((i + j) % 2 == 0)
 				{
-					var v2 = map[v].FirstOrDefault(e => e[2] == 0 & e[1] != sv)?[1];
+					var v2 = map[v].FirstOrDefault(e => e[2] == 0 && e[1] != sv)?[1];
 					if (v2 == null) continue;
 
 					var (i2, j2) = ((int)v2 / m, (int)v2 % m);

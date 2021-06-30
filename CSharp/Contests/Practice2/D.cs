@@ -45,7 +45,8 @@ class D
 			if (v % m != m - 1 && vs1.Contains(v + 1)) mf.AddEdge(v, v + 1, 1);
 		}
 
-		var (M, map) = mf.Dinic(sv, ev);
+		var M = mf.Dinic(sv, ev);
+		var map = mf.Map;
 
 		for (int i = 0; i < n; i++)
 			for (int j = 0; j < m; j++)
@@ -55,7 +56,7 @@ class D
 				var v = m * i + j;
 				if ((i + j) % 2 == 0)
 				{
-					var v2 = map[v].FirstOrDefault(e => e.Capacity == 0 & e.To != sv)?.To;
+					var v2 = map[v].FirstOrDefault(e => e.Capacity == 0 && e.To != sv)?.To;
 					if (v2 == null) continue;
 
 					var (i2, j2) = ((int)v2 / m, (int)v2 % m);
@@ -87,6 +88,7 @@ public class MaxFlow
 	}
 
 	List<Edge>[] map;
+	public Edge[][] Map;
 	int[] depth;
 	int[] cursor;
 	Queue<int> q = new Queue<int>();
@@ -124,7 +126,7 @@ public class MaxFlow
 		while (q.Count > 0)
 		{
 			var v = q.Dequeue();
-			foreach (var e in map[v])
+			foreach (var e in Map[v])
 			{
 				if (e.Capacity == 0) continue;
 				if (depth[e.To] > 0) continue;
@@ -138,10 +140,9 @@ public class MaxFlow
 	{
 		if (v == ev) return fMin;
 
-		for (int i = cursor[v]; i < map[v].Count; ++i)
+		for (; cursor[v] < Map[v].Length; ++cursor[v])
 		{
-			cursor[v] = i;
-			var e = map[v][i];
+			var e = Map[v][cursor[v]];
 			if (e.Capacity == 0) continue;
 			if (depth[v] >= depth[e.To]) continue;
 
@@ -149,15 +150,17 @@ public class MaxFlow
 			if (delta > 0)
 			{
 				e.Capacity -= delta;
-				map[e.To][e.RevIndex].Capacity += delta;
+				Map[e.To][e.RevIndex].Capacity += delta;
 				return delta;
 			}
 		}
 		return 0;
 	}
 
-	public (long, List<Edge>[]) Dinic(int sv, int ev)
+	public long Dinic(int sv, int ev)
 	{
+		Map = Array.ConvertAll(map, l => l.ToArray());
+
 		long M = 0, t;
 		while (true)
 		{
@@ -166,9 +169,6 @@ public class MaxFlow
 			Array.Clear(cursor, 0, cursor.Length);
 			while ((t = Dfs(sv, ev, long.MaxValue)) > 0) M += t;
 		}
-		//return M;
-
-		// パスの復元が必要となる場合
-		return (M, map);
+		return M;
 	}
 }
