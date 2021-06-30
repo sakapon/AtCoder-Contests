@@ -14,8 +14,9 @@ class Q077
 		var b = Array.ConvertAll(new bool[n], _ => Read2());
 
 		var rn = Enumerable.Range(0, n).ToArray();
-		var bMap = rn.ToDictionary(j => b[j], j => j);
+		var bInv = rn.ToDictionary(j => b[j], j => j);
 		var nexts = new[] { (t, 0), (t, t), (0, t), (-t, t), (-t, 0), (-t, -t), (0, -t), (t, -t) };
+		var nextsInv = Enumerable.Range(0, 8).ToDictionary(i => nexts[i], i => i + 1);
 
 		var es = new List<int[]>();
 		for (int i = 0; i < n; i++)
@@ -24,8 +25,8 @@ class Q077
 			foreach (var (dx, dy) in nexts)
 			{
 				var np = (x + dx, y + dy);
-				if (bMap.ContainsKey(np))
-					es.Add(new[] { i, bMap[np] });
+				if (bInv.ContainsKey(np))
+					es.Add(new[] { i, bInv[np] });
 			}
 		}
 
@@ -46,7 +47,7 @@ class Q077
 
 			var (x, y) = a[i];
 			var (nx, ny) = b[j];
-			return Array.IndexOf(nexts, (nx - x, ny - y)) + 1;
+			return nextsInv[(nx - x, ny - y)];
 		});
 		return "Yes\n" + string.Join(" ", r);
 	}
@@ -62,6 +63,7 @@ public class MaxFlow
 	}
 
 	List<Edge>[] map;
+	public Edge[][] Map;
 	int[] depth;
 	int[] cursor;
 	Queue<int> q = new Queue<int>();
@@ -99,7 +101,7 @@ public class MaxFlow
 		while (q.Count > 0)
 		{
 			var v = q.Dequeue();
-			foreach (var e in map[v])
+			foreach (var e in Map[v])
 			{
 				if (e.Capacity == 0) continue;
 				if (depth[e.To] > 0) continue;
@@ -113,10 +115,9 @@ public class MaxFlow
 	{
 		if (v == ev) return fMin;
 
-		for (int i = cursor[v]; i < map[v].Count; ++i)
+		for (; cursor[v] < Map[v].Length; ++cursor[v])
 		{
-			cursor[v] = i;
-			var e = map[v][i];
+			var e = Map[v][cursor[v]];
 			if (e.Capacity == 0) continue;
 			if (depth[v] >= depth[e.To]) continue;
 
@@ -124,15 +125,17 @@ public class MaxFlow
 			if (delta > 0)
 			{
 				e.Capacity -= delta;
-				map[e.To][e.RevIndex].Capacity += delta;
+				Map[e.To][e.RevIndex].Capacity += delta;
 				return delta;
 			}
 		}
 		return 0;
 	}
 
-	public (long, List<Edge>[]) Dinic(int sv, int ev)
+	public long Dinic(int sv, int ev)
 	{
+		Map = Array.ConvertAll(map, l => l.ToArray());
+
 		long M = 0, t;
 		while (true)
 		{
@@ -141,14 +144,11 @@ public class MaxFlow
 			Array.Clear(cursor, 0, cursor.Length);
 			while ((t = Dfs(sv, ev, long.MaxValue)) > 0) M += t;
 		}
-		//return M;
-
-		// パスの復元が必要となる場合
-		return (M, map);
+		return M;
 	}
 
 	// 0 <= v1 < n1, 0 <= v2 < n2
-	public static (long, List<Edge>[]) BipartiteMatching(int n1, int n2, int[][] des)
+	public static (long, Edge[][]) BipartiteMatching(int n1, int n2, int[][] des)
 	{
 		int sv = n1 + n2, ev = sv + 1;
 		var mf = new MaxFlow(ev + 1);
@@ -160,6 +160,7 @@ public class MaxFlow
 		foreach (var e in des)
 			mf.AddEdge(e[0], n1 + e[1], 1);
 
-		return mf.Dinic(sv, ev);
+		var M = mf.Dinic(sv, ev);
+		return (M, mf.Map);
 	}
 }

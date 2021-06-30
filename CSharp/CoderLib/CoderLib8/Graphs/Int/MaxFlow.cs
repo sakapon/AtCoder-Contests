@@ -13,6 +13,7 @@ namespace CoderLib8.Graphs.Int
 		}
 
 		List<Edge>[] map;
+		public Edge[][] Map;
 		int[] depth;
 		int[] cursor;
 		Queue<int> q = new Queue<int>();
@@ -50,7 +51,7 @@ namespace CoderLib8.Graphs.Int
 			while (q.Count > 0)
 			{
 				var v = q.Dequeue();
-				foreach (var e in map[v])
+				foreach (var e in Map[v])
 				{
 					if (e.Capacity == 0) continue;
 					if (depth[e.To] > 0) continue;
@@ -64,10 +65,9 @@ namespace CoderLib8.Graphs.Int
 		{
 			if (v == ev) return fMin;
 
-			for (int i = cursor[v]; i < map[v].Count; ++i)
+			for (; cursor[v] < Map[v].Length; ++cursor[v])
 			{
-				cursor[v] = i;
-				var e = map[v][i];
+				var e = Map[v][cursor[v]];
 				if (e.Capacity == 0) continue;
 				if (depth[v] >= depth[e.To]) continue;
 
@@ -75,7 +75,7 @@ namespace CoderLib8.Graphs.Int
 				if (delta > 0)
 				{
 					e.Capacity -= delta;
-					map[e.To][e.RevIndex].Capacity += delta;
+					Map[e.To][e.RevIndex].Capacity += delta;
 					return delta;
 				}
 			}
@@ -84,6 +84,8 @@ namespace CoderLib8.Graphs.Int
 
 		public long Dinic(int sv, int ev)
 		{
+			Map = Array.ConvertAll(map, l => l.ToArray());
+
 			long M = 0, t;
 			while (true)
 			{
@@ -93,9 +95,6 @@ namespace CoderLib8.Graphs.Int
 				while ((t = Dfs(sv, ev, long.MaxValue)) > 0) M += t;
 			}
 			return M;
-
-			// パスの復元が必要となる場合
-			//return (M, map);
 		}
 
 		// 0 <= v1 < n1, 0 <= v2 < n2
