@@ -10,23 +10,7 @@ class AL
 		int nx = h[0], ny = h[1];
 		var es = Array.ConvertAll(new bool[h[2]], _ => Read());
 
-		Console.WriteLine(BipartiteMatching(nx, ny, es));
-	}
-
-	// 0 <= v1 < n1, 0 <= v2 < n2
-	public static long BipartiteMatching(int n1, int n2, int[][] des)
-	{
-		int sv = n1 + n2, ev = sv + 1;
-		var mf = new MaxFlow(ev + 1);
-
-		for (int i = 0; i < n1; ++i)
-			mf.AddEdge(sv, i, 1);
-		for (int j = 0; j < n2; ++j)
-			mf.AddEdge(n1 + j, ev, 1);
-		foreach (var e in des)
-			mf.AddEdge(e[0], n1 + e[1], 1);
-
-		return mf.Dinic(sv, ev);
+		Console.WriteLine(MaxFlow.BipartiteMatching(nx, ny, es));
 	}
 }
 
@@ -41,12 +25,14 @@ public class MaxFlow
 
 	List<Edge>[] map;
 	int[] depth;
+	int[] cursor;
 	Queue<int> q = new Queue<int>();
 
 	public MaxFlow(int n)
 	{
 		map = Array.ConvertAll(new bool[n], _ => new List<Edge>());
 		depth = new int[n];
+		cursor = new int[n];
 	}
 
 	public void AddEdge(int from, int to, long capacity)
@@ -88,10 +74,14 @@ public class MaxFlow
 	long Dfs(int v, int ev, long fMin)
 	{
 		if (v == ev) return fMin;
-		foreach (var e in map[v])
+
+		for (int i = cursor[v]; i < map[v].Count; ++i)
 		{
+			cursor[v] = i;
+			var e = map[v][i];
 			if (e.Capacity == 0) continue;
 			if (depth[v] >= depth[e.To]) continue;
+
 			var delta = Dfs(e.To, ev, Math.Min(fMin, e.Capacity));
 			if (delta > 0)
 			{
@@ -110,11 +100,28 @@ public class MaxFlow
 		{
 			Bfs(sv);
 			if (depth[ev] == 0) break;
+			Array.Clear(cursor, 0, cursor.Length);
 			while ((t = Dfs(sv, ev, long.MaxValue)) > 0) M += t;
 		}
 		return M;
 
 		// パスの復元が必要となる場合
 		//return (M, map);
+	}
+
+	// 0 <= v1 < n1, 0 <= v2 < n2
+	public static long BipartiteMatching(int n1, int n2, int[][] des)
+	{
+		int sv = n1 + n2, ev = sv + 1;
+		var mf = new MaxFlow(ev + 1);
+
+		for (int i = 0; i < n1; ++i)
+			mf.AddEdge(sv, i, 1);
+		for (int j = 0; j < n2; ++j)
+			mf.AddEdge(n1 + j, ev, 1);
+		foreach (var e in des)
+			mf.AddEdge(e[0], n1 + e[1], 1);
+
+		return mf.Dinic(sv, ev);
 	}
 }
