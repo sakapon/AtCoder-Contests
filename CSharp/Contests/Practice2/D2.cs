@@ -1,46 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
-class Q077
+class D2
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static void Main() => Console.WriteLine(Solve());
-	static object Solve()
+	static void Main()
 	{
-		var (n, t) = Read2();
-		var a = Array.ConvertAll(new bool[n], _ => Read2());
-		var b = Array.ConvertAll(new bool[n], _ => Read2());
+		var (n, m) = Read2();
+		var s = Array.ConvertAll(new bool[n], _ => Console.ReadLine().ToCharArray());
 
-		var rn = Enumerable.Range(0, n).ToArray();
-		var bInv = rn.ToDictionary(j => b[j], j => j);
-		var nexts = new[] { (t, 0), (t, t), (0, t), (-t, t), (-t, 0), (-t, -t), (0, -t), (t, -t) };
-		var nextsInv = Enumerable.Range(0, 8).ToDictionary(i => nexts[i], i => i + 1);
+		var vs0 = new List<int>();
+		var vs1 = new List<int>();
+		var vs1Inv = Array.ConvertAll(new bool[n * m], _ => -1);
 
-		var bm = new BipartiteMatchingFF(n, n);
+		// checker board
 		for (int i = 0; i < n; i++)
-		{
-			var (x, y) = a[i];
-			foreach (var (dx, dy) in nexts)
+			for (int j = 0; j < m; j++)
 			{
-				var np = (x + dx, y + dy);
-				if (bInv.ContainsKey(np))
-					bm.AddEdge(i, bInv[np]);
+				if (s[i][j] == '#') continue;
+
+				var v = m * i + j;
+				if ((i + j) % 2 == 0)
+				{
+					vs0.Add(v);
+				}
+				else
+				{
+					vs1Inv[v] = vs1.Count;
+					vs1.Add(v);
+				}
 			}
+
+		var bm = new BipartiteMatchingFF(vs0.Count, vs1.Count);
+
+		for (int i = 0; i < vs0.Count; i++)
+		{
+			var v = vs0[i];
+			if (v - m >= 0 && vs1Inv[v - m] != -1) bm.AddEdge(i, vs1Inv[v - m]);
+			if (v + m < n * m && vs1Inv[v + m] != -1) bm.AddEdge(i, vs1Inv[v + m]);
+			if (v % m != 0 && vs1Inv[v - 1] != -1) bm.AddEdge(i, vs1Inv[v - 1]);
+			if (v % m != m - 1 && vs1Inv[v + 1] != -1) bm.AddEdge(i, vs1Inv[v + 1]);
 		}
 
 		var res = bm.FordFulkerson();
-		if (res.Length < n) return "No";
 
-		var r = Array.ConvertAll(rn, i =>
+		foreach (var e in res)
 		{
-			var j = res[i][1];
-			var (x, y) = a[i];
-			var (nx, ny) = b[j];
-			return nextsInv[(nx - x, ny - y)];
-		});
-		return "Yes\n" + string.Join(" ", r);
+			var v0 = vs0[e[0]];
+			var v1 = vs1[e[1]];
+			var (i0, j0) = (v0 / m, v0 % m);
+			var (i1, j1) = (v1 / m, v1 % m);
+
+			if (i0 == i1)
+			{
+				s[i0][Math.Min(j0, j1)] = '>';
+				s[i0][Math.Max(j0, j1)] = '<';
+			}
+			else
+			{
+				s[Math.Min(i0, i1)][j0] = 'v';
+				s[Math.Max(i0, i1)][j0] = '^';
+			}
+		}
+
+		Console.WriteLine(res.Length);
+		foreach (var r in s) Console.WriteLine(new string(r));
 	}
 }
 
