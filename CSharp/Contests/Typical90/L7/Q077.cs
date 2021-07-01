@@ -48,6 +48,7 @@ public class BipartiteMatching
 {
 	int n1;
 	List<int>[] map;
+	public int[][] Map;
 	int[] match;
 	bool[] u;
 
@@ -75,7 +76,7 @@ public class BipartiteMatching
 	bool Dfs(int v1)
 	{
 		u[v1] = true;
-		foreach (var v2 in map[v1])
+		foreach (var v2 in Map[v1])
 		{
 			var u1 = match[v2];
 			if (u1 == -1 || !u[u1] && Dfs(u1))
@@ -90,6 +91,7 @@ public class BipartiteMatching
 
 	public int[][] Dinic()
 	{
+		Map = Array.ConvertAll(map, l => l.ToArray());
 		match = Array.ConvertAll(map, _ => -1);
 
 		for (int v1 = 0; v1 < n1; ++v1)
