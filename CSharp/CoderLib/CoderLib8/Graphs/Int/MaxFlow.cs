@@ -98,7 +98,7 @@ namespace CoderLib8.Graphs.Int
 		}
 
 		// 0 <= v1 < n1, 0 <= v2 < n2
-		public static long BipartiteMatching(int n1, int n2, int[][] des)
+		public static int[][] BipartiteMatching(int n1, int n2, int[][] des)
 		{
 			int sv = n1 + n2, ev = sv + 1;
 			var mf = new MaxFlow(ev + 1);
@@ -110,7 +110,24 @@ namespace CoderLib8.Graphs.Int
 			foreach (var e in des)
 				mf.AddEdge(e[0], n1 + e[1], 1);
 
-			return mf.Dinic(sv, ev);
+			mf.Dinic(sv, ev);
+			var map = mf.Map;
+
+			var r = new List<int[]>();
+			foreach (var se in map[sv])
+			{
+				if (se.Capacity > 0) continue;
+
+				foreach (var e in map[se.To])
+				{
+					if (e.Capacity == 0)
+					{
+						r.Add(new[] { se.To, e.To - n1 });
+						break;
+					}
+				}
+			}
+			return r.ToArray();
 		}
 	}
 }
