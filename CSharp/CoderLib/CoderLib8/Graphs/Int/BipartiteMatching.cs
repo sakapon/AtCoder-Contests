@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CoderLib8.Graphs.Int.Old
+namespace CoderLib8.Graphs.Int
 {
-	public class BipartiteMatchingFF
+	public class BipartiteMatching
 	{
 		int n1, n2;
 		List<int>[] map;
@@ -11,7 +11,7 @@ namespace CoderLib8.Graphs.Int.Old
 		bool[] u;
 
 		// 0 <= v1 < n1, 0 <= v2 < n2
-		public BipartiteMatchingFF(int n1, int n2)
+		public BipartiteMatching(int n1, int n2)
 		{
 			this.n1 = n1;
 			this.n2 = n2;
@@ -49,7 +49,7 @@ namespace CoderLib8.Graphs.Int.Old
 			return false;
 		}
 
-		public int[][] FordFulkerson()
+		public int[][] Dinic()
 		{
 			match = Array.ConvertAll(map, _ => -1);
 
