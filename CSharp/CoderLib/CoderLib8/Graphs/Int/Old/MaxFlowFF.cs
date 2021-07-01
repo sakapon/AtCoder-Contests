@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CoderLib8.Graphs.Int
+namespace CoderLib8.Graphs.Int.Old
 {
 	public class MaxFlowFF
 	{
