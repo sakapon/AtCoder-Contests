@@ -3,9 +3,12 @@ using System.Collections.Generic;
 
 namespace CoderLib8.Graphs.Int
 {
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/7/GRL_7_A
+	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_d
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_by
 	public class BipartiteMatching
 	{
-		int n1, n2;
+		int n1;
 		List<int>[] map;
 		int[] match;
 		bool[] u;
@@ -14,10 +17,8 @@ namespace CoderLib8.Graphs.Int
 		public BipartiteMatching(int n1, int n2)
 		{
 			this.n1 = n1;
-			this.n2 = n2;
 			var n = n1 + n2;
 			map = Array.ConvertAll(new bool[n], _ => new List<int>());
-			match = new int[n];
 			u = new bool[n];
 		}
 
@@ -36,13 +37,13 @@ namespace CoderLib8.Graphs.Int
 		bool Dfs(int v1)
 		{
 			u[v1] = true;
-			foreach (var u2 in map[v1])
+			foreach (var v2 in map[v1])
 			{
-				var u1 = match[u2];
+				var u1 = match[v2];
 				if (u1 == -1 || !u[u1] && Dfs(u1))
 				{
-					match[v1] = u2;
-					match[u2] = v1;
+					match[v1] = v2;
+					match[v2] = v1;
 					return true;
 				}
 			}

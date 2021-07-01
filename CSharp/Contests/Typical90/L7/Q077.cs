@@ -18,7 +18,7 @@ class Q077
 		var nexts = new[] { (t, 0), (t, t), (0, t), (-t, t), (-t, 0), (-t, -t), (0, -t), (t, -t) };
 		var nextsInv = Enumerable.Range(0, 8).ToDictionary(i => nexts[i], i => i + 1);
 
-		var bm = new BipartiteMatchingFF(n, n);
+		var bm = new BipartiteMatching(n, n);
 		for (int i = 0; i < n; i++)
 		{
 			var (x, y) = a[i];
@@ -30,7 +30,7 @@ class Q077
 			}
 		}
 
-		var res = bm.FordFulkerson();
+		var res = bm.Dinic();
 		if (res.Length < n) return "No";
 
 		var r = Array.ConvertAll(rn, i =>
@@ -44,21 +44,19 @@ class Q077
 	}
 }
 
-public class BipartiteMatchingFF
+public class BipartiteMatching
 {
-	int n1, n2;
+	int n1;
 	List<int>[] map;
 	int[] match;
 	bool[] u;
 
 	// 0 <= v1 < n1, 0 <= v2 < n2
-	public BipartiteMatchingFF(int n1, int n2)
+	public BipartiteMatching(int n1, int n2)
 	{
 		this.n1 = n1;
-		this.n2 = n2;
 		var n = n1 + n2;
 		map = Array.ConvertAll(new bool[n], _ => new List<int>());
-		match = new int[n];
 		u = new bool[n];
 	}
 
@@ -77,20 +75,20 @@ public class BipartiteMatchingFF
 	bool Dfs(int v1)
 	{
 		u[v1] = true;
-		foreach (var u2 in map[v1])
+		foreach (var v2 in map[v1])
 		{
-			var u1 = match[u2];
+			var u1 = match[v2];
 			if (u1 == -1 || !u[u1] && Dfs(u1))
 			{
-				match[v1] = u2;
-				match[u2] = v1;
+				match[v1] = v2;
+				match[v2] = v1;
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public int[][] FordFulkerson()
+	public int[][] Dinic()
 	{
 		match = Array.ConvertAll(map, _ => -1);
 
