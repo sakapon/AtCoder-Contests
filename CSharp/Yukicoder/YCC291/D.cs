@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 class D
 {
@@ -11,15 +10,10 @@ class D
 		var (h, w) = Read2();
 		var a = Array.ConvertAll(new bool[h], _ => Read());
 
-		var sv = h + w;
-		var ev = sv + 1;
-
-		var rs = Enumerable.Range(0, h).Select(i => new[] { sv, i, 1L }).ToArray();
-		var cs = Enumerable.Range(0, w).Select(j => new[] { h + j, ev, 1L }).ToArray();
-
-		var d = new Dictionary<int, List<long[]>>();
-		var dr = new Dictionary<int, HashSet<int>>();
-		var dc = new Dictionary<int, HashSet<int>>();
+		var amax = 500000;
+		var d = new List<int[]>[amax + 1];
+		var dr = new Dictionary<int, int>[amax + 1];
+		var dc = new Dictionary<int, int>[amax + 1];
 
 		for (int i = 0; i < h; i++)
 		{
@@ -28,84 +22,103 @@ class D
 				var k = a[i][j];
 				if (k == 0) continue;
 
-				if (!d.ContainsKey(k))
+				if (d[k] == null)
 				{
-					d[k] = new List<long[]>();
-					dr[k] = new HashSet<int>();
-					dc[k] = new HashSet<int>();
+					d[k] = new List<int[]>();
+					dr[k] = new Dictionary<int, int>();
+					dc[k] = new Dictionary<int, int>();
 				}
 
-				d[k].Add(new[] { i, h + j, 1L });
-				dr[k].Add(i);
-				dc[k].Add(j);
+				if (!dr[k].ContainsKey(i))
+					dr[k][i] = dr[k].Count;
+				if (!dc[k].ContainsKey(j))
+					dc[k][j] = dc[k].Count;
+
+				d[k].Add(new[] { dr[k][i], dc[k][j] });
 			}
 		}
 
 		var r = 0L;
 
-		foreach (var (k, es) in d)
+		for (int k = 0; k <= amax; k++)
 		{
-			if (es.Count == 1)
+			if (d[k] == null) continue;
+			if (d[k].Count == 1)
 			{
 				r++;
 				continue;
 			}
 
-			foreach (var i in dr[k])
-			{
-				es.Add(rs[i]);
-			}
-			foreach (var j in dc[k])
-			{
-				es.Add(cs[j]);
-			}
-
-			r += MaxFlow(ev, sv, ev, es.ToArray());
+			var bm = new BipartiteMatching(dr[k].Count, dc[k].Count);
+			bm.AddEdges(d[k].ToArray());
+			var res = bm.Dinic();
+			r += res.Length;
 		}
 		Console.WriteLine(r);
 	}
+}
 
-	static long MaxFlow(int n, int sv, int ev, long[][] dg)
+public class BipartiteMatching
+{
+	int n1;
+	List<int>[] map;
+	public int[][] Map;
+	int[] match;
+	bool[] u;
+
+	// 0 <= v1 < n1, 0 <= v2 < n2
+	public BipartiteMatching(int n1, int n2)
 	{
-		var map = Array.ConvertAll(new int[n + 1], _ => new List<long[]>());
-		foreach (var e in dg)
-		{
-			map[e[0]].Add(new[] { e[0], e[1], e[2], map[e[1]].Count });
-			map[e[1]].Add(new[] { e[1], e[0], 0, map[e[0]].Count - 1 });
-		}
-
-		long M = 0, t;
-		while ((t = Bfs(n, sv, ev, map)) > 0) M += t;
-		return M;
+		this.n1 = n1;
+		var n = n1 + n2;
+		map = Array.ConvertAll(new bool[n], _ => new List<int>());
+		u = new bool[n];
 	}
 
-	static long Bfs(int n, int sv, int ev, List<long[]>[] map)
+	public void AddEdge(int from, int to)
 	{
-		var from = new long[n + 1][];
-		var minFlow = Enumerable.Repeat(long.MaxValue, n + 1).ToArray();
-		var q = new Queue<long>();
-		q.Enqueue(sv);
+		map[from].Add(n1 + to);
+		map[n1 + to].Add(from);
+	}
 
-		while (q.Any())
+	// { from, to }
+	public void AddEdges(int[][] des)
+	{
+		foreach (var e in des) AddEdge(e[0], e[1]);
+	}
+
+	bool Dfs(int v1)
+	{
+		u[v1] = true;
+		foreach (var v2 in Map[v1])
 		{
-			var v = q.Dequeue();
-			if (v == ev) break;
-			foreach (var e in map[v])
+			var u1 = match[v2];
+			if (u1 == -1 || !u[u1] && Dfs(u1))
 			{
-				if (from[e[1]] != null || e[2] == 0) continue;
-				from[e[1]] = e;
-				minFlow[e[1]] = Math.Min(minFlow[v], e[2]);
-				q.Enqueue(e[1]);
+				match[v1] = v2;
+				match[v2] = v1;
+				return true;
 			}
 		}
+		return false;
+	}
 
-		if (from[ev] == null) return 0;
-		for (long v = ev; v != sv; v = from[v][0])
+	public int[][] Dinic()
+	{
+		Map = Array.ConvertAll(map, l => l.ToArray());
+		match = Array.ConvertAll(map, _ => -1);
+
+		for (int v1 = 0; v1 < n1; ++v1)
 		{
-			var e = from[v];
-			e[2] -= minFlow[ev];
-			map[e[1]][(int)e[3]][2] += minFlow[ev];
+			if (match[v1] != -1) continue;
+			Array.Clear(u, 0, u.Length);
+			Dfs(v1);
 		}
-		return minFlow[ev];
+
+		var r = new List<int[]>();
+		for (int v1 = 0; v1 < n1; ++v1)
+			if (match[v1] != -1)
+				r.Add(new[] { v1, match[v1] - n1 });
+		return r.ToArray();
 	}
 }
