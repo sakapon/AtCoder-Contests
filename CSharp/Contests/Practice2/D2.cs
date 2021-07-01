@@ -32,7 +32,7 @@ class D2
 				}
 			}
 
-		var bm = new BipartiteMatchingFF(vs0.Count, vs1.Count);
+		var bm = new BipartiteMatching(vs0.Count, vs1.Count);
 
 		for (int i = 0; i < vs0.Count; i++)
 		{
@@ -43,7 +43,7 @@ class D2
 			if (v % m != m - 1 && vs1Inv[v + 1] != -1) bm.AddEdge(i, vs1Inv[v + 1]);
 		}
 
-		var res = bm.FordFulkerson();
+		var res = bm.Dinic();
 
 		foreach (var e in res)
 		{
@@ -69,21 +69,20 @@ class D2
 	}
 }
 
-public class BipartiteMatchingFF
+public class BipartiteMatching
 {
-	int n1, n2;
+	int n1;
 	List<int>[] map;
+	public int[][] Map;
 	int[] match;
 	bool[] u;
 
 	// 0 <= v1 < n1, 0 <= v2 < n2
-	public BipartiteMatchingFF(int n1, int n2)
+	public BipartiteMatching(int n1, int n2)
 	{
 		this.n1 = n1;
-		this.n2 = n2;
 		var n = n1 + n2;
 		map = Array.ConvertAll(new bool[n], _ => new List<int>());
-		match = new int[n];
 		u = new bool[n];
 	}
 
@@ -102,21 +101,22 @@ public class BipartiteMatchingFF
 	bool Dfs(int v1)
 	{
 		u[v1] = true;
-		foreach (var u2 in map[v1])
+		foreach (var v2 in Map[v1])
 		{
-			var u1 = match[u2];
+			var u1 = match[v2];
 			if (u1 == -1 || !u[u1] && Dfs(u1))
 			{
-				match[v1] = u2;
-				match[u2] = v1;
+				match[v1] = v2;
+				match[v2] = v1;
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public int[][] FordFulkerson()
+	public int[][] Dinic()
 	{
+		Map = Array.ConvertAll(map, l => l.ToArray());
 		match = Array.ConvertAll(map, _ => -1);
 
 		for (int v1 = 0; v1 < n1; ++v1)
