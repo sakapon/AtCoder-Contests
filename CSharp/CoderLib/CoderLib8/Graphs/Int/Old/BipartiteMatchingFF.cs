@@ -49,18 +49,22 @@ namespace CoderLib8.Graphs.Int.Old
 			return false;
 		}
 
-		public int FordFulkerson()
+		public int[][] FordFulkerson()
 		{
 			match = Array.ConvertAll(map, _ => -1);
-			var r = 0;
 
-			for (int v = 0; v < n1; ++v)
+			for (int v1 = 0; v1 < n1; ++v1)
 			{
-				if (match[v] != -1) continue;
+				if (match[v1] != -1) continue;
 				Array.Clear(u, 0, u.Length);
-				if (Dfs(v)) ++r;
+				Dfs(v1);
 			}
-			return r;
+
+			var r = new List<int[]>();
+			for (int v1 = 0; v1 < n1; ++v1)
+				if (match[v1] != -1)
+					r.Add(new[] { v1, match[v1] - n1 });
+			return r.ToArray();
 		}
 	}
 }
