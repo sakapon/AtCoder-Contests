@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace CoderLib8.Graphs.Int
 {
+	// パスの復元が必要となる場合は、Map プロパティを使用します。
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/6/GRL_6_A
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/7/GRL_7_A
 	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_d

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace CoderLib8.Graphs.Int.Old
 {
+	// パスの復元が必要となる場合は、Map プロパティを使用します。
 	public class MaxFlowFF
 	{
 		public class Edge
@@ -13,6 +14,7 @@ namespace CoderLib8.Graphs.Int.Old
 		}
 
 		List<Edge>[] map;
+		public Edge[][] Map;
 		bool[] u;
 
 		public MaxFlowFF(int n)
@@ -41,14 +43,14 @@ namespace CoderLib8.Graphs.Int.Old
 		{
 			if (v == ev) return fMin;
 			u[v] = true;
-			foreach (var e in map[v])
+			foreach (var e in Map[v])
 			{
 				if (u[e.To] || e.Capacity == 0) continue;
 				var delta = Dfs(e.To, ev, Math.Min(fMin, e.Capacity));
 				if (delta > 0)
 				{
 					e.Capacity -= delta;
-					map[e.To][e.RevIndex].Capacity += delta;
+					Map[e.To][e.RevIndex].Capacity += delta;
 					u[v] = false;
 					return delta;
 				}
@@ -57,14 +59,13 @@ namespace CoderLib8.Graphs.Int.Old
 			return 0;
 		}
 
-		public long FordFulkersonByDfs(int sv, int ev)
+		public long FordFulkerson(int sv, int ev)
 		{
+			Map = Array.ConvertAll(map, l => l.ToArray());
+
 			long M = 0, t;
 			while ((t = Dfs(sv, ev, long.MaxValue)) > 0) M += t;
 			return M;
-
-			// パスの復元が必要となる場合
-			//return (M, map);
 		}
 	}
 }
