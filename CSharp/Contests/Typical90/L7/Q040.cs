@@ -13,21 +13,21 @@ class Q040
 		var a = Read();
 		var c = Array.ConvertAll(new bool[n], _ => Read()[1..]);
 
-		long amax = a.Max();
-		var sv = 0;
-		var ev = n + 1;
-		var rn = Enumerable.Range(0, n).ToArray();
-
-		var es = new List<long[]>();
-		es.AddRange(rn.Select(i => new[] { sv, i + 1, amax + w - a[i] }));
-		es.AddRange(rn.Select(i => new[] { i + 1, ev, amax }));
-
-		for (int i = 0; i < n; i++)
-			foreach (var nv in c[i])
-				es.Add(new long[] { i + 1, nv, 1L << 50 });
-
+		var amax = a.Max();
+		var sv = n;
+		var ev = sv + 1;
 		var mf = new MaxFlow(ev + 1);
-		mf.AddEdges(es.ToArray());
+
+		for (int v = 0; v < n; v++)
+		{
+			mf.AddEdge(sv, v, amax + w - a[v]);
+			mf.AddEdge(v, ev, amax);
+		}
+
+		for (int v = 0; v < n; v++)
+			foreach (var nv in c[v])
+				mf.AddEdge(v, nv - 1, 1L << 50);
+
 		var r = mf.Dinic(sv, ev);
 		return n * amax - r;
 	}
@@ -125,38 +125,5 @@ public class MaxFlow
 			while ((t = Dfs(sv, ev, long.MaxValue)) > 0) M += t;
 		}
 		return M;
-	}
-
-	// 0 <= v1 < n1, 0 <= v2 < n2
-	public static int[][] BipartiteMatching(int n1, int n2, int[][] des)
-	{
-		int sv = n1 + n2, ev = sv + 1;
-		var mf = new MaxFlow(ev + 1);
-
-		for (int i = 0; i < n1; ++i)
-			mf.AddEdge(sv, i, 1);
-		for (int j = 0; j < n2; ++j)
-			mf.AddEdge(n1 + j, ev, 1);
-		foreach (var e in des)
-			mf.AddEdge(e[0], n1 + e[1], 1);
-
-		mf.Dinic(sv, ev);
-		var map = mf.Map;
-
-		var r = new List<int[]>();
-		foreach (var se in map[sv])
-		{
-			if (se.Capacity > 0) continue;
-
-			foreach (var e in map[se.To])
-			{
-				if (e.Capacity == 0)
-				{
-					r.Add(new[] { se.To, e.To - n1 });
-					break;
-				}
-			}
-		}
-		return r.ToArray();
 	}
 }
