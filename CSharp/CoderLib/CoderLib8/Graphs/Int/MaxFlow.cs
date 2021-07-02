@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace CoderLib8.Graphs.Int
 {
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/6/GRL_6_A
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/7/GRL_7_A
+	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_d
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_an
 	public class MaxFlow
 	{
 		public class Edge
@@ -97,10 +101,12 @@ namespace CoderLib8.Graphs.Int
 			return M;
 		}
 
+		// このコードはテンプレートとして使えます。
 		// 0 <= v1 < n1, 0 <= v2 < n2
 		public static int[][] BipartiteMatching(int n1, int n2, int[][] des)
 		{
-			int sv = n1 + n2, ev = sv + 1;
+			var sv = n1 + n2;
+			var ev = sv + 1;
 			var mf = new MaxFlow(ev + 1);
 
 			for (int i = 0; i < n1; ++i)

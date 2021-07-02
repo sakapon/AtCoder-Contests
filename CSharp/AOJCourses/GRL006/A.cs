@@ -26,6 +26,7 @@ public class MaxFlow
 	}
 
 	List<Edge>[] map;
+	public Edge[][] Map;
 	int[] depth;
 	int[] cursor;
 	Queue<int> q = new Queue<int>();
@@ -63,7 +64,7 @@ public class MaxFlow
 		while (q.Count > 0)
 		{
 			var v = q.Dequeue();
-			foreach (var e in map[v])
+			foreach (var e in Map[v])
 			{
 				if (e.Capacity == 0) continue;
 				if (depth[e.To] > 0) continue;
@@ -77,10 +78,9 @@ public class MaxFlow
 	{
 		if (v == ev) return fMin;
 
-		for (int i = cursor[v]; i < map[v].Count; ++i)
+		for (; cursor[v] < Map[v].Length; ++cursor[v])
 		{
-			cursor[v] = i;
-			var e = map[v][i];
+			var e = Map[v][cursor[v]];
 			if (e.Capacity == 0) continue;
 			if (depth[v] >= depth[e.To]) continue;
 
@@ -88,7 +88,7 @@ public class MaxFlow
 			if (delta > 0)
 			{
 				e.Capacity -= delta;
-				map[e.To][e.RevIndex].Capacity += delta;
+				Map[e.To][e.RevIndex].Capacity += delta;
 				return delta;
 			}
 		}
@@ -97,6 +97,8 @@ public class MaxFlow
 
 	public long Dinic(int sv, int ev)
 	{
+		Map = Array.ConvertAll(map, l => l.ToArray());
+
 		long M = 0, t;
 		while (true)
 		{
@@ -106,24 +108,5 @@ public class MaxFlow
 			while ((t = Dfs(sv, ev, long.MaxValue)) > 0) M += t;
 		}
 		return M;
-
-		// パスの復元が必要となる場合
-		//return (M, map);
-	}
-
-	// 0 <= v1 < n1, 0 <= v2 < n2
-	public static long BipartiteMatching(int n1, int n2, int[][] des)
-	{
-		int sv = n1 + n2, ev = sv + 1;
-		var mf = new MaxFlow(ev + 1);
-
-		for (int i = 0; i < n1; ++i)
-			mf.AddEdge(sv, i, 1);
-		for (int j = 0; j < n2; ++j)
-			mf.AddEdge(n1 + j, ev, 1);
-		foreach (var e in des)
-			mf.AddEdge(e[0], n1 + e[1], 1);
-
-		return mf.Dinic(sv, ev);
 	}
 }
