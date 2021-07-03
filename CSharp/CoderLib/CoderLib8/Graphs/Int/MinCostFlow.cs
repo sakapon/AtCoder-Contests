@@ -6,6 +6,7 @@ namespace CoderLib8.Graphs.Int
 	// パスの復元が必要となる場合は、Map プロパティを使用します。
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/6/GRL_6_B
 	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_e
+	// Test: https://atcoder.jp/contests/past202005-open/tasks/past202005_o
 	public class MinCostFlow
 	{
 		public class Edge

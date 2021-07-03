@@ -14,6 +14,7 @@ class F
 
 		var sv = 0;
 		var ev = 401;
+		var mf = new MaxFlow(ev + 1);
 
 		var es = new List<long[]>();
 
@@ -35,51 +36,102 @@ class F
 				es.Add(new[] { ci, 300 + j, 1L });
 		}
 
-		return MaxFlow(ev, sv, ev, es.ToArray());
+		mf.AddEdges(es.ToArray());
+		return mf.Dinic(sv, ev);
+	}
+}
+
+public class MaxFlow
+{
+	public class Edge
+	{
+		public int From, To, RevIndex;
+		public long Capacity;
+		public Edge(int from, int to, long capacity, int revIndex) { From = from; To = to; Capacity = capacity; RevIndex = revIndex; }
 	}
 
-	// dg: { from, to, capacity }
-	static long MaxFlow(int n, int sv, int ev, long[][] dg)
+	List<Edge>[] map;
+	public Edge[][] Map;
+	int[] depth;
+	int[] cursor;
+	Queue<int> q = new Queue<int>();
+
+	public MaxFlow(int n)
 	{
-		var map = Array.ConvertAll(new int[n + 1], _ => new List<long[]>());
-		foreach (var e in dg)
+		map = Array.ConvertAll(new bool[n], _ => new List<Edge>());
+		depth = new int[n];
+		cursor = new int[n];
+	}
+
+	public void AddEdge(int from, int to, long capacity)
+	{
+		map[from].Add(new Edge(from, to, capacity, map[to].Count));
+		map[to].Add(new Edge(to, from, 0, map[from].Count - 1));
+	}
+
+	// { from, to, capacity }
+	public void AddEdges(int[][] des)
+	{
+		foreach (var e in des) AddEdge(e[0], e[1], e[2]);
+	}
+	public void AddEdges(long[][] des)
+	{
+		foreach (var e in des) AddEdge((int)e[0], (int)e[1], e[2]);
+	}
+
+	void Bfs(int sv)
+	{
+		// Array.Fill が存在しない環境に対応するため、未到達点の深さを 0 とします。
+		Array.Clear(depth, 0, depth.Length);
+		depth[sv] = 1;
+		q.Enqueue(sv);
+
+		while (q.Count > 0)
 		{
-			map[e[0]].Add(new[] { e[0], e[1], e[2], map[e[1]].Count });
-			map[e[1]].Add(new[] { e[1], e[0], 0, map[e[0]].Count - 1 });
+			var v = q.Dequeue();
+			foreach (var e in Map[v])
+			{
+				if (e.Capacity == 0) continue;
+				if (depth[e.To] > 0) continue;
+				depth[e.To] = depth[v] + 1;
+				q.Enqueue(e.To);
+			}
 		}
+	}
 
-		long Bfs()
+	long Dfs(int v, int ev, long fMin)
+	{
+		if (v == ev) return fMin;
+
+		for (; cursor[v] < Map[v].Length; ++cursor[v])
 		{
-			var from = new long[n + 1][];
-			var minFlow = new long[n + 1];
-			Array.Fill(minFlow, long.MaxValue);
-			var q = new Queue<long>();
-			q.Enqueue(sv);
+			var e = Map[v][cursor[v]];
+			if (e.Capacity == 0) continue;
+			if (depth[v] >= depth[e.To]) continue;
 
-			while (q.TryDequeue(out var v))
+			var delta = Dfs(e.To, ev, Math.Min(fMin, e.Capacity));
+			if (delta > 0)
 			{
-				if (v == ev) break;
-				foreach (var e in map[v])
-				{
-					if (from[e[1]] != null || e[2] == 0) continue;
-					from[e[1]] = e;
-					minFlow[e[1]] = Math.Min(minFlow[v], e[2]);
-					q.Enqueue(e[1]);
-				}
+				e.Capacity -= delta;
+				Map[e.To][e.RevIndex].Capacity += delta;
+				return delta;
 			}
-
-			if (from[ev] == null) return 0;
-			for (long v = ev; v != sv; v = from[v][0])
-			{
-				var e = from[v];
-				e[2] -= minFlow[ev];
-				map[e[1]][(int)e[3]][2] += minFlow[ev];
-			}
-			return minFlow[ev];
 		}
+		return 0;
+	}
+
+	public long Dinic(int sv, int ev)
+	{
+		Map = Array.ConvertAll(map, l => l.ToArray());
 
 		long M = 0, t;
-		while ((t = Bfs()) > 0) M += t;
+		while (true)
+		{
+			Bfs(sv);
+			if (depth[ev] == 0) break;
+			Array.Clear(cursor, 0, cursor.Length);
+			while ((t = Dfs(sv, ev, long.MaxValue)) > 0) M += t;
+		}
 		return M;
 	}
 }
