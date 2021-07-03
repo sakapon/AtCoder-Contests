@@ -12,31 +12,28 @@ class F
 		var (h, w, n) = Read3();
 		var ps = Array.ConvertAll(new bool[n], _ => Read4());
 
-		var sv = 0;
-		var ev = 401;
+		var sv = 400;
+		var ev = sv + 1;
 		var mf = new MaxFlow(ev + 1);
 
-		var es = new List<long[]>();
+		for (int i = 0; i < h; i++)
+			mf.AddEdge(sv, i, 1);
+		for (int i = 0; i < w; i++)
+			mf.AddEdge(300 + i, ev, 1);
 
-		for (int i = 1; i <= h; i++)
-			es.Add(new[] { sv, i, 1L });
-		for (int i = 1; i <= w; i++)
-			es.Add(new[] { 300 + i, ev, 1L });
-
-		for (int i = 1; i <= n; i++)
+		for (int i = 0; i < n; i++)
 		{
-			var (a, b, c, d) = ps[i - 1];
+			var (a, b, c, d) = ps[i];
 			var ri = 100 + i;
 			var ci = 200 + i;
-			es.Add(new[] { ri, ci, 1L });
+			mf.AddEdge(ri, ci, 1);
 
-			for (int j = a; j <= c; j++)
-				es.Add(new[] { j, ri, 1L });
-			for (int j = b; j <= d; j++)
-				es.Add(new[] { ci, 300 + j, 1L });
+			for (int j = a - 1; j < c; j++)
+				mf.AddEdge(j, ri, 1);
+			for (int j = b - 1; j < d; j++)
+				mf.AddEdge(ci, 300 + j, 1);
 		}
 
-		mf.AddEdges(es.ToArray());
 		return mf.Dinic(sv, ev);
 	}
 }
