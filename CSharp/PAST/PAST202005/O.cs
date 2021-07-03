@@ -4,30 +4,32 @@ using System.Collections.Generic;
 class O
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static void Main()
 	{
-		var h = Read();
-		int n = h[0], m = h[1];
+		var (n, m) = Read2();
 		var a = Read();
 		var b = Read();
 		var r = Read();
 
-		var mf = new MinCostFlow(n + 10);
-		for (int i = 1; i <= 3; i++)
-			mf.AddEdge(0, i, m, 0);
+		var sv = n + 3;
+		var ev = sv + 1;
+		var mf = new MinCostFlow(ev + 1);
+		for (int i = 0; i < 3; i++)
+			mf.AddEdge(sv, n + i, m, 0);
 
 		for (int j = 0; j < n; j++)
 		{
-			long p = a[j] * b[j];
-			for (int i = 1; i <= 3; i++, p *= b[j])
-				mf.AddEdge(i, j + 10, 1, -(p % r[i - 1]));
+			long p = a[j];
+			for (int i = 0; i < 3; i++)
+				mf.AddEdge(n + i, j, 1, -(p *= b[j]) % r[i]);
 
-			mf.AddEdge(j + 10, 4, 1, p = a[j] * b[j]);
-			mf.AddEdge(j + 10, 4, 1, p *= b[j] - 1);
-			mf.AddEdge(j + 10, 4, 1, p *= b[j]);
+			mf.AddEdge(j, ev, 1, p = a[j] * b[j]);
+			mf.AddEdge(j, ev, 1, p *= b[j] - 1);
+			mf.AddEdge(j, ev, 1, p *= b[j]);
 		}
 
-		Console.WriteLine(-mf.GetMinCost(0, 4, 3 * m));
+		Console.WriteLine(-mf.GetMinCost(sv, ev, 3 * m));
 	}
 }
 
