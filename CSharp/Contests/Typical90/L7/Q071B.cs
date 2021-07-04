@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 class Q071B
 {
@@ -34,22 +33,23 @@ class Q071B
 
 		var r = new List<int>();
 		var q = new Queue<int>();
-		var svs = Enumerable.Range(0, n).Where(v => indeg[v] == 0).ToArray();
-
-		foreach (var sv in svs)
+		for (int v = 0; v < n; ++v)
 		{
-			r.Add(sv);
-			q.Enqueue(sv);
-
-			while (q.Count > 0)
+			if (indeg[v] == 0)
 			{
-				var v = q.Dequeue();
-				foreach (var e in map[v])
-				{
-					if (--indeg[e[1]] > 0) continue;
-					r.Add(e[1]);
-					q.Enqueue(e[1]);
-				}
+				r.Add(v);
+				q.Enqueue(v);
+			}
+		}
+
+		while (q.Count > 0)
+		{
+			var v = q.Dequeue();
+			foreach (var e in map[v])
+			{
+				if (--indeg[e[1]] > 0) continue;
+				r.Add(e[1]);
+				q.Enqueue(e[1]);
 			}
 		}
 		if (r.Count < n) return null;
