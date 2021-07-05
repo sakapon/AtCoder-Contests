@@ -33,25 +33,28 @@ class Q071B
 
 		var r = new List<int>();
 		var q = new Queue<int>();
-		for (int v = 0; v < n; ++v)
+		var svs = Array.ConvertAll(indeg, x => x == 0);
+
+		// 連結されたグループごとに探索します。
+		for (int sv = 0; sv < n; ++sv)
 		{
-			if (indeg[v] == 0)
+			if (!svs[sv]) continue;
+
+			r.Add(sv);
+			q.Enqueue(sv);
+
+			while (q.Count > 0)
 			{
-				r.Add(v);
-				q.Enqueue(v);
+				var v = q.Dequeue();
+				foreach (var e in map[v])
+				{
+					if (--indeg[e[1]] > 0) continue;
+					r.Add(e[1]);
+					q.Enqueue(e[1]);
+				}
 			}
 		}
 
-		while (q.Count > 0)
-		{
-			var v = q.Dequeue();
-			foreach (var e in map[v])
-			{
-				if (--indeg[e[1]] > 0) continue;
-				r.Add(e[1]);
-				q.Enqueue(e[1]);
-			}
-		}
 		if (r.Count < n) return null;
 		return r.ToArray();
 	}

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace CoderLib8.Graphs.Arrays
 {
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/4
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_bs
 	public static class DirectedGraphHelper
 	{
 		// 連結性および重みの有無を問いません。
