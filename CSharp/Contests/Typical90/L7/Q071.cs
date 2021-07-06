@@ -53,8 +53,7 @@ class Q071
 
 		var r = new List<int>();
 		var q = PQ<int>.Create(v => random.Next());
-		foreach (var sv in svs)
-			q.Push(sv);
+		q.PushRange(svs);
 
 		while (q.Count > 0)
 		{
