@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using CoderLib6.Trees;
 
 class Q071
@@ -9,7 +8,7 @@ class Q071
 	static (int, int, int) Read3() { var a = Read(); return (a[0], a[1], a[2]); }
 	static void Main()
 	{
-		var t = Task.Run(Solve);
+		var t = System.Threading.Tasks.Task.Run(Solve);
 		if (!t.Wait(2850)) Console.WriteLine(-1);
 	}
 	static void Solve()
@@ -17,13 +16,14 @@ class Q071
 		var (n, m, k) = Read3();
 		var es = Array.ConvertAll(new bool[m], _ => Read());
 
-		var map = Array.ConvertAll(new bool[n + 1], _ => new List<int[]>());
+		var map0 = Array.ConvertAll(new bool[n + 1], _ => new List<int>());
 		var indeg = new int[n + 1];
 		foreach (var e in es)
 		{
-			map[e[0]].Add(e);
+			map0[e[0]].Add(e[1]);
 			++indeg[e[1]];
 		}
+		var map = Array.ConvertAll(map0, l => l.ToArray());
 
 		var qc = 1 << k;
 		var set = new HashSet<string>();
@@ -49,7 +49,7 @@ class Q071
 	}
 
 	static Random random = new Random();
-	static int[] TopologicalSort(int n, List<int[]>[] map, int[] indeg0)
+	static int[] TopologicalSort(int n, int[][] map, int[] indeg0)
 	{
 		var indeg = (int[])indeg0.Clone();
 
@@ -67,10 +67,10 @@ class Q071
 		{
 			var v = q.Pop();
 			r.Add(v);
-			foreach (var e in map[v])
+			foreach (var nv in map[v])
 			{
-				if (--indeg[e[1]] > 0) continue;
-				q.Push(e[1]);
+				if (--indeg[nv] > 0) continue;
+				q.Push(nv);
 			}
 		}
 		if (r.Count < n - 1) return null;
