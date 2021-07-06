@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CoderLib6.Trees;
 
 class Q071
@@ -7,11 +8,6 @@ class Q071
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int, int) Read3() { var a = Read(); return (a[0], a[1], a[2]); }
 	static void Main()
-	{
-		var t = System.Threading.Tasks.Task.Run(Solve);
-		if (!t.Wait(2850)) Console.WriteLine(-1);
-	}
-	static void Solve()
 	{
 		var (n, m, k) = Read3();
 		var es = Array.ConvertAll(new bool[m], _ => Read());
@@ -24,13 +20,15 @@ class Q071
 			++indeg[e[1]];
 		}
 		var map = Array.ConvertAll(map0, l => l.ToArray());
+		var rn = Enumerable.Range(1, n).ToArray();
+		var svs = Array.FindAll(rn, v => indeg[v] == 0);
 
 		var qc = 1 << k;
 		var set = new HashSet<string>();
 
 		while (qc-- > 0)
 		{
-			var r = TopologicalSort(n + 1, map, indeg);
+			var r = TopologicalSort(n + 1, map, indeg, svs);
 			if (r == null) break;
 
 			set.Add(string.Join(" ", r));
@@ -49,19 +47,14 @@ class Q071
 	}
 
 	static Random random = new Random();
-	static int[] TopologicalSort(int n, int[][] map, int[] indeg0)
+	static int[] TopologicalSort(int n, int[][] map, int[] indeg0, int[] svs)
 	{
 		var indeg = (int[])indeg0.Clone();
 
 		var r = new List<int>();
 		var q = PQ<int>.Create(v => random.Next());
-		for (int v = 1; v < n; ++v)
-		{
-			if (indeg[v] == 0)
-			{
-				q.Push(v);
-			}
-		}
+		foreach (var sv in svs)
+			q.Push(sv);
 
 		while (q.Count > 0)
 		{
