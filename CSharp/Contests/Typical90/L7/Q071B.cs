@@ -23,35 +23,28 @@ class Q071B
 
 	static int[] TopologicalSort(int n, int[][] des)
 	{
-		var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
+		var map = Array.ConvertAll(new bool[n], _ => new List<int>());
 		var indeg = new int[n];
 		foreach (var e in des)
 		{
-			map[e[0]].Add(e);
+			map[e[0]].Add(e[1]);
 			++indeg[e[1]];
 		}
 
 		var r = new List<int>();
 		var q = new Queue<int>();
-		var svs = Array.ConvertAll(indeg, x => x == 0);
+		for (int v = 0; v < n; ++v)
+			if (indeg[v] == 0)
+				q.Enqueue(v);
 
-		// 連結されたグループごとに探索します。
-		for (int sv = 0; sv < n; ++sv)
+		while (q.Count > 0)
 		{
-			if (!svs[sv]) continue;
-
-			r.Add(sv);
-			q.Enqueue(sv);
-
-			while (q.Count > 0)
+			var v = q.Dequeue();
+			r.Add(v);
+			foreach (var nv in map[v])
 			{
-				var v = q.Dequeue();
-				foreach (var e in map[v])
-				{
-					if (--indeg[e[1]] > 0) continue;
-					r.Add(e[1]);
-					q.Enqueue(e[1]);
-				}
+				if (--indeg[nv] > 0) continue;
+				q.Enqueue(nv);
 			}
 		}
 
