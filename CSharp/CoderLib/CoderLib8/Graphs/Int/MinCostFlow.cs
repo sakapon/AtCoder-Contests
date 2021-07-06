@@ -92,5 +92,30 @@ namespace CoderLib8.Graphs.Int
 			}
 			return r;
 		}
+
+		// 「fMax 以下」に対する最小費用を求めます。
+		// 「fMax 以下」で考える場合、最も流量が大きいときに最小費用を達成するとは限りません。
+		public long GetMinCostForRange(int sv, int ev, long fMax)
+		{
+			Map = Array.ConvertAll(map, l => l.ToArray());
+
+			long m = long.MaxValue, mf = 0, f = fMax;
+			long r = 0, t;
+			while (f > 0)
+			{
+				if ((t = BellmanFord(sv, ev, ref f)) == long.MaxValue) return m;
+				r += t;
+
+				if (r < m)
+				{
+					m = r;
+					mf = fMax - f;
+				}
+			}
+			return m;
+
+			// 流量も返す場合
+			//return (m, mf);
+		}
 	}
 }

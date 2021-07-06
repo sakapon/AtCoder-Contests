@@ -12,23 +12,40 @@ class E
 
 		var sv = 2 * n;
 		var ev = sv + 1;
-		var mf = new MinCostFlow(ev + 1);
 
-		for (int i = 0; i < n; i++)
+		MinCostFlow CreateFlow()
 		{
-			mf.AddEdge(sv, i, k, 0);
-			mf.AddEdge(n + i, ev, k, 0);
+			var mf = new MinCostFlow(ev + 1);
+
+			for (int i = 0; i < n; i++)
+			{
+				mf.AddEdge(sv, i, k, 0);
+				mf.AddEdge(n + i, ev, k, 0);
+			}
+
+			for (int i = 0; i < n; i++)
+				for (int j = 0; j < n; j++)
+					mf.AddEdge(i, n + j, 1, -a[i][j]);
+			return mf;
 		}
 
-		for (int i = 0; i < n; i++)
-			for (int j = 0; j < n; j++)
-				mf.AddEdge(i, n + j, 1, -a[i][j]);
+		var mf = CreateFlow();
+		var (_, f) = mf.GetMinCostForRange(sv, ev, n * k);
+		mf = CreateFlow();
+		var min = mf.GetMinCost(sv, ev, f);
+		var map = mf.Map;
 
-		var (min, s) = mf.GetMinCost(sv, ev, n * k);
+		var s = NewArray2(n, n, '.');
+		for (int v = 0; v < n; v++)
+			foreach (var e in map[v])
+				if (e.Capacity == 0 && e.To != sv)
+					s[v][e.To - n] = 'X';
 
 		Console.WriteLine(-min);
 		foreach (var r in s) Console.WriteLine(new string(r));
 	}
+
+	static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
 }
 
 public class MinCostFlow
@@ -103,35 +120,42 @@ public class MinCostFlow
 		return minFlow[ev] * cost[ev];
 	}
 
-	// 「f 以下」となるようにカスタマイズします。
-	// 「f 以下」で考える場合、最も流量が大きいときに最小費用を達成するとは限りません。
-	public (long min, char[][] s) GetMinCost(int sv, int ev, long f)
+	// 到達不可能の場合、MaxValue を返します。
+	public long GetMinCost(int sv, int ev, long f)
 	{
 		Map = Array.ConvertAll(map, l => l.ToArray());
 
-		var r = long.MaxValue;
-		char[][] s = null;
-
-		long m = 0, t;
+		long r = 0, t;
 		while (f > 0)
 		{
-			if ((t = BellmanFord(sv, ev, ref f)) == long.MaxValue) return (r, s);
-			m += t;
-
-			if (m < r)
-			{
-				r = m;
-
-				var n_ = sv / 2;
-				s = NewArray2(n_, n_, '.');
-				for (int v = 0; v < n_; v++)
-					foreach (var e in map[v])
-						if (e.Capacity == 0 && e.To != sv)
-							s[v][e.To - n_] = 'X';
-			}
+			if ((t = BellmanFord(sv, ev, ref f)) == long.MaxValue) return t;
+			r += t;
 		}
-		return (r, s);
+		return r;
 	}
 
-	static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
+	// 「fMax 以下」に対する最小費用を求めます。
+	// 「fMax 以下」で考える場合、最も流量が大きいときに最小費用を達成するとは限りません。
+	public (long m, long f) GetMinCostForRange(int sv, int ev, long fMax)
+	{
+		Map = Array.ConvertAll(map, l => l.ToArray());
+
+		long m = long.MaxValue, mf = 0, f = fMax;
+		long r = 0, t;
+		while (f > 0)
+		{
+			if ((t = BellmanFord(sv, ev, ref f)) == long.MaxValue) return (m, mf);
+			r += t;
+
+			if (r < m)
+			{
+				m = r;
+				mf = fMax - f;
+			}
+		}
+		//return m;
+
+		// 流量も返す場合
+		return (m, mf);
+	}
 }
