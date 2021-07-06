@@ -12,45 +12,22 @@ class E
 
 		var sv = 2 * n;
 		var ev = sv + 1;
+		var mf = new MinCostFlow(ev + 1);
 
-		var f = Last(-1, n * k, x => GetScore(x).score < long.MaxValue);
-		var (score, map) = GetScore(f);
-
-		var s = NewArray2(n, n, '.');
-		for (int v = 0; v < n; v++)
-			foreach (var e in map[v])
-				if (e.Capacity == 0 && e.To != sv)
-					s[v][e.To - n] = 'X';
-
-		Console.WriteLine(score);
-		foreach (var r in s) Console.WriteLine(new string(r));
-
-		(long score, MinCostFlow.Edge[][] map) GetScore(long f)
+		for (int i = 0; i < n; i++)
 		{
-			var mf = new MinCostFlow(ev + 1);
-
-			for (int i = 0; i < n; i++)
-			{
-				mf.AddEdge(sv, i, k, 0);
-				mf.AddEdge(n + i, ev, k, 0);
-			}
-
-			for (int i = 0; i < n; i++)
-				for (int j = 0; j < n; j++)
-					mf.AddEdge(i, n + j, 1, -a[i][j]);
-
-			var M = mf.GetMinCost(sv, ev, f);
-			return (-M, mf.Map);
+			mf.AddEdge(sv, i, k, 0);
+			mf.AddEdge(n + i, ev, k, 0);
 		}
-	}
 
-	static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < n; j++)
+				mf.AddEdge(i, n + j, 1, -a[i][j]);
 
-	static int Last(int l, int r, Func<int, bool> f)
-	{
-		int m;
-		while (l < r) if (f(m = r - (r - l - 1) / 2)) l = m; else r = m - 1;
-		return l;
+		var (min, s) = mf.GetMinCost(sv, ev, n * k);
+
+		Console.WriteLine(-min);
+		foreach (var r in s) Console.WriteLine(new string(r));
 	}
 }
 
@@ -126,17 +103,35 @@ public class MinCostFlow
 		return minFlow[ev] * cost[ev];
 	}
 
-	// 到達不可能の場合、MaxValue を返します。
-	public long GetMinCost(int sv, int ev, long f)
+	// 「f 以下」となるようにカスタマイズします。
+	// 「f 以下」で考える場合、最も流量が大きいときに最小費用を達成するとは限りません。
+	public (long min, char[][] s) GetMinCost(int sv, int ev, long f)
 	{
 		Map = Array.ConvertAll(map, l => l.ToArray());
 
-		long r = 0, t;
+		var r = long.MaxValue;
+		char[][] s = null;
+
+		long m = 0, t;
 		while (f > 0)
 		{
-			if ((t = BellmanFord(sv, ev, ref f)) == long.MaxValue) return t;
-			r += t;
+			if ((t = BellmanFord(sv, ev, ref f)) == long.MaxValue) return (r, s);
+			m += t;
+
+			if (m < r)
+			{
+				r = m;
+
+				var n_ = sv / 2;
+				s = NewArray2(n_, n_, '.');
+				for (int v = 0; v < n_; v++)
+					foreach (var e in map[v])
+						if (e.Capacity == 0 && e.To != sv)
+							s[v][e.To - n_] = 'X';
+			}
 		}
-		return r;
+		return (r, s);
 	}
+
+	static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
 }
