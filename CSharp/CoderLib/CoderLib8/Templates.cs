@@ -47,6 +47,22 @@ namespace CoderLib8
 
 			var rn = Enumerable.Range(0, n).ToArray();
 		}
+
+		// Timeout for Action
+		//static void Main()
+		//{
+		//	var t = System.Threading.Tasks.Task.Run(Solve);
+		//	if (!t.Wait(1850)) Console.WriteLine(-1);
+		//}
+		//static void Solve()
+
+		// Timeout for Func
+		//static void Main()
+		//{
+		//	var t = System.Threading.Tasks.Task.Run(Solve);
+		//	Console.WriteLine(t.Wait(1850) ? t.Result : -1);
+		//}
+		//static object Solve()
 	}
 
 	class Templates_00
@@ -99,11 +115,11 @@ namespace CoderLib8
 		static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 		static void Main()
 		{
-			Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 			var (n, qc) = Read2();
 			var a = ReadL();
 			var qs = Array.ConvertAll(new bool[qc], _ => Read());
 
+			Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 			foreach (var q in qs)
 			{
 				if (q[0] == 0)
