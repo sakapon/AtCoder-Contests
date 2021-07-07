@@ -11,15 +11,16 @@ class Q085
 		var r = 0;
 		var ds = Divisors(k);
 
-		foreach (var a in ds)
+		for (int i = 0; i < ds.Length; i++)
 		{
+			var a = ds[i];
 			var q = k / a;
-			var ds2 = Divisors(q);
 
-			foreach (var b in ds2)
+			for (int j = i; j < ds.Length; j++)
 			{
-				if (a > b) continue;
-				var c = q / b;
+				var b = ds[j];
+				var c = Math.DivRem(q, b, out var rem);
+				if (rem != 0) continue;
 				if (b > c) continue;
 				r++;
 			}
