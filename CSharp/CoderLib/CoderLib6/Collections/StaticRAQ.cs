@@ -2,9 +2,10 @@
 
 namespace CoderLib6.Collections
 {
-	// いもす法 (範囲に対する加算)
+	// いもす法
+	// 範囲に対する加算クエリを一括で処理します。
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/5/DSL_5_A
-	class StaticRAQ1
+	public class StaticRAQ1
 	{
 		int n;
 		long[] d;
@@ -39,7 +40,8 @@ namespace CoderLib6.Collections
 
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/5/DSL_5_B
 	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_ab
-	class StaticRAQ2
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_cc
+	public class StaticRAQ2
 	{
 		int nx, ny;
 		long[,] d;
