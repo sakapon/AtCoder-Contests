@@ -3,10 +3,10 @@
 namespace CoderLib6.Collections
 {
 	// Test: https://judge.yosupo.jp/problem/static_range_sum
-	class CumSum
+	public class StaticRSQ1
 	{
 		long[] s;
-		public CumSum(int[] a)
+		public StaticRSQ1(int[] a)
 		{
 			s = new long[a.Length + 1];
 			for (int i = 0; i < a.Length; ++i) s[i + 1] = s[i] + a[i];

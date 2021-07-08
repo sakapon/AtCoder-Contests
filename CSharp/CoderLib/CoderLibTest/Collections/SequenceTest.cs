@@ -12,7 +12,7 @@ namespace CoderLibTest.Collections
 		[TestMethod]
 		public void Sum()
 		{
-			var s = new CumSum(new[] { 1, 2, 3, 4, 5 });
+			var s = new StaticRSQ1(new[] { 1, 2, 3, 4, 5 });
 
 			Assert.AreEqual(1, s.Sum(0, 1));
 			Assert.AreEqual(3, s.Sum(2, 3));
