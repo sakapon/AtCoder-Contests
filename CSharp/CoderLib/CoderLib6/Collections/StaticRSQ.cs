@@ -16,10 +16,10 @@ namespace CoderLib6.Collections
 		}
 
 		// [l, r)
-		public long Sum(int l_in, int r_ex) => s[r_ex] - s[l_in];
+		public long GetSum(int l, int r) => s[r] - s[l];
 	}
 	// 重めの処理です。
-	//public long Sum(Range r) => Sum(r.Start.GetOffset(s.Length - 1), r.End.GetOffset(s.Length - 1));
+	//public long GetSum(Range r) => GetSum(r.Start.GetOffset(s.Length - 1), r.End.GetOffset(s.Length - 1));
 
 	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_cc
 	public class StaticRSQ2
@@ -38,6 +38,6 @@ namespace CoderLib6.Collections
 					s[i + 1, j] += s[i, j];
 		}
 
-		public long Sum(int l1, int l2, int r1, int r2) => s[r1, r2] - s[l1, r2] - s[r1, l2] + s[l1, l2];
+		public long GetSum(int l1, int l2, int r1, int r2) => s[r1, r2] - s[l1, r2] - s[r1, l2] + s[l1, l2];
 	}
 }
