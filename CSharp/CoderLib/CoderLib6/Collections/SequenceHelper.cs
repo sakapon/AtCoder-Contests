@@ -37,6 +37,8 @@ namespace CoderLib6.Collections
 		public static int[] Pows2() => Enumerable.Range(0, 31).Select(i => 1 << i).ToArray();
 		public static long[] Pows2L() => Enumerable.Range(0, 63).Select(i => 1L << i).ToArray();
 
+		#region Slide
+
 		// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/3/DSL_3_D
 		public static int[] SlideMin(int[] a, int k)
 		{
@@ -83,5 +85,21 @@ namespace CoderLib6.Collections
 			}
 			return r;
 		}
+
+		#endregion
+
+		#region Cumulation
+
+		public static TR[] Cumulate<TS, TR>(this TS[] a, TR r0, Func<TR, TS, TR> func)
+		{
+			var r = new TR[a.Length + 1];
+			r[0] = r0;
+			for (int i = 0; i < a.Length; ++i) r[i + 1] = func(r[i], a[i]);
+			return r;
+		}
+		public static int[] CumMax(this int[] a, int v0 = int.MinValue) => Cumulate(a, v0, Math.Max);
+		public static int[] CumMin(this int[] a, int v0 = int.MaxValue) => Cumulate(a, v0, Math.Min);
+
+		#endregion
 	}
 }
