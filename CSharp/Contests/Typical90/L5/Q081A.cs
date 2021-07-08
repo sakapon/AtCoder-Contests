@@ -2,6 +2,7 @@
 
 class Q081A
 {
+	const int max = 5000;
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static void Main() => Console.WriteLine(Solve());
@@ -10,7 +11,6 @@ class Q081A
 		var (n, k) = Read2();
 		var ps = Array.ConvertAll(new bool[n], _ => Read2());
 
-		var max = 5000;
 		var raq = new StaticRAQ2(max + 1, max + 1);
 
 		foreach (var (a, b) in ps)

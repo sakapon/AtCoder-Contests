@@ -31,11 +31,10 @@ namespace CoderLib6.Collections
 			var n2 = a.GetLength(1);
 			s = new long[n1 + 1, n2 + 1];
 			for (int i = 0; i < n1; ++i)
-				for (int j = 0; j < n2; j++)
-					s[i + 1, j + 1] = s[i + 1, j] + a[i, j];
-			for (int i = 1; i < n1; ++i)
-				for (int j = 1; j <= n2; j++)
-					s[i + 1, j] += s[i, j];
+			{
+				for (int j = 0; j < n2; ++j) s[i + 1, j + 1] = s[i + 1, j] + a[i, j];
+				for (int j = 1; j <= n2; ++j) s[i + 1, j] += s[i, j];
+			}
 		}
 
 		public long GetSum(int l1, int l2, int r1, int r2) => s[r1, r2] - s[l1, r2] - s[r1, l2] + s[l1, l2];
