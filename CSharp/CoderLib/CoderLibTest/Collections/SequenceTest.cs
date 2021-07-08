@@ -10,18 +10,6 @@ namespace CoderLibTest.Collections
 	public class SequenceTest
 	{
 		[TestMethod]
-		public void Sum()
-		{
-			var s = new StaticRSQ1(new[] { 1, 2, 3, 4, 5 });
-
-			Assert.AreEqual(1, s.Sum(0, 1));
-			Assert.AreEqual(3, s.Sum(2, 3));
-			Assert.AreEqual(9, s.Sum(1, 4));
-			Assert.AreEqual(14, s.Sum(1, 5));
-			Assert.AreEqual(15, s.Sum(0, 5));
-		}
-
-		[TestMethod]
 		public void CumSum()
 		{
 			Assert.AreEqual(500500, SeqHelper.CumSum(Enumerable.Range(1, 1000).ToArray())[1000]);
