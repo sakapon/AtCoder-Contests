@@ -1,32 +1,52 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 class Q088
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int x, int y) Read2() { var a = Read(); return (a[0], a[1]); }
+	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static void Main()
 	{
-		var (n, qc) = Read2();
-		var a = Read();
-		var qs = Array.ConvertAll(new bool[qc], _ => Read2());
+		var (n, m) = Read2();
+		var a = Read().Prepend(0).ToArray();
+		var es = Array.ConvertAll(new bool[m], _ => Read2());
+
+		var map = NewArray2<bool>(n + 1, n + 1);
+		foreach (var (x, y) in es)
+			map[x][y] = true;
 
 		var set = new int[8889][];
 		int[] b = null;
 		int[] c = null;
 
-		n = Math.Min(30, n);
-		var rn = Enumerable.Range(0, n).ToArray();
+		var path = new List<int>();
+		for (int v = 1; v <= n; v++)
+			if (Dfs(v)) break;
 
-		AllBoolCombination(n, f =>
+		Console.WriteLine(b.Length);
+		Console.WriteLine(string.Join(" ", b));
+		Console.WriteLine(c.Length);
+		Console.WriteLine(string.Join(" ", c));
+
+		bool Dfs(int v)
 		{
-			foreach (var (x, y) in qs)
+			path.Add(v);
+			if (CheckSum()) return true;
+
+			for (int nv = v + 1; nv <= n; nv++)
 			{
-				if (x > n || y > n) continue;
-				if (f[x - 1] && f[y - 1]) return false;
+				if (!CheckNext(nv)) continue;
+				if (Dfs(nv)) return true;
 			}
 
-			var comb = Array.FindAll(rn, i => f[i]);
+			path.RemoveAt(path.Count - 1);
+			return false;
+		}
+
+		bool CheckSum()
+		{
+			var comb = path.ToArray();
 			var s = comb.Sum(i => a[i]);
 
 			if (set[s] == null)
@@ -40,24 +60,20 @@ class Q088
 				c = comb;
 				return true;
 			}
-		});
+		}
 
-		Console.WriteLine(b.Length);
-		Console.WriteLine(string.Join(" ", b.Select(i => i + 1)));
-		Console.WriteLine(c.Length);
-		Console.WriteLine(string.Join(" ", c.Select(i => i + 1)));
-	}
-
-	public static void AllBoolCombination(int n, Func<bool[], bool> action)
-	{
-		if (n > 30) throw new InvalidOperationException();
-		var pn = 1 << n;
-		var b = new bool[n];
-
-		for (int x = 0; x < pn; ++x)
+		bool CheckNext(int nv)
 		{
-			for (int i = 0; i < n; ++i) b[i] = (x & (1 << i)) != 0;
-			if (action(b)) break;
+			foreach (var v0 in path)
+			{
+				if (map[v0][nv])
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 	}
+
+	static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
 }
