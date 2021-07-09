@@ -27,6 +27,7 @@ public class StaticRSQ1
 {
 	int n;
 	long[] s;
+	public long[] Raw => s;
 	public StaticRSQ1(long[] a)
 	{
 		n = a.Length;

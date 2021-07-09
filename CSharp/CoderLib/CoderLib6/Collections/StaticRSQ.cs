@@ -11,6 +11,7 @@ namespace CoderLib6.Collections
 	{
 		int n;
 		long[] s;
+		public long[] Raw => s;
 		public StaticRSQ1(long[] a)
 		{
 			n = a.Length;

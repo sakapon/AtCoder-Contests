@@ -16,8 +16,8 @@ class Q076M
 		sum /= 10;
 
 		a = a.Concat(a).ToArray();
-		var cs = new CumSumL(a);
-		var s = cs.s;
+		var rsq = new StaticRSQ1(a);
+		var s = rsq.Raw;
 
 		var map = new MultiMap<long, int>();
 		for (int i = 0; i < s.Length; i++)
@@ -29,7 +29,7 @@ class Q076M
 		{
 			for (int i = 1; i < l.Count; i++)
 			{
-				if (cs.Sum(l[i - 1], l[i]) == sum)
+				if (rsq.GetSum(l[i - 1], l[i]) == sum)
 				{
 					return true;
 				}
@@ -37,17 +37,6 @@ class Q076M
 		}
 		return false;
 	}
-}
-
-class CumSumL
-{
-	public long[] s;
-	public CumSumL(long[] a)
-	{
-		s = new long[a.Length + 1];
-		for (int i = 0; i < a.Length; ++i) s[i + 1] = s[i] + a[i];
-	}
-	public long Sum(int l_in, int r_ex) => s[r_ex] - s[l_in];
 }
 
 class MultiMap<TK, TV> : Dictionary<TK, List<TV>>
