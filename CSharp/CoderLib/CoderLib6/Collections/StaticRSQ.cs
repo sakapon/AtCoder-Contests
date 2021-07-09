@@ -6,17 +6,27 @@ namespace CoderLib6.Collections
 	// 範囲に対する和の取得クエリを一括で処理します。
 	// Test: https://judge.yosupo.jp/problem/static_range_sum
 	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_j
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_bx
 	public class StaticRSQ1
 	{
+		int n;
 		long[] s;
-		public StaticRSQ1(int[] a)
+		public StaticRSQ1(long[] a)
 		{
-			s = new long[a.Length + 1];
-			for (int i = 0; i < a.Length; ++i) s[i + 1] = s[i] + a[i];
+			n = a.Length;
+			s = new long[n + 1];
+			for (int i = 0; i < n; ++i) s[i + 1] = s[i] + a[i];
 		}
 
 		// [l, r)
-		public long GetSum(int l, int r) => s[r] - s[l];
+		// 範囲外のインデックスも可。
+		public long GetSum(int l, int r)
+		{
+			if (r < 0 || n < l) return 0;
+			if (l < 0) l = 0;
+			if (n < r) r = n;
+			return s[r] - s[l];
+		}
 	}
 	// 重めの処理です。
 	//public long GetSum(Range r) => GetSum(r.Start.GetOffset(s.Length - 1), r.End.GetOffset(s.Length - 1));
