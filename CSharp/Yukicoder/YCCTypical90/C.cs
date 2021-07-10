@@ -10,12 +10,11 @@ class C
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var n = long.Parse(Console.ReadLine());
 
-		return string.Join(" ", a);
+		var n2 = n * n;
+		var p = Enumerable.Range(1, (int)n).Select(x => (long)x * x).ToArray();
+		var set = p.ToHashSet();
+		return p.Count(x2 => set.Contains(n2 - x2));
 	}
 }
