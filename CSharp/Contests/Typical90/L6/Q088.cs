@@ -46,18 +46,17 @@ class Q088
 
 		bool CheckSum()
 		{
-			var comb = path.ToArray();
-			var s = comb.Sum(i => a[i]);
+			b = path.ToArray();
+			var s = b.Sum(i => a[i]);
 
 			if (set[s] == null)
 			{
-				set[s] = comb;
+				set[s] = b;
 				return false;
 			}
 			else
 			{
-				b = set[s];
-				c = comb;
+				c = set[s];
 				return true;
 			}
 		}
@@ -65,12 +64,8 @@ class Q088
 		bool CheckNext(int nv)
 		{
 			foreach (var v0 in path)
-			{
 				if (map[v0][nv])
-				{
 					return false;
-				}
-			}
 			return true;
 		}
 	}
