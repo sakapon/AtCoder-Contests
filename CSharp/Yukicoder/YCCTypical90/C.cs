@@ -13,8 +13,7 @@ class C
 		var n = long.Parse(Console.ReadLine());
 
 		var n2 = n * n;
-		var p = Enumerable.Range(1, (int)n).Select(x => (long)x * x).ToArray();
-		var set = p.ToHashSet();
-		return p.Count(x2 => set.Contains(n2 - x2));
+		var set = Enumerable.Range(1, (int)n).Select(x => (long)x * x).ToHashSet();
+		return set.Count(x2 => set.Contains(n2 - x2));
 	}
 }
