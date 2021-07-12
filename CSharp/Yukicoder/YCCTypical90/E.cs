@@ -12,15 +12,18 @@ class E
 	static object Solve()
 	{
 		var (p, q, r, k) = Read4L();
-		return GetValueWithMod(p, q, r, k - 1, 10);
+		return GetValueWithMod(1, -1, 1, p, q, r, k - 1, 10);
 	}
 
-	public static long GetValueWithMod(long a0, long a1, long a2, long n, long mod)
+	public static long GetValueWithMod(long p, long q, long r, long a0, long a1, long a2, long n, long mod)
 	{
 		var m = new ModMatrixOperator(mod);
 
 		var a = new long[3, 3];
-		a[0, 0] = a[0, 1] = a[0, 2] = a[1, 0] = a[2, 1] = 1;
+		a[0, 0] = p;
+		a[0, 1] = -q;
+		a[0, 2] = r;
+		a[1, 0] = a[2, 1] = 1;
 		a = m.Pow(a, n);
 		var v = m.Mul(a, new[] { a2, a1, a0 });
 		return v[2];
