@@ -30,16 +30,19 @@ class FB
 			var t2 = 1 - t1;
 
 			var y0 = ab[t1][x];
-			ab[t1][x] = y;
-			counts[t1].Add(map[y0], -1);
-			counts[t1].Add(map[y], 1);
-			sums[t1].Add(map[y0], -y0);
-			sums[t1].Add(map[y], y);
+			var i = map[y];
+			var i0 = map[y0];
 
-			r -= counts[t2].Sum(map[y0]) * y0;
-			r -= sums[t2].Sum(map[y0] + 1, map.Count + 1);
-			r += counts[t2].Sum(map[y]) * y;
-			r += sums[t2].Sum(map[y] + 1, map.Count + 1);
+			ab[t1][x] = y;
+			counts[t1].Add(i0, -1);
+			counts[t1].Add(i, 1);
+			sums[t1].Add(i0, -y0);
+			sums[t1].Add(i, y);
+
+			r -= counts[t2].Sum(i0) * y0;
+			r -= sums[t2].Sum(i0 + 1, map.Count + 1);
+			r += counts[t2].Sum(i) * y;
+			r += sums[t2].Sum(i + 1, map.Count + 1);
 
 			Console.WriteLine(r);
 		}
