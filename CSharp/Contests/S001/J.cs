@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 class J
@@ -9,52 +8,46 @@ class J
 		var n = int.Parse(Console.ReadLine());
 		var a = Console.ReadLine().Split().Select(int.Parse).ToArray();
 
+		Console.WriteLine(InversionNumber(n, a));
+	}
+
+	public static long InversionNumber(int n, int[] a)
+	{
 		var r = 0L;
-		var st = new SegmentTree(n + 1);
-		for (int i = 0; i < n; i++)
+		var bit = new BIT(n);
+		for (int i = 0; i < n; ++i)
 		{
-			r += i - st.Sum(0, a[i] + 1);
-			st.Add(a[i], 1);
+			r += i - bit.Sum(a[i]);
+			bit.Add(a[i], 1);
 		}
-		Console.WriteLine(r);
+		return r;
 	}
 }
 
-class SegmentTree
+// 機能限定版
+class BIT
 {
-	static int[] p2 = Enumerable.Range(0, 30).Select(i => (int)Math.Pow(2, i)).ToArray();
-	static Dictionary<int, int> p2_ = Enumerable.Range(0, 30).ToDictionary(i => p2[i], i => i);
+	// Power of 2
+	int n2 = 1;
+	long[] a;
 
-	static int LogFloor(int v)
+	public BIT(int n)
 	{
-		for (int i = 1; ; i++) if (p2[i] > v) return i - 1;
+		while (n2 < n) n2 <<= 1;
+		a = new long[n2 + 1];
 	}
 
-	int n2, logn;
-	int[] a;
-	public SegmentTree(int n)
+	public long this[int i] => Sum(i) - Sum(i - 1);
+
+	public void Add(int i, long v)
 	{
-		logn = (int)Math.Ceiling(Math.Log(n, 2));
-		n2 = p2[logn];
-		a = new int[2 * n2];
+		for (; i <= n2; i += i & -i) a[i] += v;
 	}
 
-	public void Add(int i, int v)
+	public long Sum(int r_in)
 	{
-		for (i += n2; i > 0; i /= 2) a[i] += v;
-	}
-
-	// 簡易実装
-	public int Sum(int start, int count)
-	{
-		if (p2_.ContainsKey(count))
-		{
-			return a[(start + n2) / count];
-		}
-		else
-		{
-			var c2 = p2[LogFloor(count)];
-			return Sum(start, c2) + Sum(start + c2, count - c2);
-		}
+		var r = 0L;
+		for (var i = r_in; i > 0; i -= i & -i) r += a[i];
+		return r;
 	}
 }

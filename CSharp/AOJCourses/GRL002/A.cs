@@ -4,27 +4,27 @@ using System.Linq;
 
 class A
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
 	{
 		var h = Read();
-		var es = new int[h[1]].Select(_ => Read()).ToArray();
+		var es = Array.ConvertAll(new bool[h[1]], _ => Read());
 
 		Console.WriteLine(Kruskal(h[0], es).Sum(e => e[2]));
 	}
 
-	static int[][] Kruskal(int n, int[][] es)
+	static int[][] Kruskal(int n, int[][] ues)
 	{
 		var uf = new UF(n);
-		var minEdges = new List<int[]>();
+		var mes = new List<int[]>();
 
-		foreach (var e in es.OrderBy(e => e[2]))
+		foreach (var e in ues.OrderBy(e => e[2]))
 		{
 			if (uf.AreUnited(e[0], e[1])) continue;
 			uf.Unite(e[0], e[1]);
-			minEdges.Add(e);
+			mes.Add(e);
 		}
-		return minEdges.ToArray();
+		return mes.ToArray();
 	}
 }
 

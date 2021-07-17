@@ -4,52 +4,47 @@ using System.Linq;
 class F
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static void Main()
 	{
-		var h = Read();
-		int n = h[0], t = h[1];
+		var (n, t) = Read2();
 		var a = Read();
 
-		var c = 20;
-		var m1 = Math.Min(c, n);
+		var n2 = n / 2;
 
-		var dp1 = new long[1 << m1];
-		for (int x = 0; x < 1 << m1; x++)
-			for (int i = 0; i < m1; i++)
-				if (dp1[x | (1 << i)] == 0 && dp1[x] + a[i] <= t)
-					dp1[x | (1 << i)] = dp1[x] + a[i];
+		var s1 = CreateSums(a.Take(n2).ToArray(), t);
+		var s2 = CreateSums(a.Skip(n2).ToArray(), t);
 
-		if (n <= c)
+		Array.Sort(s2);
+		Array.Reverse(s2);
+
+		var r = 0;
+		for (int i = 0; i < s1.Length; i++)
 		{
-			Console.WriteLine(dp1.Max());
-			return;
+			var j = First(0, s2.Length, x => s1[i] + s2[x] <= t);
+			r = Math.Max(r, s1[i] + s2[j]);
 		}
-
-		var m2 = n - c;
-		var dp2 = new long[1 << m2];
-		for (int x = 0; x < 1 << m2; x++)
-			for (int i = 0; i < m2; i++)
-				if (dp2[x | (1 << i)] == 0 && dp2[x] + a[c + i] <= t)
-					dp2[x | (1 << i)] = dp2[x] + a[c + i];
-
-		Array.Sort(dp2);
-		Array.Reverse(dp2);
-		var M = 0L;
-
-		for (int i = 0; i < dp1.Length; i++)
-		{
-			var j = First(0, dp2.Length, x => dp1[i] + dp2[x] <= t);
-			M = Math.Max(M, dp1[i] + dp2[j]);
-		}
-		Console.WriteLine(M);
+		Console.WriteLine(r);
 	}
 
-	static int FlagCount(int x)
+	static int[] CreateSums(int[] a, int t)
 	{
-		var r = 0;
-		for (; x != 0; x >>= 1) if ((x & 1) != 0) r++;
-		return r;
+		var n = a.Length;
+		var dp = new int[1 << n];
+		for (int x = 1; x < 1 << n; x++)
+		{
+			for (int i = 0; i < n; i++)
+			{
+				if ((x & (1 << i)) != 0)
+				{
+					var px = x ^ (1 << i);
+					var v = dp[px] + a[i];
+					dp[x] = dp[px] == -1 || v > t ? -1 : v;
+					break;
+				}
+			}
+		}
+		return Array.FindAll(dp, v => v != -1);
 	}
 
 	static int First(int l, int r, Func<int, bool> f)

@@ -2,18 +2,25 @@
 
 class D
 {
+	const long M = 998244353;
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		//var h = Read();
-		//int n = h[0], m = h[1];
-		var n = int.Parse(Console.ReadLine());
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (n, k) = Read2();
 
-		Console.WriteLine(string.Join(" ", a));
+		var dp = new long[n + 1, n + 1];
+		dp[0, 0] = 1;
+
+		for (int i = 1; i <= n; i++)
+		{
+			for (int j = i; j > 0; j--)
+			{
+				dp[i, j] = dp[i - 1, j - 1];
+				if (2 * j <= i) dp[i, j] += dp[i, 2 * j];
+				dp[i, j] %= M;
+			}
+		}
+		Console.WriteLine(dp[n, k]);
 	}
 }

@@ -9,6 +9,7 @@ namespace CoderLib6.Values
 	{
 		//const long M = 998244353;
 		const long M = 1000000007;
+		const long MHalf = (M + 1) / 2;
 		static long MPow(long b, long i)
 		{
 			long r = 1;
@@ -16,6 +17,8 @@ namespace CoderLib6.Values
 			return r;
 		}
 		static long MInv(long x) => MPow(x, M - 2);
+		// x と M が互いに素の場合 (Euler の定理)
+		//static long MInv(long x) => MPow(x, Totient(M) - 1);
 
 		// n >= 0
 		static long MFactorial(int n) { for (long x = 1, i = 1; ; x = x * ++i % M) if (i >= n) return x; }
@@ -25,6 +28,7 @@ namespace CoderLib6.Values
 			for (long x = 1, i = n - r; ; x = x * ++i % M) if (i >= n) return x;
 		}
 		static long MNcr(int n, int r) => n < r ? 0 : n - r < r ? MNcr(n, n - r) : MNpr(n, r) * MInv(MFactorial(r)) % M;
+		static long MCatalan(int n) => MNpr(2 * n, n) * MInv(MFactorial(n + 1)) % M;
 
 		static long MInt(long x) => (x %= M) < 0 ? x + M : x;
 		static long MNeg(long x) => MInt(-x);

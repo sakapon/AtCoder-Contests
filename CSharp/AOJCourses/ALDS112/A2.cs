@@ -19,32 +19,38 @@ class A2
 		Console.WriteLine(r.Sum(e => e[2]));
 	}
 
-	static int[][] Prim(int n, int sv, int[][] es)
+	static int[][] Prim(int n, int root, int[][] ues) => Prim(n, root, ToMap(n, ues, false));
+	static int[][] Prim(int n, int root, List<int[]>[] map)
 	{
-		var map = Array.ConvertAll(new int[n + 1], _ => new List<int[]>());
-		foreach (var e in es)
-		{
-			map[e[0]].Add(new[] { e[0], e[1], e[2] });
-			map[e[1]].Add(new[] { e[1], e[0], e[2] });
-		}
+		var u = new bool[n];
+		var q = PQ<int[]>.Create(e => e[2]);
+		u[root] = true;
+		q.PushRange(map[root].ToArray());
+		var mes = new List<int[]>();
 
-		var u = new bool[n + 1];
-		u[sv] = true;
-		var pq = PQ<int[]>.Create(e => e[2]);
-		pq.PushRange(map[sv].ToArray());
-		var minEdges = new List<int[]>();
-
-		while (pq.Count > 0 && minEdges.Count < n)
+		// 実際の頂点数に注意。
+		while (q.Count > 0 && mes.Count < n - 1)
 		{
-			var e = pq.Pop();
+			var e = q.Pop();
 			if (u[e[1]]) continue;
 			u[e[1]] = true;
-			minEdges.Add(e);
+			mes.Add(e);
 			foreach (var ne in map[e[1]])
 				if (ne[1] != e[0])
-					pq.Push(ne);
+					q.Push(ne);
 		}
-		return minEdges.ToArray();
+		return mes.ToArray();
+	}
+
+	static List<int[]>[] ToMap(int n, int[][] es, bool directed)
+	{
+		var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
+		foreach (var e in es)
+		{
+			map[e[0]].Add(e);
+			if (!directed) map[e[1]].Add(new[] { e[1], e[0], e[2] });
+		}
+		return map;
 	}
 }
 

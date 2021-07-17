@@ -10,7 +10,7 @@ class I2
 		var n = s.Length;
 
 		var sa = ManberMyers(s);
-		var rh = new RH(s, 1000000007);
+		var rh = new RH(s);
 
 		var r = 0L;
 		// 前の文字列と一致した部分より後ろの文字数を加算します。
@@ -93,16 +93,20 @@ class I2
 
 class RH
 {
+	const long B = 10007;
+	const long M = 1000000007;
+	static long MInt(long x) => (x %= M) < 0 ? x + M : x;
+
 	string s;
 	int n;
-	long p;
+	long b;
 	long[] pow, pre;
 
-	public RH(string _s, long _p)
+	public RH(string _s, long _b = B)
 	{
 		s = _s;
 		n = s.Length;
-		p = _p;
+		b = _b;
 
 		pow = new long[n + 1];
 		pow[0] = 1;
@@ -110,19 +114,19 @@ class RH
 
 		for (int i = 0; i < n; ++i)
 		{
-			pow[i + 1] = pow[i] * p;
-			pre[i + 1] = pre[i] * p + s[i];
+			pow[i + 1] = pow[i] * b % M;
+			pre[i + 1] = (pre[i] * b + s[i]) % M;
 		}
 	}
 
-	public long Hash(int start, int count) => pre[start + count] - pre[start] * pow[count];
-	public long Hash2(int minIn, int maxEx) => pre[maxEx] - pre[minIn] * pow[maxEx - minIn];
+	public long Hash(int start, int count) => MInt(pre[start + count] - pre[start] * pow[count]);
+	public long Hash2(int minIn, int maxEx) => MInt(pre[maxEx] - pre[minIn] * pow[maxEx - minIn]);
 
-	public static long Hash(string s, long p) => Hash(s, 0, s.Length, p);
-	public static long Hash(string s, int start, int count, long p)
+	public static long Hash(string s, long b = B) => Hash(s, 0, s.Length, b);
+	public static long Hash(string s, int start, int count, long b = B)
 	{
 		var h = 0L;
-		for (int i = 0; i < count; ++i) h = h * p + s[start + i];
+		for (int i = 0; i < count; ++i) h = (h * b + s[start + i]) % M;
 		return h;
 	}
 }

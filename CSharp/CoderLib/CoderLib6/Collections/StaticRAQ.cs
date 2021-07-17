@@ -3,67 +3,83 @@
 namespace CoderLib6.Collections
 {
 	// いもす法
+	// 範囲に対する加算クエリを一括で処理します。
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/5/DSL_5_A
-	class StaticRAQ
+	public class StaticRAQ1
 	{
+		int n;
 		long[] d;
-		public StaticRAQ(int n) { d = new long[n]; }
+		public StaticRAQ1(int _n) { n = _n; d = new long[n]; }
 
 		// O(1)
+		// [l, r)
 		// 範囲外のインデックスも可。
-		public void Add(int l_in, int r_ex, long v)
+		public void Add(int l, int r, long v)
 		{
-			d[Math.Max(0, l_in)] += v;
-			if (r_ex < d.Length) d[r_ex] -= v;
+			if (r < 0 || n <= l) return;
+			d[Math.Max(0, l)] += v;
+			if (r < n) d[r] -= v;
 		}
 
 		// O(n)
-		public long[] GetAll()
+		public long[] GetSum()
 		{
-			var a = new long[d.Length];
+			var a = new long[n];
 			a[0] = d[0];
-			for (int i = 1; i < d.Length; ++i) a[i] = a[i - 1] + d[i];
+			for (int i = 1; i < n; ++i) a[i] = a[i - 1] + d[i];
 			return a;
+		}
+
+		// O(n)
+		// d をそのまま使います。
+		public long[] GetSum0()
+		{
+			for (int i = 1; i < n; ++i) d[i] += d[i - 1];
+			return d;
 		}
 	}
 
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/5/DSL_5_B
-	class StaticRAQ2
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_ab
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_cc
+	public class StaticRAQ2
 	{
-		int nx, ny;
+		int n1, n2;
 		long[,] d;
-		public StaticRAQ2(int _nx, int _ny) { nx = _nx; ny = _ny; d = new long[nx, ny]; }
+		public StaticRAQ2(int _n1, int _n2) { n1 = _n1; n2 = _n2; d = new long[n1, n2]; }
 
 		// O(1)
 		// 範囲外のインデックスも可。
-		public void Add(int x1, int y1, int x2, int y2, long v)
+		public void Add(int l1, int l2, int r1, int r2, long v)
 		{
-			d[Math.Max(0, x1), Math.Max(0, y1)] += v;
-			if (y2 < ny) d[Math.Max(0, x1), y2] -= v;
-			if (x2 < nx) d[x2, Math.Max(0, y1)] -= v;
-			if (x2 < nx && y2 < ny) d[x2, y2] += v;
+			if (r1 < 0 || n1 <= l1) return;
+			if (r2 < 0 || n2 <= l2) return;
+			d[Math.Max(0, l1), Math.Max(0, l2)] += v;
+			if (r2 < n2) d[Math.Max(0, l1), r2] -= v;
+			if (r1 < n1) d[r1, Math.Max(0, l2)] -= v;
+			if (r1 < n1 && r2 < n2) d[r1, r2] += v;
 		}
 
-		// O(nx ny)
-		public long[,] GetAll()
+		// O(n1 n2)
+		public long[,] GetSum()
 		{
-			var a = new long[nx, ny];
-			for (int i = 0; i < nx; ++i) a[i, 0] = d[i, 0];
-			for (int i = 0; i < nx; ++i)
-				for (int j = 1; j < ny; ++j) a[i, j] = a[i, j - 1] + d[i, j];
-			for (int j = 0; j < ny; ++j)
-				for (int i = 1; i < nx; ++i) a[i, j] += a[i - 1, j];
+			var a = new long[n1, n2];
+			for (int i = 0; i < n1; ++i) a[i, 0] = d[i, 0];
+			for (int i = 0; i < n1; ++i)
+				for (int j = 1; j < n2; ++j) a[i, j] = a[i, j - 1] + d[i, j];
+			for (int j = 0; j < n2; ++j)
+				for (int i = 1; i < n1; ++i) a[i, j] += a[i - 1, j];
 			return a;
 		}
 
-		// O(nx ny)
+		// O(n1 n2)
 		// d をそのまま使います。
-		public long[,] GetAll0()
+		public long[,] GetSum0()
 		{
-			for (int i = 0; i < nx; ++i)
-				for (int j = 1; j < ny; ++j) d[i, j] += d[i, j - 1];
-			for (int j = 0; j < ny; ++j)
-				for (int i = 1; i < nx; ++i) d[i, j] += d[i - 1, j];
+			for (int i = 0; i < n1; ++i)
+				for (int j = 1; j < n2; ++j) d[i, j] += d[i, j - 1];
+			for (int j = 0; j < n2; ++j)
+				for (int i = 1; i < n1; ++i) d[i, j] += d[i - 1, j];
 			return d;
 		}
 	}

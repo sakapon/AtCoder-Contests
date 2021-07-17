@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using CoderLib8.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -16,6 +17,38 @@ namespace CoderLibTest.Numerics
 			b = 3;
 			for (var i = 0; i <= 33; i++)
 				Assert.AreEqual((long)Math.Pow(b, i), Math2.Pow(b, i));
+		}
+
+		[TestMethod]
+		public void GetNprs()
+		{
+			var npr = Math2.GetNprs();
+			Assert.AreEqual(1, npr[0, 0]);
+			Assert.AreEqual(1, npr[1, 0]);
+			Assert.AreEqual(1, npr[1, 1]);
+			Assert.AreEqual(0, npr[1, 2]);
+			Assert.AreEqual(1, npr[3, 0]);
+			Assert.AreEqual(3, npr[3, 1]);
+			Assert.AreEqual(6, npr[3, 2]);
+			Assert.AreEqual(6, npr[3, 3]);
+			Assert.AreEqual(151200, npr[10, 6]);
+			Assert.AreEqual(2432902008176640000, npr[20, 20]);
+		}
+
+		[TestMethod]
+		public void GetNcrs()
+		{
+			var ncr = Math2.GetNcrs();
+			Assert.AreEqual(1, ncr[0, 0]);
+			Assert.AreEqual(1, ncr[1, 0]);
+			Assert.AreEqual(1, ncr[1, 1]);
+			Assert.AreEqual(0, ncr[1, 2]);
+			Assert.AreEqual(1, ncr[3, 0]);
+			Assert.AreEqual(3, ncr[3, 1]);
+			Assert.AreEqual(3, ncr[3, 2]);
+			Assert.AreEqual(1, ncr[3, 3]);
+			Assert.AreEqual(210, ncr[10, 6]);
+			Assert.AreEqual(7219428434016265740, ncr[66, 33]);
 		}
 
 		[TestMethod]
@@ -55,6 +88,15 @@ namespace CoderLibTest.Numerics
 			Assert.AreEqual(3, Math2.Ncr(3, 2));
 			Assert.AreEqual(1, Math2.Ncr(3, 3));
 			Assert.AreEqual(210, Math2.Ncr(10, 6));
+		}
+
+		[TestMethod]
+		public void PopCount()
+		{
+			for (ulong x = 0; x < 1 << 10; x++)
+				Assert.AreEqual(BitOperations.PopCount(x), Math2.PopCount(x));
+			for (ulong x = 1L << 50; x < (1L << 50) + (1 << 10); x++)
+				Assert.AreEqual(BitOperations.PopCount(x), Math2.PopCount(x));
 		}
 	}
 }

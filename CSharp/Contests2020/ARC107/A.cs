@@ -1,19 +1,9 @@
 ﻿using System;
+using System.Linq;
 
 class A
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	const long M = 998244353;
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main()
-	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		//var h = Read();
-		//int n = h[0], m = h[1];
-		var n = int.Parse(Console.ReadLine());
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
-
-		Console.WriteLine(string.Join(" ", a));
-	}
+	static void Main() => Console.WriteLine(ReadL().Select(x => x * (x + 1) / 2 % M).Aggregate((x, y) => x * y % M));
 }

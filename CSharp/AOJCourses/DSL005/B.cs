@@ -31,6 +31,8 @@ class StaticRAQ2
 	// 範囲外のインデックスも可。
 	public void Add(int x1, int y1, int x2, int y2, long v)
 	{
+		if (x2 < 0 || nx <= x1) return;
+		if (y2 < 0 || ny <= y1) return;
 		d[Math.Max(0, x1), Math.Max(0, y1)] += v;
 		if (y2 < ny) d[Math.Max(0, x1), y2] -= v;
 		if (x2 < nx) d[x2, Math.Max(0, y1)] -= v;
@@ -47,5 +49,16 @@ class StaticRAQ2
 		for (int j = 0; j < ny; ++j)
 			for (int i = 1; i < nx; ++i) a[i, j] += a[i - 1, j];
 		return a;
+	}
+
+	// O(nx ny)
+	// d をそのまま使います。
+	public long[,] GetAll0()
+	{
+		for (int i = 0; i < nx; ++i)
+			for (int j = 1; j < ny; ++j) d[i, j] += d[i, j - 1];
+		for (int j = 0; j < ny; ++j)
+			for (int i = 1; i < nx; ++i) d[i, j] += d[i - 1, j];
+		return d;
 	}
 }
