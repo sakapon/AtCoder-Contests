@@ -11,11 +11,19 @@ class D
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var s = Console.ReadLine().ToCharArray();
 
-		return string.Join(" ", a);
+		var set = new HashSet<char> { 'a', 'i', 'u', 'e', 'o' };
+
+		for (int i = 1; i < n - 1; i++)
+		{
+			if (s[i] != 'x') continue;
+			if (s[i - 1] != s[i + 1]) continue;
+			if (!set.Contains(s[i - 1])) continue;
+
+			s[i - 1] = s[i] = s[i + 1] = '.';
+		}
+
+		return string.Join("", s);
 	}
 }
