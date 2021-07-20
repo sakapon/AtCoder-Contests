@@ -13,7 +13,7 @@ class D
 		var n = int.Parse(Console.ReadLine());
 		var s = Console.ReadLine().ToCharArray();
 
-		var set = new HashSet<char> { 'a', 'i', 'u', 'e', 'o' };
+		var set = "aiueo".ToHashSet();
 
 		for (int i = 1; i < n - 1; i++)
 		{
@@ -24,6 +24,6 @@ class D
 			s[i - 1] = s[i] = s[i + 1] = '.';
 		}
 
-		return string.Join("", s);
+		return new string(s);
 	}
 }

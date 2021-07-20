@@ -12,12 +12,8 @@ class A
 	{
 		var s = Console.ReadLine().Select(c => c - '0').ToArray();
 
-		var s0 = s[..^1];
-
-		var d = s0.Where((v, i) => i % 2 == 0).Sum() * 3;
-		d += s0.Where((v, i) => i % 2 == 1).Sum();
-		d %= 10;
-
-		return s[^1] == d;
+		var r7 = Enumerable.Range(0, 7).ToArray();
+		var d = r7.Sum(i => s[2 * i]) * 3 + r7.Sum(i => s[2 * i + 1]);
+		return s[^1] == d % 10;
 	}
 }

@@ -16,17 +16,8 @@ class E
 
 		for (int k = 1; k <= 30; k++)
 		{
-			var x = p3[k] + 1;
-
-			for (int i = 0; i < 30 - k; i++)
-			{
-				x *= 3;
-			}
-
-			if (x == n)
-			{
-				return k;
-			}
+			var x = (p3[k] + 1) * p3[30 - k];
+			if (x == n) return k;
 		}
 		return -1;
 	}

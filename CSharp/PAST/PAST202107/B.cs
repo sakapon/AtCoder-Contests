@@ -12,11 +12,6 @@ class B
 	static object Solve()
 	{
 		var (a, b, c) = Read3();
-
-		while (a > b * c)
-		{
-			a--;
-		}
-		return (double)a / b;
+		return (double)Math.Min(a, b * c) / b;
 	}
 }
