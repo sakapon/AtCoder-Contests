@@ -24,15 +24,12 @@ class D
 		sd = MinGroup(sd);
 		td = MinGroup(td);
 
-		for (int i2 = 0; i2 < sd.Length; i2++)
+		var (si, sj, _) = sd[0];
+		for (int j2 = 0; j2 < td.Length; j2++)
 		{
-			var (si, sj, _) = sd[i2];
-			for (int j2 = 0; j2 < td.Length; j2++)
-			{
-				var (ti, tj, _) = td[j2];
-				if (Check(si, sj, ti, tj)) return true;
-				if (Check(si, sj, tj, ti)) return true;
-			}
+			var (ti, tj, _) = td[j2];
+			if (Check(si, sj, ti, tj)) return true;
+			if (Check(si, sj, tj, ti)) return true;
 		}
 
 		return false;
