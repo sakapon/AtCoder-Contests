@@ -51,57 +51,31 @@ class M
 			var length = r - l;
 
 			var L = ruq.Get(l);
-			if (ruq.Get(r - 1) == L)
+			var RL = ruq.Get(r - 1);
+			var R = RL + lengths[RL];
+			var XR = a[RL];
+
+			// 関連する区間を全て除きます。
+			for (int i = L; i < R; i += lengths[i])
 			{
-				// 同一区間内
-				var X = a[L];
-				var R = L + lengths[L];
-
-				Add(X, -length);
-				Add(x, length);
-
-				lengths[L] = l - L;
-
-				a[l] = x;
-				lengths[l] = length;
-				ruq.Set(l, r, l);
-
-				if (r < R)
-				{
-					a[r] = X;
-					lengths[r] = R - r;
-					ruq.Set(r, R, r);
-				}
+				Add(a[i], -lengths[i]);
 			}
-			else
+
+			Add(a[L], l - L);
+			Add(a[RL], R - r);
+			Add(x, length);
+
+			lengths[L] = l - L;
+
+			a[l] = x;
+			lengths[l] = length;
+			ruq.Set(l, r, l);
+
+			if (r < R)
 			{
-				var LR = L + lengths[L];
-
-				var RL = ruq.Get(r - 1);
-				var R = RL + lengths[RL];
-
-				// 関連する区間を全て除きます。
-				for (int i = L; i < R; i += lengths[i])
-				{
-					Add(a[i], -lengths[i]);
-				}
-
-				Add(a[L], l - L);
-				Add(a[RL], R - r);
-				Add(x, length);
-
-				lengths[L] = l - L;
-
-				a[l] = x;
-				lengths[l] = length;
-				ruq.Set(l, r, l);
-
-				if (r < R)
-				{
-					a[r] = a[RL];
-					lengths[r] = R - r;
-					ruq.Set(r, R, r);
-				}
+				a[r] = XR;
+				lengths[r] = R - r;
+				ruq.Set(r, R, r);
 			}
 
 			Console.WriteLine(sum);
