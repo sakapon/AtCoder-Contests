@@ -4,18 +4,24 @@ using System.Linq;
 
 class C
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+	const string chokudai = "chokudai";
+	const long M = 1000000007;
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
 		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		var dp = new long[chokudai.Length + 1];
+		dp[0] = 1;
+
+		foreach (var c in s)
+		{
+			var i = chokudai.IndexOf(c);
+			if (i == -1) continue;
+
+			dp[i + 1] += dp[i];
+			dp[i + 1] %= M;
+		}
+		return dp[^1];
 	}
 }
