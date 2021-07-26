@@ -26,56 +26,51 @@ class M
 		}
 
 		var ruq = new STR<int>(n, (x, y) => x == -1 ? y : x, -1);
-		var lengths = new int[n];
-		lengths[^1] = 1;
+		var rs = new int[n];
 
-		for (int i = n - 2; i >= 0; i--)
+		for (var (l, r) = (0, 1); r <= n; r++)
 		{
-			if (a[i] == a[i + 1])
+			if (r == n || a[r] != a[r - 1])
 			{
-				lengths[i] = lengths[i + 1] + 1;
-			}
-			else
-			{
-				lengths[i] = 1;
-				ruq.Set(i + 1, i + 1 + lengths[i + 1], i + 1);
+				ruq.Set(l, r, l);
+				rs[l] = r;
+				l = r;
 			}
 		}
-		ruq.Set(0, lengths[0], 0);
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		foreach (var q in qs)
 		{
-			var (l, r, x) = q;
-			l--;
-			var length = r - l;
+			var (L, R, X) = q;
+			L--;
 
-			var L = ruq.Get(l);
-			var RL = ruq.Get(r - 1);
-			var R = RL + lengths[RL];
-			var XR = a[RL];
+			var ll = ruq.Get(L);
+			var rl = ruq.Get(R - 1);
+			var rr = rs[rl];
+			var lx = a[ll];
+			var rx = a[rl];
 
 			// 関連する区間を全て除きます。
-			for (int i = L; i < R; i += lengths[i])
+			for (int l = ll; l < rr; l = rs[l])
 			{
-				Add(a[i], -lengths[i]);
+				Add(a[l], -(rs[l] - l));
 			}
 
-			Add(a[L], l - L);
-			Add(a[RL], R - r);
-			Add(x, length);
+			Add(lx, L - ll);
+			Add(X, R - L);
+			Add(rx, rr - R);
 
-			lengths[L] = l - L;
+			rs[ll] = L;
 
-			a[l] = x;
-			lengths[l] = length;
-			ruq.Set(l, r, l);
+			a[L] = X;
+			ruq.Set(L, R, L);
+			rs[L] = R;
 
-			if (r < R)
+			if (R < rr)
 			{
-				a[r] = XR;
-				lengths[r] = R - r;
-				ruq.Set(r, R, r);
+				a[R] = rx;
+				ruq.Set(R, rr, R);
+				rs[R] = rr;
 			}
 
 			Console.WriteLine(sum);
