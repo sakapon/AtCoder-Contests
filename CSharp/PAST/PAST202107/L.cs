@@ -92,13 +92,6 @@ class L
 		Console.Out.Flush();
 	}
 
-	static int[] ToInverseMap(int[] a, int max)
-	{
-		var d = Array.ConvertAll(new bool[max + 1], _ => -1);
-		for (int i = 0; i < a.Length; ++i) d[a[i]] = i;
-		return d;
-	}
-
 	static Dictionary<T, int> ToInverseMap<T>(T[] a)
 	{
 		var d = new Dictionary<T, int>();
@@ -112,19 +105,6 @@ class L
 		while (l < r) if (f(m = l + (r - l - 1) / 2)) r = m; else l = m + 1;
 		return r;
 	}
-}
-
-class MultiMap<TK, TV> : Dictionary<TK, List<TV>>
-{
-	static List<TV> empty = new List<TV>();
-
-	public void Add(TK key, TV v)
-	{
-		if (ContainsKey(key)) this[key].Add(v);
-		else this[key] = new List<TV> { v };
-	}
-
-	public List<TV> ReadValues(TK key) => ContainsKey(key) ? this[key] : empty;
 }
 
 class ST1<TV>

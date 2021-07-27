@@ -16,13 +16,12 @@ class K
 		var es = Array.ConvertAll(new bool[m], _ => Read());
 
 		var map = ToMap(n + 1, es, false);
-		var r = Dijkstra(n + 1, a, v => map[v].ToArray(), 1);
+		var r = Dijkstra(n + 1, a, v => map[v], 1);
 		return r[n];
 	}
 
-	static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
-
-	static List<int[]>[] ToMap(int n, int[][] es, bool directed)
+	public static int[][][] ToMap(int n, int[][] es, bool directed) => Array.ConvertAll(ToMapList(n, es, directed), l => l.ToArray());
+	public static List<int[]>[] ToMapList(int n, int[][] es, bool directed)
 	{
 		var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
 		foreach (var e in es)
