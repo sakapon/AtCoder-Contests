@@ -13,7 +13,7 @@ class L2
 		var a = Read();
 		var qs = Array.ConvertAll(new bool[qc], _ => Read3());
 
-		// キーの値となりうるインデックスのセット
+		// a の値となりうるインデックスのセット
 		var map = new Dictionary<int, SortedSet<int>>();
 		void AddPair(int i, int v)
 		{
