@@ -27,17 +27,14 @@ class L3
 			}
 			else
 			{
+				var (p, l) = st.Get(x, y);
+				x = l;
+
 				r.Clear();
-				var (p, _) = st.Get(x, y);
-
-				while (x < y)
+				for (int tp = p; tp == p; (tp, x) = st.Get(x + 1, y))
 				{
-					var (v, l) = st.Get(x, y);
-					if (v != p) break;
-					r.Add(l + 1);
-					x = l + 1;
+					r.Add(x + 1);
 				}
-
 				Console.WriteLine($"{r.Count} " + string.Join(" ", r));
 			}
 		}
