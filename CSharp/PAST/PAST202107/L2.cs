@@ -14,39 +14,26 @@ class L2
 		var a = Read();
 		var qs = Array.ConvertAll(new bool[qc], _ => Read3());
 
-		var vs = a.ToList();
-		foreach (var (t, x, y) in qs)
+		// キーの値となりうるインデックスのセット
+		var map0 = new Dictionary<int, SortedSet<int>>();
+		void AddPair(int i, int v)
 		{
-			if (t == 1)
-			{
-				vs.Add(y);
-			}
+			if (!map0.ContainsKey(v)) map0[v] = new SortedSet<int>();
+			map0[v].Add(i);
 		}
-		var vMap = new CompressionHashMap(vs.ToArray());
 
-		// キーの値となりうるインデックスのリスト
-		var map0 = Array.ConvertAll(new bool[vMap.Count], _ => new HashSet<int>());
 		for (int i = 0; i < n; i++)
 		{
-			map0[vMap[a[i]]].Add(i);
+			AddPair(i, a[i]);
 		}
 		foreach (var (t, x, y) in qs)
 		{
-			if (t == 1)
-			{
-				map0[vMap[y]].Add(x - 1);
-			}
+			if (t == 1) AddPair(x - 1, y);
 		}
 
-		var map = Array.ConvertAll(map0, l =>
-		{
-			var b = l.ToArray();
-			Array.Sort(b);
-			return b;
-		});
+		var map = map0.ToDictionary(p => p.Key, p => p.Value.ToArray());
 
 		var st = new ST1<int>(n, Math.Min, int.MaxValue, a);
-		var r = new List<int>();
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		foreach (var q in qs)
@@ -61,20 +48,13 @@ class L2
 			}
 			else
 			{
-				r.Clear();
-
 				var p = st.Get(x, y);
-				var pis = map[vMap[p]];
-				var j0 = First(0, pis.Length, j => pis[j] >= x);
+				var pis = map[p];
+				var jl = First(0, pis.Length, j => pis[j] >= x);
+				var jr = First(0, pis.Length, j => pis[j] >= y);
 
-				for (int j = j0; j < pis.Length && pis[j] < y; j++)
-				{
-					if (a[pis[j]] == p)
-					{
-						r.Add(pis[j] + 1);
-					}
-				}
-				Console.WriteLine($"{r.Count} " + string.Join(" ", r));
+				var r = Array.FindAll(pis[jl..jr], i => a[i] == p);
+				Console.WriteLine($"{r.Length} " + string.Join(" ", r.Select(i => i + 1)));
 			}
 		}
 		Console.Out.Flush();
