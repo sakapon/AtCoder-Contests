@@ -11,27 +11,32 @@ class D
 	static object Solve()
 	{
 		var (n, k) = Read2();
-		var a = Read();
+		var a = ReadL();
 
-		var cs = new CumSum(a);
-		return string.Join("\n", Enumerable.Range(0, n - k + 1).Select(i => cs.Sum(i, i + k)));
-	}
-
-	public static long[] CumSumL(int[] a)
-	{
-		var s = new long[a.Length + 1];
-		for (int i = 0; i < a.Length; ++i) s[i + 1] = s[i] + a[i];
-		return s;
+		var rsq = new StaticRSQ1(a);
+		return string.Join("\n", Enumerable.Range(0, n - k + 1).Select(x => rsq.GetSum(x, x + k)));
 	}
 }
 
-class CumSum
+public class StaticRSQ1
 {
+	int n;
 	long[] s;
-	public CumSum(int[] a)
+	public long[] Raw => s;
+	public StaticRSQ1(long[] a)
 	{
-		s = new long[a.Length + 1];
-		for (int i = 0; i < a.Length; ++i) s[i + 1] = s[i] + a[i];
+		n = a.Length;
+		s = new long[n + 1];
+		for (int i = 0; i < n; ++i) s[i + 1] = s[i] + a[i];
 	}
-	public long Sum(int l_in, int r_ex) => s[r_ex] - s[l_in];
+
+	// [l, r)
+	// 範囲外のインデックスも可。
+	public long GetSum(int l, int r)
+	{
+		if (r < 0 || n < l) return 0;
+		if (l < 0) l = 0;
+		if (n < r) r = n;
+		return s[r] - s[l];
+	}
 }

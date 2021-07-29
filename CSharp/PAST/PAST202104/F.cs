@@ -23,21 +23,13 @@ class F
 		{
 			if (b)
 			{
+			Start:
 				if (ta + a > t)
 				{
 					r += t - ta;
 					r += x;
-					r += a;
-
-					if (a == t)
-					{
-						r += x;
-						ta = 0;
-					}
-					else
-					{
-						ta = a;
-					}
+					ta = 0;
+					goto Start;
 				}
 				else if (ta + a == t)
 				{

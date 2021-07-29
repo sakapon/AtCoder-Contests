@@ -15,6 +15,6 @@ class C
 		var (_, q) = Read2();
 		var b = Read().ToHashSet();
 
-		return ps.Count(p => p.Skip(1).Count(a => b.Contains(a)) >= q);
+		return ps.Count(p => p.Skip(1).Count(b.Contains) >= q);
 	}
 }
