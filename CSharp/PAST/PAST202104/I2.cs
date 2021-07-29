@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-class I
+class I2
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
@@ -11,10 +11,10 @@ class I
 	static object Solve()
 	{
 		var (h, w) = Read2();
-		var a = Array.ConvertAll(new bool[h], _ => ReadL());
+		var a = Array.ConvertAll(new bool[h], _ => Read());
 
-		const int none = -1;
-		var dp = NewArray3<long>(h, w, h + w, none);
+		const long none = -1L;
+		var dp = NewArray3(h, w, h + w + 1, none);
 		dp[0][0][0] = 0;
 		dp[0][0][1] = a[0][0];
 
@@ -22,31 +22,20 @@ class I
 		{
 			for (int j = 0; j < w; j++)
 			{
-				if (i > 0)
+				for (int k = 0; k < h + w; k++)
 				{
-					for (int k = 0; k < h + w; k++)
-					{
-						if (dp[i - 1][j][k] == none) break;
-						dp[i][j][k] = Math.Max(dp[i][j][k], dp[i - 1][j][k]);
-					}
-					for (int k = 1; k < h + w; k++)
-					{
-						if (dp[i - 1][j][k - 1] == none) break;
-						dp[i][j][k] = Math.Max(dp[i][j][k], dp[i - 1][j][k - 1] + a[i][j]);
-					}
-				}
+					if (dp[i][j][k] == none) continue;
+					var v = dp[i][j][k];
 
-				if (j > 0)
-				{
-					for (int k = 0; k < h + w; k++)
+					if (i != h - 1)
 					{
-						if (dp[i][j - 1][k] == none) break;
-						dp[i][j][k] = Math.Max(dp[i][j][k], dp[i][j - 1][k]);
+						dp[i + 1][j][k] = Math.Max(dp[i + 1][j][k], v);
+						dp[i + 1][j][k + 1] = Math.Max(dp[i + 1][j][k + 1], v + a[i + 1][j]);
 					}
-					for (int k = 1; k < h + w; k++)
+					if (j != w - 1)
 					{
-						if (dp[i][j - 1][k - 1] == none) break;
-						dp[i][j][k] = Math.Max(dp[i][j][k], dp[i][j - 1][k - 1] + a[i][j]);
+						dp[i][j + 1][k] = Math.Max(dp[i][j + 1][k], v);
+						dp[i][j + 1][k + 1] = Math.Max(dp[i][j + 1][k + 1], v + a[i][j + 1]);
 					}
 				}
 			}
