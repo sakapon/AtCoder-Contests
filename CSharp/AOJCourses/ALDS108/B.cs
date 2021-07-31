@@ -1,16 +1,34 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 
 class B
 {
 	static void Main()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
 
-		Console.WriteLine(string.Join(" ", h));
+		var set = new BSTree<int>();
+
+		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
+		while (n-- > 0)
+		{
+			var q = Console.ReadLine().Split();
+			if (q[0] == "insert")
+			{
+				var v = int.Parse(q[1]);
+				set.Add(v);
+			}
+			else if (q[0] == "find")
+			{
+				var v = int.Parse(q[1]);
+				Console.WriteLine(set.Contains(v) ? "yes" : "no");
+			}
+			else
+			{
+				Console.WriteLine(" " + string.Join(" ", set.GetValues()));
+				Console.WriteLine(" " + string.Join(" ", set.GetByPreorder()));
+			}
+		}
+		Console.Out.Flush();
 	}
 }

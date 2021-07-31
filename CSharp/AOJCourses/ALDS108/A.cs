@@ -7,20 +7,24 @@ class A
 	{
 		var n = int.Parse(Console.ReadLine());
 
-		var bst = new BSTree<int>();
+		var set = new BSTree<int>();
+
+		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		while (n-- > 0)
 		{
 			var q = Console.ReadLine().Split();
 			if (q[0] == "insert")
 			{
-				bst.Add(int.Parse(q[1]));
+				var v = int.Parse(q[1]);
+				set.Add(v);
 			}
 			else
 			{
-				Console.WriteLine(" " + string.Join(" ", bst.GetValues()));
-				Console.WriteLine(" " + string.Join(" ", bst.GetByPreorder()));
+				Console.WriteLine(" " + string.Join(" ", set.GetValues()));
+				Console.WriteLine(" " + string.Join(" ", set.GetByPreorder()));
 			}
 		}
+		Console.Out.Flush();
 	}
 }
 
@@ -248,7 +252,7 @@ public class BSTree<T>
 		}
 		else
 		{
-			var t2 = SearchPreviousNode(t);
+			var t2 = SearchNextNode(t);
 			t.Value = t2.Value;
 			Remove(t2);
 		}
