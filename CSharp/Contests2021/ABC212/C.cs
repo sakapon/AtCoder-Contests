@@ -10,12 +10,23 @@ class C
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
+		var (n, m) = Read2();
 		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var b = ReadL().Append(-1L << 40).Append(1L << 40).ToArray();
 
-		return string.Join(" ", a);
+		Array.Sort(b);
+
+		return a.Min(v =>
+		{
+			var i = Min(0, b.Length, x => b[x] >= v);
+			return Math.Min(Math.Abs(v - b[i]), Math.Abs(v - b[i - 1]));
+		});
+	}
+
+	static int Min(int l, int r, Func<int, bool> f)
+	{
+		int m;
+		while (l < r) if (f(m = l + (r - l - 1) / 2)) r = m; else l = m + 1;
+		return r;
 	}
 }
