@@ -54,36 +54,48 @@ public class BSTree<T>
 	class Node
 	{
 		public T Value;
-		public Node Parent, Left, Right;
+		public Node Parent;
 
-		public void SetLeft(Node child)
+		Node _left;
+		public Node Left
 		{
-			Left = child;
-			if (child != null) child.Parent = this;
+			get { return _left; }
+			set
+			{
+				_left = value;
+				if (value != null) value.Parent = this;
+			}
 		}
 
-		public void SetRight(Node child)
+		Node _right;
+		public Node Right
 		{
-			Right = child;
-			if (child != null) child.Parent = this;
+			get { return _right; }
+			set
+			{
+				_right = value;
+				if (value != null) value.Parent = this;
+			}
 		}
 	}
 
-	const int None = -1;
+	Node _root;
+	Node Root
+	{
+		get { return _root; }
+		set
+		{
+			_root = value;
+			if (value != null) value.Parent = null;
+		}
+	}
 
-	Node root;
-	Comparison<T> c;
+	Comparison<T> compare;
 	public int Count { get; private set; }
 
 	public BSTree(Comparison<T> comparison = null)
 	{
-		c = comparison ?? Comparer<T>.Default.Compare;
-	}
-
-	void SetRoot(Node node)
-	{
-		root = node;
-		if (node != null) node.Parent = null;
+		compare = comparison ?? Comparer<T>.Default.Compare;
 	}
 
 	static Node SearchMinNode(Node node)
@@ -112,47 +124,49 @@ public class BSTree<T>
 		else return SearchMaxNode(node.Left, f);
 	}
 
-	Node SearchPreviousParent(Node node, T value)
+	static Node SearchPreviousAncestor(Node node)
 	{
 		if (node == null) return null;
-		if (c(node.Value, value) < 0) return node;
-		else return SearchPreviousParent(node.Parent, value);
+		if (node.Parent == null) return null;
+		if (node.Parent.Right == node) return node.Parent;
+		else return SearchPreviousAncestor(node.Parent);
 	}
 
-	Node SearchNextParent(Node node, T value)
+	static Node SearchNextAncestor(Node node)
 	{
 		if (node == null) return null;
-		if (c(node.Value, value) > 0) return node;
-		else return SearchNextParent(node.Parent, value);
+		if (node.Parent == null) return null;
+		if (node.Parent.Left == node) return node.Parent;
+		else return SearchNextAncestor(node.Parent);
 	}
 
-	Node SearchPreviousNode(Node node)
+	static Node SearchPreviousNode(Node node)
 	{
 		if (node == null) return null;
-		return SearchMaxNode(node.Left) ?? SearchPreviousParent(node.Parent, node.Value);
+		return SearchMaxNode(node.Left) ?? SearchPreviousAncestor(node);
 	}
 
-	Node SearchNextNode(Node node)
+	static Node SearchNextNode(Node node)
 	{
 		if (node == null) return null;
-		return SearchMinNode(node.Right) ?? SearchNextParent(node.Parent, node.Value);
+		return SearchMinNode(node.Right) ?? SearchNextAncestor(node);
 	}
 
 	public T GetMin()
 	{
-		if (root == null) throw new InvalidOperationException("The tree is empty.");
-		return SearchMinNode(root).Value;
+		if (Root == null) throw new InvalidOperationException("The tree is empty.");
+		return SearchMinNode(Root).Value;
 	}
 
 	public T GetMax()
 	{
-		if (root == null) throw new InvalidOperationException("The tree is empty.");
-		return SearchMaxNode(root).Value;
+		if (Root == null) throw new InvalidOperationException("The tree is empty.");
+		return SearchMaxNode(Root).Value;
 	}
 
 	public IEnumerable<T> GetValues()
 	{
-		for (var n = SearchMinNode(root); n != null; n = SearchNextNode(n))
+		for (var n = SearchMinNode(Root); n != null; n = SearchNextNode(n))
 		{
 			yield return n.Value;
 		}
@@ -160,7 +174,7 @@ public class BSTree<T>
 
 	public IEnumerable<T> GetValues(Func<T, bool> predicateForMin, Func<T, bool> predicateForMax)
 	{
-		for (var n = SearchMinNode(root, predicateForMin); n != null && predicateForMax(n.Value); n = SearchNextNode(n))
+		for (var n = SearchMinNode(Root, predicateForMin); n != null && predicateForMax(n.Value); n = SearchNextNode(n))
 		{
 			yield return n.Value;
 		}
@@ -168,11 +182,11 @@ public class BSTree<T>
 
 	Node SearchNode(T value)
 	{
-		if (root == null) return null;
+		if (Root == null) return null;
 
-		var t = root;
+		var t = Root;
 		int d;
-		while ((d = c(value, t.Value)) != 0)
+		while ((d = compare(value, t.Value)) != 0)
 		{
 			if (d < 0)
 			{
@@ -195,22 +209,22 @@ public class BSTree<T>
 
 	public bool Add(T value)
 	{
-		if (root == null)
+		if (Root == null)
 		{
-			SetRoot(new Node { Value = value });
+			Root = new Node { Value = value };
 			++Count;
 			return true;
 		}
 
-		var t = root;
+		var t = Root;
 		int d;
-		while ((d = c(value, t.Value)) != 0)
+		while ((d = compare(value, t.Value)) != 0)
 		{
 			if (d < 0)
 			{
 				if (t.Left == null)
 				{
-					t.SetLeft(new Node { Value = value });
+					t.Left = new Node { Value = value };
 					++Count;
 					return true;
 				}
@@ -220,7 +234,7 @@ public class BSTree<T>
 			{
 				if (t.Right == null)
 				{
-					t.SetRight(new Node { Value = value });
+					t.Right = new Node { Value = value };
 					++Count;
 					return true;
 				}
@@ -249,15 +263,15 @@ public class BSTree<T>
 
 			if (t.Parent == null)
 			{
-				SetRoot(c);
+				Root = c;
 			}
 			else if (t.Parent.Left == t)
 			{
-				t.Parent.SetLeft(c);
+				t.Parent.Left = c;
 			}
 			else
 			{
-				t.Parent.SetRight(c);
+				t.Parent.Right = c;
 			}
 		}
 		else
@@ -282,7 +296,7 @@ public class BSTree<T>
 			Dfs(n.Right);
 		};
 
-		Dfs(root);
+		Dfs(Root);
 		return r.ToArray();
 	}
 }
