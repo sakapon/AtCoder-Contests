@@ -157,7 +157,7 @@ public class BSTree<T>
 		if (node == null) return null;
 		var d = compare(value, node.Value);
 		if (d == 0) return node;
-		else if (d < 0) return SearchNode(node.Left, value);
+		if (d < 0) return SearchNode(node.Left, value);
 		else return SearchNode(node.Right, value);
 	}
 
@@ -214,39 +214,37 @@ public class BSTree<T>
 
 	public bool Add(T value)
 	{
+		bool r;
 		if (Root == null)
 		{
 			Root = new Node { Value = value };
-			++Count;
-			return true;
+			r = true;
+		}
+		else
+		{
+			r = Add(Root, value);
 		}
 
-		var t = Root;
-		int d;
-		while ((d = compare(value, t.Value)) != 0)
+		if (r) ++Count;
+		return r;
+	}
+
+	// Suppose t != null.
+	bool Add(Node t, T value)
+	{
+		var d = compare(value, t.Value);
+		if (d == 0) return false;
+		if (d < 0)
 		{
-			if (d < 0)
-			{
-				if (t.Left == null)
-				{
-					t.Left = new Node { Value = value };
-					++Count;
-					return true;
-				}
-				t = t.Left;
-			}
-			else
-			{
-				if (t.Right == null)
-				{
-					t.Right = new Node { Value = value };
-					++Count;
-					return true;
-				}
-				t = t.Right;
-			}
+			if (t.Left != null) return Add(t.Left, value);
+			t.Left = new Node { Value = value };
 		}
-		return false;
+		else
+		{
+			if (t.Right != null) return Add(t.Right, value);
+			t.Right = new Node { Value = value };
+		}
+		return true;
 	}
 
 	public bool Remove(T value)
