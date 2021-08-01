@@ -152,6 +152,15 @@ public class BSTree<T>
 		return SearchMinNode(node.Right) ?? SearchNextAncestor(node);
 	}
 
+	Node SearchNode(Node node, T value)
+	{
+		if (node == null) return null;
+		var d = compare(value, node.Value);
+		if (d == 0) return node;
+		else if (d < 0) return SearchNode(node.Left, value);
+		else return SearchNode(node.Right, value);
+	}
+
 	public T GetMin()
 	{
 		if (Root == null) throw new InvalidOperationException("The tree is empty.");
@@ -162,6 +171,24 @@ public class BSTree<T>
 	{
 		if (Root == null) throw new InvalidOperationException("The tree is empty.");
 		return SearchMaxNode(Root).Value;
+	}
+
+	public T GetNextValue(T value, T defaultValue = default(T))
+	{
+		var node = SearchNode(Root, value);
+		if (node == null) throw new InvalidOperationException("The value does not exist.");
+		node = SearchNextNode(node);
+		if (node == null) return defaultValue;
+		return node.Value;
+	}
+
+	public T GetPreviousValue(T value, T defaultValue = default(T))
+	{
+		var node = SearchNode(Root, value);
+		if (node == null) throw new InvalidOperationException("The value does not exist.");
+		node = SearchPreviousNode(node);
+		if (node == null) return defaultValue;
+		return node.Value;
 	}
 
 	public IEnumerable<T> GetValues()
@@ -180,31 +207,9 @@ public class BSTree<T>
 		}
 	}
 
-	Node SearchNode(T value)
-	{
-		if (Root == null) return null;
-
-		var t = Root;
-		int d;
-		while ((d = compare(value, t.Value)) != 0)
-		{
-			if (d < 0)
-			{
-				if (t.Left == null) return null;
-				t = t.Left;
-			}
-			else
-			{
-				if (t.Right == null) return null;
-				t = t.Right;
-			}
-		}
-		return t;
-	}
-
 	public bool Contains(T value)
 	{
-		return SearchNode(value) != null;
+		return SearchNode(Root, value) != null;
 	}
 
 	public bool Add(T value)
@@ -246,7 +251,7 @@ public class BSTree<T>
 
 	public bool Remove(T value)
 	{
-		var node = SearchNode(value);
+		var node = SearchNode(Root, value);
 		if (node == null) return false;
 
 		Remove(node);
