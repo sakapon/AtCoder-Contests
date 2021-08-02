@@ -12,19 +12,15 @@ class D
 		var qc = int.Parse(Console.ReadLine());
 		var qs = Array.ConvertAll(new bool[qc], _ => Read());
 
-		var pq = PQ<(int v, long k)>.Create(_ => _.k);
+		var pq = PQ<long>.Create();
 		var d = 0L;
-		var ds = new long[qc];
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
-		for (int i = 0; i < qc; i++)
+		foreach (var q in qs)
 		{
-			var q = qs[i];
-
 			if (q[0] == 1)
 			{
-				ds[i] = d;
-				pq.Push((i, q[1] - d));
+				pq.Push(q[1] - d);
 			}
 			else if (q[0] == 2)
 			{
@@ -32,8 +28,7 @@ class D
 			}
 			else
 			{
-				var qi = pq.Pop().v;
-				Console.WriteLine(qs[qi][1] + d - ds[qi]);
+				Console.WriteLine(pq.Pop() + d);
 			}
 		}
 		Console.Out.Flush();
