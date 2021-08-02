@@ -12,14 +12,14 @@ class C
 	{
 		var (n, m) = Read2();
 		var a = Read();
-		var b = ReadL().Append(-1L << 40).Append(1L << 40).ToArray();
+		var b = Read().Append(-1 << 30).Append(int.MaxValue).ToArray();
 
 		Array.Sort(b);
 
 		return a.Min(v =>
 		{
 			var i = Min(0, b.Length, x => b[x] >= v);
-			return Math.Min(Math.Abs(v - b[i]), Math.Abs(v - b[i - 1]));
+			return Math.Min(b[i] - v, v - b[i - 1]);
 		});
 	}
 
