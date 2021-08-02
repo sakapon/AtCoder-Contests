@@ -1,40 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
-class C
+class CT
 {
-	static void Main()
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static void Main() => Console.WriteLine(Solve());
+	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
+		Console.ReadLine();
+		var a = Read();
+		var b = Read().Distinct().Append(-1 << 30).Append(int.MaxValue).ToArray();
 
+		Array.Sort(b);
 		var set = new BSTree<int>();
+		set.SetValues(b);
 
-		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
-		while (n-- > 0)
+		return a.Min(av =>
 		{
-			var q = Console.ReadLine().Split();
-			if (q[0] == "insert")
-			{
-				var v = int.Parse(q[1]);
-				set.Add(v);
-			}
-			else if (q[0] == "find")
-			{
-				var v = int.Parse(q[1]);
-				Console.WriteLine(set.Contains(v) ? "yes" : "no");
-			}
-			else if (q[0] == "delete")
-			{
-				var v = int.Parse(q[1]);
-				set.Remove(v);
-			}
-			else
-			{
-				Console.WriteLine(" " + string.Join(" ", set.GetValues()));
-				Console.WriteLine(" " + string.Join(" ", set.GetByPreorder()));
-			}
-		}
-		Console.Out.Flush();
+			var bv2 = set.GetValues(x => x >= av, x => true).First();
+			var bv1 = set.GetPreviousValue(bv2);
+			return Math.Min(bv2 - av, av - bv1);
+		});
 	}
 }
 
@@ -303,23 +290,5 @@ public class BSTree<T>
 			Left = CreateSubtree(values, l, m),
 			Right = CreateSubtree(values, m + 1, r),
 		};
-	}
-
-	// Additional
-	public T[] GetByPreorder()
-	{
-		var r = new List<T>();
-
-		Action<Node> Dfs = null;
-		Dfs = n =>
-		{
-			if (n == null) return;
-			r.Add(n.Value);
-			Dfs(n.Left);
-			Dfs(n.Right);
-		};
-
-		Dfs(Root);
-		return r.ToArray();
 	}
 }
