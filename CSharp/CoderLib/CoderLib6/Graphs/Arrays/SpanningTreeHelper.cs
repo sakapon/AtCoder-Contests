@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoderLib6.Trees;
+using CoderLib6.DataTrees;
 
 namespace CoderLib6.Graphs.Arrays
 {

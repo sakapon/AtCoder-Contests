@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CoderLib6.Trees
+namespace CoderLib6.DataTrees
 {
 	// n: 個数
 	// k: 階層のインデックス

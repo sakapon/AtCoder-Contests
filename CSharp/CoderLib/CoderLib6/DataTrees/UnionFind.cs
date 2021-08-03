@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace CoderLib6.Trees
+namespace CoderLib6.DataTrees
 {
 	// n: 個数
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/11/ALDS1_11_D

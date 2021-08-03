@@ -1,4 +1,4 @@
-﻿namespace CoderLib6.Trees
+﻿namespace CoderLib6.DataTrees
 {
 	// 外見上は 1-indexed, 1 <= i <= n
 	// 内部では 1-indexed, 1 <= i <= n2
