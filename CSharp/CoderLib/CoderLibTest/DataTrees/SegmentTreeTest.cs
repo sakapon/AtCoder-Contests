@@ -5,7 +5,7 @@ using CoderLib6.DataTrees;
 using KLibrary.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CoderLibTest.Trees
+namespace CoderLibTest.DataTrees
 {
 	[TestClass]
 	public class SegmentTreeTest

@@ -4,7 +4,7 @@ using System.Linq;
 using KLibrary.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CoderLibTest.Trees
+namespace CoderLibTest.DataTrees
 {
 	// 1-indexed
 	class PQ1<T>
