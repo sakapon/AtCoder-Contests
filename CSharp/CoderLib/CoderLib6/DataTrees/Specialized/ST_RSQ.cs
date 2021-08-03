@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CoderLib6.Trees.SegmentTrees
+namespace CoderLib6.DataTrees.Specialized
 {
 	class ST_RSQ
 	{
