@@ -1,6 +1,6 @@
 ﻿using System;
 
-class A3
+class B2
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
@@ -11,31 +11,20 @@ class A3
 		var b = Read();
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
-		for (int i = 0, j = 0; i < n || j < m;)
+		for (int i = 0, j = 0; i < n && j < m;)
 		{
-			if (j == m)
+			if (a[i] < b[j])
 			{
-				Console.WriteLine(a[i++]);
+				i++;
 			}
-			else if (i == n)
+			else if (a[i] > b[j])
 			{
-				Console.WriteLine(b[j++]);
+				j++;
 			}
 			else
 			{
-				if (a[i] < b[j])
-				{
-					Console.WriteLine(a[i++]);
-				}
-				else if (a[i] > b[j])
-				{
-					Console.WriteLine(b[j++]);
-				}
-				else
-				{
-					Console.WriteLine(a[i++]);
-					j++;
-				}
+				Console.WriteLine(a[i++]);
+				j++;
 			}
 		}
 		Console.Out.Flush();
