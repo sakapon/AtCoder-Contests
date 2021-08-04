@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 class D
 {
@@ -13,9 +12,7 @@ class D
 		var b = Read();
 
 		var set = new SortedSet<int>(a);
-		foreach (var x in b)
-			if (!set.Add(x))
-				set.Remove(x);
-		if (set.Any()) Console.WriteLine(string.Join("\n", set));
+		set.SymmetricExceptWith(b);
+		if (set.Count > 0) Console.WriteLine(string.Join("\n", set));
 	}
 }

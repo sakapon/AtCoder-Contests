@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-class A2
+class AS
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
