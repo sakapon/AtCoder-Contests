@@ -56,8 +56,8 @@ namespace CoderLib6.DataTrees
 			}
 		}
 
+		static Random random = new Random();
 		HashSet<int> prioritySet = new HashSet<int>();
-		Random random = new Random();
 		int CreatePriority()
 		{
 			int v;
