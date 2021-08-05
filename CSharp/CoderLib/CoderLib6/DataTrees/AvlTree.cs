@@ -3,6 +3,11 @@ using System.Collections.Generic;
 
 namespace CoderLib6.DataTrees
 {
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/7/ITP2_7_C
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_f
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_g
+	// Test: https://atcoder.jp/contests/past202104-open/tasks/past202104_m
+	// Test: https://atcoder.jp/contests/past202107-open/tasks/past202107_l
 	public class AvlTree<T>
 	{
 		public static AvlTree<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false)
