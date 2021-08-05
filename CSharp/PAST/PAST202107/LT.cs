@@ -2,70 +2,54 @@
 using System.Collections.Generic;
 using System.Linq;
 
-class M3
+class LT
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static (int, int, int) Read3() { var a = Read(); return (a[0], a[1], a[2]); }
 	static void Main()
 	{
-		var n = int.Parse(Console.ReadLine());
+		var (n, qc) = Read2();
 		var a = Read();
-		var qc = int.Parse(Console.ReadLine());
+		var qs = Array.ConvertAll(new bool[qc], _ => Read3());
 
-		var d = a.GroupBy(x => x).ToDictionary(g => g.Key, g => g.LongCount());
-		var sum = d.Values.Sum(c => c * (c - 1) / 2);
-
-		void Add(int x, int count)
+		// a の値となりうるインデックスのセット
+		var map = new Dictionary<int, Treap<int>>();
+		void AddPair(int i, int v)
 		{
-			var c = d.GetValueOrDefault(x);
-			sum -= c * (c - 1) / 2;
-			c += count;
-			sum += c * (c - 1) / 2;
-			d[x] = c;
+			if (!map.ContainsKey(v)) map[v] = new Treap<int>();
+			map[v].Add(i);
 		}
 
-		var set = Treap<(int l, int r)>.Create(_ => _.l);
-
-		for (var (l, r) = (0, 1); r <= n; r++)
+		for (int i = 0; i < n; i++)
 		{
-			if (r == n || a[r] != a[r - 1])
-			{
-				set.Add((l, r));
-				l = r;
-			}
+			AddPair(i, a[i]);
 		}
+		foreach (var (t, x, y) in qs)
+		{
+			if (t == 1) AddPair(x - 1, y);
+		}
+
+		var st = new ST1<int>(n, Math.Min, int.MaxValue, a);
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
-		while (qc-- > 0)
+		foreach (var q in qs)
 		{
-			var (L, R, X) = Read3();
-			L--;
+			var (t, x, y) = q;
+			x--;
 
-			var ranges = set.GetValues(_ => L < _.r, _ => _.l < R).ToArray();
-			var (ll, _) = ranges[0];
-			var (rl, rr) = ranges[^1];
-			var lx = a[ll];
-			var rx = a[rl];
-
-			// 関連する区間を全て除きます。
-			foreach (var (l, r) in ranges)
+			if (t == 1)
 			{
-				Add(a[l], -(r - l));
-				set.Remove((l, r));
+				a[x] = y;
+				st.Set(x, y);
 			}
+			else
+			{
+				var p = st.Get(x, y);
 
-			Add(lx, L - ll);
-			Add(X, R - L);
-			Add(rx, rr - R);
-
-			a[L] = X;
-			if (R < rr) a[R] = rx;
-
-			if (ll < L) set.Add((ll, L));
-			set.Add((L, R));
-			if (R < rr) set.Add((R, rr));
-
-			Console.WriteLine(sum);
+				var r = map[p].GetValues(v => v >= x, v => v < y).Where(i => a[i] == p).Select(i => i + 1).ToArray();
+				Console.WriteLine($"{r.Length} " + string.Join(" ", r));
+			}
 		}
 		Console.Out.Flush();
 	}
@@ -124,8 +108,8 @@ public class Treap<T>
 		}
 	}
 
+	static Random random = new Random();
 	HashSet<int> prioritySet = new HashSet<int>();
-	Random random = new Random();
 	int CreatePriority()
 	{
 		int v;
