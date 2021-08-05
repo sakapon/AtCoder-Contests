@@ -8,7 +8,7 @@ class C2
 		var n = int.Parse(Console.ReadLine());
 
 		var r = new List<int>();
-		var set = new BSTree<int>();
+		var set = new Treap<int>();
 
 		for (int i = 0; i < n; i++)
 		{
@@ -29,16 +29,16 @@ class C2
 	}
 }
 
-public class BSTree<T>
+public class Treap<T>
 {
-	public static BSTree<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false)
+	public static Treap<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false)
 	{
 		if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
 
 		var c = Comparer<TKey>.Default;
 		return descending ?
-			new BSTree<T>((x, y) => c.Compare(keySelector(y), keySelector(x))) :
-			new BSTree<T>((x, y) => c.Compare(keySelector(x), keySelector(y)));
+			new Treap<T>((x, y) => c.Compare(keySelector(y), keySelector(x))) :
+			new Treap<T>((x, y) => c.Compare(keySelector(x), keySelector(y)));
 	}
 
 	[System.Diagnostics.DebuggerDisplay(@"\{{Value}\}")]
@@ -46,6 +46,7 @@ public class BSTree<T>
 	{
 		public T Value;
 		public Node Parent;
+		public int Priority;
 
 		Node _left;
 		public Node Left
@@ -81,10 +82,20 @@ public class BSTree<T>
 		}
 	}
 
+	HashSet<int> prioritySet = new HashSet<int>();
+	Random random = new Random();
+	int CreatePriority()
+	{
+		int v;
+		while (!prioritySet.Add(v = random.Next())) ;
+		return v;
+	}
+	void RemovePriority(int v) => prioritySet.Remove(v);
+
 	Comparison<T> compare;
 	public int Count { get; private set; }
 
-	public BSTree(Comparison<T> comparison = null)
+	public Treap(Comparison<T> comparison = null)
 	{
 		compare = comparison ?? Comparer<T>.Default.Compare;
 	}
@@ -205,37 +216,77 @@ public class BSTree<T>
 
 	public bool Add(T value)
 	{
-		bool r;
+		Node node;
 		if (Root == null)
 		{
-			Root = new Node { Value = value };
-			r = true;
+			node = Root = new Node { Value = value, Priority = CreatePriority() };
 		}
 		else
 		{
-			r = Add(Root, value);
+			node = Add(Root, value);
 		}
 
-		if (r) ++Count;
-		return r;
+		if (node != null)
+		{
+			Rotate(node);
+			++Count;
+		}
+		return node != null;
 	}
 
 	// Suppose t != null.
-	bool Add(Node t, T value)
+	Node Add(Node t, T value)
 	{
 		var d = compare(value, t.Value);
-		if (d == 0) return false;
+		if (d == 0) return null;
 		if (d < 0)
 		{
 			if (t.Left != null) return Add(t.Left, value);
-			t.Left = new Node { Value = value };
+			return t.Left = new Node { Value = value, Priority = CreatePriority() };
 		}
 		else
 		{
 			if (t.Right != null) return Add(t.Right, value);
-			t.Right = new Node { Value = value };
+			return t.Right = new Node { Value = value, Priority = CreatePriority() };
 		}
-		return true;
+	}
+
+	// Suppose t != null.
+	void Rotate(Node t)
+	{
+		if (t.Parent == null) return;
+		if (t.Parent.Priority > t.Priority) return;
+
+		var p = t.Parent;
+		var pp = p.Parent;
+
+		if (p.Left == t)
+		{
+			// to right
+			p.Left = t.Right;
+			t.Right = p;
+		}
+		else
+		{
+			// to left
+			p.Right = t.Left;
+			t.Left = p;
+		}
+
+		if (pp == null)
+		{
+			Root = t;
+		}
+		else if (pp.Left == p)
+		{
+			pp.Left = t;
+		}
+		else
+		{
+			pp.Right = t;
+		}
+
+		Rotate(t);
 	}
 
 	public bool Remove(T value)
@@ -267,6 +318,7 @@ public class BSTree<T>
 			{
 				t.Parent.Right = c;
 			}
+			RemovePriority(t.Priority);
 		}
 		else
 		{
@@ -274,25 +326,5 @@ public class BSTree<T>
 			t.Value = t2.Value;
 			Remove(t2);
 		}
-	}
-
-	// Suppose values are distinct and sorted.
-	public void SetValues(T[] values)
-	{
-		Root = CreateSubtree(values, 0, values.Length);
-	}
-
-	Node CreateSubtree(T[] values, int l, int r)
-	{
-		if (r - l == 0) return null;
-		if (r - l == 1) return new Node { Value = values[l] };
-
-		var m = (l + r) / 2;
-		return new Node
-		{
-			Value = values[m],
-			Left = CreateSubtree(values, l, m),
-			Right = CreateSubtree(values, m + 1, r),
-		};
 	}
 }
