@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-class M3
+class MT
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int, int) Read3() { var a = Read(); return (a[0], a[1], a[2]); }
