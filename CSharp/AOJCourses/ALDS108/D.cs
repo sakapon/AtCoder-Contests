@@ -271,21 +271,13 @@ public class TreapD<T>
 			return null;
 		}
 
-		if (t.Left == null)
-		{
-			t = RotateToLeft(t);
-		}
-		else if (t.Right == null)
-		{
+		if (t.Right == null) return t.Left;
+		if (t.Left == null) return t.Right;
+
+		if (t.Left.Priority > t.Right.Priority)
 			t = RotateToRight(t);
-		}
 		else
-		{
-			if (t.Left.Priority < t.Right.Priority)
-				t = RotateToLeft(t);
-			else
-				t = RotateToRight(t);
-		}
+			t = RotateToLeft(t);
 		return Remove(t, value);
 	}
 
