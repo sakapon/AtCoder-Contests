@@ -128,13 +128,6 @@ public class BSTree<T>
 		return Count != c;
 	}
 
-	public bool Remove(T item)
-	{
-		var c = Count;
-		Root = Remove(Root, item);
-		return Count != c;
-	}
-
 	BstNode<T> Add(BstNode<T> node, T item)
 	{
 		if (node == null)
@@ -157,42 +150,42 @@ public class BSTree<T>
 		return node;
 	}
 
-	BstNode<T> Remove(BstNode<T> node, T item)
+	public bool Remove(T item)
 	{
-		if (node == null) return null;
+		var node = Root.SearchNode(item, compare);
+		if (node == null) return false;
 
-		var d = compare(item, node.Key);
-		if (d == 0) return RemoveTarget(node);
-
-		if (d < 0)
-		{
-			node.Left = Remove(node.Left, item);
-		}
-		else
-		{
-			node.Right = Remove(node.Right, item);
-		}
-		return node;
+		RemoveTarget(node);
+		--Count;
+		return true;
 	}
 
-	BstNode<T> RemoveTarget(BstNode<T> node)
+	// Suppose t != null.
+	void RemoveTarget(BstNode<T> t)
 	{
-		if (node.Left == null && node.Right == null)
+		if (t.Left == null || t.Right == null)
 		{
-			--Count;
-			return null;
+			var c = t.Left ?? t.Right;
+
+			if (t.Parent == null)
+			{
+				Root = c;
+			}
+			else if (t.Parent.Left == t)
+			{
+				t.Parent.Left = c;
+			}
+			else
+			{
+				t.Parent.Right = c;
+			}
 		}
-
-		if (node.Right == null) return node.Left;
-		if (node.Left == null) return node.Right;
-
-		var t = node.SearchNextNode();
-		node.Key = t.Key;
-		if (t.Parent.Left == t)
-			t.Parent.Left = RemoveTarget(t);
 		else
-			t.Parent.Right = RemoveTarget(t);
-		return node;
+		{
+			var t2 = t.SearchNextNode();
+			t.Key = t2.Key;
+			RemoveTarget(t2);
+		}
 	}
 
 	// Suppose values are distinct and sorted.
