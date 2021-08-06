@@ -32,13 +32,13 @@ public class BstNode<TKey>
 
 public static class BstNode
 {
-	public static BstNode<TKey> SearchNode<TKey>(this BstNode<TKey> node, TKey key, Comparison<TKey> compare)
+	public static BstNode<TKey> SearchNode<TKey>(this BstNode<TKey> node, TKey key, Comparison<TKey> comparison)
 	{
 		if (node == null) return null;
-		var d = compare(key, node.Key);
+		var d = comparison(key, node.Key);
 		if (d == 0) return node;
-		if (d < 0) return SearchNode(node.Left, key, compare);
-		else return SearchNode(node.Right, key, compare);
+		if (d < 0) return SearchNode(node.Left, key, comparison);
+		else return SearchNode(node.Right, key, comparison);
 	}
 
 	public static BstNode<TKey> SearchMinNode<TKey>(this BstNode<TKey> node)
