@@ -50,10 +50,10 @@ public class BSTree<T>
 			new BSTree<T>((x, y) => c.Compare(keySelector(x), keySelector(y)));
 	}
 
-	[System.Diagnostics.DebuggerDisplay(@"\{{Value}\}")]
+	[System.Diagnostics.DebuggerDisplay(@"\{{Key}\}")]
 	class Node
 	{
-		public T Value;
+		public T Key;
 		public Node Parent;
 
 		Node _left;
@@ -113,14 +113,14 @@ public class BSTree<T>
 	static Node SearchMinNode(Node node, Func<T, bool> f)
 	{
 		if (node == null) return null;
-		if (f(node.Value)) return SearchMinNode(node.Left, f) ?? node;
+		if (f(node.Key)) return SearchMinNode(node.Left, f) ?? node;
 		else return SearchMinNode(node.Right, f);
 	}
 
 	static Node SearchMaxNode(Node node, Func<T, bool> f)
 	{
 		if (node == null) return null;
-		if (f(node.Value)) return SearchMaxNode(node.Right, f) ?? node;
+		if (f(node.Key)) return SearchMaxNode(node.Right, f) ?? node;
 		else return SearchMaxNode(node.Left, f);
 	}
 
@@ -155,7 +155,7 @@ public class BSTree<T>
 	Node SearchNode(Node node, T value)
 	{
 		if (node == null) return null;
-		var d = compare(value, node.Value);
+		var d = compare(value, node.Key);
 		if (d == 0) return node;
 		if (d < 0) return SearchNode(node.Left, value);
 		else return SearchNode(node.Right, value);
@@ -164,13 +164,13 @@ public class BSTree<T>
 	public T GetMin()
 	{
 		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return SearchMinNode(Root).Value;
+		return SearchMinNode(Root).Key;
 	}
 
 	public T GetMax()
 	{
 		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return SearchMaxNode(Root).Value;
+		return SearchMaxNode(Root).Key;
 	}
 
 	public T GetNextValue(T value, T defaultValue = default(T))
@@ -179,7 +179,7 @@ public class BSTree<T>
 		if (node == null) throw new InvalidOperationException("The value does not exist.");
 		node = SearchNextNode(node);
 		if (node == null) return defaultValue;
-		return node.Value;
+		return node.Key;
 	}
 
 	public T GetPreviousValue(T value, T defaultValue = default(T))
@@ -188,22 +188,22 @@ public class BSTree<T>
 		if (node == null) throw new InvalidOperationException("The value does not exist.");
 		node = SearchPreviousNode(node);
 		if (node == null) return defaultValue;
-		return node.Value;
+		return node.Key;
 	}
 
 	public IEnumerable<T> GetValues()
 	{
 		for (var n = SearchMinNode(Root); n != null; n = SearchNextNode(n))
 		{
-			yield return n.Value;
+			yield return n.Key;
 		}
 	}
 
 	public IEnumerable<T> GetValues(Func<T, bool> predicateForMin, Func<T, bool> predicateForMax)
 	{
-		for (var n = SearchMinNode(Root, predicateForMin); n != null && predicateForMax(n.Value); n = SearchNextNode(n))
+		for (var n = SearchMinNode(Root, predicateForMin); n != null && predicateForMax(n.Key); n = SearchNextNode(n))
 		{
-			yield return n.Value;
+			yield return n.Key;
 		}
 	}
 
@@ -217,7 +217,7 @@ public class BSTree<T>
 		bool r;
 		if (Root == null)
 		{
-			Root = new Node { Value = value };
+			Root = new Node { Key = value };
 			r = true;
 		}
 		else
@@ -232,17 +232,17 @@ public class BSTree<T>
 	// Suppose t != null.
 	bool Add(Node t, T value)
 	{
-		var d = compare(value, t.Value);
+		var d = compare(value, t.Key);
 		if (d == 0) return false;
 		if (d < 0)
 		{
 			if (t.Left != null) return Add(t.Left, value);
-			t.Left = new Node { Value = value };
+			t.Left = new Node { Key = value };
 		}
 		else
 		{
 			if (t.Right != null) return Add(t.Right, value);
-			t.Right = new Node { Value = value };
+			t.Right = new Node { Key = value };
 		}
 		return true;
 	}
@@ -280,7 +280,7 @@ public class BSTree<T>
 		else
 		{
 			var t2 = SearchNextNode(t);
-			t.Value = t2.Value;
+			t.Key = t2.Key;
 			Remove(t2);
 		}
 	}
@@ -294,12 +294,12 @@ public class BSTree<T>
 	Node CreateSubtree(T[] values, int l, int r)
 	{
 		if (r - l == 0) return null;
-		if (r - l == 1) return new Node { Value = values[l] };
+		if (r - l == 1) return new Node { Key = values[l] };
 
 		var m = (l + r) / 2;
 		return new Node
 		{
-			Value = values[m],
+			Key = values[m],
 			Left = CreateSubtree(values, l, m),
 			Right = CreateSubtree(values, m + 1, r),
 		};
@@ -314,7 +314,7 @@ public class BSTree<T>
 		Dfs = n =>
 		{
 			if (n == null) return;
-			r.Add(n.Value);
+			r.Add(n.Key);
 			Dfs(n.Left);
 			Dfs(n.Right);
 		};

@@ -42,10 +42,10 @@ class D
 // この問題用の Treap です。
 public class TreapD<T>
 {
-	[System.Diagnostics.DebuggerDisplay(@"\{{Value}\}")]
+	[System.Diagnostics.DebuggerDisplay(@"\{{Key}\}")]
 	class Node
 	{
-		public T Value;
+		public T Key;
 		public Node Parent;
 		public int Priority;
 
@@ -106,14 +106,14 @@ public class TreapD<T>
 	static Node SearchMinNode(Node node, Func<T, bool> f)
 	{
 		if (node == null) return null;
-		if (f(node.Value)) return SearchMinNode(node.Left, f) ?? node;
+		if (f(node.Key)) return SearchMinNode(node.Left, f) ?? node;
 		else return SearchMinNode(node.Right, f);
 	}
 
 	static Node SearchMaxNode(Node node, Func<T, bool> f)
 	{
 		if (node == null) return null;
-		if (f(node.Value)) return SearchMaxNode(node.Right, f) ?? node;
+		if (f(node.Key)) return SearchMaxNode(node.Right, f) ?? node;
 		else return SearchMaxNode(node.Left, f);
 	}
 
@@ -148,7 +148,7 @@ public class TreapD<T>
 	Node SearchNode(Node node, T value)
 	{
 		if (node == null) return null;
-		var d = compare(value, node.Value);
+		var d = compare(value, node.Key);
 		if (d == 0) return node;
 		if (d < 0) return SearchNode(node.Left, value);
 		else return SearchNode(node.Right, value);
@@ -157,13 +157,13 @@ public class TreapD<T>
 	public T GetMin()
 	{
 		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return SearchMinNode(Root).Value;
+		return SearchMinNode(Root).Key;
 	}
 
 	public T GetMax()
 	{
 		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return SearchMaxNode(Root).Value;
+		return SearchMaxNode(Root).Key;
 	}
 
 	public T GetNextValue(T value, T defaultValue = default(T))
@@ -172,7 +172,7 @@ public class TreapD<T>
 		if (node == null) throw new InvalidOperationException("The value does not exist.");
 		node = SearchNextNode(node);
 		if (node == null) return defaultValue;
-		return node.Value;
+		return node.Key;
 	}
 
 	public T GetPreviousValue(T value, T defaultValue = default(T))
@@ -181,22 +181,22 @@ public class TreapD<T>
 		if (node == null) throw new InvalidOperationException("The value does not exist.");
 		node = SearchPreviousNode(node);
 		if (node == null) return defaultValue;
-		return node.Value;
+		return node.Key;
 	}
 
 	public IEnumerable<T> GetValues()
 	{
 		for (var n = SearchMinNode(Root); n != null; n = SearchNextNode(n))
 		{
-			yield return n.Value;
+			yield return n.Key;
 		}
 	}
 
 	public IEnumerable<T> GetValues(Func<T, bool> predicateForMin, Func<T, bool> predicateForMax)
 	{
-		for (var n = SearchMinNode(Root, predicateForMin); n != null && predicateForMax(n.Value); n = SearchNextNode(n))
+		for (var n = SearchMinNode(Root, predicateForMin); n != null && predicateForMax(n.Key); n = SearchNextNode(n))
 		{
-			yield return n.Value;
+			yield return n.Key;
 		}
 	}
 
@@ -217,10 +217,10 @@ public class TreapD<T>
 		if (t == null)
 		{
 			++Count;
-			return new Node { Value = value, Priority = priority };
+			return new Node { Key = value, Priority = priority };
 		}
 
-		var d = compare(value, t.Value);
+		var d = compare(value, t.Key);
 		if (d == 0) return t;
 
 		if (d < 0)
@@ -249,7 +249,7 @@ public class TreapD<T>
 	{
 		if (t == null) return null;
 
-		var d = compare(value, t.Value);
+		var d = compare(value, t.Key);
 		if (d == 0) return RemoveTarget(t, value);
 
 		if (d < 0)
@@ -306,7 +306,7 @@ public class TreapD<T>
 		Dfs = n =>
 		{
 			if (n == null) return;
-			r.Add(n.Value);
+			r.Add(n.Key);
 			Dfs(n.Left);
 			Dfs(n.Right);
 		};
