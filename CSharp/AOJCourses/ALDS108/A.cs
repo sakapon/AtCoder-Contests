@@ -7,7 +7,7 @@ class A
 	{
 		var n = int.Parse(Console.ReadLine());
 
-		var set = new BSTree<int>();
+		var set = new BinarySearchTree<int>();
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		while (n-- > 0)

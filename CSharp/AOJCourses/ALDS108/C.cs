@@ -7,7 +7,7 @@ class C
 	{
 		var n = int.Parse(Console.ReadLine());
 
-		var set = new BSTree<int>();
+		var set = new BinarySearchTree<int>();
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		while (n-- > 0)
@@ -39,16 +39,16 @@ class C
 	}
 }
 
-public class BSTree<T>
+public class BinarySearchTree<T>
 {
-	public static BSTree<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false)
+	public static BinarySearchTree<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false)
 	{
 		if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
 
 		var c = Comparer<TKey>.Default;
 		return descending ?
-			new BSTree<T>((x, y) => c.Compare(keySelector(y), keySelector(x))) :
-			new BSTree<T>((x, y) => c.Compare(keySelector(x), keySelector(y)));
+			new BinarySearchTree<T>((x, y) => c.Compare(keySelector(y), keySelector(x))) :
+			new BinarySearchTree<T>((x, y) => c.Compare(keySelector(x), keySelector(y)));
 	}
 
 	BstNode<T> _root;
@@ -65,7 +65,7 @@ public class BSTree<T>
 	Comparison<T> compare;
 	public int Count { get; private set; }
 
-	public BSTree(Comparison<T> comparison = null)
+	public BinarySearchTree(Comparison<T> comparison = null)
 	{
 		compare = comparison ?? Comparer<T>.Default.Compare;
 	}
