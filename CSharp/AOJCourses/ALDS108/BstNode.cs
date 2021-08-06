@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class BstNode<TKey>
 {
 	public TKey Key { get; set; }
-	public BstNode<TKey> Parent { get; private set; }
+	public BstNode<TKey> Parent { get; set; }
 
 	BstNode<TKey> _left;
 	public BstNode<TKey> Left
@@ -107,5 +107,13 @@ public static class BstNode
 		{
 			yield return n.Key;
 		}
+	}
+
+	public static void WalkByPreorder<TKey>(this BstNode<TKey> node, Action<TKey> action)
+	{
+		if (node == null) return;
+		action(node.Key);
+		WalkByPreorder(node.Left, action);
+		WalkByPreorder(node.Right, action);
 	}
 }

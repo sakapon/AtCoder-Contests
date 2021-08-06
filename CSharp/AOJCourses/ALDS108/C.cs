@@ -30,8 +30,10 @@ class C
 			}
 			else
 			{
-				Console.WriteLine(" " + string.Join(" ", set.GetValues()));
-				Console.WriteLine(" " + string.Join(" ", set.GetByPreorder()));
+				Console.WriteLine(" " + string.Join(" ", set.GetItems()));
+				var r = new List<int>();
+				set.Root.WalkByPreorder(r.Add);
+				Console.WriteLine(" " + string.Join(" ", r));
 			}
 		}
 		Console.Out.Flush();
@@ -50,40 +52,11 @@ public class BSTree<T>
 			new BSTree<T>((x, y) => c.Compare(keySelector(x), keySelector(y)));
 	}
 
-	[System.Diagnostics.DebuggerDisplay(@"\{{Key}\}")]
-	class BstNode
-	{
-		public T Key;
-		public BstNode Parent;
-
-		BstNode _left;
-		public BstNode Left
-		{
-			get { return _left; }
-			set
-			{
-				_left = value;
-				if (value != null) value.Parent = this;
-			}
-		}
-
-		BstNode _right;
-		public BstNode Right
-		{
-			get { return _right; }
-			set
-			{
-				_right = value;
-				if (value != null) value.Parent = this;
-			}
-		}
-	}
-
-	BstNode _root;
-	BstNode Root
+	BstNode<T> _root;
+	public BstNode<T> Root
 	{
 		get { return _root; }
-		set
+		private set
 		{
 			_root = value;
 			if (value != null) value.Parent = null;
@@ -98,228 +71,147 @@ public class BSTree<T>
 		compare = comparison ?? Comparer<T>.Default.Compare;
 	}
 
-	static BstNode SearchMinNode(BstNode node)
+	public bool Contains(T item)
 	{
-		if (node == null) return null;
-		return SearchMinNode(node.Left) ?? node;
-	}
-
-	static BstNode SearchMaxNode(BstNode node)
-	{
-		if (node == null) return null;
-		return SearchMaxNode(node.Right) ?? node;
-	}
-
-	static BstNode SearchMinNode(BstNode node, Func<T, bool> f)
-	{
-		if (node == null) return null;
-		if (f(node.Key)) return SearchMinNode(node.Left, f) ?? node;
-		else return SearchMinNode(node.Right, f);
-	}
-
-	static BstNode SearchMaxNode(BstNode node, Func<T, bool> f)
-	{
-		if (node == null) return null;
-		if (f(node.Key)) return SearchMaxNode(node.Right, f) ?? node;
-		else return SearchMaxNode(node.Left, f);
-	}
-
-	static BstNode SearchPreviousAncestor(BstNode node)
-	{
-		if (node == null) return null;
-		if (node.Parent == null) return null;
-		if (node.Parent.Right == node) return node.Parent;
-		else return SearchPreviousAncestor(node.Parent);
-	}
-
-	static BstNode SearchNextAncestor(BstNode node)
-	{
-		if (node == null) return null;
-		if (node.Parent == null) return null;
-		if (node.Parent.Left == node) return node.Parent;
-		else return SearchNextAncestor(node.Parent);
-	}
-
-	static BstNode SearchPreviousNode(BstNode node)
-	{
-		if (node == null) return null;
-		return SearchMaxNode(node.Left) ?? SearchPreviousAncestor(node);
-	}
-
-	static BstNode SearchNextNode(BstNode node)
-	{
-		if (node == null) return null;
-		return SearchMinNode(node.Right) ?? SearchNextAncestor(node);
-	}
-
-	BstNode SearchNode(BstNode node, T value)
-	{
-		if (node == null) return null;
-		var d = compare(value, node.Key);
-		if (d == 0) return node;
-		if (d < 0) return SearchNode(node.Left, value);
-		else return SearchNode(node.Right, value);
+		return Root.SearchNode(item, compare) != null;
 	}
 
 	public T GetMin()
 	{
 		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return SearchMinNode(Root).Key;
+		return Root.SearchMinNode().Key;
 	}
 
 	public T GetMax()
 	{
 		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return SearchMaxNode(Root).Key;
+		return Root.SearchMaxNode().Key;
 	}
 
-	public T GetNextValue(T value, T defaultValue = default(T))
+	public T GetMin(Func<T, bool> predicate)
 	{
-		var node = SearchNode(Root, value);
-		if (node == null) throw new InvalidOperationException("The value does not exist.");
-		node = SearchNextNode(node);
+		if (Root == null) throw new InvalidOperationException("The tree is empty.");
+		return Root.SearchMinNode(predicate).Key;
+	}
+
+	public T GetMax(Func<T, bool> predicate)
+	{
+		if (Root == null) throw new InvalidOperationException("The tree is empty.");
+		return Root.SearchMaxNode(predicate).Key;
+	}
+
+	public T GetPrevious(T item, T defaultValue = default(T))
+	{
+		var node = Root.SearchNode(item, compare);
+		if (node == null) throw new InvalidOperationException("The item is not found.");
+		node = node.SearchPreviousNode();
 		if (node == null) return defaultValue;
 		return node.Key;
 	}
 
-	public T GetPreviousValue(T value, T defaultValue = default(T))
+	public T GetNext(T item, T defaultValue = default(T))
 	{
-		var node = SearchNode(Root, value);
-		if (node == null) throw new InvalidOperationException("The value does not exist.");
-		node = SearchPreviousNode(node);
+		var node = Root.SearchNode(item, compare);
+		if (node == null) throw new InvalidOperationException("The item is not found.");
+		node = node.SearchNextNode();
 		if (node == null) return defaultValue;
 		return node.Key;
 	}
 
-	public IEnumerable<T> GetValues()
+	public IEnumerable<T> GetItems() => Root.GetKeys();
+	public IEnumerable<T> GetItems(Func<T, bool> predicateForMin, Func<T, bool> predicateForMax) => Root.GetKeys(predicateForMin, predicateForMax);
+
+	public bool Add(T item)
 	{
-		for (var n = SearchMinNode(Root); n != null; n = SearchNextNode(n))
-		{
-			yield return n.Key;
-		}
+		var c = Count;
+		Root = Add(Root, item);
+		return Count != c;
 	}
 
-	public IEnumerable<T> GetValues(Func<T, bool> predicateForMin, Func<T, bool> predicateForMax)
+	public bool Remove(T item)
 	{
-		for (var n = SearchMinNode(Root, predicateForMin); n != null && predicateForMax(n.Key); n = SearchNextNode(n))
-		{
-			yield return n.Key;
-		}
+		var c = Count;
+		Root = Remove(Root, item);
+		return Count != c;
 	}
 
-	public bool Contains(T value)
+	BstNode<T> Add(BstNode<T> node, T item)
 	{
-		return SearchNode(Root, value) != null;
-	}
-
-	public bool Add(T value)
-	{
-		bool r;
-		if (Root == null)
+		if (node == null)
 		{
-			Root = new BstNode { Key = value };
-			r = true;
-		}
-		else
-		{
-			r = Add(Root, value);
+			++Count;
+			return new BstNode<T> { Key = item };
 		}
 
-		if (r) ++Count;
-		return r;
-	}
+		var d = compare(item, node.Key);
+		if (d == 0) return node;
 
-	// Suppose t != null.
-	bool Add(BstNode t, T value)
-	{
-		var d = compare(value, t.Key);
-		if (d == 0) return false;
 		if (d < 0)
 		{
-			if (t.Left != null) return Add(t.Left, value);
-			t.Left = new BstNode { Key = value };
+			node.Left = Add(node.Left, item);
 		}
 		else
 		{
-			if (t.Right != null) return Add(t.Right, value);
-			t.Right = new BstNode { Key = value };
+			node.Right = Add(node.Right, item);
 		}
-		return true;
+		return node;
 	}
 
-	public bool Remove(T value)
+	BstNode<T> Remove(BstNode<T> node, T item)
 	{
-		var node = SearchNode(Root, value);
-		if (node == null) return false;
+		if (node == null) return null;
 
-		Remove(node);
-		--Count;
-		return true;
-	}
+		var d = compare(item, node.Key);
+		if (d == 0) return RemoveTarget(node);
 
-	// Suppose t != null.
-	void Remove(BstNode t)
-	{
-		if (t.Left == null || t.Right == null)
+		if (d < 0)
 		{
-			var c = t.Left ?? t.Right;
-
-			if (t.Parent == null)
-			{
-				Root = c;
-			}
-			else if (t.Parent.Left == t)
-			{
-				t.Parent.Left = c;
-			}
-			else
-			{
-				t.Parent.Right = c;
-			}
+			node.Left = Remove(node.Left, item);
 		}
 		else
 		{
-			var t2 = SearchNextNode(t);
-			t.Key = t2.Key;
-			Remove(t2);
+			node.Right = Remove(node.Right, item);
 		}
+		return node;
+	}
+
+	BstNode<T> RemoveTarget(BstNode<T> node)
+	{
+		if (node.Left == null && node.Right == null)
+		{
+			--Count;
+			return null;
+		}
+
+		if (node.Right == null) return node.Left;
+		if (node.Left == null) return node.Right;
+
+		var t = node.SearchNextNode();
+		node.Key = t.Key;
+		if (t.Parent.Left == t)
+			t.Parent.Left = RemoveTarget(t);
+		else
+			t.Parent.Right = RemoveTarget(t);
+		return node;
 	}
 
 	// Suppose values are distinct and sorted.
-	public void SetValues(T[] values)
+	public void SetItems(T[] items)
 	{
-		Root = CreateSubtree(values, 0, values.Length);
+		Root = CreateSubtree(items, 0, items.Length);
 	}
 
-	BstNode CreateSubtree(T[] values, int l, int r)
+	static BstNode<T> CreateSubtree(T[] items, int l, int r)
 	{
 		if (r - l == 0) return null;
-		if (r - l == 1) return new BstNode { Key = values[l] };
+		if (r - l == 1) return new BstNode<T> { Key = items[l] };
 
 		var m = (l + r) / 2;
-		return new BstNode
+		return new BstNode<T>
 		{
-			Key = values[m],
-			Left = CreateSubtree(values, l, m),
-			Right = CreateSubtree(values, m + 1, r),
+			Key = items[m],
+			Left = CreateSubtree(items, l, m),
+			Right = CreateSubtree(items, m + 1, r),
 		};
-	}
-
-	// Additional
-	public T[] GetByPreorder()
-	{
-		var r = new List<T>();
-
-		Action<BstNode> Dfs = null;
-		Dfs = n =>
-		{
-			if (n == null) return;
-			r.Add(n.Key);
-			Dfs(n.Left);
-			Dfs(n.Right);
-		};
-
-		Dfs(Root);
-		return r.ToArray();
 	}
 }

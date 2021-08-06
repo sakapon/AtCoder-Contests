@@ -25,8 +25,10 @@ class B
 			}
 			else
 			{
-				Console.WriteLine(" " + string.Join(" ", set.GetValues()));
-				Console.WriteLine(" " + string.Join(" ", set.GetByPreorder()));
+				Console.WriteLine(" " + string.Join(" ", set.GetItems()));
+				var r = new List<int>();
+				set.Root.WalkByPreorder(r.Add);
+				Console.WriteLine(" " + string.Join(" ", r));
 			}
 		}
 		Console.Out.Flush();
