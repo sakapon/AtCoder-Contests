@@ -51,13 +51,13 @@ public class BSTree<T>
 	}
 
 	[System.Diagnostics.DebuggerDisplay(@"\{{Key}\}")]
-	class Node
+	class BstNode
 	{
 		public T Key;
-		public Node Parent;
+		public BstNode Parent;
 
-		Node _left;
-		public Node Left
+		BstNode _left;
+		public BstNode Left
 		{
 			get { return _left; }
 			set
@@ -67,8 +67,8 @@ public class BSTree<T>
 			}
 		}
 
-		Node _right;
-		public Node Right
+		BstNode _right;
+		public BstNode Right
 		{
 			get { return _right; }
 			set
@@ -79,8 +79,8 @@ public class BSTree<T>
 		}
 	}
 
-	Node _root;
-	Node Root
+	BstNode _root;
+	BstNode Root
 	{
 		get { return _root; }
 		set
@@ -98,33 +98,33 @@ public class BSTree<T>
 		compare = comparison ?? Comparer<T>.Default.Compare;
 	}
 
-	static Node SearchMinNode(Node node)
+	static BstNode SearchMinNode(BstNode node)
 	{
 		if (node == null) return null;
 		return SearchMinNode(node.Left) ?? node;
 	}
 
-	static Node SearchMaxNode(Node node)
+	static BstNode SearchMaxNode(BstNode node)
 	{
 		if (node == null) return null;
 		return SearchMaxNode(node.Right) ?? node;
 	}
 
-	static Node SearchMinNode(Node node, Func<T, bool> f)
+	static BstNode SearchMinNode(BstNode node, Func<T, bool> f)
 	{
 		if (node == null) return null;
 		if (f(node.Key)) return SearchMinNode(node.Left, f) ?? node;
 		else return SearchMinNode(node.Right, f);
 	}
 
-	static Node SearchMaxNode(Node node, Func<T, bool> f)
+	static BstNode SearchMaxNode(BstNode node, Func<T, bool> f)
 	{
 		if (node == null) return null;
 		if (f(node.Key)) return SearchMaxNode(node.Right, f) ?? node;
 		else return SearchMaxNode(node.Left, f);
 	}
 
-	static Node SearchPreviousAncestor(Node node)
+	static BstNode SearchPreviousAncestor(BstNode node)
 	{
 		if (node == null) return null;
 		if (node.Parent == null) return null;
@@ -132,7 +132,7 @@ public class BSTree<T>
 		else return SearchPreviousAncestor(node.Parent);
 	}
 
-	static Node SearchNextAncestor(Node node)
+	static BstNode SearchNextAncestor(BstNode node)
 	{
 		if (node == null) return null;
 		if (node.Parent == null) return null;
@@ -140,19 +140,19 @@ public class BSTree<T>
 		else return SearchNextAncestor(node.Parent);
 	}
 
-	static Node SearchPreviousNode(Node node)
+	static BstNode SearchPreviousNode(BstNode node)
 	{
 		if (node == null) return null;
 		return SearchMaxNode(node.Left) ?? SearchPreviousAncestor(node);
 	}
 
-	static Node SearchNextNode(Node node)
+	static BstNode SearchNextNode(BstNode node)
 	{
 		if (node == null) return null;
 		return SearchMinNode(node.Right) ?? SearchNextAncestor(node);
 	}
 
-	Node SearchNode(Node node, T value)
+	BstNode SearchNode(BstNode node, T value)
 	{
 		if (node == null) return null;
 		var d = compare(value, node.Key);
@@ -217,7 +217,7 @@ public class BSTree<T>
 		bool r;
 		if (Root == null)
 		{
-			Root = new Node { Key = value };
+			Root = new BstNode { Key = value };
 			r = true;
 		}
 		else
@@ -230,19 +230,19 @@ public class BSTree<T>
 	}
 
 	// Suppose t != null.
-	bool Add(Node t, T value)
+	bool Add(BstNode t, T value)
 	{
 		var d = compare(value, t.Key);
 		if (d == 0) return false;
 		if (d < 0)
 		{
 			if (t.Left != null) return Add(t.Left, value);
-			t.Left = new Node { Key = value };
+			t.Left = new BstNode { Key = value };
 		}
 		else
 		{
 			if (t.Right != null) return Add(t.Right, value);
-			t.Right = new Node { Key = value };
+			t.Right = new BstNode { Key = value };
 		}
 		return true;
 	}
@@ -258,7 +258,7 @@ public class BSTree<T>
 	}
 
 	// Suppose t != null.
-	void Remove(Node t)
+	void Remove(BstNode t)
 	{
 		if (t.Left == null || t.Right == null)
 		{
@@ -291,13 +291,13 @@ public class BSTree<T>
 		Root = CreateSubtree(values, 0, values.Length);
 	}
 
-	Node CreateSubtree(T[] values, int l, int r)
+	BstNode CreateSubtree(T[] values, int l, int r)
 	{
 		if (r - l == 0) return null;
-		if (r - l == 1) return new Node { Key = values[l] };
+		if (r - l == 1) return new BstNode { Key = values[l] };
 
 		var m = (l + r) / 2;
-		return new Node
+		return new BstNode
 		{
 			Key = values[m],
 			Left = CreateSubtree(values, l, m),
@@ -310,7 +310,7 @@ public class BSTree<T>
 	{
 		var r = new List<T>();
 
-		Action<Node> Dfs = null;
+		Action<BstNode> Dfs = null;
 		Dfs = n =>
 		{
 			if (n == null) return;

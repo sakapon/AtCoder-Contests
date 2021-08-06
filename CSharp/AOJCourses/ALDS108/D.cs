@@ -43,14 +43,14 @@ class D
 public class TreapD<T>
 {
 	[System.Diagnostics.DebuggerDisplay(@"\{{Key}\}")]
-	class Node
+	class BstNode
 	{
 		public T Key;
-		public Node Parent;
+		public BstNode Parent;
 		public int Priority;
 
-		Node _left;
-		public Node Left
+		BstNode _left;
+		public BstNode Left
 		{
 			get { return _left; }
 			set
@@ -60,8 +60,8 @@ public class TreapD<T>
 			}
 		}
 
-		Node _right;
-		public Node Right
+		BstNode _right;
+		public BstNode Right
 		{
 			get { return _right; }
 			set
@@ -72,8 +72,8 @@ public class TreapD<T>
 		}
 	}
 
-	Node _root;
-	Node Root
+	BstNode _root;
+	BstNode Root
 	{
 		get { return _root; }
 		set
@@ -91,33 +91,33 @@ public class TreapD<T>
 		compare = comparison ?? Comparer<T>.Default.Compare;
 	}
 
-	static Node SearchMinNode(Node node)
+	static BstNode SearchMinNode(BstNode node)
 	{
 		if (node == null) return null;
 		return SearchMinNode(node.Left) ?? node;
 	}
 
-	static Node SearchMaxNode(Node node)
+	static BstNode SearchMaxNode(BstNode node)
 	{
 		if (node == null) return null;
 		return SearchMaxNode(node.Right) ?? node;
 	}
 
-	static Node SearchMinNode(Node node, Func<T, bool> f)
+	static BstNode SearchMinNode(BstNode node, Func<T, bool> f)
 	{
 		if (node == null) return null;
 		if (f(node.Key)) return SearchMinNode(node.Left, f) ?? node;
 		else return SearchMinNode(node.Right, f);
 	}
 
-	static Node SearchMaxNode(Node node, Func<T, bool> f)
+	static BstNode SearchMaxNode(BstNode node, Func<T, bool> f)
 	{
 		if (node == null) return null;
 		if (f(node.Key)) return SearchMaxNode(node.Right, f) ?? node;
 		else return SearchMaxNode(node.Left, f);
 	}
 
-	static Node SearchPreviousAncestor(Node node)
+	static BstNode SearchPreviousAncestor(BstNode node)
 	{
 		if (node == null) return null;
 		if (node.Parent == null) return null;
@@ -125,7 +125,7 @@ public class TreapD<T>
 		else return SearchPreviousAncestor(node.Parent);
 	}
 
-	static Node SearchNextAncestor(Node node)
+	static BstNode SearchNextAncestor(BstNode node)
 	{
 		if (node == null) return null;
 		if (node.Parent == null) return null;
@@ -133,19 +133,19 @@ public class TreapD<T>
 		else return SearchNextAncestor(node.Parent);
 	}
 
-	static Node SearchPreviousNode(Node node)
+	static BstNode SearchPreviousNode(BstNode node)
 	{
 		if (node == null) return null;
 		return SearchMaxNode(node.Left) ?? SearchPreviousAncestor(node);
 	}
 
-	static Node SearchNextNode(Node node)
+	static BstNode SearchNextNode(BstNode node)
 	{
 		if (node == null) return null;
 		return SearchMinNode(node.Right) ?? SearchNextAncestor(node);
 	}
 
-	Node SearchNode(Node node, T value)
+	BstNode SearchNode(BstNode node, T value)
 	{
 		if (node == null) return null;
 		var d = compare(value, node.Key);
@@ -212,12 +212,12 @@ public class TreapD<T>
 		return Count != c;
 	}
 
-	Node Add(Node t, T value, int priority)
+	BstNode Add(BstNode t, T value, int priority)
 	{
 		if (t == null)
 		{
 			++Count;
-			return new Node { Key = value, Priority = priority };
+			return new BstNode { Key = value, Priority = priority };
 		}
 
 		var d = compare(value, t.Key);
@@ -245,7 +245,7 @@ public class TreapD<T>
 		return Count != c;
 	}
 
-	Node Remove(Node t, T value)
+	BstNode Remove(BstNode t, T value)
 	{
 		if (t == null) return null;
 
@@ -263,7 +263,7 @@ public class TreapD<T>
 		return t;
 	}
 
-	Node RemoveTarget(Node t, T value)
+	BstNode RemoveTarget(BstNode t, T value)
 	{
 		if (t.Left == null && t.Right == null)
 		{
@@ -281,7 +281,7 @@ public class TreapD<T>
 		return Remove(t, value);
 	}
 
-	static Node RotateToRight(Node t)
+	static BstNode RotateToRight(BstNode t)
 	{
 		var np = t.Left;
 		t.Left = np.Right;
@@ -289,7 +289,7 @@ public class TreapD<T>
 		return np;
 	}
 
-	static Node RotateToLeft(Node t)
+	static BstNode RotateToLeft(BstNode t)
 	{
 		var np = t.Right;
 		t.Right = np.Left;
@@ -302,7 +302,7 @@ public class TreapD<T>
 	{
 		var r = new List<T>();
 
-		Action<Node> Dfs = null;
+		Action<BstNode> Dfs = null;
 		Dfs = n =>
 		{
 			if (n == null) return;
