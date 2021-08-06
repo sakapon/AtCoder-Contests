@@ -31,9 +31,8 @@ class C
 			else
 			{
 				Console.WriteLine(" " + string.Join(" ", set.GetItems()));
-				var r = new List<int>();
-				set.Root.WalkByPreorder(r.Add);
-				Console.WriteLine(" " + string.Join(" ", r));
+				set.Root.WalkByPreorder(v => Console.Write($" {v}"));
+				Console.WriteLine();
 			}
 		}
 		Console.Out.Flush();
