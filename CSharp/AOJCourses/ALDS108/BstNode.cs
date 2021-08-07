@@ -118,6 +118,81 @@ public static class BstNode
 	}
 }
 
+public abstract class BstBase<T, TNode> where TNode : BstNode<T>
+{
+	TNode _root;
+	public TNode Root
+	{
+		get { return _root; }
+		protected set
+		{
+			_root = value;
+			if (value != null) value.Parent = null;
+		}
+	}
+
+	protected Comparison<T> compare;
+	public int Count { get; protected set; }
+
+	protected BstBase(Comparison<T> comparison = null)
+	{
+		compare = comparison ?? Comparer<T>.Default.Compare;
+	}
+
+	public bool Contains(T item)
+	{
+		return Root.SearchNode(item, compare) != null;
+	}
+
+	public T GetMin()
+	{
+		if (Root == null) throw new InvalidOperationException("The tree is empty.");
+		return Root.SearchMinNode().Key;
+	}
+
+	public T GetMax()
+	{
+		if (Root == null) throw new InvalidOperationException("The tree is empty.");
+		return Root.SearchMaxNode().Key;
+	}
+
+	public T GetMin(Func<T, bool> predicate)
+	{
+		if (Root == null) throw new InvalidOperationException("The tree is empty.");
+		return Root.SearchMinNode(predicate).Key;
+	}
+
+	public T GetMax(Func<T, bool> predicate)
+	{
+		if (Root == null) throw new InvalidOperationException("The tree is empty.");
+		return Root.SearchMaxNode(predicate).Key;
+	}
+
+	public T GetPrevious(T item, T defaultValue = default(T))
+	{
+		var node = Root.SearchNode(item, compare);
+		if (node == null) throw new InvalidOperationException("The item is not found.");
+		node = node.SearchPreviousNode();
+		if (node == null) return defaultValue;
+		return node.Key;
+	}
+
+	public T GetNext(T item, T defaultValue = default(T))
+	{
+		var node = Root.SearchNode(item, compare);
+		if (node == null) throw new InvalidOperationException("The item is not found.");
+		node = node.SearchNextNode();
+		if (node == null) return defaultValue;
+		return node.Key;
+	}
+
+	public IEnumerable<T> GetItems() => Root.GetKeys();
+	public IEnumerable<T> GetItems(Func<T, bool> predicateForMin, Func<T, bool> predicateForMax) => Root.GetKeys(predicateForMin, predicateForMax);
+
+	public abstract bool Add(T item);
+	public abstract bool Remove(T item);
+}
+
 public static class ComparisonHelper
 {
 	public static Comparison<T> Create<T>(bool descending = false)

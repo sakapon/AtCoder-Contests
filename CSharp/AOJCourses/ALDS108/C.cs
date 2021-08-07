@@ -39,83 +39,16 @@ class C
 	}
 }
 
-public class BinarySearchTree<T>
+public class BinarySearchTree<T> : BstBase<T, BstNode<T>>
 {
 	public static BinarySearchTree<T> Create(bool descending = false) =>
 		new BinarySearchTree<T>(ComparisonHelper.Create<T>(descending));
 	public static BinarySearchTree<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false) =>
 		new BinarySearchTree<T>(ComparisonHelper.Create(keySelector, descending));
 
-	BstNode<T> _root;
-	public BstNode<T> Root
-	{
-		get { return _root; }
-		private set
-		{
-			_root = value;
-			if (value != null) value.Parent = null;
-		}
-	}
+	public BinarySearchTree(Comparison<T> comparison = null) : base(comparison) { }
 
-	Comparison<T> compare;
-	public int Count { get; private set; }
-
-	public BinarySearchTree(Comparison<T> comparison = null)
-	{
-		compare = comparison ?? Comparer<T>.Default.Compare;
-	}
-
-	public bool Contains(T item)
-	{
-		return Root.SearchNode(item, compare) != null;
-	}
-
-	public T GetMin()
-	{
-		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return Root.SearchMinNode().Key;
-	}
-
-	public T GetMax()
-	{
-		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return Root.SearchMaxNode().Key;
-	}
-
-	public T GetMin(Func<T, bool> predicate)
-	{
-		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return Root.SearchMinNode(predicate).Key;
-	}
-
-	public T GetMax(Func<T, bool> predicate)
-	{
-		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return Root.SearchMaxNode(predicate).Key;
-	}
-
-	public T GetPrevious(T item, T defaultValue = default(T))
-	{
-		var node = Root.SearchNode(item, compare);
-		if (node == null) throw new InvalidOperationException("The item is not found.");
-		node = node.SearchPreviousNode();
-		if (node == null) return defaultValue;
-		return node.Key;
-	}
-
-	public T GetNext(T item, T defaultValue = default(T))
-	{
-		var node = Root.SearchNode(item, compare);
-		if (node == null) throw new InvalidOperationException("The item is not found.");
-		node = node.SearchNextNode();
-		if (node == null) return defaultValue;
-		return node.Key;
-	}
-
-	public IEnumerable<T> GetItems() => Root.GetKeys();
-	public IEnumerable<T> GetItems(Func<T, bool> predicateForMin, Func<T, bool> predicateForMax) => Root.GetKeys(predicateForMin, predicateForMax);
-
-	public bool Add(T item)
+	public override bool Add(T item)
 	{
 		var c = Count;
 		Root = Add(Root, item);
@@ -144,7 +77,7 @@ public class BinarySearchTree<T>
 		return node;
 	}
 
-	public bool Remove(T item)
+	public override bool Remove(T item)
 	{
 		var node = Root.SearchNode(item, compare);
 		if (node == null) return false;
