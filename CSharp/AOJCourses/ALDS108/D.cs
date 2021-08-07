@@ -44,17 +44,9 @@ public class TreapNode<TKey> : BstNode<TKey>
 {
 	public int Priority { get; set; }
 
-	public new TreapNode<TKey> Left
-	{
-		get { return (TreapNode<TKey>)base.Left; }
-		set { base.Left = value; }
-	}
-
-	public new TreapNode<TKey> Right
-	{
-		get { return (TreapNode<TKey>)base.Right; }
-		set { base.Right = value; }
-	}
+	public TreapNode<TKey> TypedParent => (TreapNode<TKey>)Parent;
+	public TreapNode<TKey> TypedLeft => (TreapNode<TKey>)Left;
+	public TreapNode<TKey> TypedRight => (TreapNode<TKey>)Right;
 }
 
 // この問題用の Treap です。
@@ -149,15 +141,15 @@ public class TreapD<T>
 
 		if (d < 0)
 		{
-			node.Left = Add(node.Left, item, priority);
-			if (node.Priority < node.Left.Priority)
-				node = RotateToRight(node);
+			node.Left = Add(node.TypedLeft, item, priority);
+			if (node.Priority < node.TypedLeft.Priority)
+				node = (TreapNode<T>)node.RotateToRight();
 		}
 		else
 		{
-			node.Right = Add(node.Right, item, priority);
-			if (node.Priority < node.Right.Priority)
-				node = RotateToLeft(node);
+			node.Right = Add(node.TypedRight, item, priority);
+			if (node.Priority < node.TypedRight.Priority)
+				node = (TreapNode<T>)node.RotateToLeft();
 		}
 		return node;
 	}
@@ -178,15 +170,16 @@ public class TreapD<T>
 
 		if (d < 0)
 		{
-			node.Left = Remove(node.Left, item);
+			node.Left = Remove(node.TypedLeft, item);
 		}
 		else
 		{
-			node.Right = Remove(node.Right, item);
+			node.Right = Remove(node.TypedRight, item);
 		}
 		return node;
 	}
 
+	// Suppose t != null.
 	TreapNode<T> RemoveTarget(TreapNode<T> t, T item)
 	{
 		if (t.Left == null && t.Right == null)
@@ -195,29 +188,13 @@ public class TreapD<T>
 			return null;
 		}
 
-		if (t.Right == null) return t.Left;
-		if (t.Left == null) return t.Right;
+		if (t.Right == null) return t.TypedLeft;
+		if (t.Left == null) return t.TypedRight;
 
-		if (t.Left.Priority > t.Right.Priority)
-			t = RotateToRight(t);
+		if (t.TypedLeft.Priority > t.TypedRight.Priority)
+			t = (TreapNode<T>)t.RotateToRight();
 		else
-			t = RotateToLeft(t);
+			t = (TreapNode<T>)t.RotateToLeft();
 		return Remove(t, item);
-	}
-
-	static TreapNode<T> RotateToRight(TreapNode<T> t)
-	{
-		var np = t.Left;
-		t.Left = np.Right;
-		np.Right = t;
-		return np;
-	}
-
-	static TreapNode<T> RotateToLeft(TreapNode<T> t)
-	{
-		var np = t.Right;
-		t.Right = np.Left;
-		np.Left = t;
-		return np;
 	}
 }

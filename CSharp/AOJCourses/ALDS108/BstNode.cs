@@ -109,6 +109,24 @@ public static class BstNode
 		}
 	}
 
+	public static BstNode<TKey> RotateToRight<TKey>(this BstNode<TKey> node)
+	{
+		if (node == null) throw new ArgumentNullException();
+		var p = node.Left;
+		node.Left = p.Right;
+		p.Right = node;
+		return p;
+	}
+
+	public static BstNode<TKey> RotateToLeft<TKey>(this BstNode<TKey> node)
+	{
+		if (node == null) throw new ArgumentNullException();
+		var p = node.Right;
+		node.Right = p.Left;
+		p.Left = node;
+		return p;
+	}
+
 	public static void WalkByPreorder<TKey>(this BstNode<TKey> node, Action<TKey> action)
 	{
 		if (node == null) return;
