@@ -50,76 +50,14 @@ public class TreapNode<TKey> : BstNode<TKey>
 }
 
 // この問題用の Treap です。
-public class TreapD<T>
+public class TreapD<T> : BstBase<T, TreapNode<T>>
 {
-	TreapNode<T> _root;
-	public TreapNode<T> Root
+	public TreapD(Comparison<T> comparison = null) : base(comparison) { }
+
+	public override bool Add(T item)
 	{
-		get { return _root; }
-		private set
-		{
-			_root = value;
-			if (value != null) value.Parent = null;
-		}
+		throw new NotImplementedException();
 	}
-
-	Comparison<T> compare;
-	public int Count { get; private set; }
-
-	public TreapD(Comparison<T> comparison = null)
-	{
-		compare = comparison ?? Comparer<T>.Default.Compare;
-	}
-
-	public bool Contains(T item)
-	{
-		return Root.SearchNode(item, compare) != null;
-	}
-
-	public T GetMin()
-	{
-		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return Root.SearchMinNode().Key;
-	}
-
-	public T GetMax()
-	{
-		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return Root.SearchMaxNode().Key;
-	}
-
-	public T GetMin(Func<T, bool> predicate)
-	{
-		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return Root.SearchMinNode(predicate).Key;
-	}
-
-	public T GetMax(Func<T, bool> predicate)
-	{
-		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return Root.SearchMaxNode(predicate).Key;
-	}
-
-	public T GetPrevious(T item, T defaultValue = default(T))
-	{
-		var node = Root.SearchNode(item, compare);
-		if (node == null) throw new InvalidOperationException("The item is not found.");
-		node = node.SearchPreviousNode();
-		if (node == null) return defaultValue;
-		return node.Key;
-	}
-
-	public T GetNext(T item, T defaultValue = default(T))
-	{
-		var node = Root.SearchNode(item, compare);
-		if (node == null) throw new InvalidOperationException("The item is not found.");
-		node = node.SearchNextNode();
-		if (node == null) return defaultValue;
-		return node.Key;
-	}
-
-	public IEnumerable<T> GetItems() => Root.GetKeys();
-	public IEnumerable<T> GetItems(Func<T, bool> predicateForMin, Func<T, bool> predicateForMax) => Root.GetKeys(predicateForMin, predicateForMax);
 
 	public bool Add(T item, int priority)
 	{
@@ -154,7 +92,7 @@ public class TreapD<T>
 		return node;
 	}
 
-	public bool Remove(T item)
+	public override bool Remove(T item)
 	{
 		var c = Count;
 		Root = Remove(Root, item);
