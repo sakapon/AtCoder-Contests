@@ -41,25 +41,10 @@ class C
 
 public class BinarySearchTree<T>
 {
-	static Comparison<T> CreateComparison(bool descending)
-	{
-		var c = Comparer<T>.Default;
-		if (descending) return (x, y) => c.Compare(y, x);
-		else return c.Compare;
-	}
-
-	static Comparison<T> CreateComparison<TKey>(Func<T, TKey> keySelector, bool descending)
-	{
-		if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
-		var c = Comparer<TKey>.Default;
-		if (descending) return (x, y) => c.Compare(keySelector(y), keySelector(x));
-		else return (x, y) => c.Compare(keySelector(x), keySelector(y));
-	}
-
 	public static BinarySearchTree<T> Create(bool descending = false) =>
-		new BinarySearchTree<T>(CreateComparison(descending));
+		new BinarySearchTree<T>(ComparisonHelper.Create<T>(descending));
 	public static BinarySearchTree<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false) =>
-		new BinarySearchTree<T>(CreateComparison(keySelector, descending));
+		new BinarySearchTree<T>(ComparisonHelper.Create(keySelector, descending));
 
 	BstNode<T> _root;
 	public BstNode<T> Root

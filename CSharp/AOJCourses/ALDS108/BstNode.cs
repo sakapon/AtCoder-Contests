@@ -117,3 +117,21 @@ public static class BstNode
 		WalkByPreorder(node.Right, action);
 	}
 }
+
+public static class ComparisonHelper
+{
+	public static Comparison<T> Create<T>(bool descending = false)
+	{
+		var c = Comparer<T>.Default;
+		if (descending) return (x, y) => c.Compare(y, x);
+		else return c.Compare;
+	}
+
+	public static Comparison<T> Create<T, TKey>(Func<T, TKey> keySelector, bool descending = false)
+	{
+		if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
+		var c = Comparer<TKey>.Default;
+		if (descending) return (x, y) => c.Compare(keySelector(y), keySelector(x));
+		else return (x, y) => c.Compare(keySelector(x), keySelector(y));
+	}
+}
