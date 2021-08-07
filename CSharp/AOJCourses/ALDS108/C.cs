@@ -48,6 +48,30 @@ public class BinarySearchTree<T> : BstBase<T, BstNode<T>>
 
 	public BinarySearchTree(Comparison<T> comparison = null) : base(comparison) { }
 
+	public BinarySearchTree(IEnumerable<T> collection, Comparison<T> comparison = null) : base(comparison)
+	{
+		if (collection == null) throw new ArgumentNullException();
+		var set = new HashSet<T>(collection);
+		var items = new T[set.Count];
+		set.CopyTo(items);
+		Array.Sort(items, Comparer<T>.Create(compare));
+		Root = CreateSubtree(items, 0, items.Length);
+	}
+
+	static BstNode<T> CreateSubtree(T[] items, int l, int r)
+	{
+		if (r - l == 0) return null;
+		if (r - l == 1) return new BstNode<T> { Key = items[l] };
+
+		var m = (l + r) / 2;
+		return new BstNode<T>
+		{
+			Key = items[m],
+			Left = CreateSubtree(items, l, m),
+			Right = CreateSubtree(items, m + 1, r),
+		};
+	}
+
 	public override bool Add(T item)
 	{
 		var c = Count;
@@ -113,25 +137,5 @@ public class BinarySearchTree<T> : BstBase<T, BstNode<T>>
 			t.Key = t2.Key;
 			RemoveTarget(t2);
 		}
-	}
-
-	// Suppose values are distinct and sorted.
-	public void SetItems(T[] items)
-	{
-		Root = CreateSubtree(items, 0, items.Length);
-	}
-
-	static BstNode<T> CreateSubtree(T[] items, int l, int r)
-	{
-		if (r - l == 0) return null;
-		if (r - l == 1) return new BstNode<T> { Key = items[l] };
-
-		var m = (l + r) / 2;
-		return new BstNode<T>
-		{
-			Key = items[m],
-			Left = CreateSubtree(items, l, m),
-			Right = CreateSubtree(items, m + 1, r),
-		};
 	}
 }
