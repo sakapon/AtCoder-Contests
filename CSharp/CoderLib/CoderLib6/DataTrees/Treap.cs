@@ -8,60 +8,25 @@ namespace CoderLib6.DataTrees
 	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_g
 	// Test: https://atcoder.jp/contests/past202104-open/tasks/past202104_m
 	// Test: https://atcoder.jp/contests/past202107-open/tasks/past202107_l
-	public class Treap<T>
+	public class TreapNode<TKey> : BstNode<TKey>
 	{
-		public static Treap<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false)
-		{
-			if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
+		public int Priority { get; set; }
 
-			var c = Comparer<TKey>.Default;
-			return descending ?
-				new Treap<T>((x, y) => c.Compare(keySelector(y), keySelector(x))) :
-				new Treap<T>((x, y) => c.Compare(keySelector(x), keySelector(y)));
-		}
+		public TreapNode<TKey> TypedParent => Parent as TreapNode<TKey>;
+		public TreapNode<TKey> TypedLeft => Left as TreapNode<TKey>;
+		public TreapNode<TKey> TypedRight => Right as TreapNode<TKey>;
+	}
 
-		[System.Diagnostics.DebuggerDisplay(@"\{{Value}\}")]
-		class Node
-		{
-			public T Value;
-			public Node Parent;
-			public int Priority;
+	public class Treap<T> : BstBase<T, TreapNode<T>>
+	{
+		public static Treap<T> Create(bool descending = false) =>
+			new Treap<T>(ComparisonHelper.Create<T>(descending));
+		public static Treap<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false) =>
+			new Treap<T>(ComparisonHelper.Create(keySelector, descending));
 
-			Node _left;
-			public Node Left
-			{
-				get { return _left; }
-				set
-				{
-					_left = value;
-					if (value != null) value.Parent = this;
-				}
-			}
+		public Treap(Comparison<T> comparison = null) : base(comparison) { }
 
-			Node _right;
-			public Node Right
-			{
-				get { return _right; }
-				set
-				{
-					_right = value;
-					if (value != null) value.Parent = this;
-				}
-			}
-		}
-
-		Node _root;
-		Node Root
-		{
-			get { return _root; }
-			set
-			{
-				_root = value;
-				if (value != null) value.Parent = null;
-			}
-		}
-
-		static Random random = new Random();
+		static readonly Random random = new Random();
 		HashSet<int> prioritySet = new HashSet<int>();
 		int CreatePriority()
 		{
@@ -71,215 +36,52 @@ namespace CoderLib6.DataTrees
 		}
 		void RemovePriority(int v) => prioritySet.Remove(v);
 
-		Comparison<T> compare;
-		public int Count { get; private set; }
-
-		public Treap(Comparison<T> comparison = null)
+		public override bool Add(T item)
 		{
-			compare = comparison ?? Comparer<T>.Default.Compare;
+			var c = Count;
+			Root = Add(Root, item) as TreapNode<T>;
+			return Count != c;
 		}
 
-		static Node SearchMinNode(Node node)
+		BstNode<T> Add(BstNode<T> node, T item)
 		{
-			if (node == null) return null;
-			return SearchMinNode(node.Left) ?? node;
-		}
-
-		static Node SearchMaxNode(Node node)
-		{
-			if (node == null) return null;
-			return SearchMaxNode(node.Right) ?? node;
-		}
-
-		static Node SearchMinNode(Node node, Func<T, bool> f)
-		{
-			if (node == null) return null;
-			if (f(node.Value)) return SearchMinNode(node.Left, f) ?? node;
-			else return SearchMinNode(node.Right, f);
-		}
-
-		static Node SearchMaxNode(Node node, Func<T, bool> f)
-		{
-			if (node == null) return null;
-			if (f(node.Value)) return SearchMaxNode(node.Right, f) ?? node;
-			else return SearchMaxNode(node.Left, f);
-		}
-
-		static Node SearchPreviousAncestor(Node node)
-		{
-			if (node == null) return null;
-			if (node.Parent == null) return null;
-			if (node.Parent.Right == node) return node.Parent;
-			else return SearchPreviousAncestor(node.Parent);
-		}
-
-		static Node SearchNextAncestor(Node node)
-		{
-			if (node == null) return null;
-			if (node.Parent == null) return null;
-			if (node.Parent.Left == node) return node.Parent;
-			else return SearchNextAncestor(node.Parent);
-		}
-
-		static Node SearchPreviousNode(Node node)
-		{
-			if (node == null) return null;
-			return SearchMaxNode(node.Left) ?? SearchPreviousAncestor(node);
-		}
-
-		static Node SearchNextNode(Node node)
-		{
-			if (node == null) return null;
-			return SearchMinNode(node.Right) ?? SearchNextAncestor(node);
-		}
-
-		Node SearchNode(Node node, T value)
-		{
-			if (node == null) return null;
-			var d = compare(value, node.Value);
-			if (d == 0) return node;
-			if (d < 0) return SearchNode(node.Left, value);
-			else return SearchNode(node.Right, value);
-		}
-
-		public T GetMin()
-		{
-			if (Root == null) throw new InvalidOperationException("The tree is empty.");
-			return SearchMinNode(Root).Value;
-		}
-
-		public T GetMax()
-		{
-			if (Root == null) throw new InvalidOperationException("The tree is empty.");
-			return SearchMaxNode(Root).Value;
-		}
-
-		public T GetNextValue(T value, T defaultValue = default(T))
-		{
-			var node = SearchNode(Root, value);
-			if (node == null) throw new InvalidOperationException("The value does not exist.");
-			node = SearchNextNode(node);
-			if (node == null) return defaultValue;
-			return node.Value;
-		}
-
-		public T GetPreviousValue(T value, T defaultValue = default(T))
-		{
-			var node = SearchNode(Root, value);
-			if (node == null) throw new InvalidOperationException("The value does not exist.");
-			node = SearchPreviousNode(node);
-			if (node == null) return defaultValue;
-			return node.Value;
-		}
-
-		public IEnumerable<T> GetValues()
-		{
-			for (var n = SearchMinNode(Root); n != null; n = SearchNextNode(n))
+			if (node == null)
 			{
-				yield return n.Value;
-			}
-		}
-
-		public IEnumerable<T> GetValues(Func<T, bool> predicateForMin, Func<T, bool> predicateForMax)
-		{
-			for (var n = SearchMinNode(Root, predicateForMin); n != null && predicateForMax(n.Value); n = SearchNextNode(n))
-			{
-				yield return n.Value;
-			}
-		}
-
-		public bool Contains(T value)
-		{
-			return SearchNode(Root, value) != null;
-		}
-
-		public bool Add(T value)
-		{
-			Node node;
-			if (Root == null)
-			{
-				node = Root = new Node { Value = value, Priority = CreatePriority() };
-			}
-			else
-			{
-				node = Add(Root, value);
-			}
-
-			if (node != null)
-			{
-				Rotate(node);
 				++Count;
+				return new TreapNode<T> { Key = item, Priority = CreatePriority() };
 			}
-			return node != null;
-		}
 
-		// Suppose t != null.
-		Node Add(Node t, T value)
-		{
-			var d = compare(value, t.Value);
-			if (d == 0) return null;
+			var d = compare(item, node.Key);
+			if (d == 0) return node;
+
+			var t = node as TreapNode<T>;
 			if (d < 0)
 			{
-				if (t.Left != null) return Add(t.Left, value);
-				return t.Left = new Node { Value = value, Priority = CreatePriority() };
+				node.Left = Add(node.Left, item);
+				if (t.Priority < t.TypedLeft.Priority)
+					node = node.RotateToRight();
 			}
 			else
 			{
-				if (t.Right != null) return Add(t.Right, value);
-				return t.Right = new Node { Value = value, Priority = CreatePriority() };
+				node.Right = Add(node.Right, item);
+				if (t.Priority < t.TypedRight.Priority)
+					node = node.RotateToLeft();
 			}
+			return node;
 		}
 
-		// Suppose t != null.
-		void Rotate(Node t)
+		public override bool Remove(T item)
 		{
-			if (t.Parent == null) return;
-			if (t.Parent.Priority > t.Priority) return;
-
-			var p = t.Parent;
-			var pp = p.Parent;
-
-			if (p.Left == t)
-			{
-				// to right
-				p.Left = t.Right;
-				t.Right = p;
-			}
-			else
-			{
-				// to left
-				p.Right = t.Left;
-				t.Left = p;
-			}
-
-			if (pp == null)
-			{
-				Root = t;
-			}
-			else if (pp.Left == p)
-			{
-				pp.Left = t;
-			}
-			else
-			{
-				pp.Right = t;
-			}
-
-			Rotate(t);
-		}
-
-		public bool Remove(T value)
-		{
-			var node = SearchNode(Root, value);
+			var node = Root.SearchNode(item, compare);
 			if (node == null) return false;
 
-			Remove(node);
+			RemoveTarget(node as TreapNode<T>);
 			--Count;
 			return true;
 		}
 
 		// Suppose t != null.
-		void Remove(Node t)
+		void RemoveTarget(TreapNode<T> t)
 		{
 			if (t.Left == null || t.Right == null)
 			{
@@ -287,7 +89,7 @@ namespace CoderLib6.DataTrees
 
 				if (t.Parent == null)
 				{
-					Root = c;
+					Root = c as TreapNode<T>;
 				}
 				else if (t.Parent.Left == t)
 				{
@@ -297,13 +99,14 @@ namespace CoderLib6.DataTrees
 				{
 					t.Parent.Right = c;
 				}
+
 				RemovePriority(t.Priority);
 			}
 			else
 			{
-				var t2 = SearchNextNode(t);
-				t.Value = t2.Value;
-				Remove(t2);
+				var t2 = t.SearchNextNode();
+				t.Key = t2.Key;
+				RemoveTarget(t2 as TreapNode<T>);
 			}
 		}
 	}
