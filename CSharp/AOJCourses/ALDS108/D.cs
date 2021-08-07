@@ -62,11 +62,11 @@ public class TreapD<T> : BstBase<T, TreapNode<T>>
 	public bool Add(T item, int priority)
 	{
 		var c = Count;
-		Root = Add(Root, item, priority);
+		Root = (TreapNode<T>)Add(Root, item, priority);
 		return Count != c;
 	}
 
-	TreapNode<T> Add(TreapNode<T> node, T item, int priority)
+	BstNode<T> Add(BstNode<T> node, T item, int priority)
 	{
 		if (node == null)
 		{
@@ -77,17 +77,18 @@ public class TreapD<T> : BstBase<T, TreapNode<T>>
 		var d = compare(item, node.Key);
 		if (d == 0) return node;
 
+		var t = (TreapNode<T>)node;
 		if (d < 0)
 		{
-			node.Left = Add(node.TypedLeft, item, priority);
-			if (node.Priority < node.TypedLeft.Priority)
-				node = (TreapNode<T>)node.RotateToRight();
+			node.Left = Add(node.Left, item, priority);
+			if (t.Priority < t.TypedLeft.Priority)
+				node = node.RotateToRight();
 		}
 		else
 		{
-			node.Right = Add(node.TypedRight, item, priority);
-			if (node.Priority < node.TypedRight.Priority)
-				node = (TreapNode<T>)node.RotateToLeft();
+			node.Right = Add(node.Right, item, priority);
+			if (t.Priority < t.TypedRight.Priority)
+				node = node.RotateToLeft();
 		}
 		return node;
 	}
@@ -95,11 +96,11 @@ public class TreapD<T> : BstBase<T, TreapNode<T>>
 	public override bool Remove(T item)
 	{
 		var c = Count;
-		Root = Remove(Root, item);
+		Root = (TreapNode<T>)Remove(Root, item);
 		return Count != c;
 	}
 
-	TreapNode<T> Remove(TreapNode<T> node, T item)
+	BstNode<T> Remove(BstNode<T> node, T item)
 	{
 		if (node == null) return null;
 
@@ -108,17 +109,17 @@ public class TreapD<T> : BstBase<T, TreapNode<T>>
 
 		if (d < 0)
 		{
-			node.Left = Remove(node.TypedLeft, item);
+			node.Left = Remove(node.Left, item);
 		}
 		else
 		{
-			node.Right = Remove(node.TypedRight, item);
+			node.Right = Remove(node.Right, item);
 		}
 		return node;
 	}
 
 	// Suppose t != null.
-	TreapNode<T> RemoveTarget(TreapNode<T> t, T item)
+	BstNode<T> RemoveTarget(BstNode<T> t, T item)
 	{
 		if (t.Left == null && t.Right == null)
 		{
@@ -126,13 +127,14 @@ public class TreapD<T> : BstBase<T, TreapNode<T>>
 			return null;
 		}
 
-		if (t.Right == null) return t.TypedLeft;
-		if (t.Left == null) return t.TypedRight;
+		if (t.Right == null) return t.Left;
+		if (t.Left == null) return t.Right;
 
-		if (t.TypedLeft.Priority > t.TypedRight.Priority)
-			t = (TreapNode<T>)t.RotateToRight();
+		var t2 = (TreapNode<T>)t;
+		if (t2.TypedLeft.Priority > t2.TypedRight.Priority)
+			t = t.RotateToRight();
 		else
-			t = (TreapNode<T>)t.RotateToLeft();
+			t = t.RotateToLeft();
 		return Remove(t, item);
 	}
 }
