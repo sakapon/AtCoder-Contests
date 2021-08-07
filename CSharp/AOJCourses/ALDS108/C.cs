@@ -30,7 +30,7 @@ class C
 			}
 			else
 			{
-				Console.WriteLine(" " + string.Join(" ", set.GetItems()));
+				Console.WriteLine(" " + string.Join(" ", set));
 				set.Root.WalkByPreorder(v => Console.Write($" {v}"));
 				Console.WriteLine();
 			}

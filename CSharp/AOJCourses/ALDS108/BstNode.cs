@@ -136,7 +136,7 @@ public static class BstNode
 	}
 }
 
-public abstract class BstBase<T, TNode> where TNode : BstNode<T>
+public abstract class BstBase<T, TNode> : IEnumerable<T> where TNode : BstNode<T>
 {
 	TNode _root;
 	public TNode Root
@@ -206,6 +206,9 @@ public abstract class BstBase<T, TNode> where TNode : BstNode<T>
 
 	public IEnumerable<T> GetItems() => Root.GetKeys();
 	public IEnumerable<T> GetItems(Func<T, bool> predicateForMin, Func<T, bool> predicateForMax) => Root.GetKeys(predicateForMin, predicateForMax);
+
+	public IEnumerator<T> GetEnumerator() => GetItems().GetEnumerator();
+	System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetItems().GetEnumerator();
 
 	public abstract bool Add(T item);
 	public abstract bool Remove(T item);
