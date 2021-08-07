@@ -129,65 +129,65 @@ public class TreapD<T>
 	public IEnumerable<T> GetItems() => Root.GetKeys();
 	public IEnumerable<T> GetItems(Func<T, bool> predicateForMin, Func<T, bool> predicateForMax) => Root.GetKeys(predicateForMin, predicateForMax);
 
-	public bool Add(T value, int priority)
+	public bool Add(T item, int priority)
 	{
 		var c = Count;
-		Root = Add(Root, value, priority);
+		Root = Add(Root, item, priority);
 		return Count != c;
 	}
 
-	TreapNode<T> Add(TreapNode<T> t, T value, int priority)
+	TreapNode<T> Add(TreapNode<T> node, T item, int priority)
 	{
-		if (t == null)
+		if (node == null)
 		{
 			++Count;
-			return new TreapNode<T> { Key = value, Priority = priority };
+			return new TreapNode<T> { Key = item, Priority = priority };
 		}
 
-		var d = compare(value, t.Key);
-		if (d == 0) return t;
+		var d = compare(item, node.Key);
+		if (d == 0) return node;
 
 		if (d < 0)
 		{
-			t.Left = Add(t.Left, value, priority);
-			if (t.Priority < t.Left.Priority)
-				t = RotateToRight(t);
+			node.Left = Add(node.Left, item, priority);
+			if (node.Priority < node.Left.Priority)
+				node = RotateToRight(node);
 		}
 		else
 		{
-			t.Right = Add(t.Right, value, priority);
-			if (t.Priority < t.Right.Priority)
-				t = RotateToLeft(t);
+			node.Right = Add(node.Right, item, priority);
+			if (node.Priority < node.Right.Priority)
+				node = RotateToLeft(node);
 		}
-		return t;
+		return node;
 	}
 
-	public bool Remove(T value)
+	public bool Remove(T item)
 	{
 		var c = Count;
-		Root = Remove(Root, value);
+		Root = Remove(Root, item);
 		return Count != c;
 	}
 
-	TreapNode<T> Remove(TreapNode<T> t, T value)
+	TreapNode<T> Remove(TreapNode<T> node, T item)
 	{
-		if (t == null) return null;
+		if (node == null) return null;
 
-		var d = compare(value, t.Key);
-		if (d == 0) return RemoveTarget(t, value);
+		var d = compare(item, node.Key);
+		if (d == 0) return RemoveTarget(node, item);
 
 		if (d < 0)
 		{
-			t.Left = Remove(t.Left, value);
+			node.Left = Remove(node.Left, item);
 		}
 		else
 		{
-			t.Right = Remove(t.Right, value);
+			node.Right = Remove(node.Right, item);
 		}
-		return t;
+		return node;
 	}
 
-	TreapNode<T> RemoveTarget(TreapNode<T> t, T value)
+	TreapNode<T> RemoveTarget(TreapNode<T> t, T item)
 	{
 		if (t.Left == null && t.Right == null)
 		{
@@ -202,7 +202,7 @@ public class TreapD<T>
 			t = RotateToRight(t);
 		else
 			t = RotateToLeft(t);
-		return Remove(t, value);
+		return Remove(t, item);
 	}
 
 	static TreapNode<T> RotateToRight(TreapNode<T> t)
