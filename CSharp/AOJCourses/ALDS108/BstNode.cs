@@ -136,6 +136,7 @@ public static class BstNode
 	}
 }
 
+[System.Diagnostics.DebuggerDisplay(@"Count = {Count}")]
 public abstract class BstBase<T, TNode> : IEnumerable<T> where TNode : BstNode<T>
 {
 	TNode _root;
