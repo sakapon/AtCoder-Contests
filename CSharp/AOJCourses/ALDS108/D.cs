@@ -31,52 +31,40 @@ class D
 			}
 			else
 			{
-				Console.WriteLine(" " + string.Join(" ", set.GetValues()));
-				Console.WriteLine(" " + string.Join(" ", set.GetByPreorder()));
+				Console.WriteLine(" " + string.Join(" ", set.GetItems()));
+				set.Root.WalkByPreorder(v => Console.Write($" {v}"));
+				Console.WriteLine();
 			}
 		}
 		Console.Out.Flush();
 	}
 }
 
+public class TreapNode<TKey> : BstNode<TKey>
+{
+	public int Priority { get; set; }
+
+	public new TreapNode<TKey> Left
+	{
+		get { return (TreapNode<TKey>)base.Left; }
+		set { base.Left = value; }
+	}
+
+	public new TreapNode<TKey> Right
+	{
+		get { return (TreapNode<TKey>)base.Right; }
+		set { base.Right = value; }
+	}
+}
+
 // この問題用の Treap です。
 public class TreapD<T>
 {
-	[System.Diagnostics.DebuggerDisplay(@"\{{Key}\}")]
-	class BstNode
-	{
-		public T Key;
-		public BstNode Parent;
-		public int Priority;
-
-		BstNode _left;
-		public BstNode Left
-		{
-			get { return _left; }
-			set
-			{
-				_left = value;
-				if (value != null) value.Parent = this;
-			}
-		}
-
-		BstNode _right;
-		public BstNode Right
-		{
-			get { return _right; }
-			set
-			{
-				_right = value;
-				if (value != null) value.Parent = this;
-			}
-		}
-	}
-
-	BstNode _root;
-	BstNode Root
+	TreapNode<T> _root;
+	public TreapNode<T> Root
 	{
 		get { return _root; }
-		set
+		private set
 		{
 			_root = value;
 			if (value != null) value.Parent = null;
@@ -91,119 +79,55 @@ public class TreapD<T>
 		compare = comparison ?? Comparer<T>.Default.Compare;
 	}
 
-	static BstNode SearchMinNode(BstNode node)
+	public bool Contains(T item)
 	{
-		if (node == null) return null;
-		return SearchMinNode(node.Left) ?? node;
-	}
-
-	static BstNode SearchMaxNode(BstNode node)
-	{
-		if (node == null) return null;
-		return SearchMaxNode(node.Right) ?? node;
-	}
-
-	static BstNode SearchMinNode(BstNode node, Func<T, bool> f)
-	{
-		if (node == null) return null;
-		if (f(node.Key)) return SearchMinNode(node.Left, f) ?? node;
-		else return SearchMinNode(node.Right, f);
-	}
-
-	static BstNode SearchMaxNode(BstNode node, Func<T, bool> f)
-	{
-		if (node == null) return null;
-		if (f(node.Key)) return SearchMaxNode(node.Right, f) ?? node;
-		else return SearchMaxNode(node.Left, f);
-	}
-
-	static BstNode SearchPreviousAncestor(BstNode node)
-	{
-		if (node == null) return null;
-		if (node.Parent == null) return null;
-		if (node.Parent.Right == node) return node.Parent;
-		else return SearchPreviousAncestor(node.Parent);
-	}
-
-	static BstNode SearchNextAncestor(BstNode node)
-	{
-		if (node == null) return null;
-		if (node.Parent == null) return null;
-		if (node.Parent.Left == node) return node.Parent;
-		else return SearchNextAncestor(node.Parent);
-	}
-
-	static BstNode SearchPreviousNode(BstNode node)
-	{
-		if (node == null) return null;
-		return SearchMaxNode(node.Left) ?? SearchPreviousAncestor(node);
-	}
-
-	static BstNode SearchNextNode(BstNode node)
-	{
-		if (node == null) return null;
-		return SearchMinNode(node.Right) ?? SearchNextAncestor(node);
-	}
-
-	BstNode SearchNode(BstNode node, T value)
-	{
-		if (node == null) return null;
-		var d = compare(value, node.Key);
-		if (d == 0) return node;
-		if (d < 0) return SearchNode(node.Left, value);
-		else return SearchNode(node.Right, value);
+		return Root.SearchNode(item, compare) != null;
 	}
 
 	public T GetMin()
 	{
 		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return SearchMinNode(Root).Key;
+		return Root.SearchMinNode().Key;
 	}
 
 	public T GetMax()
 	{
 		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return SearchMaxNode(Root).Key;
+		return Root.SearchMaxNode().Key;
 	}
 
-	public T GetNextValue(T value, T defaultValue = default(T))
+	public T GetMin(Func<T, bool> predicate)
 	{
-		var node = SearchNode(Root, value);
-		if (node == null) throw new InvalidOperationException("The value does not exist.");
-		node = SearchNextNode(node);
+		if (Root == null) throw new InvalidOperationException("The tree is empty.");
+		return Root.SearchMinNode(predicate).Key;
+	}
+
+	public T GetMax(Func<T, bool> predicate)
+	{
+		if (Root == null) throw new InvalidOperationException("The tree is empty.");
+		return Root.SearchMaxNode(predicate).Key;
+	}
+
+	public T GetPrevious(T item, T defaultValue = default(T))
+	{
+		var node = Root.SearchNode(item, compare);
+		if (node == null) throw new InvalidOperationException("The item is not found.");
+		node = node.SearchPreviousNode();
 		if (node == null) return defaultValue;
 		return node.Key;
 	}
 
-	public T GetPreviousValue(T value, T defaultValue = default(T))
+	public T GetNext(T item, T defaultValue = default(T))
 	{
-		var node = SearchNode(Root, value);
-		if (node == null) throw new InvalidOperationException("The value does not exist.");
-		node = SearchPreviousNode(node);
+		var node = Root.SearchNode(item, compare);
+		if (node == null) throw new InvalidOperationException("The item is not found.");
+		node = node.SearchNextNode();
 		if (node == null) return defaultValue;
 		return node.Key;
 	}
 
-	public IEnumerable<T> GetValues()
-	{
-		for (var n = SearchMinNode(Root); n != null; n = SearchNextNode(n))
-		{
-			yield return n.Key;
-		}
-	}
-
-	public IEnumerable<T> GetValues(Func<T, bool> predicateForMin, Func<T, bool> predicateForMax)
-	{
-		for (var n = SearchMinNode(Root, predicateForMin); n != null && predicateForMax(n.Key); n = SearchNextNode(n))
-		{
-			yield return n.Key;
-		}
-	}
-
-	public bool Contains(T value)
-	{
-		return SearchNode(Root, value) != null;
-	}
+	public IEnumerable<T> GetItems() => Root.GetKeys();
+	public IEnumerable<T> GetItems(Func<T, bool> predicateForMin, Func<T, bool> predicateForMax) => Root.GetKeys(predicateForMin, predicateForMax);
 
 	public bool Add(T value, int priority)
 	{
@@ -212,12 +136,12 @@ public class TreapD<T>
 		return Count != c;
 	}
 
-	BstNode Add(BstNode t, T value, int priority)
+	TreapNode<T> Add(TreapNode<T> t, T value, int priority)
 	{
 		if (t == null)
 		{
 			++Count;
-			return new BstNode { Key = value, Priority = priority };
+			return new TreapNode<T> { Key = value, Priority = priority };
 		}
 
 		var d = compare(value, t.Key);
@@ -245,7 +169,7 @@ public class TreapD<T>
 		return Count != c;
 	}
 
-	BstNode Remove(BstNode t, T value)
+	TreapNode<T> Remove(TreapNode<T> t, T value)
 	{
 		if (t == null) return null;
 
@@ -263,7 +187,7 @@ public class TreapD<T>
 		return t;
 	}
 
-	BstNode RemoveTarget(BstNode t, T value)
+	TreapNode<T> RemoveTarget(TreapNode<T> t, T value)
 	{
 		if (t.Left == null && t.Right == null)
 		{
@@ -281,7 +205,7 @@ public class TreapD<T>
 		return Remove(t, value);
 	}
 
-	static BstNode RotateToRight(BstNode t)
+	static TreapNode<T> RotateToRight(TreapNode<T> t)
 	{
 		var np = t.Left;
 		t.Left = np.Right;
@@ -289,29 +213,11 @@ public class TreapD<T>
 		return np;
 	}
 
-	static BstNode RotateToLeft(BstNode t)
+	static TreapNode<T> RotateToLeft(TreapNode<T> t)
 	{
 		var np = t.Right;
 		t.Right = np.Left;
 		np.Left = t;
 		return np;
-	}
-
-	// Additional
-	public T[] GetByPreorder()
-	{
-		var r = new List<T>();
-
-		Action<BstNode> Dfs = null;
-		Dfs = n =>
-		{
-			if (n == null) return;
-			r.Add(n.Key);
-			Dfs(n.Left);
-			Dfs(n.Right);
-		};
-
-		Dfs(Root);
-		return r.ToArray();
 	}
 }
