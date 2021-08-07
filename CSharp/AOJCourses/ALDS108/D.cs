@@ -44,9 +44,9 @@ public class TreapNode<TKey> : BstNode<TKey>
 {
 	public int Priority { get; set; }
 
-	public TreapNode<TKey> TypedParent => (TreapNode<TKey>)Parent;
-	public TreapNode<TKey> TypedLeft => (TreapNode<TKey>)Left;
-	public TreapNode<TKey> TypedRight => (TreapNode<TKey>)Right;
+	public TreapNode<TKey> TypedParent => Parent as TreapNode<TKey>;
+	public TreapNode<TKey> TypedLeft => Left as TreapNode<TKey>;
+	public TreapNode<TKey> TypedRight => Right as TreapNode<TKey>;
 }
 
 // この問題用の Treap です。
@@ -62,7 +62,7 @@ public class TreapD<T> : BstBase<T, TreapNode<T>>
 	public bool Add(T item, int priority)
 	{
 		var c = Count;
-		Root = (TreapNode<T>)Add(Root, item, priority);
+		Root = Add(Root, item, priority) as TreapNode<T>;
 		return Count != c;
 	}
 
@@ -77,7 +77,7 @@ public class TreapD<T> : BstBase<T, TreapNode<T>>
 		var d = compare(item, node.Key);
 		if (d == 0) return node;
 
-		var t = (TreapNode<T>)node;
+		var t = node as TreapNode<T>;
 		if (d < 0)
 		{
 			node.Left = Add(node.Left, item, priority);
@@ -96,7 +96,7 @@ public class TreapD<T> : BstBase<T, TreapNode<T>>
 	public override bool Remove(T item)
 	{
 		var c = Count;
-		Root = (TreapNode<T>)Remove(Root, item);
+		Root = Remove(Root, item) as TreapNode<T>;
 		return Count != c;
 	}
 
@@ -130,7 +130,7 @@ public class TreapD<T> : BstBase<T, TreapNode<T>>
 		if (t.Right == null) return t.Left;
 		if (t.Left == null) return t.Right;
 
-		var t2 = (TreapNode<T>)t;
+		var t2 = t as TreapNode<T>;
 		if (t2.TypedLeft.Priority > t2.TypedRight.Priority)
 			t = t.RotateToRight();
 		else
