@@ -150,6 +150,7 @@ namespace CoderLib8.Numerics
 		}
 
 		// Test: https://atcoder.jp/contests/typical90/tasks/typical90_cb
+		// Test: https://atcoder.jp/contests/abc152/tasks/abc152_f
 		// 包除原理
 		// n 個の条件を 1 つも満たさない場合の数を求めます。
 		// getCount により、2^n 通りの条件の組合せに対する場合の数が得られるとします。
