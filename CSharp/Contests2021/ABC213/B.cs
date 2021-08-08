@@ -11,11 +11,8 @@ class B
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
 		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		return a.Select((v, i) => (v, i: i + 1)).OrderBy(_ => -_.v).ElementAt(1).i;
 	}
 }
