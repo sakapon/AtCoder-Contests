@@ -149,6 +149,31 @@ namespace CoderLib8.Numerics
 			return l.ToArray();
 		}
 
+		// Test: https://atcoder.jp/contests/typical90/tasks/typical90_cb
+		// 包除原理
+		// n 個の条件を 1 つも満たさない場合の数を求めます。
+		// getCount により、2^n 通りの条件の組合せに対する場合の数が得られるとします。
+		// getCount(0) は全ての場合の数を表します。
+		// 剰余 (mod) は考慮されていません。
+		public static long InclusionExclusion(int n, Func<bool[], long> getCount)
+		{
+			if (n > 30) throw new InvalidOperationException();
+			var pn = 1 << n;
+			var b = new bool[n];
+
+			var r = 0L;
+			for (uint x = 0; x < pn; ++x)
+			{
+				for (int i = 0; i < n; ++i) b[i] = (x & (1 << i)) != 0;
+
+				// BitOperations.PopCount に変更してください。
+				//var sign = BitOperations.PopCount(x) % 2 == 0 ? 1 : -1;
+				var sign = Math2.PopCount(x) % 2 == 0 ? 1 : -1;
+				r += sign * getCount(b);
+			}
+			return r;
+		}
+
 		// Test: https://atcoder.jp/contests/typical90/tasks/typical90_as
 		public static void AllSubsets(int n, int s, Func<int, bool> action)
 		{
