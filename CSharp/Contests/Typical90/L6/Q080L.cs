@@ -18,7 +18,14 @@ class Q080L
 
 		long GetCount(bool[] b)
 		{
-			var or = rn.Select(i => b[i] ? a[i] : 0).Aggregate((x, y) => x | y);
+			var or = 0UL;
+			for (int i = 0; i < n; i++)
+			{
+				if (b[i])
+				{
+					or |= a[i];
+				}
+			}
 			return 1L << d - BitOperations.PopCount(or);
 		}
 	}
