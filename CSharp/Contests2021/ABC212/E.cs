@@ -14,20 +14,12 @@ class E
 		var (n, m, k) = Read3();
 		var es = Array.ConvertAll(new bool[m], _ => Read2());
 
-		// no edge
-		var map = new bool[n + 1, n + 1];
-		foreach (var (u, v) in es)
-		{
-			map[u, v] = true;
-			map[v, u] = true;
-		}
-
 		var dp = NewArray2(k + 1, n + 1, 0L);
 		dp[0][1] = 1;
 
 		for (int i = 1; i <= k; i++)
 		{
-			var sum = dp[i - 1].Sum() % M;
+			var sum = dp[i - 1].Sum();
 
 			for (int j = 1; j <= n; j++)
 			{
