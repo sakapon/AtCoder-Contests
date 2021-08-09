@@ -105,6 +105,10 @@ namespace CoderLib8
 			var (h, w) = Read2();
 			var c = Array.ConvertAll(new bool[h], _ => Read());
 			var s = Array.ConvertAll(new bool[h], _ => Console.ReadLine());
+
+			int ToId(int i, int j) => i * w + j;
+			(int i, int j) FromId(int id) => (id / w, id % w);
+			int[] Nexts(int id) => new[] { id + 1, id - 1, id + w, id - w };
 		}
 	}
 
