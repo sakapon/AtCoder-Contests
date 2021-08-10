@@ -8,19 +8,56 @@ namespace CoderLib6.DataTrees
 	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_g
 	// Test: https://atcoder.jp/contests/past202104-open/tasks/past202104_m
 	// Test: https://atcoder.jp/contests/past202107-open/tasks/past202107_l
-	public class AvlSetNode<TKey> : BstNode<TKey>
+	public class AvlSetNode<TKey> : BstNodeBase<TKey>
 	{
-		public int Height { get; set; } = 1;
-
-		public AvlSetNode<TKey> TypedParent => Parent as AvlSetNode<TKey>;
-		public AvlSetNode<TKey> TypedLeft => Left as AvlSetNode<TKey>;
-		public AvlSetNode<TKey> TypedRight => Right as AvlSetNode<TKey>;
-
-		public void UpdateHeight()
+		public override BstNodeBase<TKey> Parent
 		{
-			var lh = TypedLeft?.Height ?? 0;
-			var rh = TypedRight?.Height ?? 0;
-			Height = Math.Max(lh, rh) + 1;
+			get { return TypedParent; }
+			set { TypedParent = (AvlSetNode<TKey>)value; }
+		}
+		public override BstNodeBase<TKey> Left
+		{
+			get { return TypedLeft; }
+			set { TypedLeft = (AvlSetNode<TKey>)value; }
+		}
+		public override BstNodeBase<TKey> Right
+		{
+			get { return TypedRight; }
+			set { TypedRight = (AvlSetNode<TKey>)value; }
+		}
+
+		public AvlSetNode<TKey> TypedParent { get; set; }
+
+		AvlSetNode<TKey> _left;
+		public AvlSetNode<TKey> TypedLeft
+		{
+			get { return _left; }
+			set
+			{
+				_left = value;
+				if (value != null) value.TypedParent = this;
+			}
+		}
+
+		AvlSetNode<TKey> _right;
+		public AvlSetNode<TKey> TypedRight
+		{
+			get { return _right; }
+			set
+			{
+				_right = value;
+				if (value != null) value.TypedParent = this;
+			}
+		}
+
+		public int Height { get; set; } = 1;
+		public int LeftHeight => TypedLeft?.Height ?? 0;
+		public int RightHeight => TypedRight?.Height ?? 0;
+
+		public void UpdateHeight(bool recursive = false)
+		{
+			Height = Math.Max(LeftHeight, RightHeight) + 1;
+			if (recursive) TypedParent?.UpdateHeight(true);
 		}
 	}
 
@@ -36,11 +73,11 @@ namespace CoderLib6.DataTrees
 		public override bool Add(T item)
 		{
 			var c = Count;
-			Root = Add(Root, item) as AvlSetNode<T>;
+			Root = Add(Root, item);
 			return Count != c;
 		}
 
-		BstNode<T> Add(BstNode<T> node, T item)
+		AvlSetNode<T> Add(AvlSetNode<T> node, T item)
 		{
 			if (node == null)
 			{
@@ -51,50 +88,37 @@ namespace CoderLib6.DataTrees
 			var d = compare(item, node.Key);
 			if (d == 0) return node;
 
-			var t = node as AvlSetNode<T>;
 			if (d < 0)
 			{
-				node.Left = Add(node.Left, item);
-
-				var lh = t.TypedLeft?.Height ?? 0;
-				var rh = t.TypedRight?.Height ?? 0;
-				if (lh - rh > 1)
-				{
-					node = node.RotateToRight();
-					t.UpdateHeight();
-					(node as AvlSetNode<T>).UpdateHeight();
-				}
-				else
-				{
-					t.UpdateHeight();
-				}
+				node.TypedLeft = Add(node.TypedLeft, item);
 			}
 			else
 			{
-				node.Right = Add(node.Right, item);
-
-				var lh = t.TypedLeft?.Height ?? 0;
-				var rh = t.TypedRight?.Height ?? 0;
-				if (rh - lh > 1)
-				{
-					node = node.RotateToLeft();
-					t.UpdateHeight();
-					(node as AvlSetNode<T>).UpdateHeight();
-				}
-				else
-				{
-					t.UpdateHeight();
-				}
+				node.TypedRight = Add(node.TypedRight, item);
 			}
+
+			var lrh = node.LeftHeight - node.RightHeight;
+			if (lrh > 2 || lrh == 2 && node.TypedLeft.LeftHeight >= node.TypedLeft.RightHeight)
+			{
+				node = node.RotateToRight() as AvlSetNode<T>;
+				node.TypedRight.UpdateHeight();
+			}
+			else if (lrh < -2 || lrh == -2 && node.TypedRight.LeftHeight <= node.TypedRight.RightHeight)
+			{
+				node = node.RotateToLeft() as AvlSetNode<T>;
+				node.TypedLeft.UpdateHeight();
+			}
+
+			node.UpdateHeight();
 			return node;
 		}
 
 		public override bool Remove(T item)
 		{
-			var node = Root.SearchNode(item, compare);
+			var node = Root.SearchNode(item, compare) as AvlSetNode<T>;
 			if (node == null) return false;
 
-			RemoveTarget(node as AvlSetNode<T>);
+			RemoveTarget(node);
 			--Count;
 			return true;
 		}
@@ -102,39 +126,31 @@ namespace CoderLib6.DataTrees
 		// Suppose t != null.
 		void RemoveTarget(AvlSetNode<T> t)
 		{
-			if (t.Left == null || t.Right == null)
+			if (t.TypedLeft == null || t.TypedRight == null)
 			{
-				var c = t.Left ?? t.Right;
+				var c = t.TypedLeft ?? t.TypedRight;
 
-				if (t.Parent == null)
+				if (t.TypedParent == null)
 				{
-					Root = c as AvlSetNode<T>;
+					Root = c;
 				}
-				else if (t.Parent.Left == t)
+				else if (t.TypedParent.TypedLeft == t)
 				{
-					t.Parent.Left = c;
+					t.TypedParent.TypedLeft = c;
 				}
 				else
 				{
-					t.Parent.Right = c;
+					t.TypedParent.TypedRight = c;
 				}
 
-				UpdateHeight(t.TypedParent);
+				t.TypedParent?.UpdateHeight(true);
 			}
 			else
 			{
-				var t2 = t.SearchNextNode();
+				var t2 = t.SearchNextNode() as AvlSetNode<T>;
 				t.Key = t2.Key;
-				RemoveTarget(t2 as AvlSetNode<T>);
+				RemoveTarget(t2);
 			}
-		}
-
-		// Bottom up.
-		void UpdateHeight(AvlSetNode<T> node)
-		{
-			if (node == null) return;
-			node.UpdateHeight();
-			UpdateHeight(node.TypedParent);
 		}
 	}
 }

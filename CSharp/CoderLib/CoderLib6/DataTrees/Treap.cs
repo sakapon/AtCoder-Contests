@@ -8,13 +8,49 @@ namespace CoderLib6.DataTrees
 	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_g
 	// Test: https://atcoder.jp/contests/past202104-open/tasks/past202104_m
 	// Test: https://atcoder.jp/contests/past202107-open/tasks/past202107_l
-	public class TreapNode<TKey> : BstNode<TKey>
+	public class TreapNode<TKey> : BstNodeBase<TKey>
 	{
-		public int Priority { get; set; }
+		public override BstNodeBase<TKey> Parent
+		{
+			get { return TypedParent; }
+			set { TypedParent = (TreapNode<TKey>)value; }
+		}
+		public override BstNodeBase<TKey> Left
+		{
+			get { return TypedLeft; }
+			set { TypedLeft = (TreapNode<TKey>)value; }
+		}
+		public override BstNodeBase<TKey> Right
+		{
+			get { return TypedRight; }
+			set { TypedRight = (TreapNode<TKey>)value; }
+		}
 
-		public TreapNode<TKey> TypedParent => Parent as TreapNode<TKey>;
-		public TreapNode<TKey> TypedLeft => Left as TreapNode<TKey>;
-		public TreapNode<TKey> TypedRight => Right as TreapNode<TKey>;
+		public TreapNode<TKey> TypedParent { get; set; }
+
+		TreapNode<TKey> _left;
+		public TreapNode<TKey> TypedLeft
+		{
+			get { return _left; }
+			set
+			{
+				_left = value;
+				if (value != null) value.TypedParent = this;
+			}
+		}
+
+		TreapNode<TKey> _right;
+		public TreapNode<TKey> TypedRight
+		{
+			get { return _right; }
+			set
+			{
+				_right = value;
+				if (value != null) value.TypedParent = this;
+			}
+		}
+
+		public int Priority { get; set; }
 	}
 
 	public class Treap<T> : BstBase<T, TreapNode<T>>
@@ -39,11 +75,11 @@ namespace CoderLib6.DataTrees
 		public override bool Add(T item)
 		{
 			var c = Count;
-			Root = Add(Root, item) as TreapNode<T>;
+			Root = Add(Root, item);
 			return Count != c;
 		}
 
-		BstNode<T> Add(BstNode<T> node, T item)
+		TreapNode<T> Add(TreapNode<T> node, T item)
 		{
 			if (node == null)
 			{
@@ -54,28 +90,27 @@ namespace CoderLib6.DataTrees
 			var d = compare(item, node.Key);
 			if (d == 0) return node;
 
-			var t = node as TreapNode<T>;
 			if (d < 0)
 			{
-				node.Left = Add(node.Left, item);
-				if (t.Priority < t.TypedLeft.Priority)
-					node = node.RotateToRight();
+				node.TypedLeft = Add(node.TypedLeft, item);
+				if (node.Priority < node.TypedLeft.Priority)
+					node = node.RotateToRight() as TreapNode<T>;
 			}
 			else
 			{
-				node.Right = Add(node.Right, item);
-				if (t.Priority < t.TypedRight.Priority)
-					node = node.RotateToLeft();
+				node.TypedRight = Add(node.TypedRight, item);
+				if (node.Priority < node.TypedRight.Priority)
+					node = node.RotateToLeft() as TreapNode<T>;
 			}
 			return node;
 		}
 
 		public override bool Remove(T item)
 		{
-			var node = Root.SearchNode(item, compare);
+			var node = Root.SearchNode(item, compare) as TreapNode<T>;
 			if (node == null) return false;
 
-			RemoveTarget(node as TreapNode<T>);
+			RemoveTarget(node);
 			--Count;
 			return true;
 		}
@@ -83,30 +118,30 @@ namespace CoderLib6.DataTrees
 		// Suppose t != null.
 		void RemoveTarget(TreapNode<T> t)
 		{
-			if (t.Left == null || t.Right == null)
+			if (t.TypedLeft == null || t.TypedRight == null)
 			{
-				var c = t.Left ?? t.Right;
+				var c = t.TypedLeft ?? t.TypedRight;
 
-				if (t.Parent == null)
+				if (t.TypedParent == null)
 				{
-					Root = c as TreapNode<T>;
+					Root = c;
 				}
-				else if (t.Parent.Left == t)
+				else if (t.TypedParent.TypedLeft == t)
 				{
-					t.Parent.Left = c;
+					t.TypedParent.TypedLeft = c;
 				}
 				else
 				{
-					t.Parent.Right = c;
+					t.TypedParent.TypedRight = c;
 				}
 
 				RemovePriority(t.Priority);
 			}
 			else
 			{
-				var t2 = t.SearchNextNode();
+				var t2 = t.SearchNextNode() as TreapNode<T>;
 				t.Key = t2.Key;
-				RemoveTarget(t2 as TreapNode<T>);
+				RemoveTarget(t2);
 			}
 		}
 	}
