@@ -112,22 +112,22 @@ public class AvlSet<T> : BstBase<T, AvlSetNode<T>>
 		if (d < 0)
 		{
 			node.TypedLeft = Add(node.TypedLeft, item);
-
-			if (node.LeftHeight - node.RightHeight > 1)
-			{
-				node = node.RotateToRight() as AvlSetNode<T>;
-				node.TypedRight.UpdateHeight();
-			}
 		}
 		else
 		{
 			node.TypedRight = Add(node.TypedRight, item);
+		}
 
-			if (node.RightHeight - node.LeftHeight > 1)
-			{
-				node = node.RotateToLeft() as AvlSetNode<T>;
-				node.TypedLeft.UpdateHeight();
-			}
+		var lrh = node.LeftHeight - node.RightHeight;
+		if (lrh > 2 || lrh == 2 && node.TypedLeft.LeftHeight >= node.TypedLeft.RightHeight)
+		{
+			node = node.RotateToRight() as AvlSetNode<T>;
+			node.TypedRight.UpdateHeight();
+		}
+		else if (lrh < -2 || lrh == -2 && node.TypedRight.LeftHeight <= node.TypedRight.RightHeight)
+		{
+			node = node.RotateToLeft() as AvlSetNode<T>;
+			node.TypedLeft.UpdateHeight();
 		}
 
 		node.UpdateHeight();
