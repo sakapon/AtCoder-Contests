@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-class C2
+class CA
 {
 	static void Main()
 	{
 		var n = int.Parse(Console.ReadLine());
 
 		var r = new List<int>();
-		var set = new Treap<int>();
+		var set = new AvlSet<int>();
 
 		for (int i = 0; i < n; i++)
 		{
@@ -29,28 +29,28 @@ class C2
 	}
 }
 
-public class TreapNode<TKey> : BstNodeBase<TKey>
+public class AvlSetNode<TKey> : BstNodeBase<TKey>
 {
 	public override BstNodeBase<TKey> Parent
 	{
 		get { return TypedParent; }
-		set { TypedParent = (TreapNode<TKey>)value; }
+		set { TypedParent = (AvlSetNode<TKey>)value; }
 	}
 	public override BstNodeBase<TKey> Left
 	{
 		get { return TypedLeft; }
-		set { TypedLeft = (TreapNode<TKey>)value; }
+		set { TypedLeft = (AvlSetNode<TKey>)value; }
 	}
 	public override BstNodeBase<TKey> Right
 	{
 		get { return TypedRight; }
-		set { TypedRight = (TreapNode<TKey>)value; }
+		set { TypedRight = (AvlSetNode<TKey>)value; }
 	}
 
-	public TreapNode<TKey> TypedParent { get; set; }
+	public AvlSetNode<TKey> TypedParent { get; set; }
 
-	TreapNode<TKey> _left;
-	public TreapNode<TKey> TypedLeft
+	AvlSetNode<TKey> _left;
+	public AvlSetNode<TKey> TypedLeft
 	{
 		get { return _left; }
 		set
@@ -60,8 +60,8 @@ public class TreapNode<TKey> : BstNodeBase<TKey>
 		}
 	}
 
-	TreapNode<TKey> _right;
-	public TreapNode<TKey> TypedRight
+	AvlSetNode<TKey> _right;
+	public AvlSetNode<TKey> TypedRight
 	{
 		get { return _right; }
 		set
@@ -71,27 +71,24 @@ public class TreapNode<TKey> : BstNodeBase<TKey>
 		}
 	}
 
-	public int Priority { get; set; }
+	public int Height { get; set; } = 1;
+
+	public void UpdateHeight()
+	{
+		var lh = TypedLeft?.Height ?? 0;
+		var rh = TypedRight?.Height ?? 0;
+		Height = Math.Max(lh, rh) + 1;
+	}
 }
 
-public class Treap<T> : BstBase<T, TreapNode<T>>
+public class AvlSet<T> : BstBase<T, AvlSetNode<T>>
 {
-	public static Treap<T> Create(bool descending = false) =>
-		new Treap<T>(ComparisonHelper.Create<T>(descending));
-	public static Treap<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false) =>
-		new Treap<T>(ComparisonHelper.Create(keySelector, descending));
+	public static AvlSet<T> Create(bool descending = false) =>
+		new AvlSet<T>(ComparisonHelper.Create<T>(descending));
+	public static AvlSet<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false) =>
+		new AvlSet<T>(ComparisonHelper.Create(keySelector, descending));
 
-	public Treap(Comparison<T> comparison = null) : base(comparison) { }
-
-	static readonly Random random = new Random();
-	HashSet<int> prioritySet = new HashSet<int>();
-	int CreatePriority()
-	{
-		int v;
-		while (!prioritySet.Add(v = random.Next())) ;
-		return v;
-	}
-	void RemovePriority(int v) => prioritySet.Remove(v);
+	public AvlSet(Comparison<T> comparison = null) : base(comparison) { }
 
 	public override bool Add(T item)
 	{
@@ -100,12 +97,12 @@ public class Treap<T> : BstBase<T, TreapNode<T>>
 		return Count != c;
 	}
 
-	TreapNode<T> Add(TreapNode<T> node, T item)
+	AvlSetNode<T> Add(AvlSetNode<T> node, T item)
 	{
 		if (node == null)
 		{
 			++Count;
-			return new TreapNode<T> { Key = item, Priority = CreatePriority() };
+			return new AvlSetNode<T> { Key = item };
 		}
 
 		var d = compare(item, node.Key);
@@ -114,21 +111,35 @@ public class Treap<T> : BstBase<T, TreapNode<T>>
 		if (d < 0)
 		{
 			node.TypedLeft = Add(node.TypedLeft, item);
-			if (node.Priority < node.TypedLeft.Priority)
-				node = node.RotateToRight() as TreapNode<T>;
+
+			var lh = node.TypedLeft?.Height ?? 0;
+			var rh = node.TypedRight?.Height ?? 0;
+			if (lh - rh > 1)
+			{
+				node = node.RotateToRight() as AvlSetNode<T>;
+				node.TypedRight.UpdateHeight();
+			}
 		}
 		else
 		{
 			node.TypedRight = Add(node.TypedRight, item);
-			if (node.Priority < node.TypedRight.Priority)
-				node = node.RotateToLeft() as TreapNode<T>;
+
+			var lh = node.TypedLeft?.Height ?? 0;
+			var rh = node.TypedRight?.Height ?? 0;
+			if (rh - lh > 1)
+			{
+				node = node.RotateToLeft() as AvlSetNode<T>;
+				node.TypedLeft.UpdateHeight();
+			}
 		}
+
+		node.UpdateHeight();
 		return node;
 	}
 
 	public override bool Remove(T item)
 	{
-		var node = Root.SearchNode(item, compare) as TreapNode<T>;
+		var node = Root.SearchNode(item, compare) as AvlSetNode<T>;
 		if (node == null) return false;
 
 		RemoveTarget(node);
@@ -137,7 +148,7 @@ public class Treap<T> : BstBase<T, TreapNode<T>>
 	}
 
 	// Suppose t != null.
-	void RemoveTarget(TreapNode<T> t)
+	void RemoveTarget(AvlSetNode<T> t)
 	{
 		if (t.TypedLeft == null || t.TypedRight == null)
 		{
@@ -156,13 +167,21 @@ public class Treap<T> : BstBase<T, TreapNode<T>>
 				t.TypedParent.TypedRight = c;
 			}
 
-			RemovePriority(t.Priority);
+			UpdateHeight(t.TypedParent);
 		}
 		else
 		{
-			var t2 = t.SearchNextNode() as TreapNode<T>;
+			var t2 = t.SearchNextNode() as AvlSetNode<T>;
 			t.Key = t2.Key;
 			RemoveTarget(t2);
 		}
+	}
+
+	// Bottom up.
+	void UpdateHeight(AvlSetNode<T> node)
+	{
+		if (node == null) return;
+		node.UpdateHeight();
+		UpdateHeight(node.TypedParent);
 	}
 }
