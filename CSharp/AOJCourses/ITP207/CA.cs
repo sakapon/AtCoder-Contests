@@ -72,12 +72,13 @@ public class AvlSetNode<TKey> : BstNodeBase<TKey>
 	}
 
 	public int Height { get; set; } = 1;
+	public int LeftHeight => TypedLeft?.Height ?? 0;
+	public int RightHeight => TypedRight?.Height ?? 0;
 
-	public void UpdateHeight()
+	public void UpdateHeight(bool recursive = false)
 	{
-		var lh = TypedLeft?.Height ?? 0;
-		var rh = TypedRight?.Height ?? 0;
-		Height = Math.Max(lh, rh) + 1;
+		Height = Math.Max(LeftHeight, RightHeight) + 1;
+		if (recursive) TypedParent?.UpdateHeight(true);
 	}
 }
 
@@ -112,9 +113,7 @@ public class AvlSet<T> : BstBase<T, AvlSetNode<T>>
 		{
 			node.TypedLeft = Add(node.TypedLeft, item);
 
-			var lh = node.TypedLeft?.Height ?? 0;
-			var rh = node.TypedRight?.Height ?? 0;
-			if (lh - rh > 1)
+			if (node.LeftHeight - node.RightHeight > 1)
 			{
 				node = node.RotateToRight() as AvlSetNode<T>;
 				node.TypedRight.UpdateHeight();
@@ -124,9 +123,7 @@ public class AvlSet<T> : BstBase<T, AvlSetNode<T>>
 		{
 			node.TypedRight = Add(node.TypedRight, item);
 
-			var lh = node.TypedLeft?.Height ?? 0;
-			var rh = node.TypedRight?.Height ?? 0;
-			if (rh - lh > 1)
+			if (node.RightHeight - node.LeftHeight > 1)
 			{
 				node = node.RotateToLeft() as AvlSetNode<T>;
 				node.TypedLeft.UpdateHeight();
@@ -167,7 +164,7 @@ public class AvlSet<T> : BstBase<T, AvlSetNode<T>>
 				t.TypedParent.TypedRight = c;
 			}
 
-			UpdateHeight(t.TypedParent);
+			t.TypedParent?.UpdateHeight(true);
 		}
 		else
 		{
@@ -175,13 +172,5 @@ public class AvlSet<T> : BstBase<T, AvlSetNode<T>>
 			t.Key = t2.Key;
 			RemoveTarget(t2);
 		}
-	}
-
-	// Bottom up.
-	void UpdateHeight(AvlSetNode<T> node)
-	{
-		if (node == null) return;
-		node.UpdateHeight();
-		UpdateHeight(node.TypedParent);
 	}
 }
