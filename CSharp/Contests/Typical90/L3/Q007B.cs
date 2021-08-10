@@ -22,7 +22,7 @@ class Q007B
 
 		int GetMin(int bv)
 		{
-			var av2 = set.GetItems(x => x >= bv, x => true).First();
+			var av2 = set.GetMin(x => x >= bv);
 			var av1 = set.GetPrevious(av2);
 			return Math.Min(av2 - bv, bv - av1);
 		}
