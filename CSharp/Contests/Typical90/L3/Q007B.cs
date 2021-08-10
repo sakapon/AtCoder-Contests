@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CoderLib6.DataTrees;
 
-class Q007T
+class Q007B
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main() => Console.WriteLine(Solve());
@@ -14,8 +14,7 @@ class Q007T
 		var qc = int.Parse(Console.ReadLine());
 		var qs = Array.ConvertAll(new bool[qc], _ => int.Parse(Console.ReadLine()));
 
-		var set = new AvlSet<int>();
-		foreach (var v in a) set.Add(v);
+		var set = new BinarySearchTree<int>(a);
 		set.Add(-1 << 30);
 		set.Add(int.MaxValue);
 

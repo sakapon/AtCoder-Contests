@@ -16,7 +16,7 @@ class Q006T
 
 		var t = -1;
 		int ti;
-		var set = AvlTree<int>.Create(i => s[i] * 100000L + i);
+		var set = AvlSet<int>.Create(i => s[i] * 100000L + i);
 		for (int i = 0; i < n - k; i++)
 		{
 			set.Add(i);
