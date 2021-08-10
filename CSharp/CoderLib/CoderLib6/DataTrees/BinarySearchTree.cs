@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 namespace CoderLib6.DataTrees
 {
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/8/ALDS1_8_C
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_g
 	public class BinarySearchTree<T> : BstBase<T, BstNode<T>>
 	{
 		public static BinarySearchTree<T> Create(bool descending = false) =>
