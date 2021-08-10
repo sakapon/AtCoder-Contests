@@ -40,13 +40,49 @@ class D
 	}
 }
 
-public class TreapNode<TKey> : BstNode<TKey>
+public class TreapNode<TKey> : BstNodeBase<TKey>
 {
-	public int Priority { get; set; }
+	public override BstNodeBase<TKey> Parent
+	{
+		get { return TypedParent; }
+		set { TypedParent = (TreapNode<TKey>)value; }
+	}
+	public override BstNodeBase<TKey> Left
+	{
+		get { return TypedLeft; }
+		set { TypedLeft = (TreapNode<TKey>)value; }
+	}
+	public override BstNodeBase<TKey> Right
+	{
+		get { return TypedRight; }
+		set { TypedRight = (TreapNode<TKey>)value; }
+	}
 
-	public TreapNode<TKey> TypedParent => Parent as TreapNode<TKey>;
-	public TreapNode<TKey> TypedLeft => Left as TreapNode<TKey>;
-	public TreapNode<TKey> TypedRight => Right as TreapNode<TKey>;
+	public TreapNode<TKey> TypedParent { get; set; }
+
+	TreapNode<TKey> _left;
+	public TreapNode<TKey> TypedLeft
+	{
+		get { return _left; }
+		set
+		{
+			_left = value;
+			if (value != null) value.TypedParent = this;
+		}
+	}
+
+	TreapNode<TKey> _right;
+	public TreapNode<TKey> TypedRight
+	{
+		get { return _right; }
+		set
+		{
+			_right = value;
+			if (value != null) value.TypedParent = this;
+		}
+	}
+
+	public int Priority { get; set; }
 }
 
 // この問題用の Treap です。
@@ -62,11 +98,11 @@ public class TreapD<T> : BstBase<T, TreapNode<T>>
 	public bool Add(T item, int priority)
 	{
 		var c = Count;
-		Root = Add(Root, item, priority) as TreapNode<T>;
+		Root = Add(Root, item, priority);
 		return Count != c;
 	}
 
-	BstNode<T> Add(BstNode<T> node, T item, int priority)
+	TreapNode<T> Add(TreapNode<T> node, T item, int priority)
 	{
 		if (node == null)
 		{
@@ -77,18 +113,17 @@ public class TreapD<T> : BstBase<T, TreapNode<T>>
 		var d = compare(item, node.Key);
 		if (d == 0) return node;
 
-		var t = node as TreapNode<T>;
 		if (d < 0)
 		{
-			node.Left = Add(node.Left, item, priority);
-			if (t.Priority < t.TypedLeft.Priority)
-				node = node.RotateToRight();
+			node.TypedLeft = Add(node.TypedLeft, item, priority);
+			if (node.Priority < node.TypedLeft.Priority)
+				node = node.RotateToRight() as TreapNode<T>;
 		}
 		else
 		{
-			node.Right = Add(node.Right, item, priority);
-			if (t.Priority < t.TypedRight.Priority)
-				node = node.RotateToLeft();
+			node.TypedRight = Add(node.TypedRight, item, priority);
+			if (node.Priority < node.TypedRight.Priority)
+				node = node.RotateToLeft() as TreapNode<T>;
 		}
 		return node;
 	}
@@ -96,11 +131,11 @@ public class TreapD<T> : BstBase<T, TreapNode<T>>
 	public override bool Remove(T item)
 	{
 		var c = Count;
-		Root = Remove(Root, item) as TreapNode<T>;
+		Root = Remove(Root, item);
 		return Count != c;
 	}
 
-	BstNode<T> Remove(BstNode<T> node, T item)
+	TreapNode<T> Remove(TreapNode<T> node, T item)
 	{
 		if (node == null) return null;
 
@@ -109,32 +144,31 @@ public class TreapD<T> : BstBase<T, TreapNode<T>>
 
 		if (d < 0)
 		{
-			node.Left = Remove(node.Left, item);
+			node.TypedLeft = Remove(node.TypedLeft, item);
 		}
 		else
 		{
-			node.Right = Remove(node.Right, item);
+			node.TypedRight = Remove(node.TypedRight, item);
 		}
 		return node;
 	}
 
 	// Suppose t != null.
-	BstNode<T> RemoveTarget(BstNode<T> t, T item)
+	TreapNode<T> RemoveTarget(TreapNode<T> t, T item)
 	{
-		if (t.Left == null && t.Right == null)
+		if (t.TypedLeft == null && t.TypedRight == null)
 		{
 			--Count;
 			return null;
 		}
 
-		if (t.Right == null) return t.Left;
-		if (t.Left == null) return t.Right;
+		if (t.TypedRight == null) return t.TypedLeft;
+		if (t.TypedLeft == null) return t.TypedRight;
 
-		var t2 = t as TreapNode<T>;
-		if (t2.TypedLeft.Priority > t2.TypedRight.Priority)
-			t = t.RotateToRight();
+		if (t.TypedLeft.Priority > t.TypedRight.Priority)
+			t = t.RotateToRight() as TreapNode<T>;
 		else
-			t = t.RotateToLeft();
+			t = t.RotateToLeft() as TreapNode<T>;
 		return Remove(t, item);
 	}
 }

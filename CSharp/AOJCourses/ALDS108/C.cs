@@ -67,8 +67,8 @@ public class BinarySearchTree<T> : BstBase<T, BstNode<T>>
 		return new BstNode<T>
 		{
 			Key = items[m],
-			Left = CreateSubtree(items, l, m),
-			Right = CreateSubtree(items, m + 1, r),
+			TypedLeft = CreateSubtree(items, l, m),
+			TypedRight = CreateSubtree(items, m + 1, r),
 		};
 	}
 
@@ -92,18 +92,18 @@ public class BinarySearchTree<T> : BstBase<T, BstNode<T>>
 
 		if (d < 0)
 		{
-			node.Left = Add(node.Left, item);
+			node.TypedLeft = Add(node.TypedLeft, item);
 		}
 		else
 		{
-			node.Right = Add(node.Right, item);
+			node.TypedRight = Add(node.TypedRight, item);
 		}
 		return node;
 	}
 
 	public override bool Remove(T item)
 	{
-		var node = Root.SearchNode(item, compare);
+		var node = Root.SearchNode(item, compare) as BstNode<T>;
 		if (node == null) return false;
 
 		RemoveTarget(node);
@@ -114,26 +114,26 @@ public class BinarySearchTree<T> : BstBase<T, BstNode<T>>
 	// Suppose t != null.
 	void RemoveTarget(BstNode<T> t)
 	{
-		if (t.Left == null || t.Right == null)
+		if (t.TypedLeft == null || t.TypedRight == null)
 		{
-			var c = t.Left ?? t.Right;
+			var c = t.TypedLeft ?? t.TypedRight;
 
-			if (t.Parent == null)
+			if (t.TypedParent == null)
 			{
 				Root = c;
 			}
-			else if (t.Parent.Left == t)
+			else if (t.TypedParent.TypedLeft == t)
 			{
-				t.Parent.Left = c;
+				t.TypedParent.TypedLeft = c;
 			}
 			else
 			{
-				t.Parent.Right = c;
+				t.TypedParent.TypedRight = c;
 			}
 		}
 		else
 		{
-			var t2 = t.SearchNextNode();
+			var t2 = t.SearchNextNode() as BstNode<T>;
 			t.Key = t2.Key;
 			RemoveTarget(t2);
 		}

@@ -8,7 +8,7 @@ class C3
 		var n = int.Parse(Console.ReadLine());
 
 		var r = new List<int>();
-		var set = new AvlTree<int>();
+		var set = new AvlSet<int>();
 
 		for (int i = 0; i < n; i++)
 		{
@@ -23,318 +23,165 @@ class C3
 			else if (q[0] == 2)
 				set.Remove(q[1]);
 			else
-				r.AddRange(set.GetValues(x => x >= q[1], x => x <= q[2]));
+				r.AddRange(set.GetItems(x => x >= q[1], x => x <= q[2]));
 		}
 		Console.WriteLine(string.Join("\n", r));
 	}
 }
 
-public class AvlTree<T>
+public class AvlSetNode<TKey> : BstNodeBase<TKey>
 {
-	public static AvlTree<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false)
+	public override BstNodeBase<TKey> Parent
 	{
-		if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
-
-		var c = Comparer<TKey>.Default;
-		return descending ?
-			new AvlTree<T>((x, y) => c.Compare(keySelector(y), keySelector(x))) :
-			new AvlTree<T>((x, y) => c.Compare(keySelector(x), keySelector(y)));
+		get { return TypedParent; }
+		set { TypedParent = (AvlSetNode<TKey>)value; }
+	}
+	public override BstNodeBase<TKey> Left
+	{
+		get { return TypedLeft; }
+		set { TypedLeft = (AvlSetNode<TKey>)value; }
+	}
+	public override BstNodeBase<TKey> Right
+	{
+		get { return TypedRight; }
+		set { TypedRight = (AvlSetNode<TKey>)value; }
 	}
 
-	[System.Diagnostics.DebuggerDisplay(@"\{{Value}\}")]
-	class Node
+	public AvlSetNode<TKey> TypedParent { get; set; }
+
+	AvlSetNode<TKey> _left;
+	public AvlSetNode<TKey> TypedLeft
 	{
-		public T Value;
-		public Node Parent;
-		public int Height = 1;
-
-		Node _left;
-		public Node Left
-		{
-			get { return _left; }
-			set
-			{
-				_left = value;
-				if (value != null) value.Parent = this;
-			}
-		}
-
-		Node _right;
-		public Node Right
-		{
-			get { return _right; }
-			set
-			{
-				_right = value;
-				if (value != null) value.Parent = this;
-			}
-		}
-
-		public void UpdateHeight()
-		{
-			var lh = Left?.Height ?? 0;
-			var rh = Right?.Height ?? 0;
-			Height = Math.Max(lh, rh) + 1;
-		}
-	}
-
-	Node _root;
-	Node Root
-	{
-		get { return _root; }
+		get { return _left; }
 		set
 		{
-			_root = value;
-			if (value != null) value.Parent = null;
+			_left = value;
+			if (value != null) value.TypedParent = this;
 		}
 	}
 
-	Comparison<T> compare;
-	public int Count { get; private set; }
-
-	public AvlTree(Comparison<T> comparison = null)
+	AvlSetNode<TKey> _right;
+	public AvlSetNode<TKey> TypedRight
 	{
-		compare = comparison ?? Comparer<T>.Default.Compare;
-	}
-
-	static Node SearchMinNode(Node node)
-	{
-		if (node == null) return null;
-		return SearchMinNode(node.Left) ?? node;
-	}
-
-	static Node SearchMaxNode(Node node)
-	{
-		if (node == null) return null;
-		return SearchMaxNode(node.Right) ?? node;
-	}
-
-	static Node SearchMinNode(Node node, Func<T, bool> f)
-	{
-		if (node == null) return null;
-		if (f(node.Value)) return SearchMinNode(node.Left, f) ?? node;
-		else return SearchMinNode(node.Right, f);
-	}
-
-	static Node SearchMaxNode(Node node, Func<T, bool> f)
-	{
-		if (node == null) return null;
-		if (f(node.Value)) return SearchMaxNode(node.Right, f) ?? node;
-		else return SearchMaxNode(node.Left, f);
-	}
-
-	static Node SearchPreviousAncestor(Node node)
-	{
-		if (node == null) return null;
-		if (node.Parent == null) return null;
-		if (node.Parent.Right == node) return node.Parent;
-		else return SearchPreviousAncestor(node.Parent);
-	}
-
-	static Node SearchNextAncestor(Node node)
-	{
-		if (node == null) return null;
-		if (node.Parent == null) return null;
-		if (node.Parent.Left == node) return node.Parent;
-		else return SearchNextAncestor(node.Parent);
-	}
-
-	static Node SearchPreviousNode(Node node)
-	{
-		if (node == null) return null;
-		return SearchMaxNode(node.Left) ?? SearchPreviousAncestor(node);
-	}
-
-	static Node SearchNextNode(Node node)
-	{
-		if (node == null) return null;
-		return SearchMinNode(node.Right) ?? SearchNextAncestor(node);
-	}
-
-	Node SearchNode(Node node, T value)
-	{
-		if (node == null) return null;
-		var d = compare(value, node.Value);
-		if (d == 0) return node;
-		if (d < 0) return SearchNode(node.Left, value);
-		else return SearchNode(node.Right, value);
-	}
-
-	public T GetMin()
-	{
-		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return SearchMinNode(Root).Value;
-	}
-
-	public T GetMax()
-	{
-		if (Root == null) throw new InvalidOperationException("The tree is empty.");
-		return SearchMaxNode(Root).Value;
-	}
-
-	public T GetNextValue(T value, T defaultValue = default(T))
-	{
-		var node = SearchNode(Root, value);
-		if (node == null) throw new InvalidOperationException("The value does not exist.");
-		node = SearchNextNode(node);
-		if (node == null) return defaultValue;
-		return node.Value;
-	}
-
-	public T GetPreviousValue(T value, T defaultValue = default(T))
-	{
-		var node = SearchNode(Root, value);
-		if (node == null) throw new InvalidOperationException("The value does not exist.");
-		node = SearchPreviousNode(node);
-		if (node == null) return defaultValue;
-		return node.Value;
-	}
-
-	public IEnumerable<T> GetValues()
-	{
-		for (var n = SearchMinNode(Root); n != null; n = SearchNextNode(n))
+		get { return _right; }
+		set
 		{
-			yield return n.Value;
+			_right = value;
+			if (value != null) value.TypedParent = this;
 		}
 	}
 
-	public IEnumerable<T> GetValues(Func<T, bool> predicateForMin, Func<T, bool> predicateForMax)
+	public int Height { get; set; } = 1;
+
+	public void UpdateHeight()
 	{
-		for (var n = SearchMinNode(Root, predicateForMin); n != null && predicateForMax(n.Value); n = SearchNextNode(n))
-		{
-			yield return n.Value;
-		}
+		var lh = TypedLeft?.Height ?? 0;
+		var rh = TypedRight?.Height ?? 0;
+		Height = Math.Max(lh, rh) + 1;
+	}
+}
+
+public class AvlSet<T> : BstBase<T, AvlSetNode<T>>
+{
+	public static AvlSet<T> Create(bool descending = false) =>
+		new AvlSet<T>(ComparisonHelper.Create<T>(descending));
+	public static AvlSet<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false) =>
+		new AvlSet<T>(ComparisonHelper.Create(keySelector, descending));
+
+	public AvlSet(Comparison<T> comparison = null) : base(comparison) { }
+
+	public override bool Add(T item)
+	{
+		var c = Count;
+		Root = Add(Root, item);
+		return Count != c;
 	}
 
-	public bool Contains(T value)
+	AvlSetNode<T> Add(AvlSetNode<T> node, T item)
 	{
-		return SearchNode(Root, value) != null;
-	}
-
-	public bool Add(T value)
-	{
-		Node node;
-		if (Root == null)
+		if (node == null)
 		{
-			node = Root = new Node { Value = value };
-		}
-		else
-		{
-			node = Add(Root, value);
-		}
-
-		if (node != null)
-		{
-			Rotate(node.Parent);
 			++Count;
+			return new AvlSetNode<T> { Key = item };
 		}
-		return node != null;
-	}
 
-	// Suppose t != null.
-	Node Add(Node t, T value)
-	{
-		var d = compare(value, t.Value);
-		if (d == 0) return null;
+		var d = compare(item, node.Key);
+		if (d == 0) return node;
+
 		if (d < 0)
 		{
-			if (t.Left != null) return Add(t.Left, value);
-			return t.Left = new Node { Value = value };
+			node.TypedLeft = Add(node.TypedLeft, item);
+
+			var lh = node.TypedLeft?.Height ?? 0;
+			var rh = node.TypedRight?.Height ?? 0;
+			if (lh - rh > 1)
+			{
+				node = node.RotateToRight() as AvlSetNode<T>;
+				node.TypedRight.UpdateHeight();
+			}
 		}
 		else
 		{
-			if (t.Right != null) return Add(t.Right, value);
-			return t.Right = new Node { Value = value };
+			node.TypedRight = Add(node.TypedRight, item);
+
+			var lh = node.TypedLeft?.Height ?? 0;
+			var rh = node.TypedRight?.Height ?? 0;
+			if (rh - lh > 1)
+			{
+				node = node.RotateToLeft() as AvlSetNode<T>;
+				node.TypedLeft.UpdateHeight();
+			}
 		}
+
+		node.UpdateHeight();
+		return node;
 	}
 
-	void Rotate(Node t)
+	public override bool Remove(T item)
 	{
-		if (t == null) return;
-
-		var lh = t.Left?.Height ?? 0;
-		var rh = t.Right?.Height ?? 0;
-		if (Math.Abs(rh - lh) <= 1)
-		{
-			t.UpdateHeight();
-			Rotate(t.Parent);
-			return;
-		}
-
-		var p = t.Parent;
-
-		if (lh > rh)
-		{
-			// to right
-			var np = t.Left;
-			t.Left = np.Right;
-			np.Right = t;
-			t.UpdateHeight();
-			np.UpdateHeight();
-		}
-		else
-		{
-			// to left
-			var np = t.Right;
-			t.Right = np.Left;
-			np.Left = t;
-			t.UpdateHeight();
-			np.UpdateHeight();
-		}
-
-		if (p == null)
-		{
-			Root = t.Parent;
-		}
-		else if (p.Left == t)
-		{
-			p.Left = t.Parent;
-		}
-		else
-		{
-			p.Right = t.Parent;
-		}
-
-		Rotate(p);
-	}
-
-	public bool Remove(T value)
-	{
-		var node = SearchNode(Root, value);
+		var node = Root.SearchNode(item, compare) as AvlSetNode<T>;
 		if (node == null) return false;
 
-		Remove(node);
+		RemoveTarget(node);
 		--Count;
 		return true;
 	}
 
 	// Suppose t != null.
-	void Remove(Node t)
+	void RemoveTarget(AvlSetNode<T> t)
 	{
-		if (t.Left == null || t.Right == null)
+		if (t.TypedLeft == null || t.TypedRight == null)
 		{
-			var c = t.Left ?? t.Right;
+			var c = t.TypedLeft ?? t.TypedRight;
 
-			if (t.Parent == null)
+			if (t.TypedParent == null)
 			{
 				Root = c;
 			}
-			else if (t.Parent.Left == t)
+			else if (t.TypedParent.TypedLeft == t)
 			{
-				t.Parent.Left = c;
+				t.TypedParent.TypedLeft = c;
 			}
 			else
 			{
-				t.Parent.Right = c;
+				t.TypedParent.TypedRight = c;
 			}
 
-			Rotate(t.Parent);
+			UpdateHeight(t.TypedParent);
 		}
 		else
 		{
-			var t2 = SearchNextNode(t);
-			t.Value = t2.Value;
-			Remove(t2);
+			var t2 = t.SearchNextNode() as AvlSetNode<T>;
+			t.Key = t2.Key;
+			RemoveTarget(t2);
 		}
+	}
+
+	// Bottom up.
+	void UpdateHeight(AvlSetNode<T> node)
+	{
+		if (node == null) return;
+		node.UpdateHeight();
+		UpdateHeight(node.TypedParent);
 	}
 }
