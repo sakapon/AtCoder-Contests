@@ -10,49 +10,6 @@ public abstract class BstNodeBase<TKey>
 	public abstract BstNodeBase<TKey> Right { get; set; }
 }
 
-public class BstNode<TKey> : BstNodeBase<TKey>
-{
-	public override BstNodeBase<TKey> Parent
-	{
-		get { return TypedParent; }
-		set { TypedParent = (BstNode<TKey>)value; }
-	}
-	public override BstNodeBase<TKey> Left
-	{
-		get { return TypedLeft; }
-		set { TypedLeft = (BstNode<TKey>)value; }
-	}
-	public override BstNodeBase<TKey> Right
-	{
-		get { return TypedRight; }
-		set { TypedRight = (BstNode<TKey>)value; }
-	}
-
-	public BstNode<TKey> TypedParent { get; set; }
-
-	BstNode<TKey> _left;
-	public BstNode<TKey> TypedLeft
-	{
-		get { return _left; }
-		set
-		{
-			_left = value;
-			if (value != null) value.TypedParent = this;
-		}
-	}
-
-	BstNode<TKey> _right;
-	public BstNode<TKey> TypedRight
-	{
-		get { return _right; }
-		set
-		{
-			_right = value;
-			if (value != null) value.TypedParent = this;
-		}
-	}
-}
-
 public static class BstNode
 {
 	public static BstNodeBase<TKey> SearchNode<TKey>(this BstNodeBase<TKey> node, TKey key, Comparison<TKey> comparison)
