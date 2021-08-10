@@ -15,10 +15,10 @@ class Q006
 
 		var r = new List<char>();
 
-		var t = -1;
 		var q = PQ<int>.Create(i => s[i] * 100000L + i);
 		q.PushRange(Enumerable.Range(0, n - k).ToArray());
 
+		var t = -1;
 		for (int i = n - k; i < n; i++)
 		{
 			q.Push(i);

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using CoderLib6.DataTrees;
 
-class Q006T
+class Q006S
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
@@ -14,21 +13,21 @@ class Q006T
 
 		var r = new List<char>();
 
-		var set = AvlSet<int>.Create(i => s[i] * 100000L + i);
+		var set = new SortedSet<long>();
 		for (int i = 0; i < n - k; i++)
 		{
-			set.Add(i);
+			set.Add(s[i] * 100000L + i);
 		}
 
-		int t = -1, ti;
+		long t = -1, ti;
 		for (int i = n - k; i < n; i++)
 		{
-			set.Add(i);
-			while ((ti = set.GetMin()) < t) set.Remove(ti);
+			set.Add(s[i] * 100000L + i);
+			while ((ti = set.Min % 100000L) < t) set.Remove(set.Min);
 
-			set.Remove(ti);
+			set.Remove(set.Min);
 			t = ti;
-			r.Add(s[t]);
+			r.Add(s[(int)t]);
 		}
 
 		return string.Join("", r);
