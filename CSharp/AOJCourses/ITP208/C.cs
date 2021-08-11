@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 class C
 {
@@ -8,10 +7,10 @@ class C
 	{
 		var n = int.Parse(Console.ReadLine());
 
-		var r = new List<string>();
 		var set = new SortedSet<string>();
 		var d = new Map<string, string>("0");
 
+		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		for (int i = 0; i < n; i++)
 		{
 			var q = Console.ReadLine().Split();
@@ -21,16 +20,21 @@ class C
 				d[q[1]] = q[2];
 			}
 			else if (q[0] == "1")
-				r.Add(d[q[1]]);
+			{
+				Console.WriteLine(d[q[1]]);
+			}
 			else if (q[0] == "2")
 			{
 				d.Remove(q[1]);
 				set.Remove(q[1]);
 			}
 			else
-				r.AddRange(set.GetViewBetween(q[1], q[2]).Select(x => $"{x} {d[x]}"));
+			{
+				foreach (var x in set.GetViewBetween(q[1], q[2]))
+					Console.WriteLine($"{x} {d[x]}");
+			}
 		}
-		Console.WriteLine(string.Join("\n", r));
+		Console.Out.Flush();
 	}
 }
 

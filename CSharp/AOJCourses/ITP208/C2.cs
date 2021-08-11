@@ -7,34 +7,39 @@ class C2
 	static void Main()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var qs = new int[n].Select(_ => Console.ReadLine().Split()).ToArray();
+		var qs = Array.ConvertAll(new bool[n], _ => Console.ReadLine().Split());
 
 		var keys = qs.Select(q => q[1]).Concat(qs.Where(q => q[0] == "3").Select(q => q[2])).Distinct().ToArray();
 		Array.Sort(keys);
 		var keymap = Enumerable.Range(0, keys.Length).ToDictionary(i => keys[i], i => i);
 
-		var r = new List<string>();
 		var set = new SortedSet<int>();
-		var d = new Map<int, string>("0");
+		var d = new Dictionary<int, string>();
 
+		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		foreach (var q in qs)
 		{
-			var keyInt = keymap[q[1]];
+			var key = keymap[q[1]];
 			if (q[0] == "0")
 			{
-				set.Add(keyInt);
-				d[keyInt] = q[2];
+				set.Add(key);
+				d[key] = q[2];
 			}
 			else if (q[0] == "1")
-				r.Add(d[keyInt]);
+			{
+				Console.WriteLine(d.ContainsKey(key) ? d[key] : "0");
+			}
 			else if (q[0] == "2")
 			{
-				d.Remove(keyInt);
-				set.Remove(keyInt);
+				d.Remove(key);
+				set.Remove(key);
 			}
 			else
-				r.AddRange(set.GetViewBetween(keyInt, keymap[q[2]]).Select(x => $"{keys[x]} {d[x]}"));
+			{
+				foreach (var x in set.GetViewBetween(key, keymap[q[2]]))
+					Console.WriteLine($"{keys[x]} {d[x]}");
+			}
 		}
-		Console.WriteLine(string.Join("\n", r));
+		Console.Out.Flush();
 	}
 }
