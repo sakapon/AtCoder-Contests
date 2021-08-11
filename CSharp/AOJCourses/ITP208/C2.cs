@@ -10,7 +10,7 @@ class C2
 		var qs = Array.ConvertAll(new bool[n], _ => Console.ReadLine().Split());
 
 		var keys = qs.Select(q => q[1]).Concat(qs.Where(q => q[0] == "3").Select(q => q[2])).Distinct().ToArray();
-		Array.Sort(keys);
+		Array.Sort(keys, StringComparer.Ordinal);
 		var keymap = Enumerable.Range(0, keys.Length).ToDictionary(i => keys[i], i => i);
 
 		var set = new SortedSet<int>();

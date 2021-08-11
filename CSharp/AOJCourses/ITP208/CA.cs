@@ -8,10 +8,11 @@ class CA
 	{
 		var n = int.Parse(Console.ReadLine());
 
-		var map = new AvlMap<string, string>();
+		var c = StringComparer.Ordinal;
+		var map = new AvlMap<string, string>(c.Compare);
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
-		for (int i = 0; i < n; i++)
+		while (n-- > 0)
 		{
 			var q = Console.ReadLine().Split();
 			if (q[0] == "0")
@@ -21,7 +22,7 @@ class CA
 			else if (q[0] == "2")
 				map.Remove(q[1]);
 			else
-				foreach (var p in map.GetItems(x => x.CompareTo(q[1]) >= 0, x => x.CompareTo(q[2]) <= 0))
+				foreach (var p in map.GetItems(x => c.Compare(x, q[1]) >= 0, x => c.Compare(x, q[2]) <= 0))
 					Console.WriteLine($"{p.Key} {p.Value}");
 		}
 		Console.Out.Flush();
