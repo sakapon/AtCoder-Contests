@@ -13,23 +13,27 @@ class Q006S
 
 		var r = new List<char>();
 
-		var set = new SortedSet<long>();
+		var q = new BstPQ1<long>();
 		for (int i = 0; i < n - k; i++)
 		{
-			set.Add(s[i] * 100000L + i);
+			q.Add(s[i] * 100000L + i);
 		}
 
-		long t = -1, ti;
+		var t = -1;
 		for (int i = n - k; i < n; i++)
 		{
-			set.Add(s[i] * 100000L + i);
-			while ((ti = set.Min % 100000L) < t) set.Remove(set.Min);
+			q.Add(s[i] * 100000L + i);
+			while (q.Min % 100000 < t) q.Pop();
 
-			set.Remove(set.Min);
-			t = ti;
-			r.Add(s[(int)t]);
+			t = (int)q.Pop() % 100000;
+			r.Add(s[t]);
 		}
 
 		return string.Join("", r);
 	}
+}
+
+class BstPQ1<T> : SortedSet<T>
+{
+	public T Pop() { var r = Min; Remove(r); return r; }
 }
