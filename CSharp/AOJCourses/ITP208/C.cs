@@ -7,11 +7,11 @@ class C
 	{
 		var n = int.Parse(Console.ReadLine());
 
-		var set = new SortedSet<string>();
-		var d = new Map<string, string>("0");
+		var set = new SortedSet<string>(StringComparer.Ordinal);
+		var d = new Dictionary<string, string>(StringComparer.Ordinal);
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
-		for (int i = 0; i < n; i++)
+		while (n-- > 0)
 		{
 			var q = Console.ReadLine().Split();
 			if (q[0] == "0")
@@ -21,7 +21,7 @@ class C
 			}
 			else if (q[0] == "1")
 			{
-				Console.WriteLine(d[q[1]]);
+				Console.WriteLine(d.ContainsKey(q[1]) ? d[q[1]] : "0");
 			}
 			else if (q[0] == "2")
 			{
@@ -35,17 +35,5 @@ class C
 			}
 		}
 		Console.Out.Flush();
-	}
-}
-
-class Map<TK, TV> : Dictionary<TK, TV>
-{
-	TV _v0;
-	public Map(TV v0 = default(TV)) { _v0 = v0; }
-
-	public new TV this[TK key]
-	{
-		get { return ContainsKey(key) ? base[key] : _v0; }
-		set { base[key] = value; }
 	}
 }
