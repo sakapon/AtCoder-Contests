@@ -267,6 +267,18 @@ namespace CoderLib6.DataTrees
 			return Root.SearchMaxNode().Key;
 		}
 
+		public KeyValuePair<TKey, TValue> GetMin(Func<KeyValuePair<TKey, TValue>, bool> predicate)
+		{
+			if (Root == null) throw new InvalidOperationException("The tree is empty.");
+			return Root.SearchMinNode(predicate).Key;
+		}
+
+		public KeyValuePair<TKey, TValue> GetMax(Func<KeyValuePair<TKey, TValue>, bool> predicate)
+		{
+			if (Root == null) throw new InvalidOperationException("The tree is empty.");
+			return Root.SearchMaxNode(predicate).Key;
+		}
+
 		public KeyValuePair<TKey, TValue> GetMin(Func<TKey, bool> predicate)
 		{
 			if (Root == null) throw new InvalidOperationException("The tree is empty.");
@@ -298,6 +310,7 @@ namespace CoderLib6.DataTrees
 		}
 
 		public IEnumerable<KeyValuePair<TKey, TValue>> GetItems() => Root.GetKeys();
+		public IEnumerable<KeyValuePair<TKey, TValue>> GetItems(Func<KeyValuePair<TKey, TValue>, bool> predicateForMin, Func<KeyValuePair<TKey, TValue>, bool> predicateForMax) => Root.GetKeys(predicateForMin, predicateForMax);
 		public IEnumerable<KeyValuePair<TKey, TValue>> GetItems(Func<TKey, bool> predicateForMin, Func<TKey, bool> predicateForMax) => Root.GetKeys(predicateForMin, predicateForMax);
 
 		public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => GetItems().GetEnumerator();
