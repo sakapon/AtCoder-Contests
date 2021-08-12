@@ -18,7 +18,7 @@ class CA
 			if (q[0] == "0")
 				map[q[1]] = q[2];
 			else if (q[0] == "1")
-				Console.WriteLine(map.ContainsKey(q[1]) ? map[q[1]] : "0");
+				Console.WriteLine(map.GetValueOrDefault(q[1], "0"));
 			else if (q[0] == "2")
 				map.Remove(q[1]);
 			else

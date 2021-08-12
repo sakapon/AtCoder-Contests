@@ -321,6 +321,12 @@ namespace CoderLib6.DataTrees
 				else node.Key = new KeyValuePair<TKey, TValue>(key, value);
 			}
 		}
+
+		public TValue GetValueOrDefault(TKey key, TValue defaultValue = default(TValue))
+		{
+			var node = Root.SearchNode(key, compare);
+			return node == null ? defaultValue : node.Key.Value;
+		}
 	}
 
 	public static class ComparisonHelper

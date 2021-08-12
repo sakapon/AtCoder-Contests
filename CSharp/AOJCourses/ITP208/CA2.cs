@@ -23,7 +23,7 @@ class CA2
 			if (q[0] == "0")
 				map[key] = q[2];
 			else if (q[0] == "1")
-				Console.WriteLine(map.ContainsKey(key) ? map[key] : "0");
+				Console.WriteLine(map.GetValueOrDefault(key, "0"));
 			else if (q[0] == "2")
 				map.Remove(key);
 			else
