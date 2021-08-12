@@ -8,28 +8,28 @@ namespace CoderLib6.DataTrees
 	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_g
 	// Test: https://atcoder.jp/contests/past202104-open/tasks/past202104_m
 	// Test: https://atcoder.jp/contests/past202107-open/tasks/past202107_l
-	public class AvlSetNode<TKey> : BstNodeBase<TKey>
+	public class AvlNode<TKey> : BstNodeBase<TKey>
 	{
 		public override BstNodeBase<TKey> Parent
 		{
 			get { return TypedParent; }
-			set { TypedParent = (AvlSetNode<TKey>)value; }
+			set { TypedParent = (AvlNode<TKey>)value; }
 		}
 		public override BstNodeBase<TKey> Left
 		{
 			get { return TypedLeft; }
-			set { TypedLeft = (AvlSetNode<TKey>)value; }
+			set { TypedLeft = (AvlNode<TKey>)value; }
 		}
 		public override BstNodeBase<TKey> Right
 		{
 			get { return TypedRight; }
-			set { TypedRight = (AvlSetNode<TKey>)value; }
+			set { TypedRight = (AvlNode<TKey>)value; }
 		}
 
-		public AvlSetNode<TKey> TypedParent { get; set; }
+		public AvlNode<TKey> TypedParent { get; set; }
 
-		AvlSetNode<TKey> _left;
-		public AvlSetNode<TKey> TypedLeft
+		AvlNode<TKey> _left;
+		public AvlNode<TKey> TypedLeft
 		{
 			get { return _left; }
 			set
@@ -39,8 +39,8 @@ namespace CoderLib6.DataTrees
 			}
 		}
 
-		AvlSetNode<TKey> _right;
-		public AvlSetNode<TKey> TypedRight
+		AvlNode<TKey> _right;
+		public AvlNode<TKey> TypedRight
 		{
 			get { return _right; }
 			set
@@ -61,7 +61,7 @@ namespace CoderLib6.DataTrees
 		}
 	}
 
-	public class AvlSet<T> : BstBase<T, AvlSetNode<T>>
+	public class AvlSet<T> : BstBase<T, AvlNode<T>>
 	{
 		public static AvlSet<T> Create(bool descending = false) =>
 			new AvlSet<T>(ComparisonHelper.Create<T>(descending));
@@ -77,12 +77,12 @@ namespace CoderLib6.DataTrees
 			return Count != c;
 		}
 
-		AvlSetNode<T> Add(AvlSetNode<T> node, T item)
+		AvlNode<T> Add(AvlNode<T> node, T item)
 		{
 			if (node == null)
 			{
 				++Count;
-				return new AvlSetNode<T> { Key = item };
+				return new AvlNode<T> { Key = item };
 			}
 
 			var d = compare(item, node.Key);
@@ -100,12 +100,12 @@ namespace CoderLib6.DataTrees
 			var lrh = node.LeftHeight - node.RightHeight;
 			if (lrh > 2 || lrh == 2 && node.TypedLeft.LeftHeight >= node.TypedLeft.RightHeight)
 			{
-				node = node.RotateToRight() as AvlSetNode<T>;
+				node = node.RotateToRight() as AvlNode<T>;
 				node.TypedRight.UpdateHeight();
 			}
 			else if (lrh < -2 || lrh == -2 && node.TypedRight.LeftHeight <= node.TypedRight.RightHeight)
 			{
-				node = node.RotateToLeft() as AvlSetNode<T>;
+				node = node.RotateToLeft() as AvlNode<T>;
 				node.TypedLeft.UpdateHeight();
 			}
 
@@ -115,7 +115,7 @@ namespace CoderLib6.DataTrees
 
 		public override bool Remove(T item)
 		{
-			var node = Root.SearchNode(item, compare) as AvlSetNode<T>;
+			var node = Root.SearchNode(item, compare) as AvlNode<T>;
 			if (node == null) return false;
 
 			RemoveTarget(node);
@@ -124,7 +124,7 @@ namespace CoderLib6.DataTrees
 		}
 
 		// Suppose t != null.
-		void RemoveTarget(AvlSetNode<T> t)
+		void RemoveTarget(AvlNode<T> t)
 		{
 			if (t.TypedLeft == null || t.TypedRight == null)
 			{
@@ -147,7 +147,7 @@ namespace CoderLib6.DataTrees
 			}
 			else
 			{
-				var t2 = t.SearchNextNode() as AvlSetNode<T>;
+				var t2 = t.SearchNextNode() as AvlNode<T>;
 				t.Key = t2.Key;
 				RemoveTarget(t2);
 			}
