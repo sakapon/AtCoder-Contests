@@ -12,19 +12,21 @@ namespace CoderLib6.DataTrees
 		public abstract BstNodeBase<TKey> Right { get; set; }
 	}
 
-	[System.Diagnostics.DebuggerDisplay(@"\{{Key}, {Value}\}")]
-	public abstract class BstMapNodeBase<TKey, TValue> : BstNodeBase<TKey>
-	{
-		public TValue Value { get; set; }
-		public KeyValuePair<TKey, TValue> Pair => new KeyValuePair<TKey, TValue>(Key, Value);
-	}
-
 	public static class BstNode
 	{
 		public static BstNodeBase<TKey> SearchNode<TKey>(this BstNodeBase<TKey> node, TKey key, Comparison<TKey> comparison)
 		{
 			if (node == null) return null;
 			var d = comparison(key, node.Key);
+			if (d == 0) return node;
+			if (d < 0) return SearchNode(node.Left, key, comparison);
+			else return SearchNode(node.Right, key, comparison);
+		}
+
+		public static BstNodeBase<KeyValuePair<TKey, TValue>> SearchNode<TKey, TValue>(this BstNodeBase<KeyValuePair<TKey, TValue>> node, TKey key, Comparison<TKey> comparison)
+		{
+			if (node == null) return null;
+			var d = comparison(key, node.Key.Key);
 			if (d == 0) return node;
 			if (d < 0) return SearchNode(node.Left, key, comparison);
 			else return SearchNode(node.Right, key, comparison);
@@ -53,6 +55,20 @@ namespace CoderLib6.DataTrees
 		{
 			if (node == null) return null;
 			if (predicate(node.Key)) return SearchMaxNode(node.Right, predicate) ?? node;
+			else return SearchMaxNode(node.Left, predicate);
+		}
+
+		public static BstNodeBase<KeyValuePair<TKey, TValue>> SearchMinNode<TKey, TValue>(this BstNodeBase<KeyValuePair<TKey, TValue>> node, Func<TKey, bool> predicate)
+		{
+			if (node == null) return null;
+			if (predicate(node.Key.Key)) return SearchMinNode(node.Left, predicate) ?? node;
+			else return SearchMinNode(node.Right, predicate);
+		}
+
+		public static BstNodeBase<KeyValuePair<TKey, TValue>> SearchMaxNode<TKey, TValue>(this BstNodeBase<KeyValuePair<TKey, TValue>> node, Func<TKey, bool> predicate)
+		{
+			if (node == null) return null;
+			if (predicate(node.Key.Key)) return SearchMaxNode(node.Right, predicate) ?? node;
 			else return SearchMaxNode(node.Left, predicate);
 		}
 
@@ -93,6 +109,14 @@ namespace CoderLib6.DataTrees
 		public static IEnumerable<TKey> GetKeys<TKey>(this BstNodeBase<TKey> node, Func<TKey, bool> predicateForMin, Func<TKey, bool> predicateForMax)
 		{
 			for (var n = SearchMinNode(node, predicateForMin); n != null && predicateForMax(n.Key); n = SearchNextNode(n))
+			{
+				yield return n.Key;
+			}
+		}
+
+		public static IEnumerable<KeyValuePair<TKey, TValue>> GetKeys<TKey, TValue>(this BstNodeBase<KeyValuePair<TKey, TValue>> node, Func<TKey, bool> predicateForMin, Func<TKey, bool> predicateForMax)
+		{
+			for (var n = SearchMinNode(node, predicateForMin); n != null && predicateForMax(n.Key.Key); n = SearchNextNode(n))
 			{
 				yield return n.Key;
 			}
@@ -205,7 +229,7 @@ namespace CoderLib6.DataTrees
 	}
 
 	[System.Diagnostics.DebuggerDisplay(@"Count = {Count}")]
-	public abstract class BstMapBase<TKey, TValue, TNode> : IEnumerable<KeyValuePair<TKey, TValue>> where TNode : BstMapNodeBase<TKey, TValue>
+	public abstract class BstMapBase<TKey, TValue, TNode> : IEnumerable<KeyValuePair<TKey, TValue>> where TNode : BstNodeBase<KeyValuePair<TKey, TValue>>
 	{
 		TNode _root;
 		public TNode Root
@@ -234,25 +258,25 @@ namespace CoderLib6.DataTrees
 		public KeyValuePair<TKey, TValue> GetMin()
 		{
 			if (Root == null) throw new InvalidOperationException("The tree is empty.");
-			return (Root.SearchMinNode() as TNode).Pair;
+			return Root.SearchMinNode().Key;
 		}
 
 		public KeyValuePair<TKey, TValue> GetMax()
 		{
 			if (Root == null) throw new InvalidOperationException("The tree is empty.");
-			return (Root.SearchMaxNode() as TNode).Pair;
+			return Root.SearchMaxNode().Key;
 		}
 
 		public KeyValuePair<TKey, TValue> GetMin(Func<TKey, bool> predicate)
 		{
 			if (Root == null) throw new InvalidOperationException("The tree is empty.");
-			return (Root.SearchMinNode(predicate) as TNode).Pair;
+			return Root.SearchMinNode(predicate).Key;
 		}
 
 		public KeyValuePair<TKey, TValue> GetMax(Func<TKey, bool> predicate)
 		{
 			if (Root == null) throw new InvalidOperationException("The tree is empty.");
-			return (Root.SearchMaxNode(predicate) as TNode).Pair;
+			return Root.SearchMaxNode(predicate).Key;
 		}
 
 		public KeyValuePair<TKey, TValue> GetPrevious(TKey key)
@@ -261,7 +285,7 @@ namespace CoderLib6.DataTrees
 			if (node == null) throw new InvalidOperationException("The item is not found.");
 			node = node.SearchPreviousNode();
 			if (node == null) throw new InvalidOperationException("The target item is not found.");
-			return (node as TNode).Pair;
+			return node.Key;
 		}
 
 		public KeyValuePair<TKey, TValue> GetNext(TKey key)
@@ -270,24 +294,11 @@ namespace CoderLib6.DataTrees
 			if (node == null) throw new InvalidOperationException("The item is not found.");
 			node = node.SearchNextNode();
 			if (node == null) throw new InvalidOperationException("The target item is not found.");
-			return (node as TNode).Pair;
+			return node.Key;
 		}
 
-		public IEnumerable<KeyValuePair<TKey, TValue>> GetItems()
-		{
-			for (var n = Root.SearchMinNode(); n != null; n = n.SearchNextNode())
-			{
-				yield return (n as TNode).Pair;
-			}
-		}
-
-		public IEnumerable<KeyValuePair<TKey, TValue>> GetItems(Func<TKey, bool> predicateForMin, Func<TKey, bool> predicateForMax)
-		{
-			for (var n = Root.SearchMinNode(predicateForMin); n != null && predicateForMax(n.Key); n = n.SearchNextNode())
-			{
-				yield return (n as TNode).Pair;
-			}
-		}
+		public IEnumerable<KeyValuePair<TKey, TValue>> GetItems() => Root.GetKeys();
+		public IEnumerable<KeyValuePair<TKey, TValue>> GetItems(Func<TKey, bool> predicateForMin, Func<TKey, bool> predicateForMax) => Root.GetKeys(predicateForMin, predicateForMax);
 
 		public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => GetItems().GetEnumerator();
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetItems().GetEnumerator();
@@ -299,15 +310,15 @@ namespace CoderLib6.DataTrees
 		{
 			get
 			{
-				var node = Root.SearchNode(key, compare) as TNode;
+				var node = Root.SearchNode(key, compare);
 				if (node == null) throw new InvalidOperationException("The item is not found.");
-				return node.Value;
+				return node.Key.Value;
 			}
 			set
 			{
-				var node = Root.SearchNode(key, compare) as TNode;
+				var node = Root.SearchNode(key, compare);
 				if (node == null) Add(key, value);
-				else node.Value = value;
+				else node.Key = new KeyValuePair<TKey, TValue>(key, value);
 			}
 		}
 	}

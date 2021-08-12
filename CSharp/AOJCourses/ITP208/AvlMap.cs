@@ -3,28 +3,28 @@ using System.Collections.Generic;
 
 namespace CoderLib6.DataTrees
 {
-	public class AvlMapNode<TKey, TValue> : BstMapNodeBase<TKey, TValue>
+	public class AvlSetNode<TKey> : BstNodeBase<TKey>
 	{
 		public override BstNodeBase<TKey> Parent
 		{
 			get { return TypedParent; }
-			set { TypedParent = (AvlMapNode<TKey, TValue>)value; }
+			set { TypedParent = (AvlSetNode<TKey>)value; }
 		}
 		public override BstNodeBase<TKey> Left
 		{
 			get { return TypedLeft; }
-			set { TypedLeft = (AvlMapNode<TKey, TValue>)value; }
+			set { TypedLeft = (AvlSetNode<TKey>)value; }
 		}
 		public override BstNodeBase<TKey> Right
 		{
 			get { return TypedRight; }
-			set { TypedRight = (AvlMapNode<TKey, TValue>)value; }
+			set { TypedRight = (AvlSetNode<TKey>)value; }
 		}
 
-		public AvlMapNode<TKey, TValue> TypedParent { get; set; }
+		public AvlSetNode<TKey> TypedParent { get; set; }
 
-		AvlMapNode<TKey, TValue> _left;
-		public AvlMapNode<TKey, TValue> TypedLeft
+		AvlSetNode<TKey> _left;
+		public AvlSetNode<TKey> TypedLeft
 		{
 			get { return _left; }
 			set
@@ -34,8 +34,8 @@ namespace CoderLib6.DataTrees
 			}
 		}
 
-		AvlMapNode<TKey, TValue> _right;
-		public AvlMapNode<TKey, TValue> TypedRight
+		AvlSetNode<TKey> _right;
+		public AvlSetNode<TKey> TypedRight
 		{
 			get { return _right; }
 			set
@@ -56,7 +56,7 @@ namespace CoderLib6.DataTrees
 		}
 	}
 
-	public class AvlMap<TKey, TValue> : BstMapBase<TKey, TValue, AvlMapNode<TKey, TValue>>
+	public class AvlMap<TKey, TValue> : BstMapBase<TKey, TValue, AvlSetNode<KeyValuePair<TKey, TValue>>>
 	{
 		public static AvlMap<TKey, TValue> Create(bool descending = false) =>
 			new AvlMap<TKey, TValue>(ComparisonHelper.Create<TKey>(descending));
@@ -70,15 +70,15 @@ namespace CoderLib6.DataTrees
 			return Count != c;
 		}
 
-		AvlMapNode<TKey, TValue> Add(AvlMapNode<TKey, TValue> node, TKey key, TValue value)
+		AvlSetNode<KeyValuePair<TKey, TValue>> Add(AvlSetNode<KeyValuePair<TKey, TValue>> node, TKey key, TValue value)
 		{
 			if (node == null)
 			{
 				++Count;
-				return new AvlMapNode<TKey, TValue> { Key = key, Value = value };
+				return new AvlSetNode<KeyValuePair<TKey, TValue>> { Key = new KeyValuePair<TKey, TValue>(key, value) };
 			}
 
-			var d = compare(key, node.Key);
+			var d = compare(key, node.Key.Key);
 			if (d == 0) return node;
 
 			if (d < 0)
@@ -93,12 +93,12 @@ namespace CoderLib6.DataTrees
 			var lrh = node.LeftHeight - node.RightHeight;
 			if (lrh > 2 || lrh == 2 && node.TypedLeft.LeftHeight >= node.TypedLeft.RightHeight)
 			{
-				node = node.RotateToRight() as AvlMapNode<TKey, TValue>;
+				node = node.RotateToRight() as AvlSetNode<KeyValuePair<TKey, TValue>>;
 				node.TypedRight.UpdateHeight();
 			}
 			else if (lrh < -2 || lrh == -2 && node.TypedRight.LeftHeight <= node.TypedRight.RightHeight)
 			{
-				node = node.RotateToLeft() as AvlMapNode<TKey, TValue>;
+				node = node.RotateToLeft() as AvlSetNode<KeyValuePair<TKey, TValue>>;
 				node.TypedLeft.UpdateHeight();
 			}
 
@@ -108,7 +108,7 @@ namespace CoderLib6.DataTrees
 
 		public override bool Remove(TKey key)
 		{
-			var node = Root.SearchNode(key, compare) as AvlMapNode<TKey, TValue>;
+			var node = Root.SearchNode(key, compare) as AvlSetNode<KeyValuePair<TKey, TValue>>;
 			if (node == null) return false;
 
 			RemoveTarget(node);
@@ -117,7 +117,7 @@ namespace CoderLib6.DataTrees
 		}
 
 		// Suppose t != null.
-		void RemoveTarget(AvlMapNode<TKey, TValue> t)
+		void RemoveTarget(AvlSetNode<KeyValuePair<TKey, TValue>> t)
 		{
 			if (t.TypedLeft == null || t.TypedRight == null)
 			{
@@ -140,9 +140,8 @@ namespace CoderLib6.DataTrees
 			}
 			else
 			{
-				var t2 = t.SearchNextNode() as AvlMapNode<TKey, TValue>;
+				var t2 = t.SearchNextNode() as AvlSetNode<KeyValuePair<TKey, TValue>>;
 				t.Key = t2.Key;
-				t.Value = t2.Value;
 				RemoveTarget(t2);
 			}
 		}
