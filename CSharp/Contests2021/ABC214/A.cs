@@ -11,11 +11,9 @@ class A
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		if (n <= 125) return 4;
+		if (n <= 211) return 6;
+		return 8;
 	}
 }

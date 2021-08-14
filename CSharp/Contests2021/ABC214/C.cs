@@ -11,11 +11,20 @@ class C
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var s = ReadL();
+		var t = ReadL();
 
-		return string.Join(" ", a);
+		for (int i = 0; i < n; i++)
+		{
+			var ni = (i + 1) % n;
+			t[ni] = Math.Min(t[ni], t[i] + s[i]);
+		}
+		for (int i = 0; i < n; i++)
+		{
+			var ni = (i + 1) % n;
+			t[ni] = Math.Min(t[ni], t[i] + s[i]);
+		}
+
+		return string.Join("\n", t);
 	}
 }

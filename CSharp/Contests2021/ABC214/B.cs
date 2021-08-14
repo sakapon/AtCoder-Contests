@@ -10,12 +10,24 @@ class B
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (s, t) = Read2();
 
-		return string.Join(" ", a);
+		var r = 0;
+
+		for (int a = 0; a <= s; a++)
+		{
+			for (int b = 0; b <= s; b++)
+			{
+				for (int c = 0; c <= s; c++)
+				{
+					if (a + b + c <= s && a * b * c <= t)
+					{
+						r++;
+					}
+				}
+			}
+		}
+
+		return r;
 	}
 }
