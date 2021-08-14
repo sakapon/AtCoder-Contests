@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using CoderLib6.DataTrees;
+using CoderLib6.DataTrees.Bsts;
 
 class ET
 {
@@ -45,7 +45,7 @@ class ET
 	}
 }
 
-namespace CoderLib6.DataTrees
+namespace CoderLib6.DataTrees.Bsts
 {
 	public class AvlList<T>
 	{
@@ -56,9 +56,9 @@ namespace CoderLib6.DataTrees
 			get => throw new NotImplementedException();
 			set => throw new NotImplementedException();
 		}
-		public void Prepend(T value) => throw new NotImplementedException();
-		public void Add(T value) => throw new NotImplementedException();
-		public void Insert(int index, T value) => throw new NotImplementedException();
+		public void Prepend(T item) => throw new NotImplementedException();
+		public void Add(T item) => throw new NotImplementedException();
+		public void Insert(int index, T item) => throw new NotImplementedException();
 		public T RemoveAt(int index) => throw new NotImplementedException();
 	}
 }
