@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
+// Test: https://atcoder.jp/contests/past202104-open/tasks/past202104_e
+// Test: https://atcoder.jp/contests/past202004-open/tasks/past202004_i
+// Test: https://atcoder.jp/contests/typical90/tasks/typical90_ar
+// Test: https://atcoder.jp/contests/typical90/tasks/typical90_bi
 namespace CoderLib6.DataTrees.Bsts
 {
-	// Test: https://atcoder.jp/contests/past202104-open/tasks/past202104_e
-	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_ar
-	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_bi
 	[System.Diagnostics.DebuggerDisplay(@"\{{Item}\}")]
 	public class AvlListNode<T> : IEnumerable<AvlListNode<T>>
 	{
