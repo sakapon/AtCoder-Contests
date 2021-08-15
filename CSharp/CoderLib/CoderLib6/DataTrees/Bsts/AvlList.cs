@@ -3,21 +3,24 @@ using System.Collections.Generic;
 
 namespace CoderLib6.DataTrees.Bsts
 {
+	// Test: https://atcoder.jp/contests/past202104-open/tasks/past202104_e
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_ar
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_bi
 	[System.Diagnostics.DebuggerDisplay(@"\{{Item}\}")]
 	public class AvlListNode<T> : IEnumerable<AvlListNode<T>>
 	{
 		public T Item { get; set; }
-		public AvlListNode<T> Parent { get; set; }
+		public AvlListNode<T> Parent { get; internal set; }
 		public AvlListNode<T> Left { get; private set; }
 		public AvlListNode<T> Right { get; private set; }
 
-		public void SetLeft(AvlListNode<T> child)
+		internal void SetLeft(AvlListNode<T> child)
 		{
 			Left = child;
 			if (child != null) child.Parent = this;
 		}
 
-		public void SetRight(AvlListNode<T> child)
+		internal void SetRight(AvlListNode<T> child)
 		{
 			Right = child;
 			if (child != null) child.Parent = this;
@@ -27,7 +30,7 @@ namespace CoderLib6.DataTrees.Bsts
 		public int LeftCount => Left?.Count ?? 0;
 		public int RightCount => Right?.Count ?? 0;
 
-		public void UpdateCount(bool recursive = false)
+		internal void UpdateCount(bool recursive = false)
 		{
 			Count = LeftCount + RightCount + 1;
 			if (recursive) Parent?.UpdateCount(true);
@@ -75,19 +78,12 @@ namespace CoderLib6.DataTrees.Bsts
 			else return Right?.SearchNode(d - 1);
 		}
 
-		public IEnumerable<AvlListNode<T>> SearchNodes()
-		{
-			for (var n = SearchFirstNode(); n != null; n = n.SearchNextNode())
-			{
-				yield return n;
-			}
-		}
-
+		public IEnumerable<AvlListNode<T>> SearchNodes() => SearchNodes(0, Count);
 		public IEnumerable<AvlListNode<T>> SearchNodes(int l, int r)
 		{
 			if (l < 0) throw new ArgumentOutOfRangeException(nameof(l));
 			if (r > Count) throw new ArgumentOutOfRangeException(nameof(r));
-			if (l > r) throw new ArgumentOutOfRangeException();
+			if (l > r) throw new ArgumentOutOfRangeException(nameof(r), "l <= r must be satisfied.");
 
 			for (var n = SearchNode(l); l < r; n = n.SearchNextNode(), ++l)
 			{
@@ -141,7 +137,7 @@ namespace CoderLib6.DataTrees.Bsts
 		{
 			if (l < 0) throw new ArgumentOutOfRangeException(nameof(l));
 			if (r > Count) throw new ArgumentOutOfRangeException(nameof(r));
-			if (l > r) throw new ArgumentOutOfRangeException();
+			if (l > r) throw new ArgumentOutOfRangeException(nameof(r), "l <= r must be satisfied.");
 
 			for (var n = Root?.SearchNode(l); l < r; n = n.SearchNextNode(), ++l)
 			{
@@ -235,17 +231,11 @@ namespace CoderLib6.DataTrees.Bsts
 				var c = t.Left ?? t.Right;
 
 				if (t.Parent == null)
-				{
 					SetRoot(c);
-				}
 				else if (t.Parent.Left == t)
-				{
 					t.Parent.SetLeft(c);
-				}
 				else
-				{
 					t.Parent.SetRight(c);
-				}
 
 				t.Parent?.UpdateCount(true);
 			}
