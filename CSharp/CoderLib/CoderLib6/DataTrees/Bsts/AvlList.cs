@@ -95,6 +95,7 @@ namespace CoderLib6.DataTrees.Bsts
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => SearchNodes().GetEnumerator();
 	}
 
+	[System.Diagnostics.DebuggerDisplay(@"Count = {Count}")]
 	public class AvlList<T> : IEnumerable<T>
 	{
 		public AvlListNode<T> Root { get; private set; }
