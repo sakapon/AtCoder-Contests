@@ -6,15 +6,15 @@ namespace CoderLib6.DataTrees.Bsts
 	// クラスに型引数を指定することで、Create メソッドを呼び出すときに型引数 <T, Tkey> の指定を省略できます。
 	public static class Comparer2<T>
 	{
-		static IComparer<TKey> GetDefault<TKey>()
+		public static IComparer<T> GetDefault()
 		{
-			if (typeof(TKey) == typeof(string)) return (IComparer<TKey>)StringComparer.Ordinal;
-			return Comparer<TKey>.Default;
+			if (typeof(T) == typeof(string)) return (IComparer<T>)StringComparer.Ordinal;
+			return Comparer<T>.Default;
 		}
 
 		public static IComparer<T> Create(bool descending = false)
 		{
-			var c = GetDefault<T>();
+			var c = GetDefault();
 			if (descending) return Comparer<T>.Create((x, y) => c.Compare(y, x));
 			else return c;
 		}
@@ -22,7 +22,7 @@ namespace CoderLib6.DataTrees.Bsts
 		public static IComparer<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false)
 		{
 			if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
-			var c = GetDefault<TKey>();
+			var c = Comparer2<TKey>.GetDefault();
 			if (descending) return Comparer<T>.Create((x, y) => c.Compare(keySelector(y), keySelector(x)));
 			else return Comparer<T>.Create((x, y) => c.Compare(keySelector(x), keySelector(y)));
 		}
@@ -31,8 +31,8 @@ namespace CoderLib6.DataTrees.Bsts
 		{
 			if (keySelector1 == null) throw new ArgumentNullException(nameof(keySelector1));
 			if (keySelector2 == null) throw new ArgumentNullException(nameof(keySelector2));
-			var c1 = GetDefault<TKey1>();
-			var c2 = GetDefault<TKey2>();
+			var c1 = Comparer2<TKey1>.GetDefault();
+			var c2 = Comparer2<TKey2>.GetDefault();
 			return Comparer<T>.Create((x, y) =>
 			{
 				var d = c1.Compare(keySelector1(x), keySelector1(y));
