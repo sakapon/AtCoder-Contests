@@ -1,154 +1,159 @@
 ﻿using System;
 using System.Collections.Generic;
 
+// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/7/ITP2_7_C
+// Test: https://atcoder.jp/contests/typical90/tasks/typical90_f
+// Test: https://atcoder.jp/contests/typical90/tasks/typical90_g
+// Test: https://atcoder.jp/contests/past202104-open/tasks/past202104_m
+// Test: https://atcoder.jp/contests/past202107-open/tasks/past202107_l
 namespace CoderLib6.DataTrees.Bsts
 {
-	[System.Diagnostics.DebuggerDisplay(@"\{{Key}\}")]
-	public class IndexedSetNode<TKey> : IEnumerable<IndexedSetNode<TKey>>
-	{
-		public TKey Key { get; set; }
-		public IndexedSetNode<TKey> Parent { get; internal set; }
-		public IndexedSetNode<TKey> Left { get; private set; }
-		public IndexedSetNode<TKey> Right { get; private set; }
-
-		internal void SetLeft(IndexedSetNode<TKey> child)
-		{
-			Left = child;
-			if (child != null) child.Parent = this;
-		}
-
-		internal void SetRight(IndexedSetNode<TKey> child)
-		{
-			Right = child;
-			if (child != null) child.Parent = this;
-		}
-
-		public int Count { get; private set; } = 1;
-		public int LeftCount => Left?.Count ?? 0;
-		public int RightCount => Right?.Count ?? 0;
-
-		internal void UpdateCount(bool recursive = false)
-		{
-			Count = LeftCount + RightCount + 1;
-			if (recursive) Parent?.UpdateCount(true);
-		}
-
-		public IndexedSetNode<TKey> SearchFirstNode()
-		{
-			return Left?.SearchFirstNode() ?? this;
-		}
-
-		public IndexedSetNode<TKey> SearchLastNode()
-		{
-			return Right?.SearchLastNode() ?? this;
-		}
-
-		public IndexedSetNode<TKey> SearchFirstNode(Func<TKey, bool> predicate)
-		{
-			if (predicate(Key)) return Left?.SearchFirstNode(predicate) ?? this;
-			else return Right?.SearchFirstNode(predicate);
-		}
-
-		public IndexedSetNode<TKey> SearchLastNode(Func<TKey, bool> predicate)
-		{
-			if (predicate(Key)) return Right?.SearchLastNode(predicate) ?? this;
-			else return Left?.SearchLastNode(predicate);
-		}
-
-		public IndexedSetNode<TKey> SearchPreviousNode()
-		{
-			return Left?.SearchLastNode() ?? SearchPreviousAncestor();
-		}
-
-		public IndexedSetNode<TKey> SearchNextNode()
-		{
-			return Right?.SearchFirstNode() ?? SearchNextAncestor();
-		}
-
-		IndexedSetNode<TKey> SearchPreviousAncestor()
-		{
-			if (Parent == null) return null;
-			if (Parent.Right == this) return Parent;
-			return Parent.SearchPreviousAncestor();
-		}
-
-		IndexedSetNode<TKey> SearchNextAncestor()
-		{
-			if (Parent == null) return null;
-			if (Parent.Left == this) return Parent;
-			return Parent.SearchNextAncestor();
-		}
-
-		// not found: Count
-		public int SearchFirstIndex(Func<TKey, bool> predicate)
-		{
-			if (predicate(Key))
-				return Left?.SearchFirstIndex(predicate) ?? 0;
-			else
-				return LeftCount + 1 + (Right?.SearchFirstIndex(predicate) ?? 0);
-		}
-
-		// not found: -1
-		public int SearchLastIndex(Func<TKey, bool> predicate)
-		{
-			if (predicate(Key))
-				return LeftCount + 1 + (Right?.SearchLastIndex(predicate) ?? -1);
-			else
-				return Left?.SearchLastIndex(predicate) ?? -1;
-		}
-
-		// not found: -1
-		public int SearchIndex(TKey key, IComparer<TKey> comparer)
-		{
-			var d = comparer.Compare(key, Key);
-			if (d == 0) return LeftCount;
-			if (d < 0)
-			{
-				return Left?.SearchIndex(key, comparer) ?? -1;
-			}
-			else
-			{
-				var i = Right?.SearchIndex(key, comparer) ?? -1;
-				if (i == -1) return -1;
-				return LeftCount + 1 + i;
-			}
-		}
-
-		public IndexedSetNode<TKey> SearchNode(int index)
-		{
-			var d = index - LeftCount;
-			if (d == 0) return this;
-			if (d < 0) return Left?.SearchNode(index);
-			else return Right?.SearchNode(d - 1);
-		}
-
-		public IndexedSetNode<TKey> SearchNode(TKey key, IComparer<TKey> comparer)
-		{
-			var d = comparer.Compare(key, Key);
-			if (d == 0) return this;
-			if (d < 0) return Left?.SearchNode(key, comparer);
-			else return Right?.SearchNode(key, comparer);
-		}
-
-		public IEnumerable<IndexedSetNode<TKey>> SearchNodes()
-		{
-			var end = SearchNextAncestor();
-			for (var n = SearchFirstNode(); n != end; n = n.SearchNextNode())
-			{
-				yield return n;
-			}
-		}
-
-		public IEnumerator<IndexedSetNode<TKey>> GetEnumerator() => SearchNodes().GetEnumerator();
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => SearchNodes().GetEnumerator();
-	}
-
 	[System.Diagnostics.DebuggerDisplay(@"Count = {Count}")]
 	public class IndexedSet<T> : IEnumerable<T>
 	{
-		public IndexedSetNode<T> Root { get; private set; }
+		[System.Diagnostics.DebuggerDisplay(@"\{{Key}\}")]
+		public class Node : IEnumerable<Node>
+		{
+			public T Key { get; set; }
+			public Node Parent { get; internal set; }
+			public Node Left { get; private set; }
+			public Node Right { get; private set; }
 
-		void SetRoot(IndexedSetNode<T> root)
+			internal void SetLeft(Node child)
+			{
+				Left = child;
+				if (child != null) child.Parent = this;
+			}
+
+			internal void SetRight(Node child)
+			{
+				Right = child;
+				if (child != null) child.Parent = this;
+			}
+
+			public int Count { get; private set; } = 1;
+			public int LeftCount => Left?.Count ?? 0;
+			public int RightCount => Right?.Count ?? 0;
+
+			internal void UpdateCount(bool recursive = false)
+			{
+				Count = LeftCount + RightCount + 1;
+				if (recursive) Parent?.UpdateCount(true);
+			}
+
+			public Node SearchFirstNode()
+			{
+				return Left?.SearchFirstNode() ?? this;
+			}
+
+			public Node SearchLastNode()
+			{
+				return Right?.SearchLastNode() ?? this;
+			}
+
+			public Node SearchFirstNode(Func<T, bool> predicate)
+			{
+				if (predicate(Key)) return Left?.SearchFirstNode(predicate) ?? this;
+				else return Right?.SearchFirstNode(predicate);
+			}
+
+			public Node SearchLastNode(Func<T, bool> predicate)
+			{
+				if (predicate(Key)) return Right?.SearchLastNode(predicate) ?? this;
+				else return Left?.SearchLastNode(predicate);
+			}
+
+			public Node SearchPreviousNode()
+			{
+				return Left?.SearchLastNode() ?? SearchPreviousAncestor();
+			}
+
+			public Node SearchNextNode()
+			{
+				return Right?.SearchFirstNode() ?? SearchNextAncestor();
+			}
+
+			Node SearchPreviousAncestor()
+			{
+				if (Parent == null) return null;
+				if (Parent.Right == this) return Parent;
+				return Parent.SearchPreviousAncestor();
+			}
+
+			Node SearchNextAncestor()
+			{
+				if (Parent == null) return null;
+				if (Parent.Left == this) return Parent;
+				return Parent.SearchNextAncestor();
+			}
+
+			// not found: Count
+			public int SearchFirstIndex(Func<T, bool> predicate)
+			{
+				if (predicate(Key))
+					return Left?.SearchFirstIndex(predicate) ?? 0;
+				else
+					return LeftCount + 1 + (Right?.SearchFirstIndex(predicate) ?? 0);
+			}
+
+			// not found: -1
+			public int SearchLastIndex(Func<T, bool> predicate)
+			{
+				if (predicate(Key))
+					return LeftCount + 1 + (Right?.SearchLastIndex(predicate) ?? -1);
+				else
+					return Left?.SearchLastIndex(predicate) ?? -1;
+			}
+
+			// not found: -1
+			public int SearchIndex(T key, IComparer<T> comparer)
+			{
+				var d = comparer.Compare(key, Key);
+				if (d == 0) return LeftCount;
+				if (d < 0)
+				{
+					return Left?.SearchIndex(key, comparer) ?? -1;
+				}
+				else
+				{
+					var i = Right?.SearchIndex(key, comparer) ?? -1;
+					if (i == -1) return -1;
+					return LeftCount + 1 + i;
+				}
+			}
+
+			public Node SearchNode(int index)
+			{
+				var d = index - LeftCount;
+				if (d == 0) return this;
+				if (d < 0) return Left?.SearchNode(index);
+				else return Right?.SearchNode(d - 1);
+			}
+
+			public Node SearchNode(T key, IComparer<T> comparer)
+			{
+				var d = comparer.Compare(key, Key);
+				if (d == 0) return this;
+				if (d < 0) return Left?.SearchNode(key, comparer);
+				else return Right?.SearchNode(key, comparer);
+			}
+
+			public IEnumerable<Node> SearchNodes()
+			{
+				var end = SearchNextAncestor();
+				for (var n = SearchFirstNode(); n != end; n = n.SearchNextNode())
+				{
+					yield return n;
+				}
+			}
+
+			public IEnumerator<Node> GetEnumerator() => SearchNodes().GetEnumerator();
+			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => SearchNodes().GetEnumerator();
+		}
+
+		public Node Root { get; private set; }
+
+		void SetRoot(Node root)
 		{
 			Root = root;
 			if (root != null) root.Parent = null;
@@ -267,12 +272,12 @@ namespace CoderLib6.DataTrees.Bsts
 			return Count != c;
 		}
 
-		IndexedSetNode<T> Insert(IndexedSetNode<T> node, T item)
+		Node Insert(Node node, T item)
 		{
 			if (node == null)
 			{
 				++Count;
-				return new IndexedSetNode<T> { Key = item };
+				return new Node { Key = item };
 			}
 
 			var d = Comparer.Compare(item, node.Key);
@@ -323,7 +328,7 @@ namespace CoderLib6.DataTrees.Bsts
 		}
 
 		// Suppose t != null.
-		void RemoveTarget(IndexedSetNode<T> t)
+		void RemoveTarget(Node t)
 		{
 			if (t.Left == null || t.Right == null)
 			{
@@ -347,7 +352,7 @@ namespace CoderLib6.DataTrees.Bsts
 		}
 
 		// Suppose t != null.
-		static IndexedSetNode<T> RotateToRight(IndexedSetNode<T> t)
+		static Node RotateToRight(Node t)
 		{
 			var p = t.Left;
 			t.SetLeft(p.Right);
@@ -356,7 +361,7 @@ namespace CoderLib6.DataTrees.Bsts
 		}
 
 		// Suppose t != null.
-		static IndexedSetNode<T> RotateToLeft(IndexedSetNode<T> t)
+		static Node RotateToLeft(Node t)
 		{
 			var p = t.Right;
 			t.SetRight(p.Left);

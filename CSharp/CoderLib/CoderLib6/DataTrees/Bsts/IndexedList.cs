@@ -7,101 +7,101 @@ using System.Collections.Generic;
 // Test: https://atcoder.jp/contests/typical90/tasks/typical90_bi
 namespace CoderLib6.DataTrees.Bsts
 {
-	[System.Diagnostics.DebuggerDisplay(@"\{{Item}\}")]
-	public class AvlListNode<T> : IEnumerable<AvlListNode<T>>
-	{
-		public T Item { get; set; }
-		public AvlListNode<T> Parent { get; internal set; }
-		public AvlListNode<T> Left { get; private set; }
-		public AvlListNode<T> Right { get; private set; }
-
-		internal void SetLeft(AvlListNode<T> child)
-		{
-			Left = child;
-			if (child != null) child.Parent = this;
-		}
-
-		internal void SetRight(AvlListNode<T> child)
-		{
-			Right = child;
-			if (child != null) child.Parent = this;
-		}
-
-		public int Count { get; private set; } = 1;
-		public int LeftCount => Left?.Count ?? 0;
-		public int RightCount => Right?.Count ?? 0;
-
-		internal void UpdateCount(bool recursive = false)
-		{
-			Count = LeftCount + RightCount + 1;
-			if (recursive) Parent?.UpdateCount(true);
-		}
-
-		public AvlListNode<T> SearchFirstNode()
-		{
-			return Left?.SearchFirstNode() ?? this;
-		}
-
-		public AvlListNode<T> SearchLastNode()
-		{
-			return Right?.SearchLastNode() ?? this;
-		}
-
-		public AvlListNode<T> SearchPreviousNode()
-		{
-			return Left?.SearchLastNode() ?? SearchPreviousAncestor();
-		}
-
-		public AvlListNode<T> SearchNextNode()
-		{
-			return Right?.SearchFirstNode() ?? SearchNextAncestor();
-		}
-
-		AvlListNode<T> SearchPreviousAncestor()
-		{
-			if (Parent == null) return null;
-			if (Parent.Right == this) return Parent;
-			return Parent.SearchPreviousAncestor();
-		}
-
-		AvlListNode<T> SearchNextAncestor()
-		{
-			if (Parent == null) return null;
-			if (Parent.Left == this) return Parent;
-			return Parent.SearchNextAncestor();
-		}
-
-		public AvlListNode<T> SearchNode(int index)
-		{
-			var d = index - LeftCount;
-			if (d == 0) return this;
-			if (d < 0) return Left?.SearchNode(index);
-			else return Right?.SearchNode(d - 1);
-		}
-
-		public IEnumerable<AvlListNode<T>> SearchNodes() => SearchNodes(0, Count);
-		public IEnumerable<AvlListNode<T>> SearchNodes(int l, int r)
-		{
-			if (l < 0) throw new ArgumentOutOfRangeException(nameof(l));
-			if (r > Count) throw new ArgumentOutOfRangeException(nameof(r));
-			if (l > r) throw new ArgumentOutOfRangeException(nameof(r), "l <= r must be satisfied.");
-
-			for (var n = SearchNode(l); l < r; n = n.SearchNextNode(), ++l)
-			{
-				yield return n;
-			}
-		}
-
-		public IEnumerator<AvlListNode<T>> GetEnumerator() => SearchNodes().GetEnumerator();
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => SearchNodes().GetEnumerator();
-	}
-
 	[System.Diagnostics.DebuggerDisplay(@"Count = {Count}")]
-	public class AvlList<T> : IEnumerable<T>
+	public class IndexedList<T> : IEnumerable<T>
 	{
-		public AvlListNode<T> Root { get; private set; }
+		[System.Diagnostics.DebuggerDisplay(@"\{{Item}\}")]
+		public class Node : IEnumerable<Node>
+		{
+			public T Item { get; set; }
+			public Node Parent { get; internal set; }
+			public Node Left { get; private set; }
+			public Node Right { get; private set; }
 
-		void SetRoot(AvlListNode<T> root)
+			internal void SetLeft(Node child)
+			{
+				Left = child;
+				if (child != null) child.Parent = this;
+			}
+
+			internal void SetRight(Node child)
+			{
+				Right = child;
+				if (child != null) child.Parent = this;
+			}
+
+			public int Count { get; private set; } = 1;
+			public int LeftCount => Left?.Count ?? 0;
+			public int RightCount => Right?.Count ?? 0;
+
+			internal void UpdateCount(bool recursive = false)
+			{
+				Count = LeftCount + RightCount + 1;
+				if (recursive) Parent?.UpdateCount(true);
+			}
+
+			public Node SearchFirstNode()
+			{
+				return Left?.SearchFirstNode() ?? this;
+			}
+
+			public Node SearchLastNode()
+			{
+				return Right?.SearchLastNode() ?? this;
+			}
+
+			public Node SearchPreviousNode()
+			{
+				return Left?.SearchLastNode() ?? SearchPreviousAncestor();
+			}
+
+			public Node SearchNextNode()
+			{
+				return Right?.SearchFirstNode() ?? SearchNextAncestor();
+			}
+
+			Node SearchPreviousAncestor()
+			{
+				if (Parent == null) return null;
+				if (Parent.Right == this) return Parent;
+				return Parent.SearchPreviousAncestor();
+			}
+
+			Node SearchNextAncestor()
+			{
+				if (Parent == null) return null;
+				if (Parent.Left == this) return Parent;
+				return Parent.SearchNextAncestor();
+			}
+
+			public Node SearchNode(int index)
+			{
+				var d = index - LeftCount;
+				if (d == 0) return this;
+				if (d < 0) return Left?.SearchNode(index);
+				else return Right?.SearchNode(d - 1);
+			}
+
+			public IEnumerable<Node> SearchNodes() => SearchNodes(0, Count);
+			public IEnumerable<Node> SearchNodes(int l, int r)
+			{
+				if (l < 0) throw new ArgumentOutOfRangeException(nameof(l));
+				if (r > Count) throw new ArgumentOutOfRangeException(nameof(r));
+				if (l > r) throw new ArgumentOutOfRangeException(nameof(r), "l <= r must be satisfied.");
+
+				for (var n = SearchNode(l); l < r; n = n.SearchNextNode(), ++l)
+				{
+					yield return n;
+				}
+			}
+
+			public IEnumerator<Node> GetEnumerator() => SearchNodes().GetEnumerator();
+			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => SearchNodes().GetEnumerator();
+		}
+
+		public Node Root { get; private set; }
+
+		void SetRoot(Node root)
 		{
 			Root = root;
 			if (root != null) root.Parent = null;
@@ -170,19 +170,19 @@ namespace CoderLib6.DataTrees.Bsts
 			}
 		}
 
-		public AvlListNode<T> Prepend(T item) => Insert(0, item);
-		public AvlListNode<T> Add(T item) => Insert(Count, item);
-		public AvlListNode<T> Insert(int index, T item)
+		public Node Prepend(T item) => Insert(0, item);
+		public Node Add(T item) => Insert(Count, item);
+		public Node Insert(int index, T item)
 		{
 			if (index < 0) throw new ArgumentOutOfRangeException(nameof(index));
 			if (index > Count) throw new ArgumentOutOfRangeException(nameof(index));
 
-			var newNode = new AvlListNode<T> { Item = item };
+			var newNode = new Node { Item = item };
 			SetRoot(Insert(Root, index, newNode));
 			return newNode;
 		}
 
-		AvlListNode<T> Insert(AvlListNode<T> node, int index, AvlListNode<T> newNode)
+		Node Insert(Node node, int index, Node newNode)
 		{
 			if (node == null)
 			{
@@ -226,7 +226,7 @@ namespace CoderLib6.DataTrees.Bsts
 		}
 
 		// Suppose t != null.
-		void RemoveTarget(AvlListNode<T> t)
+		void RemoveTarget(Node t)
 		{
 			if (t.Left == null || t.Right == null)
 			{
@@ -250,7 +250,7 @@ namespace CoderLib6.DataTrees.Bsts
 		}
 
 		// Suppose t != null.
-		static AvlListNode<T> RotateToRight(AvlListNode<T> t)
+		static Node RotateToRight(Node t)
 		{
 			var p = t.Left;
 			t.SetLeft(p.Right);
@@ -259,7 +259,7 @@ namespace CoderLib6.DataTrees.Bsts
 		}
 
 		// Suppose t != null.
-		static AvlListNode<T> RotateToLeft(AvlListNode<T> t)
+		static Node RotateToLeft(Node t)
 		{
 			var p = t.Right;
 			t.SetRight(p.Left);
