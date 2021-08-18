@@ -1,119 +1,124 @@
 ﻿using System;
 using System.Collections.Generic;
 
+// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/7/ITP2_7_C
+// Test: https://atcoder.jp/contests/typical90/tasks/typical90_f
+// Test: https://atcoder.jp/contests/typical90/tasks/typical90_g
+// Test: https://atcoder.jp/contests/past202104-open/tasks/past202104_m
+// Test: https://atcoder.jp/contests/past202107-open/tasks/past202107_l
 namespace CoderLib6.DataTrees.Bsts
 {
-	[System.Diagnostics.DebuggerDisplay(@"\{{Key}\}")]
-	public class AvlSortedSetNode<TKey> : IEnumerable<AvlSortedSetNode<TKey>>
-	{
-		public TKey Key { get; set; }
-		public AvlSortedSetNode<TKey> Parent { get; internal set; }
-		public AvlSortedSetNode<TKey> Left { get; private set; }
-		public AvlSortedSetNode<TKey> Right { get; private set; }
-
-		internal void SetLeft(AvlSortedSetNode<TKey> child)
-		{
-			Left = child;
-			if (child != null) child.Parent = this;
-		}
-
-		internal void SetRight(AvlSortedSetNode<TKey> child)
-		{
-			Right = child;
-			if (child != null) child.Parent = this;
-		}
-
-		public int Height { get; private set; } = 1;
-		public int LeftHeight => Left?.Height ?? 0;
-		public int RightHeight => Right?.Height ?? 0;
-
-		internal void UpdateHeight(bool recursive = false)
-		{
-			Height = Math.Max(LeftHeight, RightHeight) + 1;
-			if (recursive) Parent?.UpdateHeight(true);
-		}
-
-		public AvlSortedSetNode<TKey> SearchFirstNode()
-		{
-			return Left?.SearchFirstNode() ?? this;
-		}
-
-		public AvlSortedSetNode<TKey> SearchLastNode()
-		{
-			return Right?.SearchLastNode() ?? this;
-		}
-
-		public AvlSortedSetNode<TKey> SearchFirstNode(Func<TKey, bool> predicate)
-		{
-			if (predicate(Key)) return Left?.SearchFirstNode(predicate) ?? this;
-			else return Right?.SearchFirstNode(predicate);
-		}
-
-		public AvlSortedSetNode<TKey> SearchLastNode(Func<TKey, bool> predicate)
-		{
-			if (predicate(Key)) return Right?.SearchLastNode(predicate) ?? this;
-			else return Left?.SearchLastNode(predicate);
-		}
-
-		public AvlSortedSetNode<TKey> SearchPreviousNode()
-		{
-			return Left?.SearchLastNode() ?? SearchPreviousAncestor();
-		}
-
-		public AvlSortedSetNode<TKey> SearchNextNode()
-		{
-			return Right?.SearchFirstNode() ?? SearchNextAncestor();
-		}
-
-		AvlSortedSetNode<TKey> SearchPreviousAncestor()
-		{
-			if (Parent == null) return null;
-			if (Parent.Right == this) return Parent;
-			return Parent.SearchPreviousAncestor();
-		}
-
-		AvlSortedSetNode<TKey> SearchNextAncestor()
-		{
-			if (Parent == null) return null;
-			if (Parent.Left == this) return Parent;
-			return Parent.SearchNextAncestor();
-		}
-
-		public AvlSortedSetNode<TKey> SearchNode(TKey key, IComparer<TKey> comparer)
-		{
-			var d = comparer.Compare(key, Key);
-			if (d == 0) return this;
-			if (d < 0) return Left?.SearchNode(key, comparer);
-			else return Right?.SearchNode(key, comparer);
-		}
-
-		public IEnumerable<AvlSortedSetNode<TKey>> SearchNodes()
-		{
-			var end = SearchNextAncestor();
-			for (var n = SearchFirstNode(); n != end; n = n.SearchNextNode())
-			{
-				yield return n;
-			}
-		}
-
-		public IEnumerable<AvlSortedSetNode<TKey>> SearchNodes(Func<TKey, bool> startPredicate, Func<TKey, bool> endPredicate)
-		{
-			for (var n = SearchFirstNode(startPredicate); n != null && endPredicate(n.Key); n = n.SearchNextNode())
-			{
-				yield return n;
-			}
-		}
-
-		public IEnumerator<AvlSortedSetNode<TKey>> GetEnumerator() => SearchNodes().GetEnumerator();
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => SearchNodes().GetEnumerator();
-	}
-
 	[System.Diagnostics.DebuggerDisplay(@"Count = {Count}")]
 	public class AvlSortedSet<T> : IEnumerable<T>
 	{
-		public AvlSortedSetNode<T> Root { get; private set; }
+		[System.Diagnostics.DebuggerDisplay(@"\{{Key}\}")]
+		public class Node : IEnumerable<Node>
+		{
+			public T Key { get; set; }
+			public Node Parent { get; internal set; }
+			public Node Left { get; private set; }
+			public Node Right { get; private set; }
 
-		void SetRoot(AvlSortedSetNode<T> root)
+			internal void SetLeft(Node child)
+			{
+				Left = child;
+				if (child != null) child.Parent = this;
+			}
+
+			internal void SetRight(Node child)
+			{
+				Right = child;
+				if (child != null) child.Parent = this;
+			}
+
+			public int Height { get; private set; } = 1;
+			public int LeftHeight => Left?.Height ?? 0;
+			public int RightHeight => Right?.Height ?? 0;
+
+			internal void UpdateHeight(bool recursive = false)
+			{
+				Height = Math.Max(LeftHeight, RightHeight) + 1;
+				if (recursive) Parent?.UpdateHeight(true);
+			}
+
+			public Node SearchFirstNode()
+			{
+				return Left?.SearchFirstNode() ?? this;
+			}
+
+			public Node SearchLastNode()
+			{
+				return Right?.SearchLastNode() ?? this;
+			}
+
+			public Node SearchFirstNode(Func<T, bool> predicate)
+			{
+				if (predicate(Key)) return Left?.SearchFirstNode(predicate) ?? this;
+				else return Right?.SearchFirstNode(predicate);
+			}
+
+			public Node SearchLastNode(Func<T, bool> predicate)
+			{
+				if (predicate(Key)) return Right?.SearchLastNode(predicate) ?? this;
+				else return Left?.SearchLastNode(predicate);
+			}
+
+			public Node SearchPreviousNode()
+			{
+				return Left?.SearchLastNode() ?? SearchPreviousAncestor();
+			}
+
+			public Node SearchNextNode()
+			{
+				return Right?.SearchFirstNode() ?? SearchNextAncestor();
+			}
+
+			Node SearchPreviousAncestor()
+			{
+				if (Parent == null) return null;
+				if (Parent.Right == this) return Parent;
+				return Parent.SearchPreviousAncestor();
+			}
+
+			Node SearchNextAncestor()
+			{
+				if (Parent == null) return null;
+				if (Parent.Left == this) return Parent;
+				return Parent.SearchNextAncestor();
+			}
+
+			public Node SearchNode(T key, IComparer<T> comparer)
+			{
+				var d = comparer.Compare(key, Key);
+				if (d == 0) return this;
+				if (d < 0) return Left?.SearchNode(key, comparer);
+				else return Right?.SearchNode(key, comparer);
+			}
+
+			public IEnumerable<Node> SearchNodes()
+			{
+				var end = SearchNextAncestor();
+				for (var n = SearchFirstNode(); n != end; n = n.SearchNextNode())
+				{
+					yield return n;
+				}
+			}
+
+			public IEnumerable<Node> SearchNodes(Func<T, bool> startPredicate, Func<T, bool> endPredicate)
+			{
+				for (var n = SearchFirstNode(startPredicate); n != null && endPredicate(n.Key); n = n.SearchNextNode())
+				{
+					yield return n;
+				}
+			}
+
+			public IEnumerator<Node> GetEnumerator() => SearchNodes().GetEnumerator();
+			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => SearchNodes().GetEnumerator();
+		}
+
+		public Node Root { get; private set; }
+
+		void SetRoot(Node root)
 		{
 			Root = root;
 			if (root != null) root.Parent = null;
@@ -190,12 +195,12 @@ namespace CoderLib6.DataTrees.Bsts
 			return Count != c;
 		}
 
-		AvlSortedSetNode<T> Insert(AvlSortedSetNode<T> node, T item)
+		Node Insert(Node node, T item)
 		{
 			if (node == null)
 			{
 				++Count;
-				return new AvlSortedSetNode<T> { Key = item };
+				return new Node { Key = item };
 			}
 
 			var d = Comparer.Compare(item, node.Key);
@@ -233,7 +238,7 @@ namespace CoderLib6.DataTrees.Bsts
 		}
 
 		// Suppose t != null.
-		void RemoveTarget(AvlSortedSetNode<T> t)
+		void RemoveTarget(Node t)
 		{
 			if (t.Left == null || t.Right == null)
 			{
@@ -257,7 +262,7 @@ namespace CoderLib6.DataTrees.Bsts
 		}
 
 		// Suppose t != null.
-		static AvlSortedSetNode<T> RotateToRight(AvlSortedSetNode<T> t)
+		static Node RotateToRight(Node t)
 		{
 			var p = t.Left;
 			t.SetLeft(p.Right);
@@ -266,7 +271,7 @@ namespace CoderLib6.DataTrees.Bsts
 		}
 
 		// Suppose t != null.
-		static AvlSortedSetNode<T> RotateToLeft(AvlSortedSetNode<T> t)
+		static Node RotateToLeft(Node t)
 		{
 			var p = t.Right;
 			t.SetRight(p.Left);
