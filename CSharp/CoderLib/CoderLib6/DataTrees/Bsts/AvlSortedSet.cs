@@ -104,14 +104,6 @@ namespace CoderLib6.DataTrees.Bsts
 				}
 			}
 
-			public IEnumerable<Node> SearchNodes(Func<T, bool> startPredicate, Func<T, bool> endPredicate)
-			{
-				for (var n = SearchFirstNode(startPredicate); n != null && endPredicate(n.Key); n = n.SearchNextNode())
-				{
-					yield return n;
-				}
-			}
-
 			public IEnumerator<Node> GetEnumerator() => SearchNodes().GetEnumerator();
 			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => SearchNodes().GetEnumerator();
 		}

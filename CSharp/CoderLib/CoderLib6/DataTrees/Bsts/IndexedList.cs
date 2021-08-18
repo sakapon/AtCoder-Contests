@@ -82,14 +82,10 @@ namespace CoderLib6.DataTrees.Bsts
 				else return Right?.SearchNode(d - 1);
 			}
 
-			public IEnumerable<Node> SearchNodes() => SearchNodes(0, Count);
-			public IEnumerable<Node> SearchNodes(int l, int r)
+			public IEnumerable<Node> SearchNodes()
 			{
-				if (l < 0) throw new ArgumentOutOfRangeException(nameof(l));
-				if (r > Count) throw new ArgumentOutOfRangeException(nameof(r));
-				if (l > r) throw new ArgumentOutOfRangeException(nameof(r), "l <= r must be satisfied.");
-
-				for (var n = SearchNode(l); l < r; n = n.SearchNextNode(), ++l)
+				var end = SearchNextAncestor();
+				for (var n = SearchFirstNode(); n != end; n = n.SearchNextNode())
 				{
 					yield return n;
 				}
