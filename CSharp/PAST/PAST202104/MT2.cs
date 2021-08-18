@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoderLib6.DataTrees;
+using CoderLib6.DataTrees.Bsts;
 
 class MT2
 {
@@ -25,7 +25,7 @@ class MT2
 			d[x] = c;
 		}
 
-		var set = AvlSet<(int l, int r)>.Create(_ => _.l);
+		var set = new IndexedSet<(int l, int r)>();
 
 		for (var (l, r) = (0, 1); r <= n; r++)
 		{
@@ -73,13 +73,11 @@ class MT2
 }
 
 // Dummy
-namespace CoderLib6.DataTrees
+namespace CoderLib6.DataTrees.Bsts
 {
-	public class AvlSet<T>
+	public class IndexedSet<T>
 	{
-		public static AvlSet<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false) => throw new NotImplementedException();
-
-		public IEnumerable<T> GetItems(Func<T, bool> predicateForMin, Func<T, bool> predicateForMax) => throw new NotImplementedException();
+		public IEnumerable<T> GetItems(Func<T, bool> startPredicate, Func<T, bool> endPredicate) => throw new NotImplementedException();
 		public bool Add(T item) => throw new NotImplementedException();
 		public bool Remove(T item) => throw new NotImplementedException();
 	}
