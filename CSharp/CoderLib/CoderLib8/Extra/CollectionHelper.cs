@@ -4,16 +4,18 @@ using System.Linq;
 
 namespace CoderLib8.Extra
 {
-	static class CollectionHelper
+	public static class CollectionHelper
 	{
-		static int[] Tally(this int[] a, int max)
+		// O(|a| + max)
+		public static int[] GroupCounts(this int[] a, int max)
 		{
 			var r = new int[max + 1];
 			foreach (var x in a) ++r[x];
 			return r;
 		}
 
-		static int[] Tally(this string s, char start = 'A', int count = 26)
+		// O(|s|)
+		public static int[] GroupCounts(this string s, char start = 'A', int count = 26)
 		{
 			var r = new int[count];
 			foreach (var c in s) ++r[c - start];
@@ -22,7 +24,7 @@ namespace CoderLib8.Extra
 
 		// cf. Linq.GE.GroupCounts method
 		// a.GroupBy(x => x).ToDictionary(g => g.Key, g => g.Count());
-		static Dictionary<T, int> Tally<T>(this T[] a)
+		public static Dictionary<T, int> GroupCounts<T>(this T[] a)
 		{
 			var d = new Dictionary<T, int>();
 			foreach (var o in a)
@@ -31,25 +33,43 @@ namespace CoderLib8.Extra
 			return d;
 		}
 
-
 		// O(|a| + max)
-		static List<int>[] TallyIndexes(this int[] a, int max)
+		public static int[][] GroupIndexes(this int[] a, int max)
 		{
 			var d = Array.ConvertAll(new bool[max + 1], _ => new List<int>());
 			for (int i = 0; i < a.Length; ++i) d[a[i]].Add(i);
+			return Array.ConvertAll(d, l => l.ToArray());
+		}
+
+		// O(|s|)
+		public static int[][] GroupIndexes(this string s, char start = 'A', int count = 26)
+		{
+			var d = Array.ConvertAll(new bool[count], _ => new List<int>());
+			for (int i = 0; i < s.Length; ++i) d[s[i] - start].Add(i);
+			return Array.ConvertAll(d, l => l.ToArray());
+		}
+
+		public static Dictionary<T, List<int>> GroupIndexes<T>(this T[] a)
+		{
+			var d = new Dictionary<T, List<int>>();
+			for (int i = 0; i < a.Length; ++i)
+				if (d.ContainsKey(a[i])) d[a[i]].Add(i);
+				else d[a[i]] = new List<int> { i };
 			return d;
 		}
 
+		// Suppose 1-to-1 mapping.
 		// O(|a| + max)
-		static int[] ToInverseMap(this int[] a, int max)
+		public static int[] ToInverseMap(this int[] a, int max)
 		{
 			var d = Array.ConvertAll(new bool[max + 1], _ => -1);
 			for (int i = 0; i < a.Length; ++i) d[a[i]] = i;
 			return d;
 		}
 
+		// Suppose 1-to-1 mapping.
 		// Enumerable.Range(0, a.Length).ToDictionary(i => a[i]);
-		static Dictionary<T, int> ToInverseMap<T>(this T[] a)
+		public static Dictionary<T, int> ToInverseMap<T>(this T[] a)
 		{
 			var d = new Dictionary<T, int>();
 			for (int i = 0; i < a.Length; ++i) d[a[i]] = i;
@@ -57,7 +77,7 @@ namespace CoderLib8.Extra
 		}
 
 		// cf. Collections.CompressionHashMap class
-		static (int[] comp, Dictionary<int, int> map) Compress(this int[] a)
+		public static (int[] comp, Dictionary<int, int> map) Compress(this int[] a)
 		{
 			var c = a.Distinct().OrderBy(v => v).ToArray();
 			var d = Enumerable.Range(0, c.Length).ToDictionary(i => c[i]);
@@ -66,7 +86,7 @@ namespace CoderLib8.Extra
 
 		// O(n)
 		// a.Distinct().Count() == 1
-		static bool AreAllSame(int[] a)
+		public static bool AreAllSame(int[] a)
 		{
 			if (a.Length == 0) return false;
 			for (int i = 1; i < a.Length; ++i)
