@@ -299,7 +299,6 @@ namespace CoderLib6.DataTrees.Bsts
 			if (node == null) return false;
 
 			RemoveTarget(node);
-			--Count;
 			return true;
 		}
 
@@ -311,7 +310,6 @@ namespace CoderLib6.DataTrees.Bsts
 			var node = Root.SearchNode(index);
 			var item = node.Key;
 			RemoveTarget(node);
-			--Count;
 			return item;
 		}
 
@@ -330,6 +328,7 @@ namespace CoderLib6.DataTrees.Bsts
 					t.Parent.SetRight(c);
 
 				t.Parent?.UpdateCount(true);
+				--Count;
 			}
 			else
 			{

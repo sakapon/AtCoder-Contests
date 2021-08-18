@@ -214,7 +214,6 @@ namespace CoderLib6.DataTrees.Bsts
 			if (node == null) return false;
 
 			RemoveTarget(node);
-			--Count;
 			return true;
 		}
 
@@ -233,6 +232,7 @@ namespace CoderLib6.DataTrees.Bsts
 					t.Parent.SetRight(c);
 
 				t.Parent?.UpdateHeight(true);
+				--Count;
 			}
 			else
 			{
