@@ -288,19 +288,7 @@ namespace CoderLib6.DataTrees.Bsts
 			else
 				node.SetRight(Insert(node.Right, item));
 
-			var lc = node.LeftCount + 1;
-			var rc = node.RightCount + 1;
-			if (lc > 2 * rc)
-			{
-				node = RotateToRight(node);
-				node.Right.UpdateCount();
-			}
-			else if (rc > 2 * lc)
-			{
-				node = RotateToLeft(node);
-				node.Left.UpdateCount();
-			}
-
+			node = Balance(node);
 			node.UpdateCount();
 			return node;
 		}
@@ -349,6 +337,24 @@ namespace CoderLib6.DataTrees.Bsts
 				t.Key = t2.Key;
 				RemoveTarget(t2);
 			}
+		}
+
+		// Suppose t != null.
+		static Node Balance(Node t)
+		{
+			var lc = t.LeftCount + 1;
+			var rc = t.RightCount + 1;
+			if (lc > 2 * rc)
+			{
+				t = RotateToRight(t);
+				t.Right.UpdateCount();
+			}
+			else if (rc > 2 * lc)
+			{
+				t = RotateToLeft(t);
+				t.Left.UpdateCount();
+			}
+			return t;
 		}
 
 		// Suppose t != null.

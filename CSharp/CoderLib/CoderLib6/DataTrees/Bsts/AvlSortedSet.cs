@@ -203,18 +203,7 @@ namespace CoderLib6.DataTrees.Bsts
 			else
 				node.SetRight(Insert(node.Right, item));
 
-			var lrh = node.LeftHeight - node.RightHeight;
-			if (lrh > 2 || lrh == 2 && node.Left.LeftHeight >= node.Left.RightHeight)
-			{
-				node = RotateToRight(node);
-				node.Right.UpdateHeight();
-			}
-			else if (lrh < -2 || lrh == -2 && node.Right.LeftHeight <= node.Right.RightHeight)
-			{
-				node = RotateToLeft(node);
-				node.Left.UpdateHeight();
-			}
-
+			node = Balance(node);
 			node.UpdateHeight();
 			return node;
 		}
@@ -251,6 +240,23 @@ namespace CoderLib6.DataTrees.Bsts
 				t.Key = t2.Key;
 				RemoveTarget(t2);
 			}
+		}
+
+		// Suppose t != null.
+		static Node Balance(Node t)
+		{
+			var lrh = t.LeftHeight - t.RightHeight;
+			if (lrh > 2 || lrh == 2 && t.Left.LeftHeight >= t.Left.RightHeight)
+			{
+				t = RotateToRight(t);
+				t.Right.UpdateHeight();
+			}
+			else if (lrh < -2 || lrh == -2 && t.Right.LeftHeight <= t.Right.RightHeight)
+			{
+				t = RotateToLeft(t);
+				t.Left.UpdateHeight();
+			}
+			return t;
 		}
 
 		// Suppose t != null.
