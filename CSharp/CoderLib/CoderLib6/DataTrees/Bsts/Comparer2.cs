@@ -15,22 +15,28 @@ namespace CoderLib6.DataTrees.Bsts
 		public static IComparer<T> Create(bool descending = false)
 		{
 			var c = GetDefault();
-			if (descending) return Comparer<T>.Create((x, y) => c.Compare(y, x));
-			else return c;
+			if (descending)
+				return Comparer<T>.Create((x, y) => c.Compare(y, x));
+			else
+				return c;
 		}
 
 		public static IComparer<T> Create<TKey>(Func<T, TKey> keySelector, bool descending = false)
 		{
 			if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
+
 			var c = Comparer2<TKey>.GetDefault();
-			if (descending) return Comparer<T>.Create((x, y) => c.Compare(keySelector(y), keySelector(x)));
-			else return Comparer<T>.Create((x, y) => c.Compare(keySelector(x), keySelector(y)));
+			if (descending)
+				return Comparer<T>.Create((x, y) => c.Compare(keySelector(y), keySelector(x)));
+			else
+				return Comparer<T>.Create((x, y) => c.Compare(keySelector(x), keySelector(y)));
 		}
 
 		public static IComparer<T> Create<TKey1, TKey2>(Func<T, TKey1> keySelector1, Func<T, TKey2> keySelector2)
 		{
 			if (keySelector1 == null) throw new ArgumentNullException(nameof(keySelector1));
 			if (keySelector2 == null) throw new ArgumentNullException(nameof(keySelector2));
+
 			var c1 = Comparer2<TKey1>.GetDefault();
 			var c2 = Comparer2<TKey2>.GetDefault();
 			return Comparer<T>.Create((x, y) =>
