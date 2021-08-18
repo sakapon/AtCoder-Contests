@@ -95,6 +95,8 @@ namespace CoderLib6.DataTrees.Bsts
 				else return Right?.SearchNode(key, comparer);
 			}
 
+			public IEnumerator<Node> GetEnumerator() => SearchNodes().GetEnumerator();
+			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => SearchNodes().GetEnumerator();
 			public IEnumerable<Node> SearchNodes()
 			{
 				var end = SearchNextAncestor();
@@ -103,9 +105,6 @@ namespace CoderLib6.DataTrees.Bsts
 					yield return n;
 				}
 			}
-
-			public IEnumerator<Node> GetEnumerator() => SearchNodes().GetEnumerator();
-			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => SearchNodes().GetEnumerator();
 		}
 
 		public Node Root { get; private set; }
@@ -161,6 +160,8 @@ namespace CoderLib6.DataTrees.Bsts
 			return Root?.SearchNode(item, Comparer) != null;
 		}
 
+		public IEnumerator<T> GetEnumerator() => GetItems().GetEnumerator();
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetItems().GetEnumerator();
 		public IEnumerable<T> GetItems()
 		{
 			for (var n = Root?.SearchFirstNode(); n != null; n = n.SearchNextNode())
@@ -177,15 +178,23 @@ namespace CoderLib6.DataTrees.Bsts
 			}
 		}
 
-		public IEnumerator<T> GetEnumerator() => GetItems().GetEnumerator();
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetItems().GetEnumerator();
-
 		public bool Add(T item)
 		{
 			var c = Count;
 			SetRoot(Insert(Root, item));
 			return Count != c;
 		}
+
+		public bool Remove(T item)
+		{
+			var node = Root?.SearchNode(item, Comparer);
+			if (node == null) return false;
+
+			RemoveTarget(node);
+			return true;
+		}
+
+		#region Private Methods
 
 		Node Insert(Node node, T item)
 		{
@@ -206,15 +215,6 @@ namespace CoderLib6.DataTrees.Bsts
 			node = Balance(node);
 			node.UpdateHeight();
 			return node;
-		}
-
-		public bool Remove(T item)
-		{
-			var node = Root?.SearchNode(item, Comparer);
-			if (node == null) return false;
-
-			RemoveTarget(node);
-			return true;
 		}
 
 		// Suppose t != null.
@@ -276,5 +276,7 @@ namespace CoderLib6.DataTrees.Bsts
 			p.SetLeft(t);
 			return p;
 		}
+
+		#endregion
 	}
 }

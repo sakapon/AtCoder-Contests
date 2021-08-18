@@ -82,6 +82,8 @@ namespace CoderLib6.DataTrees.Bsts
 				else return Right?.SearchNode(d - 1);
 			}
 
+			public IEnumerator<Node> GetEnumerator() => SearchNodes().GetEnumerator();
+			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => SearchNodes().GetEnumerator();
 			public IEnumerable<Node> SearchNodes()
 			{
 				var end = SearchNextAncestor();
@@ -90,9 +92,6 @@ namespace CoderLib6.DataTrees.Bsts
 					yield return n;
 				}
 			}
-
-			public IEnumerator<Node> GetEnumerator() => SearchNodes().GetEnumerator();
-			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => SearchNodes().GetEnumerator();
 		}
 
 		public Node Root { get; private set; }
@@ -123,6 +122,8 @@ namespace CoderLib6.DataTrees.Bsts
 			return Root.SearchLastNode().Item;
 		}
 
+		public IEnumerator<T> GetEnumerator() => GetItems().GetEnumerator();
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetItems().GetEnumerator();
 		public IEnumerable<T> GetItems()
 		{
 			for (var n = Root?.SearchFirstNode(); n != null; n = n.SearchNextNode())
@@ -142,9 +143,6 @@ namespace CoderLib6.DataTrees.Bsts
 				yield return n.Item;
 			}
 		}
-
-		public IEnumerator<T> GetEnumerator() => GetItems().GetEnumerator();
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetItems().GetEnumerator();
 
 		public T this[int index]
 		{
@@ -178,6 +176,19 @@ namespace CoderLib6.DataTrees.Bsts
 			return newNode;
 		}
 
+		public T RemoveAt(int index)
+		{
+			if (index < 0) throw new ArgumentOutOfRangeException(nameof(index));
+			if (index >= Count) throw new ArgumentOutOfRangeException(nameof(index));
+
+			var node = Root.SearchNode(index);
+			var item = node.Item;
+			RemoveTarget(node);
+			return item;
+		}
+
+		#region Private Methods
+
 		Node Insert(Node node, int index, Node newNode)
 		{
 			if (node == null)
@@ -195,17 +206,6 @@ namespace CoderLib6.DataTrees.Bsts
 			node = Balance(node);
 			node.UpdateCount();
 			return node;
-		}
-
-		public T RemoveAt(int index)
-		{
-			if (index < 0) throw new ArgumentOutOfRangeException(nameof(index));
-			if (index >= Count) throw new ArgumentOutOfRangeException(nameof(index));
-
-			var node = Root.SearchNode(index);
-			var item = node.Item;
-			RemoveTarget(node);
-			return item;
 		}
 
 		// Suppose t != null.
@@ -268,5 +268,7 @@ namespace CoderLib6.DataTrees.Bsts
 			p.SetLeft(t);
 			return p;
 		}
+
+		#endregion
 	}
 }

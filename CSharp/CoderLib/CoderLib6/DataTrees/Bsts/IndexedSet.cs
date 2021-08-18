@@ -138,6 +138,8 @@ namespace CoderLib6.DataTrees.Bsts
 				else return Right?.SearchNode(key, comparer);
 			}
 
+			public IEnumerator<Node> GetEnumerator() => SearchNodes().GetEnumerator();
+			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => SearchNodes().GetEnumerator();
 			public IEnumerable<Node> SearchNodes()
 			{
 				var end = SearchNextAncestor();
@@ -146,9 +148,6 @@ namespace CoderLib6.DataTrees.Bsts
 					yield return n;
 				}
 			}
-
-			public IEnumerator<Node> GetEnumerator() => SearchNodes().GetEnumerator();
-			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => SearchNodes().GetEnumerator();
 		}
 
 		public Node Root { get; private set; }
@@ -227,6 +226,8 @@ namespace CoderLib6.DataTrees.Bsts
 			return Root?.SearchIndex(item, Comparer) ?? -1;
 		}
 
+		public IEnumerator<T> GetEnumerator() => GetItems().GetEnumerator();
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetItems().GetEnumerator();
 		public IEnumerable<T> GetItems()
 		{
 			for (var n = Root?.SearchFirstNode(); n != null; n = n.SearchNextNode())
@@ -262,35 +263,11 @@ namespace CoderLib6.DataTrees.Bsts
 			return ei - si + 1;
 		}
 
-		public IEnumerator<T> GetEnumerator() => GetItems().GetEnumerator();
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetItems().GetEnumerator();
-
 		public bool Add(T item)
 		{
 			var c = Count;
 			SetRoot(Insert(Root, item));
 			return Count != c;
-		}
-
-		Node Insert(Node node, T item)
-		{
-			if (node == null)
-			{
-				++Count;
-				return new Node { Key = item };
-			}
-
-			var d = Comparer.Compare(item, node.Key);
-			if (d == 0) return node;
-
-			if (d < 0)
-				node.SetLeft(Insert(node.Left, item));
-			else
-				node.SetRight(Insert(node.Right, item));
-
-			node = Balance(node);
-			node.UpdateCount();
-			return node;
 		}
 
 		public bool Remove(T item)
@@ -311,6 +288,29 @@ namespace CoderLib6.DataTrees.Bsts
 			var item = node.Key;
 			RemoveTarget(node);
 			return item;
+		}
+
+		#region Private Methods
+
+		Node Insert(Node node, T item)
+		{
+			if (node == null)
+			{
+				++Count;
+				return new Node { Key = item };
+			}
+
+			var d = Comparer.Compare(item, node.Key);
+			if (d == 0) return node;
+
+			if (d < 0)
+				node.SetLeft(Insert(node.Left, item));
+			else
+				node.SetRight(Insert(node.Right, item));
+
+			node = Balance(node);
+			node.UpdateCount();
+			return node;
 		}
 
 		// Suppose t != null.
@@ -373,5 +373,7 @@ namespace CoderLib6.DataTrees.Bsts
 			p.SetLeft(t);
 			return p;
 		}
+
+		#endregion
 	}
 }
