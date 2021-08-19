@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using CoderLib6.DataTrees.Bsts;
 
-class CB
+class CI
 {
 	static void Main()
 	{
