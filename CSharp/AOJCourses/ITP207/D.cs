@@ -8,12 +8,12 @@ class D
 	{
 		var n = int.Parse(Console.ReadLine());
 
-		var r = new List<int>();
 		var set = new SortedSet<int>();
 		var d = new Dictionary<int, int>();
 		var count = 0;
 
-		for (int i = 0; i < n; i++)
+		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
+		while (n-- > 0)
 		{
 			var q = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 			if (q[0] == 0)
@@ -21,10 +21,10 @@ class D
 				set.Add(q[1]);
 				if (d.ContainsKey(q[1])) d[q[1]]++;
 				else d[q[1]] = 1;
-				r.Add(++count);
+				Console.WriteLine(++count);
 			}
 			else if (q[0] == 1)
-				r.Add(d.ContainsKey(q[1]) ? d[q[1]] : 0);
+				Console.WriteLine(d.ContainsKey(q[1]) ? d[q[1]] : 0);
 			else if (q[0] == 2)
 			{
 				if (d.ContainsKey(q[1]))
@@ -35,8 +35,9 @@ class D
 				}
 			}
 			else
-				r.AddRange(set.GetViewBetween(q[1], q[2]).SelectMany(x => Enumerable.Repeat(x, d[x])));
+				foreach (var x in set.GetViewBetween(q[1], q[2]).SelectMany(x => Enumerable.Repeat(x, d[x])))
+					Console.WriteLine(x);
 		}
-		Console.WriteLine(string.Join("\n", r));
+		Console.Out.Flush();
 	}
 }
