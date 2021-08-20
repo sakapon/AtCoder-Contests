@@ -303,8 +303,8 @@ namespace CoderLib6.DataTrees.Bsts
 		public int GetCount(T item)
 		{
 			var si = Root?.SearchFirstIndex(x => Comparer.Compare(x, item) >= 0) ?? 0;
-			var ei = Root?.SearchFirstIndex(x => Comparer.Compare(x, item) > 0) ?? 0;
-			return ei - si;
+			var ei = Root?.SearchLastIndex(x => Comparer.Compare(x, item) <= 0) ?? -1;
+			return ei - si + 1;
 		}
 
 		public Node Add(T item)
