@@ -1,5 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using CoderLib6.DataTrees.Bsts;
+
+class DI
+{
+	static void Main()
+	{
+		var n = int.Parse(Console.ReadLine());
+		var ss = Array.ConvertAll(new bool[n], _ => Console.ReadLine());
+
+		var comp = Comparer2<string>.Create(s => s.TrimStart('0').Length, s => s.TrimStart('0'), s => -s.Length);
+		var set = new IndexedMultiSet<string>(comp);
+
+		foreach (var s in ss)
+			set.Add(s);
+
+		Console.WriteLine(string.Join("\n", set));
+	}
+}
 
 namespace CoderLib6.DataTrees.Bsts
 {
@@ -65,5 +83,17 @@ namespace CoderLib6.DataTrees.Bsts
 				return c3.Compare(keySelector3(x), keySelector3(y));
 			});
 		}
+	}
+}
+
+namespace CoderLib6.DataTrees.Bsts
+{
+	public class IndexedMultiSet<T> : IEnumerable<T>
+	{
+		public IndexedMultiSet(IComparer<T> comparer = null) { }
+		public IEnumerator<T> GetEnumerator() => GetItems().GetEnumerator();
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetItems().GetEnumerator();
+		public IEnumerable<T> GetItems() => throw new NotImplementedException();
+		public bool Add(T item) => throw new NotImplementedException();
 	}
 }
