@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 
 // Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/7/ITP2_7_D
+// Test: https://atcoder.jp/contests/past202012-open/tasks/past202012_d
 // Test: https://atcoder.jp/contests/typical90/tasks/typical90_f
 // Test: https://atcoder.jp/contests/typical90/tasks/typical90_g
-// Test: https://atcoder.jp/contests/past202012-open/tasks/past202012_d
 // Test: https://atcoder.jp/contests/abc124/tasks/abc124_d
 // Test: https://atcoder.jp/contests/abc143/tasks/abc143_d
 namespace CoderLib6.DataTrees.Bsts
@@ -301,7 +301,8 @@ namespace CoderLib6.DataTrees.Bsts
 		{
 			var si = Root?.SearchFirstIndex(startPredicate) ?? 0;
 			var ei = Root?.SearchLastIndex(endPredicate) ?? -1;
-			return ei - si + 1;
+			var c = ei - si + 1;
+			return c < 0 ? 0 : c;
 		}
 
 		public int GetCount(T item)

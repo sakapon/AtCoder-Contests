@@ -260,7 +260,8 @@ namespace CoderLib6.DataTrees.Bsts
 		{
 			var si = Root?.SearchFirstIndex(startPredicate) ?? 0;
 			var ei = Root?.SearchLastIndex(endPredicate) ?? -1;
-			return ei - si + 1;
+			var c = ei - si + 1;
+			return c < 0 ? 0 : c;
 		}
 
 		public bool Add(T item)
