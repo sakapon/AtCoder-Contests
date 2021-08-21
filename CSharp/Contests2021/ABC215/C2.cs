@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
-class C
+class C2
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
@@ -22,7 +18,10 @@ class C
 			set.Add(new string(p));
 		});
 
-		return set.OrderBy(s => s).ElementAt(k - 1);
+		var r = new string[set.Count];
+		set.CopyTo(r);
+		Array.Sort(r, StringComparer.Ordinal);
+		return r[k - 1];
 	}
 
 	public static void Permutation<T>(T[] values, int r, Action<T[]> action)
