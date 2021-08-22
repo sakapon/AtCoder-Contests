@@ -1,21 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 class D
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
 		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		var cs = CumSumL(a);
+		Array.Sort(cs);
+
+		return MInt(Enumerable.Range(0, n + 1).Sum(i => (2 * i - n) * (cs[i] % M)));
+	}
+
+	const long M = 998244353;
+	static long MInt(long x) => (x %= M) < 0 ? x + M : x;
+
+	public static long[] CumSumL(int[] a)
+	{
+		var s = new long[a.Length + 1];
+		for (int i = 0; i < a.Length; ++i) s[i + 1] = s[i] + a[i];
+		return s;
 	}
 }
