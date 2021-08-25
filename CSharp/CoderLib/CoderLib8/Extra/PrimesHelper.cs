@@ -33,6 +33,28 @@ namespace CoderLib8.Extra
 			return c;
 		}
 
+		// Naive
+		// n 以下のすべての数に対する、素因数 O(n)?
+		// 順序は保証されません。
+		static int[][] GetFactors(int n)
+		{
+			var a = new int[n + 1];
+			for (int i = 1; i <= n; ++i) a[i] = i;
+			var map = Array.ConvertAll(a, _ => new List<int>());
+
+			for (int q = 2; q <= n; ++q)
+				if (a[q] != 1)
+				{
+					var p = a[q];
+					for (int x = q; x <= n; x += q)
+					{
+						a[x] /= p;
+						map[x].Add(p);
+					}
+				}
+			return Array.ConvertAll(map, l => l.ToArray());
+		}
+
 		// Test: https://atcoder.jp/contests/arc115/tasks/arc115_c
 		// n 以下のすべての数に対する、素因数の個数 O(n)?
 		// 10_000_000 程度までなら速い
