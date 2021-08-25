@@ -6,11 +6,24 @@ namespace CoderLib8.Extra
 {
 	static class PrimesHelper
 	{
+		// Test: https://atcoder.jp/contests/abc206/tasks/abc206_e
+		// Test: https://atcoder.jp/contests/abc215/tasks/abc215_d
+		// n 以下のすべての数に対する、素因数の種類 O(n)?
+		static int[][] GetFactorTypes(int n)
+		{
+			var map = Array.ConvertAll(new bool[n + 1], _ => new List<int>());
+			for (int p = 2; p <= n; ++p)
+				if (map[p].Count == 0)
+					for (int x = p; x <= n; x += p)
+						map[x].Add(p);
+			return Array.ConvertAll(map, l => l.ToArray());
+		}
+
 		// Test: https://atcoder.jp/contests/typical90/tasks/typical90_ad
 		// n = 20000000 の例:
 		// Test: https://codeforces.com/contest/1499/problem/D
 		// n 以下のすべての数に対する、素因数の種類の数 O(n)?
-		static int[] GetPrimeTypes(int n)
+		static int[] GetFactorTypeCounts(int n)
 		{
 			var c = new int[n + 1];
 			for (int p = 2; p <= n; ++p)
