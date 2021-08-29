@@ -10,12 +10,48 @@ class E
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		(int n, long k) = Read2();
+		var a = ReadL();
 
-		return string.Join(" ", a);
+		var r = 0L;
+		var q = new Queue<(long v, int c)>(a.GroupBy(v => v).Select(g => (v: g.Key, g.Count())).OrderBy(_ => -_.v));
+
+		long Play(long v, long nv, long c)
+		{
+			var all = (v - nv) * c;
+			if (all <= k)
+			{
+				k -= all;
+				return (v * (v + 1) / 2 - nv * (nv + 1) / 2) * c;
+			}
+			else
+			{
+				var r = 0L;
+
+				var vc = k / c;
+				r += v * (v + 1) / 2 * c;
+				r -= (v - vc) * (v - vc + 1) / 2 * c;
+				k -= vc * c;
+				v -= vc;
+
+				r += v * k;
+				k = 0;
+
+				return r;
+			}
+		}
+
+		var nc = 0;
+
+		while (q.Count > 0)
+		{
+			var (v, c) = q.Dequeue();
+			nc += c;
+
+			r += Play(v, q.Count == 0 ? 0 : q.Peek().v, nc);
+			if (k == 0) break;
+		}
+
+		return r;
 	}
 }
