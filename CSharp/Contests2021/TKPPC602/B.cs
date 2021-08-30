@@ -29,28 +29,18 @@ class B
 
 			if (i == n - 1) return -1;
 
-			if (v == s[i + 1])
+			q = Math.Max(q, i);
+			while (q + 1 < n && s[q] != s[q + 1])
 			{
-				s[i] = !v;
-				s[i + 1] = !v;
-				r++;
-				q = i + 1;
+				q++;
 			}
-			else
-			{
-				q = Math.Max(q, i + 1);
-				while (q + 1 < n && s[q] != s[q + 1])
-				{
-					q++;
-				}
-				if (q == n - 1) return -1;
+			if (q == n - 1) return -1;
 
-				r += q - i + 1;
-				s.RemoveAt(q);
-				s.RemoveAt(q);
-				s.Insert(i, !v);
-				s.Insert(i, !v);
-			}
+			r += q - i + 1;
+			s.RemoveAt(q);
+			s.RemoveAt(q);
+			s.Insert(i, !v);
+			s.Insert(i, !v);
 		}
 
 		if (!s.SequenceEqual(t)) throw new InvalidOperationException();
