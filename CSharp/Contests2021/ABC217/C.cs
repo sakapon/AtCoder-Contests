@@ -11,11 +11,14 @@ class C
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var p = Read();
 
-		return string.Join(" ", a);
+		var q = new int[n];
+
+		for (int i = 0; i < n; i++)
+		{
+			q[p[i] - 1] = i + 1;
+		}
+		return string.Join(" ", q);
 	}
 }
