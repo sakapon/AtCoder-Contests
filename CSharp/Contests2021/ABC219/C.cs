@@ -10,12 +10,16 @@ class C
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
+		var x = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var s = Array.ConvertAll(new bool[n], _ => Console.ReadLine());
 
-		return string.Join(" ", a);
+		var d = new Dictionary<char, char>();
+		for (int i = 0; i < x.Length; ++i) d[x[i]] = (char)('a' + i);
+
+		var keys = Array.ConvertAll(s, v => string.Join("", v.Select(c => d[c])));
+		Array.Sort(keys, s);
+
+		return string.Join("\n", s);
 	}
 }
