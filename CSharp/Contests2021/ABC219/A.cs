@@ -12,8 +12,8 @@ class A
 	{
 		var x = int.Parse(Console.ReadLine());
 
-		var h = new[] { 0, 40, 70, 90, 1000 }.First(v => v > x);
-		if (h == 1000) return "expert";
+		var h = new[] { 40, 70, 90 }.FirstOrDefault(v => v > x);
+		if (h == 0) return "expert";
 		return h - x;
 	}
 }
