@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-class F
+class F2
 {
 	const long M = 998244353;
 	const int max = 5000;
@@ -13,28 +13,29 @@ class F
 		var a = Read();
 		var b = Read();
 
+		var r = 0L;
 		var dp = new long[max + 1];
+		dp[0] = 1;
 
-		foreach (var (av, bv) in a.Zip(b).OrderBy(_ => -_.First))
+		foreach (var (av, bv) in a.Zip(b).OrderBy(_ => _.First))
 		{
-			for (int d = 0; d <= max; d++)
+			for (int s = max; s >= 0; s--)
 			{
-				var nd = d - bv;
-				if (nd >= 0)
+				var ns = s + bv;
+				if (ns <= max)
 				{
-					dp[nd] += dp[d];
-					dp[nd] %= M;
+					dp[ns] += dp[s];
+					dp[ns] %= M;
 				}
-			}
 
-			var di = av - bv;
-			if (di >= 0)
-			{
-				dp[di]++;
-				dp[di] %= M;
+				if (av >= ns)
+				{
+					r += dp[s];
+					r %= M;
+				}
 			}
 		}
 
-		return dp.Sum() % M;
+		return r;
 	}
 }
