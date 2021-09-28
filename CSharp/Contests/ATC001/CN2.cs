@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
+using System.Numerics;
 
-class CN
+class CN2
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main()
@@ -15,16 +17,37 @@ class CN
 			b[i] = v[1];
 		}
 
-		var ab = FMT.Convolution(a, b);
+		var ab1 = new FMT302(1 << 20, p1, g1).Convolution(a, b);
+		var ab2 = new FMT302(1 << 20, p2, g2).Convolution(a, b);
+
+		var ab = ab1.Zip(ab2, (x, y) => Crt(p1, p2, x, y)).ToArray();
 		Console.WriteLine(string.Join("\n", ab[1..]));
+	}
+
+	const long p1 = 7340033, g1 = 3;
+	const long p2 = 13631489, g2 = 15;
+
+	static long[] ExtendedEuclid(long a, long b)
+	{
+		if (b == 1) return new[] { 1, 1 - a };
+		long r;
+		var q = Math.DivRem(a, b, out r);
+		var t = ExtendedEuclid(b, r);
+		return new[] { t[1], t[0] - q * t[1] };
+	}
+
+	// a mod m かつ b mod n である値 (mod mn で唯一)
+	// 前提: m と n は互いに素。
+	static long Crt(long m, long n, long a, long b)
+	{
+		var v = ExtendedEuclid(m, n);
+		var r = (BigInteger)a * n * v[1] + (BigInteger)b * m * v[0];
+		return (long)((r %= m * n) < 0 ? r + m * n : r);
 	}
 }
 
-public class FMT
+public class FMT302
 {
-	//const long p = 998244353, g = 3;
-	const long p = 1107296257, g = 10;
-
 	public static int ToPowerOf2(int n)
 	{
 		var p = 1;
@@ -43,7 +66,7 @@ public class FMT
 		return b;
 	}
 
-	static long MPow(long b, long i)
+	long MPow(long b, long i)
 	{
 		long r = 1;
 		for (; i != 0; b = b * b % p, i >>= 1) if ((i & 1) != 0) r = r * b % p;
@@ -51,7 +74,7 @@ public class FMT
 	}
 
 	// k 番目の 1 の n 乗根 (0 <= k < n/2)
-	static long[] NthRoots(int n, long w)
+	long[] NthRoots(int n, long w)
 	{
 		var r = new long[n >> 1];
 		r[0] = 1;
@@ -60,19 +83,18 @@ public class FMT
 		return r;
 	}
 
-	int n;
-	public int Length => n;
-	long nInv;
+	public int MaxLength { get; }
+	long p;
 	int[] br;
 	long[] roots;
 
-	// length は 2 の冪に変更されます。
-	public FMT(int length)
+	// maxLength は 2 の冪に変更されます。
+	public FMT302(int maxLength = 1 << 20, long p = 998244353, long g = 3)
 	{
-		n = ToPowerOf2(length);
-		nInv = MPow(n, p - 2);
-		br = BitReversal(n);
-		roots = NthRoots(n, MPow(g, (p - 1) / n));
+		MaxLength = ToPowerOf2(maxLength);
+		this.p = p;
+		br = BitReversal(MaxLength);
+		roots = NthRoots(MaxLength, MPow(g, (p - 1) / MaxLength));
 	}
 
 	// c の長さは 2 の冪とします。
@@ -80,7 +102,7 @@ public class FMT
 	void TransformRecursive(long[] c, int l, int h)
 	{
 		if (h == 0) return;
-		var d = (n >> 1) / h;
+		var d = (MaxLength >> 1) / h;
 
 		TransformRecursive(c, l, h >> 1);
 		TransformRecursive(c, l + h, h >> 1);
@@ -94,41 +116,45 @@ public class FMT
 		}
 	}
 
-	public long[] Transform(long[] c, bool inverse)
+	// 戻り値の長さは 2 の冪となります。
+	public long[] Transform(long[] c, bool inverse, int resultLength = -1)
 	{
 		if (c == null) throw new ArgumentNullException(nameof(c));
 
+		var n = ToPowerOf2(resultLength == -1 ? c.Length : resultLength);
+		var d = MaxLength / n;
+
 		var t = new long[n];
 		for (int k = 0; k < c.Length; ++k)
-			t[br[k]] = c[k];
+			t[br[d * k]] = c[k];
 
 		TransformRecursive(t, 0, n >> 1);
 
 		if (inverse && n > 1)
 		{
 			Array.Reverse(t, 1, n - 1);
+			var nInv = MPow(n, p - 2);
 			for (int k = 0; k < n; ++k) t[k] = t[k] * nInv % p;
 		}
 		return t;
 	}
 
 	// 戻り値の長さは |a| + |b| - 1 となります。
-	public static long[] Convolution(long[] a, long[] b)
+	public long[] Convolution(long[] a, long[] b)
 	{
 		if (a == null) throw new ArgumentNullException(nameof(a));
 		if (b == null) throw new ArgumentNullException(nameof(b));
 
 		var n = a.Length + b.Length - 1;
-		var fmt = new FMT(n);
 
-		var fa = fmt.Transform(a, false);
-		var fb = fmt.Transform(b, false);
+		var fa = Transform(a, false, n);
+		var fb = Transform(b, false, n);
 
 		for (int k = 0; k < fa.Length; ++k)
 		{
 			fa[k] = fa[k] * fb[k] % p;
 		}
-		var c = fmt.Transform(fa, true);
+		var c = Transform(fa, true);
 
 		if (n < c.Length) Array.Resize(ref c, n);
 		return c;
