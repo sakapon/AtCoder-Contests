@@ -17,36 +17,56 @@ class CN2
 			b[i] = v[1];
 		}
 
-		var ab1 = new FMT302(1 << 20, p1, g1).Convolution(a, b);
-		var ab2 = new FMT302(1 << 20, p2, g2).Convolution(a, b);
+		var ab1 = new FNTT302(1 << 20, p1, g1).Convolution(a, b);
+		var ab2 = new FNTT302(1 << 20, p2, g2).Convolution(a, b);
 
-		var ab = ab1.Zip(ab2, (x, y) => Crt(p1, p2, x, y)).ToArray();
+		var crt = new CRT(p1, p2);
+		var ab = ab1.Zip(ab2, (x, y) => crt.Solve(x, y)).ToArray();
 		Console.WriteLine(string.Join("\n", ab[1..]));
 	}
 
 	const long p1 = 7340033, g1 = 3;
 	const long p2 = 13631489, g2 = 15;
+}
 
-	static long[] ExtendedEuclid(long a, long b)
+public class CRT
+{
+	// ax + by = 1 の解
+	// 前提: a と b は互いに素
+	public static (long x, long y) ExtendedEuclid(long a, long b)
 	{
-		if (b == 1) return new[] { 1, 1 - a };
-		long r;
-		var q = Math.DivRem(a, b, out r);
-		var t = ExtendedEuclid(b, r);
-		return new[] { t[1], t[0] - q * t[1] };
+		if (b == 0) throw new ArgumentOutOfRangeException(nameof(b));
+		if (b == 1) return (1, 1 - a);
+
+		var q = Math.DivRem(a, b, out var r);
+		var (u, v) = ExtendedEuclid(b, r);
+		return (v, u - q * v);
 	}
 
-	// a mod m かつ b mod n である値 (mod mn で唯一)
-	// 前提: m と n は互いに素。
-	static long Crt(long m, long n, long a, long b)
+	static BigInteger MInt(BigInteger x, long mod) => (x %= mod) < 0 ? x + mod : x;
+
+	long mn;
+	BigInteger mu, nv;
+
+	// 前提: m と n は互いに素
+	public CRT(long m, long n)
 	{
-		var v = ExtendedEuclid(m, n);
-		var r = (BigInteger)a * n * v[1] + (BigInteger)b * m * v[0];
-		return (long)((r %= m * n) < 0 ? r + m * n : r);
+		mn = m * n;
+		(BigInteger u, BigInteger v) = ExtendedEuclid(m, n);
+		mu = MInt(m * u, mn);
+		nv = MInt(n * v, mn);
+	}
+
+	// a (mod m) かつ b (mod n) である値 (mod mn で一意)
+	// 戻り値は anv + bmu
+	public long Solve(long a, long b)
+	{
+		var x = a * nv + b * mu;
+		return (long)(x % mn);
 	}
 }
 
-public class FMT302
+public class FNTT302
 {
 	public static int ToPowerOf2(int n)
 	{
@@ -89,7 +109,7 @@ public class FMT302
 	long[] roots;
 
 	// maxLength は 2 の冪に変更されます。
-	public FMT302(int maxLength = 1 << 20, long p = 998244353, long g = 3)
+	public FNTT302(int maxLength = 1 << 20, long p = 998244353, long g = 3)
 	{
 		MaxLength = ToPowerOf2(maxLength);
 		this.p = p;

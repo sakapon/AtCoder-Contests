@@ -15,12 +15,12 @@ class CN
 			b[i] = v[1];
 		}
 
-		var ab = FMT.Convolution(a, b);
+		var ab = FNTT.Convolution(a, b);
 		Console.WriteLine(string.Join("\n", ab[1..]));
 	}
 }
 
-public class FMT
+public class FNTT
 {
 	//const long p = 998244353, g = 3;
 	const long p = 1107296257, g = 10;
@@ -67,7 +67,7 @@ public class FMT
 	long[] roots;
 
 	// length は 2 の冪に変更されます。
-	public FMT(int length)
+	public FNTT(int length)
 	{
 		n = ToPowerOf2(length);
 		nInv = MPow(n, p - 2);
@@ -119,16 +119,16 @@ public class FMT
 		if (b == null) throw new ArgumentNullException(nameof(b));
 
 		var n = a.Length + b.Length - 1;
-		var fmt = new FMT(n);
+		var ntt = new FNTT(n);
 
-		var fa = fmt.Transform(a, false);
-		var fb = fmt.Transform(b, false);
+		var fa = ntt.Transform(a, false);
+		var fb = ntt.Transform(b, false);
 
 		for (int k = 0; k < fa.Length; ++k)
 		{
 			fa[k] = fa[k] * fb[k] % p;
 		}
-		var c = fmt.Transform(fa, true);
+		var c = ntt.Transform(fa, true);
 
 		if (n < c.Length) Array.Resize(ref c, n);
 		return c;
