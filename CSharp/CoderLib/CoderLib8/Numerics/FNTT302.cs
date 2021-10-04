@@ -34,7 +34,7 @@ namespace CoderLib8.Numerics
 		long[] NthRoots(int n, long w)
 		{
 			var r = new long[n >> 1];
-			r[0] = 1;
+			if (r.Length > 0) r[0] = 1;
 			for (int k = 1; k < r.Length; ++k)
 				r[k] = r[k - 1] * w % p;
 			return r;
