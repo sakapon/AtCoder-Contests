@@ -2,10 +2,16 @@
 
 namespace CoderLib8.Numerics
 {
+	// Test: https://atcoder.jp/contests/atc001/tasks/fft_c
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/6/NTL/2/NTL_2_F
+	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_f
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_bm
+
 	// パラメーターを定数とした実装です。
 	public class FNTT
 	{
 		const long p = 998244353, g = 3;
+		//const long p = 1107296257, g = 10;
 
 		public static int ToPowerOf2(int n)
 		{

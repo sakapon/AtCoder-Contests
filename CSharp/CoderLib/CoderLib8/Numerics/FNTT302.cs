@@ -3,6 +3,8 @@
 namespace CoderLib8.Numerics
 {
 	// n を指定せずに済む実装です。
+	//const long p1 = 998244353, g1 = 3;
+	//const long p2 = 1107296257, g2 = 10;
 	public class FNTT302
 	{
 		public static int ToPowerOf2(int n)

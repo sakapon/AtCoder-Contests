@@ -3,6 +3,9 @@ using System.Numerics;
 
 namespace CoderLib8.Numerics
 {
+	// Test: https://atcoder.jp/contests/atc001/tasks/fft_c
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/6/NTL/2/NTL_2_F
+
 	// FFT202
 	public class FFT
 	{
