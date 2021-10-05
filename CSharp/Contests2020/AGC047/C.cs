@@ -5,39 +5,37 @@ class C
 {
 	const long p = 200003, g = 2;
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main()
+	static void Main() => Console.WriteLine(Solve());
+	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
 		var a = ReadL();
 
 		// g^{p-1} == 1
 		var pg = new long[p - 1];
-		var pg_ = new long[p];
+		var pgMap = new long[p];
 		pg[0] = 1;
-
-		for (int i = 1; i < pg.Length; ++i)
+		for (int i = 1; i < pg.Length; i++)
 		{
 			pg[i] = pg[i - 1] * g % p;
-			pg_[pg[i]] = i;
+			pgMap[pg[i]] = i;
 		}
 
+		var r = 0L;
 		var c = new long[p - 1];
-		var sq = 0L;
 		foreach (var x in a)
 		{
 			if (x == 0) continue;
-			c[pg_[x]]++;
-			sq += pg[2 * pg_[x] % (p - 1)];
+			c[pgMap[x]]++;
+			r -= x * x % p;
 		}
 		var conv = FFT.Convolution(c, c);
 
-		var r = 0L;
-		for (int d = 0; d < conv.Length; d++)
+		for (int i = 0; i < conv.Length; i++)
 		{
-			if (conv[d] == 0) continue;
-			r += conv[d] * pg[d % (p - 1)];
+			r += conv[i] * pg[i % (p - 1)];
 		}
-		Console.WriteLine((r - sq) / 2);
+		return r / 2;
 	}
 }
 
