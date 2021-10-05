@@ -29,9 +29,8 @@ class C
 		costs[sv] = 0;
 		q.Enqueue(sv);
 
-		while (q.Count > 0)
+		while (q.TryDequeue(out var v))
 		{
-			var v = q.Dequeue();
 			var nc = costs[v] + 1;
 
 			foreach (var nv in nexts(v))
