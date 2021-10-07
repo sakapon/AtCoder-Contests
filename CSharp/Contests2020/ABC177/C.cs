@@ -3,14 +3,24 @@ using System.Linq;
 
 class C
 {
-	static void Main()
+	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+	static void Main() => Console.WriteLine(Solve());
+	static object Solve()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
 		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var a = ReadL();
 
-		Console.WriteLine(string.Join(" ", h));
+		var s = a.Sum() % M;
+
+		var r = s * s % M;
+		r -= a.Sum(x => x * x % M);
+		r = MInt(r);
+		r = r * MHalf % M;
+
+		return r;
 	}
+
+	const long M = 1000000007;
+	const long MHalf = (M + 1) / 2;
+	static long MInt(long x) => (x %= M) < 0 ? x + M : x;
 }

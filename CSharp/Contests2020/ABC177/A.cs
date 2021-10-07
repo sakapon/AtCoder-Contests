@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Linq;
 
 class A
 {
-	static void Main()
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static (int, int, int) Read3() { var a = Read(); return (a[0], a[1], a[2]); }
+	static void Main() => Console.WriteLine(Solve() ? "Yes" : "No");
+	static bool Solve()
 	{
-		Console.ReadLine();
-		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
-
-		Console.WriteLine(string.Join(" ", h));
+		var (d, t, s) = Read3();
+		return d <= s * t;
 	}
 }
