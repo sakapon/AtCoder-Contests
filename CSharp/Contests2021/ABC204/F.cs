@@ -11,51 +11,66 @@ class F
 	{
 		var (h, w) = ((int, long))Read2L();
 
-		var combs = new List<int[]>();
+		// 前の列の横長により既に確定している状態を部分集合で表します。
+		var combs = new bool[1 << h][];
+		var t = 0;
 
-		// 0: 半畳
-		// 1: 縦
-		// 2: 横
-		Power(new[] { 0, 1, 2 }, h, p =>
+		Power(new[] { false, true }, h, p =>
 		{
-			for (int i = 0; i < h - 1; i++)
-			{
-				if (p[i] == 1 && p[i + 1] != 0)
-				{
-					return;
-				}
-			}
-			if (p[h - 1] == 1) return;
-
-			combs.Add(p.ToArray());
+			combs[t++] = p.ToArray();
 		});
 
-		var combCount = combs.Count;
+		var combCount = combs.Length;
 		// j の右の列に i は可能か
 		var u = new long[combCount, combCount];
 
 		for (int i = 0; i < combCount; i++)
 		{
-			if (combs[i] == null) continue;
+			var si = combs[i];
 
 			for (int j = 0; j < combCount; j++)
 			{
-				if (combs[j] == null) continue;
+				var sj = combs[j];
+				Dfs(0);
 
-				var ok = true;
-				for (int k = 0; k < h; k++)
+				void Dfs(int k)
 				{
-					if (combs[j][k] == 2)
+					if (k == h)
 					{
-						if (combs[i][k] != 0 ||
-							k != 0 && combs[i][k - 1] == 1)
+						u[i, j]++;
+						return;
+					}
+
+					if (sj[k])
+					{
+						if (si[k])
 						{
-							ok = false;
-							break;
+						}
+						else
+						{
+							Dfs(k + 1);
+						}
+					}
+					else
+					{
+						if (si[k])
+						{
+							// 横
+							Dfs(k + 1);
+						}
+						else
+						{
+							// 半畳
+							Dfs(k + 1);
+
+							// 縦
+							if (k < h - 1 && !sj[k + 1] && !si[k + 1])
+							{
+								Dfs(k + 2);
+							}
 						}
 					}
 				}
-				if (ok) u[i, j] = 1;
 			}
 		}
 
@@ -64,10 +79,7 @@ class F
 
 		var uw = MPow(u, w);
 		v = MMul(uw, v);
-
-		return Enumerable.Range(0, combCount)
-			.Where(i => combs[i] != null && !combs[i].Contains(2))
-			.Sum(i => v[i]) % M;
+		return v[0];
 	}
 
 	const long M = 998244353;
