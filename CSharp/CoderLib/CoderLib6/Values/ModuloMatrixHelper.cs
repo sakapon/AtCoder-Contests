@@ -42,5 +42,16 @@ namespace CoderLib6.Values
 					r[i] = MInt(r[i] + a[i, k] * v[k]);
 			return r;
 		}
+
+		public static long[,] Transpose(long[,] a)
+		{
+			var n = a.GetLength(0);
+			var m = a.GetLength(1);
+			var r = new long[m, n];
+			for (int i = 0; i < n; ++i)
+				for (int j = 0; j < m; ++j)
+					r[j, i] = a[i, j];
+			return r;
+		}
 	}
 }
