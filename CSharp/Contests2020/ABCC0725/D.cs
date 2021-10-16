@@ -11,11 +11,28 @@ class D
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var a = ReadL();
 
-		return string.Join(" ", a);
+		var r = 1000L;
+		var kabu = 0L;
+
+		for (int i = 0; i < n - 1; i++)
+		{
+			if (a[i] < a[i + 1])
+			{
+				var q = r / a[i];
+				r -= a[i] * q;
+				kabu += q;
+			}
+			else if (a[i] > a[i + 1])
+			{
+				r += a[i] * kabu;
+				kabu = 0;
+			}
+		}
+
+		r += a[^1] * kabu;
+
+		return r;
 	}
 }
