@@ -10,12 +10,26 @@ class E
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
+		var (n, k) = Read2();
 		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		return First(1, 1 << 30, x =>
+		{
+			var c = 0L;
+
+			foreach (var v in a)
+			{
+				c += (v - 1) / x;
+			}
+
+			return c <= k;
+		});
+	}
+
+	static int First(int l, int r, Func<int, bool> f)
+	{
+		int m;
+		while (l < r) if (f(m = l + (r - l - 1) / 2)) r = m; else l = m + 1;
+		return r;
 	}
 }

@@ -10,12 +10,19 @@ class C
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var k = int.Parse(Console.ReadLine());
 
-		return string.Join(" ", a);
+		var r = 0L;
+
+		for (int i = 1; i < 5000000; i++)
+		{
+			r *= 10;
+			r += 7;
+			r %= k;
+
+			if (r == 0) return i;
+		}
+
+		return -1;
 	}
 }

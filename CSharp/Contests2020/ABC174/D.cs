@@ -11,11 +11,24 @@ class D
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var c = Console.ReadLine().ToArray();
 
-		return string.Join(" ", a);
+		var count = 0;
+		var l = 0;
+		var r = n - 1;
+
+		while (l < r)
+		{
+			while (l < n && c[l] == 'R') l++;
+			while (0 <= r && c[r] == 'W') r--;
+
+			if (l >= r) break;
+
+			count++;
+			l++;
+			r--;
+		}
+
+		return count;
 	}
 }
