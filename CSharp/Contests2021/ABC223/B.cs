@@ -10,12 +10,18 @@ class B
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
 		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var n = s.Length;
 
-		return string.Join(" ", a);
+		var r = new string[n];
+
+		for (int i = 0; i < n; i++)
+		{
+			r[i] = s;
+			s = s[1..] + s[0];
+		}
+
+		Array.Sort(r);
+		return $"{r[0]}\n{r[^1]}";
 	}
 }
