@@ -2,7 +2,7 @@
 
 namespace CoderLib6.Values
 {
-	static class ModuloMatrixHelper
+	public static class ModuloMatrixHelper
 	{
 		const long M = 1000000007;
 		static long MInt(long x) => (x %= M) < 0 ? x + M : x;
