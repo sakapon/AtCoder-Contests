@@ -11,7 +11,7 @@ class F
 	{
 		var (h, w) = ((int, long))Read2L();
 
-		// 前の列の横長により既に確定している状態を部分集合で表します。
+		// 前の列の横長畳により既に確定している状態を部分集合で表します。
 		var combs = new bool[1 << h][];
 		var t = 0;
 
@@ -85,6 +85,7 @@ class F
 	const long M = 998244353;
 	static long MInt(long x) => (x %= M) < 0 ? x + M : x;
 
+	// 正方行列
 	public static long[,] Unit(int n)
 	{
 		var r = new long[n, n];
@@ -92,6 +93,7 @@ class F
 		return r;
 	}
 
+	// 正方行列
 	public static long[,] MPow(long[,] b, long i)
 	{
 		var r = Unit(b.GetLength(0));
@@ -101,21 +103,26 @@ class F
 
 	public static long[,] MMul(long[,] a, long[,] b)
 	{
+		if (a.GetLength(1) != b.GetLength(0)) throw new InvalidOperationException();
 		var n = a.GetLength(0);
-		var r = new long[n, n];
+		var m = b.GetLength(1);
+		var l = a.GetLength(1);
+		var r = new long[n, m];
 		for (var i = 0; i < n; ++i)
-			for (var j = 0; j < n; ++j)
-				for (var k = 0; k < n; ++k)
+			for (var j = 0; j < m; ++j)
+				for (var k = 0; k < l; ++k)
 					r[i, j] = MInt(r[i, j] + a[i, k] * b[k, j]);
 		return r;
 	}
 
 	public static long[] MMul(long[,] a, long[] v)
 	{
-		var n = v.Length;
+		if (a.GetLength(1) != v.Length) throw new InvalidOperationException();
+		var n = a.GetLength(0);
+		var l = v.Length;
 		var r = new long[n];
 		for (var i = 0; i < n; ++i)
-			for (var k = 0; k < n; ++k)
+			for (var k = 0; k < l; ++k)
 				r[i] = MInt(r[i] + a[i, k] * v[k]);
 		return r;
 	}
