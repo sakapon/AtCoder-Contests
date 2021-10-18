@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 class E
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static (long, long, long, long, long) Read5L() { var a = ReadL(); return (a[0], a[1], a[2], a[3], a[4]); }
 	static void Main() => Console.WriteLine(Solve() ? "Yes" : "No");
@@ -14,18 +10,12 @@ class E
 		var (X, Y, A, B, C) = Read5L();
 
 		if (Check(X, Y, A, B, C)) return true;
-		if (Check(X, Y, A, C, B)) return true;
-		if (Check(X, Y, B, A, C)) return true;
 		if (Check(X, Y, B, C, A)) return true;
 		if (Check(X, Y, C, A, B)) return true;
-		if (Check(X, Y, C, B, A)) return true;
 
 		if (Check(Y, X, A, B, C)) return true;
-		if (Check(Y, X, A, C, B)) return true;
-		if (Check(Y, X, B, A, C)) return true;
 		if (Check(Y, X, B, C, A)) return true;
 		if (Check(Y, X, C, A, B)) return true;
-		if (Check(Y, X, C, B, A)) return true;
 
 		return false;
 	}
@@ -37,9 +27,7 @@ class E
 
 		Y -= y;
 		if (Check(X, Y, A, B)) return true;
-		if (Check(X, Y, B, A)) return true;
 		if (Check(Y, X, A, B)) return true;
-		if (Check(Y, X, B, A)) return true;
 
 		return false;
 	}

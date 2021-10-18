@@ -16,7 +16,7 @@ class D
 		var r = new List<int>();
 		var q = PQ<int>.Create();
 
-		var map = Array.ConvertAll(new bool[n + 1], _ => new HashSet<int>());
+		var map = Array.ConvertAll(new bool[n + 1], _ => new List<int>());
 		var counts = new int[n + 1];
 		foreach (var (a, b) in es)
 		{
@@ -39,8 +39,7 @@ class D
 
 			foreach (var nv in map[v])
 			{
-				counts[nv]--;
-				if (counts[nv] == 0)
+				if (--counts[nv] == 0)
 				{
 					q.Push(nv);
 				}
@@ -68,14 +67,6 @@ class PQ<T> : List<T>
 		return desc ?
 			new PQ<T>((x, y) => c.Compare(toKey(y), toKey(x))) :
 			new PQ<T>((x, y) => c.Compare(toKey(x), toKey(y)));
-	}
-
-	public static PQ<T, TKey> CreateWithKey<TKey>(Func<T, TKey> toKey, bool desc = false)
-	{
-		var c = Comparer<TKey>.Default;
-		return desc ?
-			new PQ<T, TKey>(toKey, (x, y) => c.Compare(y.Key, x.Key)) :
-			new PQ<T, TKey>(toKey, (x, y) => c.Compare(x.Key, y.Key));
 	}
 
 	Comparison<T> c;
@@ -108,13 +99,4 @@ class PQ<T> : List<T>
 		DownHeap(0);
 		return r;
 	}
-}
-
-class PQ<T, TKey> : PQ<KeyValuePair<TKey, T>>
-{
-	Func<T, TKey> ToKey;
-	internal PQ(Func<T, TKey> toKey, Comparison<KeyValuePair<TKey, T>> c) : base(c) { ToKey = toKey; }
-
-	public void Push(T v) => Push(new KeyValuePair<TKey, T>(ToKey(v), v));
-	public void PushRange(T[] vs) { foreach (var v in vs) Push(v); }
 }

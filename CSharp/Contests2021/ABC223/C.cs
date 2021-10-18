@@ -13,48 +13,38 @@ class C
 		var n = int.Parse(Console.ReadLine());
 		var ps = Array.ConvertAll(new bool[n], _ => Read2());
 
-		var rsq = new StaticRSQ1(Array.ConvertAll(ps, p => p.a));
-
 		var ts = Array.ConvertAll(ps, p => (double)p.a / p.b);
-		var tSum = ts.Sum();
-		var t2 = tSum / 2;
+		var rsq = new StaticRSQ1(ts);
+		var t2 = ts.Sum() / 2;
 
-		var sum = 0.0;
+		var si = First(0, n + 1, x => rsq.GetSum(0, x) >= t2);
+		var dt = rsq.GetSum(0, si) - t2;
+		return Enumerable.Range(0, si).Sum(i => ps[i].a) - ps[si - 1].b * dt;
+	}
 
-		for (int i = 0; i < n; i++)
-		{
-			var t = sum + ts[i];
-			if (t2 < t)
-			{
-				double r = rsq.GetSum(0, i);
-
-				var (a, b) = ps[i];
-				var d = t2 - sum;
-				r += b * d;
-
-				return r;
-			}
-			sum = t;
-		}
-		return -1;
+	static int First(int l, int r, Func<int, bool> f)
+	{
+		int m;
+		while (l < r) if (f(m = l + (r - l - 1) / 2)) r = m; else l = m + 1;
+		return r;
 	}
 }
 
 public class StaticRSQ1
 {
 	int n;
-	long[] s;
-	public long[] Raw => s;
-	public StaticRSQ1(int[] a)
+	double[] s;
+	public double[] Raw => s;
+	public StaticRSQ1(double[] a)
 	{
 		n = a.Length;
-		s = new long[n + 1];
+		s = new double[n + 1];
 		for (int i = 0; i < n; ++i) s[i + 1] = s[i] + a[i];
 	}
 
 	// [l, r)
 	// 範囲外のインデックスも可。
-	public long GetSum(int l, int r)
+	public double GetSum(int l, int r)
 	{
 		if (r < 0 || n < l) return 0;
 		if (l < 0) l = 0;
