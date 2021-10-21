@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using CoderLib8.Values;
 
 namespace CoderLib8.Extra
 {
+	// Test: https://atcoder.jp/contests/abc218/tasks/abc218_c
 	public static class GridHelper
 	{
 		// 負値を指定できます。
@@ -134,5 +136,55 @@ namespace CoderLib8.Extra
 			while (Array.TrueForAll(s, t => t[^(d2 + 1)] == c)) ++d2;
 			return Array.ConvertAll(s, t => t[d1..^d2]);
 		}
+	}
+
+	public static class GridHelper3
+	{
+		// 座標リスト表現
+		public static (int i, int j)[] ToPoints(this string[] s, char c = '#')
+		{
+			if (s.Length == 0) return new (int, int)[0];
+			var (h, w) = (s.Length, s[0].Length);
+			var l = new List<(int, int)>();
+			for (int i = 0; i < h; ++i)
+				for (int j = 0; j < w; ++j)
+					if (s[i][j] == c)
+						l.Add((i, j));
+			return l.ToArray();
+		}
+
+		public static (int i, int j) Rotate90(this (int i, int j) p) => (-p.j, p.i);
+		public static (int i, int j) Rotate180(this (int i, int j) p) => (-p.i, -p.j);
+		public static (int i, int j) Rotate270(this (int i, int j) p) => (p.j, -p.i);
+
+		public static (int i, int j) Rotate90(this (int i, int j) p, int h, int w) => (w - 1 - p.j, p.i);
+		public static (int i, int j) Rotate180(this (int i, int j) p, int h, int w) => (h - 1 - p.i, w - 1 - p.j);
+		public static (int i, int j) Rotate270(this (int i, int j) p, int h, int w) => (p.j, h - 1 - p.i);
+
+		// 左上から並べるには、ソートします。
+		public static (int i, int j)[] Rotate90(this (int i, int j)[] ps) => Array.ConvertAll(ps, Rotate90);
+		public static (int i, int j)[] Rotate180(this (int i, int j)[] ps) => Array.ConvertAll(ps, Rotate180);
+		public static (int i, int j)[] Rotate270(this (int i, int j)[] ps) => Array.ConvertAll(ps, Rotate270);
+	}
+
+	public static class GridHelper4
+	{
+		// 座標リスト表現
+		public static IntV[] ToPointsV(this string[] s, char c = '#')
+		{
+			if (s.Length == 0) return new IntV[0];
+			var (h, w) = (s.Length, s[0].Length);
+			var l = new List<IntV>();
+			for (int i = 0; i < h; ++i)
+				for (int j = 0; j < w; ++j)
+					if (s[i][j] == c)
+						l.Add(new IntV(i, j));
+			return l.ToArray();
+		}
+
+		// 左上から並べるには、ソートします。
+		public static IntV[] Rotate90(this IntV[] ps) => Array.ConvertAll(ps, p => p.Rotate90());
+		public static IntV[] Rotate180(this IntV[] ps) => Array.ConvertAll(ps, p => p.Rotate180());
+		public static IntV[] Rotate270(this IntV[] ps) => Array.ConvertAll(ps, p => p.Rotate270());
 	}
 }
