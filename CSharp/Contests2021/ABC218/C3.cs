@@ -11,23 +11,15 @@ class C3
 		var s = Array.ConvertAll(new bool[n], _ => Console.ReadLine());
 		var t = Array.ConvertAll(new bool[n], _ => Console.ReadLine());
 
-		var sps = ToPoints(s);
-		var tps = ToPoints(t);
+		var sps = s.ToPoints();
+		var tps = t.ToPoints();
 
-		if (Equals()) return true;
-
-		sps = RotateRight(sps);
-		Array.Sort(sps);
-		if (Equals()) return true;
-
-		sps = RotateRight(sps);
-		Array.Sort(sps);
-		if (Equals()) return true;
-
-		sps = RotateRight(sps);
-		Array.Sort(sps);
-		if (Equals()) return true;
-
+		for (int i = 0; i < 4; i++)
+		{
+			if (Equals()) return true;
+			sps = sps.Rotate90();
+			Array.Sort(sps);
+		}
 		return false;
 
 		bool Equals()
@@ -36,20 +28,5 @@ class C3
 			var d = (sps[0].i - tps[0].i, sps[0].j - tps[0].j);
 			return sps.Zip(tps, (p, q) => (p.i - q.i, p.j - q.j)).All(p => p == d);
 		}
-	}
-
-	static (int i, int j)[] ToPoints(string[] s)
-	{
-		var (h, w) = (s.Length, s[0].Length);
-		var l = new List<(int, int)>();
-		for (int i = 0; i < h; ++i)
-			for (int j = 0; j < w; ++j)
-				if (s[i][j] == '#') l.Add((i, j));
-		return l.ToArray();
-	}
-
-	static (int i, int j)[] RotateRight((int i, int j)[] ps)
-	{
-		return Array.ConvertAll(ps, p => (-p.j, p.i));
 	}
 }
