@@ -7,6 +7,10 @@ namespace CoderLib8.Extra
 	// Test: https://atcoder.jp/contests/abc218/tasks/abc218_c
 	public static class GridHelper
 	{
+		//int ToId(int i, int j) => i * w + j;
+		//(int i, int j) FromId(int id) => (id / w, id % w);
+		//int[] Nexts(int id) => new[] { id + 1, id - 1, id + w, id - w };
+
 		// 負値を指定できます。
 		public static void Enclose<T>(ref int height, ref int width, ref T[][] a, T value, int delta = 1)
 		{
