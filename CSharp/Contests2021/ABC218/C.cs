@@ -4,9 +4,6 @@ using System.Linq;
 
 class C
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve() ? "Yes" : "No");
 	static bool Solve()
 	{
@@ -14,52 +11,15 @@ class C
 		var s = Array.ConvertAll(new bool[n], _ => Console.ReadLine());
 		var t = Array.ConvertAll(new bool[n], _ => Console.ReadLine());
 
-		s = Trim(s);
-		t = Trim(t);
+		s = s.Trim();
+		t = t.Trim();
 
-		if (s.SequenceEqual(t)) return true;
-
-		s = GridHelper.RotateLeft(s);
-		if (s.SequenceEqual(t)) return true;
-
-		s = GridHelper.RotateLeft(s);
-		if (s.SequenceEqual(t)) return true;
-
-		s = GridHelper.RotateLeft(s);
-		if (s.SequenceEqual(t)) return true;
-
+		for (int i = 0; i < 4; i++)
+		{
+			if (s.SequenceEqual(t)) return true;
+			s = GridHelper.RotateLeft(s);
+		}
 		return false;
-	}
-
-	static string[] Trim(string[] s)
-	{
-		var l = s.ToList();
-
-		while (l[l.Count - 1].All(c => c == '.'))
-		{
-			l.RemoveAt(l.Count - 1);
-		}
-		while (l[0].All(c => c == '.'))
-		{
-			l.RemoveAt(0);
-		}
-
-		while (l.All(r => r[^1] == '.'))
-		{
-			for (int i = 0; i < l.Count; i++)
-			{
-				l[i] = l[i][..^1];
-			}
-		}
-		while (l.All(r => r[0] == '.'))
-		{
-			for (int i = 0; i < l.Count; i++)
-			{
-				l[i] = l[i][1..];
-			}
-		}
-
-		return l.ToArray();
 	}
 }
 
@@ -162,5 +122,30 @@ public static class GridHelper
 			r[i] = new string(cs);
 		}
 		return r;
+	}
+}
+
+public static class GridHelper2
+{
+	public static string[] TrimTop(this string[] s, int delta) => s[delta..];
+	public static string[] TrimBottom(this string[] s, int delta) => s[..^delta];
+	public static string[] TrimLeft(this string[] s, int delta) => Array.ConvertAll(s, t => t[delta..]);
+	public static string[] TrimRight(this string[] s, int delta) => Array.ConvertAll(s, t => t[..^delta]);
+
+	public static string[] Trim(this string[] s, char c = '.')
+	{
+		if (s.Length == 0) return s;
+
+		var (d1, d2) = (0, 0);
+		var space = new string(c, s[0].Length);
+		while (d1 < s.Length && s[d1] == space) ++d1;
+		if (d1 == s.Length) return new string[0];
+		while (s[^(d2 + 1)] == space) ++d2;
+		s = s[d1..^d2];
+
+		(d1, d2) = (0, 0);
+		while (Array.TrueForAll(s, t => t[d1] == c)) ++d1;
+		while (Array.TrueForAll(s, t => t[^(d2 + 1)] == c)) ++d2;
+		return Array.ConvertAll(s, t => t[d1..^d2]);
 	}
 }
