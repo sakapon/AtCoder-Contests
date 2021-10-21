@@ -35,6 +35,7 @@ namespace CoderLib8.Extra
 
 		public static T[][] Rotate180<T>(T[][] a)
 		{
+			if (a.Length == 0) return a;
 			var (h, w) = (a.Length, a[0].Length);
 			var r = Array.ConvertAll(new bool[h], _ => new T[w]);
 			for (int i = 0; i < h; ++i)
@@ -45,6 +46,7 @@ namespace CoderLib8.Extra
 
 		public static T[][] RotateLeft<T>(T[][] a)
 		{
+			if (a.Length == 0) return a;
 			var (h, w) = (a.Length, a[0].Length);
 			var r = Array.ConvertAll(new bool[w], _ => new T[h]);
 			for (int i = 0; i < w; ++i)
@@ -55,6 +57,7 @@ namespace CoderLib8.Extra
 
 		public static T[][] RotateRight<T>(T[][] a)
 		{
+			if (a.Length == 0) return a;
 			var (h, w) = (a.Length, a[0].Length);
 			var r = Array.ConvertAll(new bool[w], _ => new T[h]);
 			for (int i = 0; i < w; ++i)
@@ -65,6 +68,7 @@ namespace CoderLib8.Extra
 
 		public static string[] Rotate180(string[] s)
 		{
+			if (s.Length == 0) return s;
 			var h = s.Length;
 			var r = new string[h];
 			for (int i = 0; i < h; ++i)
@@ -78,6 +82,7 @@ namespace CoderLib8.Extra
 
 		public static string[] RotateLeft(string[] s)
 		{
+			if (s.Length == 0) return s;
 			var (h, w) = (s.Length, s[0].Length);
 			var r = new string[w];
 			for (int i = 0; i < w; ++i)
@@ -92,6 +97,7 @@ namespace CoderLib8.Extra
 
 		public static string[] RotateRight(string[] s)
 		{
+			if (s.Length == 0) return s;
 			var (h, w) = (s.Length, s[0].Length);
 			var r = new string[w];
 			for (int i = 0; i < w; ++i)
@@ -102,6 +108,31 @@ namespace CoderLib8.Extra
 				r[i] = new string(cs);
 			}
 			return r;
+		}
+	}
+
+	public static class GridHelper2
+	{
+		public static string[] TrimTop(this string[] s, int delta) => s[delta..];
+		public static string[] TrimBottom(this string[] s, int delta) => s[..^delta];
+		public static string[] TrimLeft(this string[] s, int delta) => Array.ConvertAll(s, t => t[delta..]);
+		public static string[] TrimRight(this string[] s, int delta) => Array.ConvertAll(s, t => t[..^delta]);
+
+		public static string[] Trim(this string[] s, char c = '.')
+		{
+			if (s.Length == 0) return s;
+
+			var (d1, d2) = (0, 0);
+			var space = new string(c, s[0].Length);
+			while (d1 < s.Length && s[d1] == space) ++d1;
+			if (d1 == s.Length) return new string[0];
+			while (s[^(d2 + 1)] == space) ++d2;
+			s = s[d1..^d2];
+
+			(d1, d2) = (0, 0);
+			while (Array.TrueForAll(s, t => t[d1] == c)) ++d1;
+			while (Array.TrueForAll(s, t => t[^(d2 + 1)] == c)) ++d2;
+			return Array.ConvertAll(s, t => t[d1..^d2]);
 		}
 	}
 }

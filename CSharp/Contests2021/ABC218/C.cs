@@ -55,6 +55,7 @@ public static class GridHelper
 
 	public static T[][] Rotate180<T>(T[][] a)
 	{
+		if (a.Length == 0) return a;
 		var (h, w) = (a.Length, a[0].Length);
 		var r = Array.ConvertAll(new bool[h], _ => new T[w]);
 		for (int i = 0; i < h; ++i)
@@ -65,6 +66,7 @@ public static class GridHelper
 
 	public static T[][] RotateLeft<T>(T[][] a)
 	{
+		if (a.Length == 0) return a;
 		var (h, w) = (a.Length, a[0].Length);
 		var r = Array.ConvertAll(new bool[w], _ => new T[h]);
 		for (int i = 0; i < w; ++i)
@@ -75,6 +77,7 @@ public static class GridHelper
 
 	public static T[][] RotateRight<T>(T[][] a)
 	{
+		if (a.Length == 0) return a;
 		var (h, w) = (a.Length, a[0].Length);
 		var r = Array.ConvertAll(new bool[w], _ => new T[h]);
 		for (int i = 0; i < w; ++i)
@@ -85,6 +88,7 @@ public static class GridHelper
 
 	public static string[] Rotate180(string[] s)
 	{
+		if (s.Length == 0) return s;
 		var h = s.Length;
 		var r = new string[h];
 		for (int i = 0; i < h; ++i)
@@ -98,6 +102,7 @@ public static class GridHelper
 
 	public static string[] RotateLeft(string[] s)
 	{
+		if (s.Length == 0) return s;
 		var (h, w) = (s.Length, s[0].Length);
 		var r = new string[w];
 		for (int i = 0; i < w; ++i)
@@ -112,6 +117,7 @@ public static class GridHelper
 
 	public static string[] RotateRight(string[] s)
 	{
+		if (s.Length == 0) return s;
 		var (h, w) = (s.Length, s[0].Length);
 		var r = new string[w];
 		for (int i = 0; i < w; ++i)
