@@ -10,12 +10,45 @@ class C
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (n, k) = Read2();
+		var c = Read();
 
-		return string.Join(" ", a);
+		var d = new Dictionary<int, int>();
+
+		for (int i = 0; i < k; i++)
+		{
+			if (d.ContainsKey(c[i]))
+			{
+				d[c[i]]++;
+			}
+			else
+			{
+				d[c[i]] = 1;
+			}
+		}
+
+		var r = d.Count;
+
+		for (int i = k; i < n; i++)
+		{
+			if (d.ContainsKey(c[i]))
+			{
+				d[c[i]]++;
+			}
+			else
+			{
+				d[c[i]] = 1;
+			}
+
+			d[c[i - k]]--;
+			if (d[c[i - k]] == 0)
+			{
+				d.Remove(c[i - k]);
+			}
+
+			r = Math.Max(r, d.Count);
+		}
+
+		return r;
 	}
 }
