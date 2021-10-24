@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 class F2
 {
@@ -7,18 +6,16 @@ class F2
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var s = Console.ReadLine().Select(c => c - '0').ToArray();
+		var s = Console.ReadLine();
 		var n = s.Length;
 
-		long x = s[0];
-		long y = 0;
-		var p2 = 1L;
+		var (x, y, p) = (0L, 0L, 1L);
 
-		for (int i = 1; i < n; i++)
+		for (int i = 0; i < n; i++)
 		{
-			p2 = p2 * 2 % M;
 			y = (x + y * 2) % M;
-			x = (x * 10 + s[i] * p2) % M;
+			x = (x * 10 + (s[i] - '0') * p) % M;
+			p = p * 2 % M;
 		}
 		return (x + y) % M;
 	}
