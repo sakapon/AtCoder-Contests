@@ -1,6 +1,6 @@
 ﻿using System;
 
-class E
+class E2
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
@@ -12,19 +12,14 @@ class E
 		var sum = 0L;
 		var p2 = MPows(2, Math.Max(n, d + 1));
 
-		if (n > d)
+		for (int i = 0; i < n; i++)
 		{
-			sum += p2[d + 1] * (p2[n - d] - 1) % M;
-		}
+			if (n - i > d)
+				sum += p2[d + 1] * p2[i] % M;
 
-		for (var (l, r) = (1, d - 1); l < d; l++, r--)
-		{
-			var m = Math.Max(l, r);
-
-			if (n > m)
-			{
-				sum += p2[d - 1] * (p2[n - m] - 1) % M;
-			}
+			var m = Math.Min(d - 1, 2 * (n - i - 1) - d + 1);
+			if (m > 0)
+				sum += p2[d - 1] * m % M * p2[i] % M;
 		}
 
 		return sum % M;
