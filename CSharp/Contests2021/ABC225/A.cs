@@ -10,12 +10,12 @@ class A
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
 		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var x = s[0];
+		var y = s[1];
+		var z = s[2];
 
-		return string.Join(" ", a);
+		return new[] { $"{x}{y}{z}", $"{x}{z}{y}", $"{y}{x}{z}", $"{y}{z}{x}", $"{z}{x}{y}", $"{z}{y}{x}" }
+			.Distinct().Count();
 	}
 }

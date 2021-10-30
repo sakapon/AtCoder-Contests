@@ -4,18 +4,36 @@ using System.Linq;
 
 class E
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+	static (long x, long y) Read2L() { var a = ReadL(); return (a[0], a[1]); }
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var ps = Array.ConvertAll(new bool[n], _ => Read2L());
 
-		return string.Join(" ", a);
+		var comp = Comparer<(long x, long y)>.Create((p, q) =>
+		{
+			var d = q.x * p.y - p.x * q.y;
+			if (d < 0) return -1;
+			if (d > 0) return 1;
+			return 0;
+		});
+
+		var r = 0;
+		var tp = (1L, 0L);
+
+		foreach (var p in ps.OrderBy(p => (p.x - 1, p.y), comp))
+		{
+			var (x, y) = p;
+
+			if (comp.Compare(tp, (x, y - 1)) <= 0)
+			{
+				r++;
+				tp = (x - 1, y);
+			}
+		}
+
+		return r;
 	}
 }

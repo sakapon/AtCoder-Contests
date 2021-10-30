@@ -7,15 +7,25 @@ class B
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
-	static object Solve()
+	static void Main() => Console.WriteLine(Solve() ? "Yes" : "No");
+	static bool Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var es = Array.ConvertAll(new bool[n - 1], _ => Read());
 
-		return string.Join(" ", a);
+		var map = ToMap(n + 1, es, false);
+		return map.Any(l => l.Length == n - 1);
+	}
+
+	public static int[][] ToMap(int n, int[][] es, bool directed) => Array.ConvertAll(ToMapList(n, es, directed), l => l.ToArray());
+	public static List<int>[] ToMapList(int n, int[][] es, bool directed)
+	{
+		var map = Array.ConvertAll(new bool[n], _ => new List<int>());
+		foreach (var e in es)
+		{
+			map[e[0]].Add(e[1]);
+			if (!directed) map[e[1]].Add(e[0]);
+		}
+		return map;
 	}
 }
