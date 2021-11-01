@@ -10,11 +10,9 @@ class C2
 		var (n, m) = Read2();
 		var b = Array.ConvertAll(new bool[n], _ => Read());
 
-		var bl = b[0][0] % 7;
-		var br = b[0][^1] % 7;
-		if (bl == 0) bl = 7;
-		if (br == 0) br = 7;
-		if (bl > br) return false;
+		var b00 = b[0][0] % 7;
+		if (b00 == 0) b00 = 7;
+		if (b00 + m - 1 > 7) return false;
 
 		for (int i = 0; i < n; i++)
 			for (int j = 0; j < m; j++)
