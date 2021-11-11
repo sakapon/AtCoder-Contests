@@ -28,25 +28,21 @@ class D
 				if (d == 0)
 				{
 					set.Add((0, 1));
-					set.Add((0, -1));
 				}
 				else if (e == 0)
 				{
 					set.Add((1, 0));
-					set.Add((-1, 0));
 				}
 				else
 				{
 					var g = Gcd(Math.Abs(d), Math.Abs(e));
-					d /= g;
-					e /= g;
-					set.Add((d, e));
-					set.Add((-d, -e));
+					if (d < 0) g = -g;
+					set.Add((d / g, e / g));
 				}
 			}
 		}
 
-		return set.Count;
+		return set.Count * 2;
 	}
 
 	static int Gcd(int a, int b) { for (int r; (r = a % b) > 0; a = b, b = r) ; return b; }
