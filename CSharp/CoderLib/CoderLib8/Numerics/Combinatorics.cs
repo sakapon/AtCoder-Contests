@@ -78,6 +78,33 @@ namespace CoderLib8.Numerics
 			}
 		}
 
+		// Test: https://atcoder.jp/contests/abc226/tasks/abc226_f
+		// 分割数
+		// n = 50 のとき、204226 通り
+		public static void Partition(int n, Action<int[]> action)
+		{
+			Dfs(new[] { n });
+
+			void Dfs(int[] p)
+			{
+				action(p);
+
+				var v2 = p.Length == 1 ? 1 : p[^2];
+				var v1 = p[^1] - v2;
+				if (v2 > v1) return;
+
+				var q = new int[p.Length + 1];
+				Array.Copy(p, 0, q, 0, p.Length - 1);
+
+				for (; v2 <= v1; ++v2, --v1)
+				{
+					q[^2] = v2;
+					q[^1] = v1;
+					Dfs(q);
+				}
+			}
+		}
+
 		// Test: https://atcoder.jp/contests/abc184/tasks/abc184_f
 		// 2^n 通り
 		// true を返すことでキャンセル可能
