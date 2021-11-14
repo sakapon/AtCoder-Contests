@@ -21,6 +21,7 @@ class F
 			var comb = 1L;
 			var rem = n;
 
+			// LINQ を使わなければ高速化できます。
 			var g = p.GroupBy(v => v).Select(g => mc.MInvFactorial(g.Count())).Aggregate((x, y) => x * y % M);
 
 			foreach (var v in p)
@@ -55,13 +56,17 @@ class F
 		{
 			action(p);
 
-			var v1 = p[^1];
-			for (int i = p.Length == 1 ? 1 : p[^2]; i << 1 <= v1; ++i)
+			var v2 = p.Length == 1 ? 1 : p[^2];
+			var v1 = p[^1] - v2;
+			if (v2 > v1) return;
+
+			var q = new int[p.Length + 1];
+			Array.Copy(p, 0, q, 0, p.Length - 1);
+
+			for (; v2 <= v1; ++v2, --v1)
 			{
-				var q = new int[p.Length + 1];
-				Array.Copy(p, 0, q, 0, p.Length - 1);
-				q[^2] = i;
-				q[^1] = v1 - i;
+				q[^2] = v2;
+				q[^1] = v1;
 				Dfs(q);
 			}
 		}
