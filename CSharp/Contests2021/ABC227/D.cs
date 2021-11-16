@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 class D
@@ -10,12 +9,16 @@ class D
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (n, k) = Read2();
+		var a = ReadL();
 
-		return string.Join(" ", a);
+		return Max(0, 1L << 60, x => a.Sum(v => Math.Min(x, v)) / k >= x);
+	}
+
+	static long Max(long l, long r, Func<long, bool> f)
+	{
+		long m;
+		while (l < r) if (f(m = r - (r - l - 1) / 2)) l = m; else r = m - 1;
+		return l;
 	}
 }
