@@ -8,7 +8,6 @@ class A
 	static object Solve()
 	{
 		var (n, k, a) = Read3();
-		var r = (a + k - 1) % n;
-		return r == 0 ? n : r;
+		return (a + k - 2) % n + 1;
 	}
 }

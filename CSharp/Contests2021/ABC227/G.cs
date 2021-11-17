@@ -11,14 +11,14 @@ class G
 	{
 		var (n, k) = Read2L();
 
-		var pmax = (int)Math.Sqrt(n) + 10;
+		var pmax = (int)Math.Sqrt(n) + 1;
 		var ps = GetPrimes(pmax);
 
 		var indexes = new int[pmax + 1];
 
 		// nCk = n...(n-k+1) / k...1
-		var vu = Enumerable.Range(1, (int)k).Select(x => x + n - k).ToArray();
-		var vd = Enumerable.Range(1, (int)k).ToArray();
+		var vu = Enumerable.Range(0, (int)k + 1).Select(x => x + n - k).ToArray();
+		var vd = Enumerable.Range(0, (int)k + 1).ToArray();
 
 		foreach (var p in ps)
 		{
@@ -27,50 +27,34 @@ class G
 
 			for (long x = x0; x <= n; x += p)
 			{
-				while (vu[x - n + k - 1] % p == 0)
+				while (vu[x - n + k] % p == 0)
 				{
 					indexes[p]++;
-					vu[x - n + k - 1] /= p;
+					vu[x - n + k] /= p;
 				}
 			}
 			for (int x = p; x <= k; x += p)
 			{
-				while (vd[x - 1] % p == 0)
+				while (vd[x] % p == 0)
 				{
 					indexes[p]--;
-					vd[x - 1] /= p;
+					vd[x] /= p;
 				}
 			}
 		}
 
 		var larger = 0;
 
-		foreach (var x in vu)
+		foreach (var x in vu[1..])
 		{
-			if (x == 1) continue;
-			if (x <= pmax)
-			{
-				indexes[x]++;
-			}
-			else
-			{
-				larger++;
-			}
+			if (x != 1) larger++;
 		}
-		foreach (var x in vd)
+		foreach (var x in vd[1..])
 		{
-			if (x == 1) continue;
-			if (x <= pmax)
-			{
-				indexes[x]--;
-			}
-			else
-			{
-				larger--;
-			}
+			if (x != 1) larger--;
 		}
 
-		var r = indexes.Select(x => x + 1L).Aggregate((x, y) => x * y % M);
+		var r = indexes.Where(x => x != 0).Aggregate(1L, (x, y) => x * (y + 1) % M);
 		for (int i = 0; i < larger; i++)
 		{
 			r = r * 2 % M;
