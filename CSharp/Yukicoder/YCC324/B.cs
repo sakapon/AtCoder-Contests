@@ -1,21 +1,42 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 class B
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
+	static void Main() => Console.WriteLine(string.Join("\n", new int[int.Parse(Console.ReadLine())].Select(_ => Solve())));
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		if (dp == null) dp = Init();
+		return dp[n];
 	}
+
+	static long[] dp;
+	static long[] Init()
+	{
+		var n = 1000000;
+
+		// 回文
+		var p = new long[n + 1];
+		p[0] = 1;
+		p[1] = 26;
+		for (int i = 2; i <= n; i++)
+		{
+			p[i] = p[i - 2] * 26 % M;
+		}
+
+		var dp = new long[n + 1];
+		dp[2] = 25 * 26;
+
+		for (int i = 3; i <= n; i++)
+		{
+			dp[i] = dp[i - 2] * 26 + p[i - 3] * 25 * 26 * 2;
+			if (i % 2 == 0) dp[i] += M - 25 * 26;
+			dp[i] %= M;
+		}
+		return dp;
+	}
+
+	const long M = 998244353;
 }
