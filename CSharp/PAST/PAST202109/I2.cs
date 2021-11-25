@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using CoderLib6.Trees;
+using System.Linq;
 
-class I
+class I2
 {
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
@@ -11,7 +11,7 @@ class I
 		var n = int.Parse(Console.ReadLine());
 		var a = ReadL();
 
-		var q = PQ<long>.Create();
+		var set = new WBMultiSet<long>();
 
 		var c = 0;
 		foreach (var v in a)
@@ -22,15 +22,25 @@ class I
 				x >>= 1;
 				c++;
 			}
-			q.Push(x);
+			set.Add(x);
 		}
+
+		while (c > 0 && 3 * set.GetFirst() <= set.GetLast())
+		{
+			c--;
+			var x = set.GetFirst();
+			set.RemoveAt(0);
+			set.Add(x * 3);
+		}
+
+		a = set.ToArray();
+		var r = a[c % n];
+		c /= n;
 
 		while (c-- > 0)
 		{
-			var x = q.Pop();
-			q.Push(x * 3);
+			r *= 3;
 		}
-
-		return q.First;
+		return r;
 	}
 }
