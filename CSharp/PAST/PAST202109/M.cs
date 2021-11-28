@@ -18,14 +18,13 @@ class M
 
 		// ±x+d
 		var exp = new (int sign, long d)[n + 1];
-		Array.Fill(exp, (1, max));
 		exp[1] = (1, 0);
 
 		var x = max;
-		var xmin = 0L;
-		var xmax = max;
-
 		if (!Dfs(1, -1)) return -1;
+
+		var xmin = exp.Where(p => p.sign == 1).Max(p => -p.d);
+		var xmax = exp.Where(p => p.sign == -1).Min(p => p.d);
 
 		if (xmin > xmax) return -1;
 		if (x == max)
@@ -48,43 +47,34 @@ class M
 				var nv = e[1];
 				if (nv == pv) continue;
 
-				var (nsign, nd) = (-sign, e[2] - d);
+				var np = (-sign, e[2] - d);
 
-				if (exp[nv].d == max)
+				if (exp[nv].sign == 0)
 				{
-					exp[nv] = (nsign, nd);
-					if (nsign > 0)
-					{
-						xmin = Math.Max(xmin, -nd);
-					}
-					else
-					{
-						xmax = Math.Min(xmax, nd);
-					}
+					exp[nv] = np;
 					if (!Dfs(nv, v)) return false;
 				}
 				else
 				{
-					var (nsign0, nd0) = exp[nv];
-					if (nsign == nsign0)
-					{
-						if (nd != nd0) return false;
-					}
-					else
-					{
-						if ((nd - nd0) % 2 != 0) return false;
-						var nx = nsign0 * (nd - nd0) / 2;
-						if (x == max)
-						{
-							x = nx;
-						}
-						else
-						{
-							if (nx != x) return false;
-						}
-					}
+					if (!AddCondition(exp[nv], np)) return false;
 				}
 			}
+			return true;
+		}
+
+		bool AddCondition((int, long) p1, (int, long) p2)
+		{
+			var (sign1, d1) = p1;
+			var (sign2, d2) = p2;
+
+			if (sign1 == sign2) return d1 == d2;
+
+			if ((d2 - d1) % 2 != 0) return false;
+			var nx = sign1 * (d2 - d1) / 2;
+
+			if (x != max) return nx == x;
+
+			x = nx;
 			return true;
 		}
 	}
