@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-class C
+class C2
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main() => Console.WriteLine(Solve() ? "Win" : "Lose");
@@ -11,9 +11,6 @@ class C
 		var a = Read();
 
 		var xor = a.Aggregate((x, y) => x ^ y);
-
-		foreach (var x in a)
-			if ((xor ^ x) == 0) return true;
-		return n % 2 == 1;
+		return n % 2 == 1 || a.Any(x => (xor ^ x) == 0);
 	}
 }
