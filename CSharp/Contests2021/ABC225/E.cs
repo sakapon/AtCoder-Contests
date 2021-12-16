@@ -12,13 +12,7 @@ class E
 		var n = int.Parse(Console.ReadLine());
 		var ps = Array.ConvertAll(new bool[n], _ => Read2L());
 
-		var comp = Comparer<(long x, long y)>.Create((p, q) =>
-		{
-			var d = q.x * p.y - p.x * q.y;
-			if (d < 0) return -1;
-			if (d > 0) return 1;
-			return 0;
-		});
+		var comp = Comparer<(long x, long y)>.Create((p, q) => (q.x * p.y).CompareTo(p.x * q.y));
 
 		var r = 0;
 		var tp = (1L, 0L);
