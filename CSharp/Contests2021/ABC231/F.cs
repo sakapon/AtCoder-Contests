@@ -15,22 +15,21 @@ class F
 		var a = Read();
 		var b = Read();
 
-		var abs = Enumerable.Range(0, n)
-			.Select(i => (a: a[i], b: b[i]))
-			.OrderBy(p => p.a)
-			.ThenBy(p => -p.b)
+		var indexes = Enumerable.Range(0, n)
+			.OrderBy(i => a[i])
+			.ThenBy(i => -b[i])
 			.ToArray();
 
 		var r = 0L;
 		var set = new WBMultiSet<int>();
 
-		foreach (var (_, v) in abs)
+		foreach (var i in indexes)
 		{
-			set.Add(v);
-			r += set.GetCount(x => x >= v, x => true);
+			set.Add(b[i]);
+			r += set.GetCount(x => x >= b[i], x => true);
 		}
 
-		foreach (var g in abs.GroupBy(p => p))
+		foreach (var g in indexes.Select(i => (a[i], b[i])).GroupBy(p => p))
 		{
 			var c = g.LongCount();
 			r += c * (c - 1) / 2;
