@@ -2,6 +2,8 @@
 
 namespace CoderLib8.Values
 {
+	// 偏角による順序
+	// https://atcoder.jp/contests/abc225/tasks/abc225_e
 	public struct IntV : IEquatable<IntV>
 	{
 		public static IntV Zero = (0, 0);
