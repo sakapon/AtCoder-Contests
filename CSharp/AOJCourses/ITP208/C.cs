@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 class C
 {
@@ -8,11 +7,11 @@ class C
 	{
 		var n = int.Parse(Console.ReadLine());
 
-		var r = new List<string>();
-		var set = new SortedSet<string>();
-		var d = new Map<string, string>("0");
+		var set = new SortedSet<string>(StringComparer.Ordinal);
+		var d = new Dictionary<string, string>(StringComparer.Ordinal);
 
-		for (int i = 0; i < n; i++)
+		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
+		while (n-- > 0)
 		{
 			var q = Console.ReadLine().Split();
 			if (q[0] == "0")
@@ -21,27 +20,20 @@ class C
 				d[q[1]] = q[2];
 			}
 			else if (q[0] == "1")
-				r.Add(d[q[1]]);
+			{
+				Console.WriteLine(d.ContainsKey(q[1]) ? d[q[1]] : "0");
+			}
 			else if (q[0] == "2")
 			{
 				d.Remove(q[1]);
 				set.Remove(q[1]);
 			}
 			else
-				r.AddRange(set.GetViewBetween(q[1], q[2]).Select(x => $"{x} {d[x]}"));
+			{
+				foreach (var x in set.GetViewBetween(q[1], q[2]))
+					Console.WriteLine($"{x} {d[x]}");
+			}
 		}
-		Console.WriteLine(string.Join("\n", r));
-	}
-}
-
-class Map<TK, TV> : Dictionary<TK, TV>
-{
-	TV _v0;
-	public Map(TV v0 = default(TV)) { _v0 = v0; }
-
-	public new TV this[TK key]
-	{
-		get { return ContainsKey(key) ? base[key] : _v0; }
-		set { base[key] = value; }
+		Console.Out.Flush();
 	}
 }

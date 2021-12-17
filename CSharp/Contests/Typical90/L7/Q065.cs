@@ -23,23 +23,35 @@ class Q065
 		for (int b = K - X; b <= B; b++)
 			bs[b] = mc.MNcr(B, b);
 
-		rs = Ntt.Convolution(rs, gs);
-		rs = Ntt.Convolution(rs, bs);
+		rs = FNTT.Convolution(rs, gs);
+		rs = FNTT.Convolution(rs, bs);
 		return rs[K];
 	}
 
 	// MCombination の M を変更します。
 }
 
-public class Ntt
+public class FNTT
 {
 	const long p = 998244353, g = 3;
+	//const long p = 1107296257, g = 10;
 
-	public static int ToPowerOf2(int length)
+	public static int ToPowerOf2(int n)
 	{
-		var n = 1;
-		while (n < length) n <<= 1;
-		return n;
+		var p = 1;
+		while (p < n) p <<= 1;
+		return p;
+	}
+
+	// コピー先のインデックス O(n)
+	// n = 8: { 0, 4, 2, 6, 1, 5, 3, 7 }
+	static int[] BitReversal(int n)
+	{
+		var b = new int[n];
+		for (int p = 1, d = n >> 1; p < n; p <<= 1, d >>= 1)
+			for (int k = 0; k < p; ++k)
+				b[k | p] = b[k] | d;
+		return b;
 	}
 
 	static long MPow(long b, long i)
@@ -49,69 +61,87 @@ public class Ntt
 		return r;
 	}
 
-	static long[] NthRoots(int n)
+	// k 番目の 1 の n 乗根 (0 <= k < n/2)
+	static long[] NthRoots(int n, long w)
 	{
-		var w = MPow(g, (p - 1) / n);
-		var r = new long[n + 1];
-		r[0] = 1;
-		for (int i = 0; i < n; ++i) r[i + 1] = r[i] * w % p;
+		var r = new long[n >> 1];
+		if (r.Length > 0) r[0] = 1;
+		for (int k = 1; k < r.Length; ++k)
+			r[k] = r[k - 1] * w % p;
 		return r;
 	}
 
 	int n;
+	public int Length => n;
 	long nInv;
+	int[] br;
 	long[] roots;
-	public Ntt(int length)
+
+	// length は 2 の冪に変更されます。
+	public FNTT(int length)
 	{
 		n = ToPowerOf2(length);
 		nInv = MPow(n, p - 2);
-		roots = NthRoots(n);
+		br = BitReversal(n);
+		roots = NthRoots(n, MPow(g, (p - 1) / n));
 	}
 
-	void FftInternal(long[] c, bool inverse)
+	// c の長さは 2 の冪とします。
+	// h: 更新対象の長さの半分
+	void TransformRecursive(long[] c, int l, int h)
 	{
-		var m = c.Length;
-		if (m == 1) return;
+		if (h == 0) return;
+		var d = (n >> 1) / h;
 
-		var m2 = m / 2;
-		var nm = n / m;
-		var c1 = new long[m2];
-		var c2 = new long[m2];
-		for (int i = 0; i < m2; ++i)
+		TransformRecursive(c, l, h >> 1);
+		TransformRecursive(c, l + h, h >> 1);
+
+		for (int k = 0; k < h; ++k)
 		{
-			c1[i] = c[2 * i];
-			c2[i] = c[2 * i + 1];
-		}
-
-		FftInternal(c1, inverse);
-		FftInternal(c2, inverse);
-
-		for (int i = 0; i < m2; ++i)
-		{
-			var z = c2[i] * roots[nm * (inverse ? m - i : i)] % p;
-			c[i] = (c1[i] + z) % p;
-			c[m2 + i] = (c1[i] - z + p) % p;
+			var v0 = c[l + k];
+			var v1 = c[l + k + h] * roots[d * k] % p;
+			c[l + k] = (v0 + v1) % p;
+			c[l + k + h] = (v0 - v1 + p) % p;
 		}
 	}
 
-	// { f(w^i) }
-	// 長さは n 以下で OK。
-	public long[] Fft(long[] c, bool inverse = false)
+	public long[] Transform(long[] c, bool inverse)
 	{
-		var r = new long[n];
-		c.CopyTo(r, 0);
-		FftInternal(r, inverse);
-		if (inverse) for (int i = 0; i < n; ++i) r[i] = r[i] * nInv % p;
-		return r;
+		if (c == null) throw new ArgumentNullException(nameof(c));
+
+		var t = new long[n];
+		for (int k = 0; k < c.Length; ++k)
+			t[br[k]] = c[k];
+
+		TransformRecursive(t, 0, n >> 1);
+
+		if (inverse && n > 1)
+		{
+			Array.Reverse(t, 1, n - 1);
+			for (int k = 0; k < n; ++k) t[k] = t[k] * nInv % p;
+		}
+		return t;
 	}
 
-	// 長さは n 以下で OK。
+	// 戻り値の長さは |a| + |b| - 1 となります。
 	public static long[] Convolution(long[] a, long[] b)
 	{
-		var ntt = new Ntt(a.Length + b.Length - 1);
-		var fa = ntt.Fft(a);
-		var fb = ntt.Fft(b);
-		for (int i = 0; i < ntt.n; ++i) fa[i] = fa[i] * fb[i] % p;
-		return ntt.Fft(fa, true);
+		if (a == null) throw new ArgumentNullException(nameof(a));
+		if (b == null) throw new ArgumentNullException(nameof(b));
+
+		var n = a.Length + b.Length - 1;
+		var ntt = new FNTT(n);
+
+		var fa = ntt.Transform(a, false);
+		var fb = ntt.Transform(b, false);
+
+		for (int k = 0; k < fa.Length; ++k)
+		{
+			fa[k] = fa[k] * fb[k] % p;
+		}
+		var c = ntt.Transform(fa, true);
+
+		if (n < c.Length) Array.Resize(ref c, n);
+		return c;
 	}
 }

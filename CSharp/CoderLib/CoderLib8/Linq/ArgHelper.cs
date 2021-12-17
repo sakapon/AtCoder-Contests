@@ -4,35 +4,39 @@ using System.Collections.Generic;
 namespace CoderLib8.Linq
 {
 	// Test: https://codeforces.com/contest/1490/problem/D
-	static class ArgHelper
+	// Test: https://atcoder.jp/contests/abc231/tasks/abc231_b
+	public static class ArgHelper
 	{
-		public static int FirstArgMax(this int[] a)
+		public static int ArgMostIndex<TSource, TValue>(this TSource[] a, Func<TSource, TValue> selector, Func<TValue, TValue, bool> isMost, TValue v0)
 		{
-			if (a.Length == 0) throw new ArgumentException();
-			var (mi, mv) = (0, a[0]);
-			for (int i = 1; i < a.Length; i++)
-				if (mv < a[i]) (mi, mv) = (i, a[i]);
+			var (mi, mv) = (-1, v0);
+			for (int i = 0; i < a.Length; ++i)
+			{
+				var v = selector(a[i]);
+				if (isMost(v, mv)) (mi, mv) = (i, v);
+			}
 			return mi;
 		}
+		public static int FirstArgMaxIndex<TSource>(this TSource[] a, Func<TSource, int> selector) => ArgMostIndex(a, selector, (x, y) => x > y, int.MinValue);
+		public static int FirstArgMinIndex<TSource>(this TSource[] a, Func<TSource, int> selector) => ArgMostIndex(a, selector, (x, y) => x < y, int.MaxValue);
 
-		public static T FirstArgMax<T>(this IEnumerable<T> source, Func<T, int> selector)
+		public static int ArgMostIndex<TSource>(this TSource[] a, Func<TSource, TSource, bool> isMost, TSource v0) => ArgMostIndex(a, x => x, isMost, v0);
+		public static int FirstArgMaxIndex(this int[] a) => ArgMostIndex(a, (x, y) => x > y, int.MinValue);
+		public static int FirstArgMinIndex(this int[] a) => ArgMostIndex(a, (x, y) => x < y, int.MaxValue);
+		public static int LastArgMaxIndex(this int[] a) => ArgMostIndex(a, (x, y) => x >= y, int.MinValue);
+		public static int LastArgMinIndex(this int[] a) => ArgMostIndex(a, (x, y) => x <= y, int.MaxValue);
+
+		public static TSource ArgMost<TSource, TValue>(this IEnumerable<TSource> source, Func<TSource, TValue> selector, Func<TValue, TValue, bool> isMost, TSource o0, TValue v0)
 		{
-			var (mo, mv, u) = (default(T), 0, false);
+			var (mo, mv) = (o0, v0);
 			foreach (var o in source)
 			{
 				var v = selector(o);
-				if (u)
-				{
-					if (mv < v) (mo, mv) = (o, v);
-				}
-				else
-				{
-					u = true;
-					(mo, mv) = (o, v);
-				}
+				if (isMost(v, mv)) (mo, mv) = (o, v);
 			}
-			if (!u) throw new ArgumentException();
 			return mo;
 		}
+		public static TSource FirstArgMax<TSource>(this IEnumerable<TSource> source, Func<TSource, int> selector, TSource o0 = default) => ArgMost(source, selector, (x, y) => x > y, o0, int.MinValue);
+		public static TSource FirstArgMin<TSource>(this IEnumerable<TSource> source, Func<TSource, int> selector, TSource o0 = default) => ArgMost(source, selector, (x, y) => x < y, o0, int.MaxValue);
 	}
 }

@@ -2,7 +2,9 @@
 
 namespace CoderLib8.Values
 {
-	struct IntV : IEquatable<IntV>
+	// 偏角による順序
+	// https://atcoder.jp/contests/abc225/tasks/abc225_e
+	public struct IntV : IEquatable<IntV>
 	{
 		public static IntV Zero = (0, 0);
 		public static IntV UnitX = (1, 0);
@@ -31,6 +33,14 @@ namespace CoderLib8.Values
 
 		public long NormL1 => Math.Abs(X) + Math.Abs(Y);
 		public double Norm => Math.Sqrt(X * X + Y * Y);
+		public double Angle => Math.Atan2(Y, X);
+		public double Cos => X / Norm;
+		public double Sin => Y / Norm;
+		public double Tan => Y / (double)X;
+
+		public IntV Rotate90() => new IntV(-Y, X);
+		public IntV Rotate180() => new IntV(-X, -Y);
+		public IntV Rotate270() => new IntV(Y, -X);
 
 		public static long Dot(IntV v1, IntV v2) => v1.X * v2.X + v1.Y * v2.Y;
 		// 菱形の面積

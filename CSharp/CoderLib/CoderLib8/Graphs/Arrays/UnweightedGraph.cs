@@ -16,5 +16,31 @@ namespace CoderLib8.Graphs.Arrays
 			}
 			return map;
 		}
+
+		// 辺 ID
+		public static List<int[]>[] ToMapListWithId(int n, int[][] es, bool directed)
+		{
+			var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
+			for (int i = 0; i < es.Length; ++i)
+			{
+				var e = es[i];
+				map[e[0]].Add(new[] { e[0], e[1], i });
+				if (!directed) map[e[1]].Add(new[] { e[1], e[0], i });
+			}
+			return map;
+		}
+
+		// 辺 ID
+		public static List<int>[] ToMapListById(int n, int[][] es, bool directed)
+		{
+			var map = Array.ConvertAll(new bool[n], _ => new List<int>());
+			for (int i = 0; i < es.Length; ++i)
+			{
+				var e = es[i];
+				map[e[0]].Add(i);
+				if (!directed) map[e[1]].Add(i);
+			}
+			return map;
+		}
 	}
 }

@@ -3,14 +3,21 @@ using System.Linq;
 
 class B
 {
-	static void Main()
+	static void Main() => Console.WriteLine(Solve());
+	static object Solve()
 	{
-		Console.ReadLine();
 		var s = Console.ReadLine();
-		var n = int.Parse(Console.ReadLine());
-		var h = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-		var ps = new int[n].Select(_ => Console.ReadLine().Split().Select(int.Parse).ToArray()).ToArray();
+		var t = Console.ReadLine();
 
-		Console.WriteLine(string.Join(" ", h));
+		var n = s.Length;
+		var m = t.Length;
+		var rm = Enumerable.Range(0, m).ToArray();
+
+		return Enumerable.Range(0, n - m + 1).Min(i => Diff(s.Substring(i, m), t));
+
+		int Diff(string s, string t)
+		{
+			return rm.Count(i => s[i] != t[i]);
+		}
 	}
 }

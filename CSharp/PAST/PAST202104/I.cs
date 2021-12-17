@@ -13,7 +13,8 @@ class I
 		var (h, w) = Read2();
 		var a = Array.ConvertAll(new bool[h], _ => ReadL());
 
-		var dp = NewArray3<long>(h, w, h + w, int.MinValue);
+		const int none = -1;
+		var dp = NewArray3<long>(h, w, h + w, none);
 		dp[0][0][0] = 0;
 		dp[0][0][1] = a[0][0];
 
@@ -21,18 +22,16 @@ class I
 		{
 			for (int j = 0; j < w; j++)
 			{
-				if ((i, j) == (0, 0)) continue;
-
 				if (i > 0)
 				{
 					for (int k = 0; k < h + w; k++)
 					{
-						if (dp[i - 1][j][k] == int.MinValue) break;
+						if (dp[i - 1][j][k] == none) break;
 						dp[i][j][k] = Math.Max(dp[i][j][k], dp[i - 1][j][k]);
 					}
 					for (int k = 1; k < h + w; k++)
 					{
-						if (dp[i - 1][j][k - 1] == int.MinValue) break;
+						if (dp[i - 1][j][k - 1] == none) break;
 						dp[i][j][k] = Math.Max(dp[i][j][k], dp[i - 1][j][k - 1] + a[i][j]);
 					}
 				}
@@ -41,19 +40,19 @@ class I
 				{
 					for (int k = 0; k < h + w; k++)
 					{
-						if (dp[i][j - 1][k] == int.MinValue) break;
+						if (dp[i][j - 1][k] == none) break;
 						dp[i][j][k] = Math.Max(dp[i][j][k], dp[i][j - 1][k]);
 					}
 					for (int k = 1; k < h + w; k++)
 					{
-						if (dp[i][j - 1][k - 1] == int.MinValue) break;
+						if (dp[i][j - 1][k - 1] == none) break;
 						dp[i][j][k] = Math.Max(dp[i][j][k], dp[i][j - 1][k - 1] + a[i][j]);
 					}
 				}
 			}
 		}
 
-		return string.Join("\n", Enumerable.Range(1, h + w - 1).Select(k => dp[h - 1][w - 1][k]));
+		return string.Join("\n", Enumerable.Range(1, h + w - 1).Select(k => dp[^1][^1][k]));
 	}
 
 	static T[][][] NewArray3<T>(int n1, int n2, int n3, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => Array.ConvertAll(new bool[n3], ___ => v)));

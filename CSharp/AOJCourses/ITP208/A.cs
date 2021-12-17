@@ -7,8 +7,10 @@ class A
 	{
 		var n = int.Parse(Console.ReadLine());
 
-		var d = new Dictionary<string, string>();
-		for (int i = 0; i < n; i++)
+		var d = new Dictionary<string, string>(StringComparer.Ordinal);
+
+		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
+		while (n-- > 0)
 		{
 			var q = Console.ReadLine().Split();
 			if (q[0] == "0")
@@ -16,5 +18,6 @@ class A
 			else
 				Console.WriteLine(d[q[1]]);
 		}
+		Console.Out.Flush();
 	}
 }

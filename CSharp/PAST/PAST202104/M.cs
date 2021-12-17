@@ -16,118 +16,156 @@ class M
 		var d = a.GroupBy(x => x).ToDictionary(g => g.Key, g => g.LongCount());
 		var sum = d.Values.Sum(c => c * (c - 1) / 2);
 
-		// 各グループ内の個数
-		var rn = (int)Math.Sqrt(n);
-		var gc = (n - 1) / rn + 1;
-
-		var nodes = new LinkedListNode<(int l, int x)>[gc];
-		LinkedListNode<(int l, int x)> GetNode(int i) => nodes[i / rn];
-
-		var ll = new LinkedList<(int l, int x)>();
-		ll.AddLast((-1, -1));
-
-		for (int i = 0; i < n; i++)
+		void Add(int x, int count)
 		{
-			if (ll.Last.Value.x != a[i])
-			{
-				ll.AddLast((i, a[i]));
-			}
-
-			if (i % rn == 0)
-			{
-				nodes[i / rn] = ll.Last;
-			}
+			var c = d.GetValueOrDefault(x);
+			sum -= c * (c - 1) / 2;
+			c += count;
+			sum += c * (c - 1) / 2;
+			d[x] = c;
 		}
-		ll.AddLast((n, -1));
 
-		Dictionary<int, int> Set(int l, int r, int x)
+		var ruq = new STR<int>(n, (x, y) => x == -1 ? y : x, -1);
+		var rs = new int[n];
+
+		for (var (l, r) = (0, 1); r <= n; r++)
 		{
-			var lr = r - l;
-			var d = new Dictionary<int, int> { [x] = lr };
-
-			var ln = GetNode(l);
-			while (ln.Value.l < l)
+			if (r == n || a[r] != a[r - 1])
 			{
-				ln = ln.Next;
+				ruq.Set(l, r, l);
+				rs[l] = r;
+				l = r;
 			}
-
-			if (r < ln.Value.l)
-			{
-				var x0 = ln.Previous.Value.x;
-				d[x0] = -lr;
-				ll.AddBefore(ln, (l, x));
-				ll.AddBefore(ln, (r, x0));
-
-				ln = ln.Previous;
-				for (int gi = (ln.Next.Value.l - 1) / rn; r <= gi * rn; gi--)
-				{
-					nodes[gi] = ln;
-				}
-
-				ln = ln.Previous;
-				for (int gi = (r - 1) / rn; l <= gi * rn; gi--)
-				{
-					nodes[gi] = ln;
-				}
-			}
-			else
-			{
-				// Partitions left
-				if (l < ln.Value.l)
-				{
-					var x0 = ln.Previous.Value.x;
-					d[x0] = d.GetValueOrDefault(x0) - (ln.Value.l - l);
-				}
-
-				// Inserts
-				ln = ll.AddBefore(ln, (l, x));
-
-				for (ln = ln.Next; ln.Value.l < r;)
-				{
-					var (l0, x0) = ln.Value;
-					if (r < ln.Next.Value.l)
-					{
-						d[x0] = d.GetValueOrDefault(x0) - (r - l0);
-						ln.Value = (r, x0);
-					}
-					else
-					{
-						d[x0] = d.GetValueOrDefault(x0) - (ln.Next.Value.l - l0);
-						var t = ln;
-						ln = ln.Next;
-						ll.Remove(t);
-					}
-				}
-
-				ln = ln.Previous;
-				for (int gi = (r - 1) / rn; l <= gi * rn; gi--)
-				{
-					nodes[gi] = ln;
-				}
-			}
-
-			return d;
 		}
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
-		foreach (var (l, r, x) in qs)
+		foreach (var q in qs)
 		{
-			var delta = Set(l - 1, r, x);
+			var (L, R, X) = q;
+			L--;
 
-			foreach (var (k, dc) in delta)
+			var ll = ruq.Get(L);
+			var rl = ruq.Get(R - 1);
+			var rr = rs[rl];
+			var lx = a[ll];
+			var rx = a[rl];
+
+			// 関連する区間を全て除きます。
+			for (int l = ll; l < rr; l = rs[l])
 			{
-				if (dc == 0) continue;
+				Add(a[l], -(rs[l] - l));
+			}
 
-				var c = d.GetValueOrDefault(k);
-				sum -= c * (c - 1) / 2;
-				c += dc;
-				sum += c * (c - 1) / 2;
+			Add(lx, L - ll);
+			Add(X, R - L);
+			Add(rx, rr - R);
 
-				d[k] = c;
+			rs[ll] = L;
+
+			a[L] = X;
+			ruq.Set(L, R, L);
+			rs[L] = R;
+
+			if (R < rr)
+			{
+				a[R] = rx;
+				ruq.Set(R, rr, R);
+				rs[R] = rr;
 			}
 
 			Console.WriteLine(sum);
 		}
 		Console.Out.Flush();
+	}
+}
+
+class STR<TO>
+{
+	public struct STNode
+	{
+		public int i;
+		public static implicit operator STNode(int i) => new STNode { i = i };
+		public override string ToString() => $"{i}";
+
+		public STNode Parent => i >> 1;
+		public STNode Child0 => i << 1;
+		public STNode Child1 => (i << 1) + 1;
+		public STNode LastLeft(int length) => i * length;
+		public STNode LastRight(int length) => (i + 1) * length;
+	}
+
+	// Power of 2
+	public int n2 = 1;
+	public TO[] a1;
+
+	// (newOp, oldOp) => product
+	public Func<TO, TO, TO> Multiply;
+	public TO id;
+	Func<TO, TO, bool> TOEquals = System.Collections.Generic.EqualityComparer<TO>.Default.Equals;
+
+	// 全ノードを、恒等変換を表す値で初期化します。
+	public STR(int n, Func<TO, TO, TO> multiply, TO _id)
+	{
+		while (n2 < n << 1) n2 <<= 1;
+		a1 = new TO[n2];
+
+		Multiply = multiply;
+		id = _id;
+		if (!TOEquals(id, default)) Init();
+	}
+
+	public void Init() { for (int i = 1; i < n2; ++i) a1[i] = id; }
+
+	public STNode Actual(int i) => (n2 >> 1) + i;
+	public int Original(STNode n) => n.i - (n2 >> 1);
+	public TO this[STNode n]
+	{
+		get { return a1[n.i]; }
+		set { a1[n.i] = value; }
+	}
+
+	void PushDown(STNode n)
+	{
+		var op = a1[n.i];
+		if (TOEquals(op, id)) return;
+		STNode c0 = n.Child0, c1 = n.Child1;
+		a1[c0.i] = Multiply(op, a1[c0.i]);
+		a1[c1.i] = Multiply(op, a1[c1.i]);
+		a1[n.i] = id;
+	}
+
+	// Top-down
+	public void Set(int l_in, int r_ex, TO op)
+	{
+		int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
+		Dfs(1, n2 >> 1);
+
+		void Dfs(STNode n, int length)
+		{
+			int nl = n.i * length, nr = nl + length;
+
+			if (al <= nl && nr <= ar)
+			{
+				// 対象のノード
+				a1[n.i] = Multiply(op, a1[n.i]);
+			}
+			else
+			{
+				PushDown(n);
+				var nm = nl + nr >> 1;
+				if (al < nm && nl < ar) Dfs(n.Child0, length >> 1);
+				if (al < nr && nm < ar) Dfs(n.Child1, length >> 1);
+			}
+		}
+	}
+
+	// Top-down
+	public TO Get(int i)
+	{
+		var ai = (n2 >> 1) + i;
+		var length = n2 >> 1;
+		for (STNode n = 1; n.i < ai; n = ai < n.i * length + (length >> 1) ? n.Child0 : n.Child1, length >>= 1)
+			PushDown(n);
+		return a1[ai];
 	}
 }
