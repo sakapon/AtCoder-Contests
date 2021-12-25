@@ -4,18 +4,27 @@ using System.Linq;
 
 class E
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var x = Console.ReadLine().Select(c => (long)(c - '0')).ToArray();
+		var n = x.Length;
 
-		return string.Join(" ", a);
+		var r = new List<long>();
+		var s = x.Sum();
+		var t = s;
+
+		for (int i = n - 1; i >= 0; i--)
+		{
+			r.Add(t % 10);
+
+			t /= 10;
+			s -= x[i];
+			t += s;
+		}
+
+		r.Reverse();
+		if (t == 0) return string.Join("", r);
+		else return $"{t}" + string.Join("", r);
 	}
 }

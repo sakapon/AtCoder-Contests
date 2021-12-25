@@ -4,18 +4,49 @@ using System.Linq;
 
 class C
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+	static (long, long) Read2L() { var a = ReadL(); return (a[0], a[1]); }
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (n, x) = Read2L();
+		var a = Array.ConvertAll(new bool[n], _ => ReadL()[1..]);
 
-		return string.Join(" ", a);
+		var d = Array.ConvertAll(new bool[n + 1], _ => new Dictionary<long, int>());
+		d[0][1] = 1;
+
+		for (int i = 0; i < n; i++)
+		{
+			var nd = d[i + 1];
+
+			foreach (var (v, c) in d[i])
+			{
+				foreach (var av in a[i])
+				{
+					try
+					{
+						checked
+						{
+							var nv = v * av;
+
+							if (nd.ContainsKey(nv))
+							{
+								nd[nv] += c;
+							}
+							else
+							{
+								nd[nv] = c;
+							}
+						}
+					}
+					catch (Exception)
+					{
+					}
+				}
+			}
+		}
+
+		if (d[n].ContainsKey(x)) return d[n][x];
+		return 0;
 	}
 }
