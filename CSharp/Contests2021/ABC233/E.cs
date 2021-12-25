@@ -24,7 +24,8 @@ class E
 		}
 
 		r.Reverse();
-		if (t == 0) return string.Join("", r);
-		else return $"{t}" + string.Join("", r);
+		var rs = string.Join("", r);
+		if (t > 0) rs = t + rs;
+		return rs;
 	}
 }

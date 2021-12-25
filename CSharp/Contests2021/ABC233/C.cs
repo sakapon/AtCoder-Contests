@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 class C
 {
@@ -12,41 +11,30 @@ class C
 		var (n, x) = Read2L();
 		var a = Array.ConvertAll(new bool[n], _ => ReadL()[1..]);
 
-		var d = Array.ConvertAll(new bool[n + 1], _ => new Dictionary<long, int>());
-		d[0][1] = 1;
+		var d = new Dictionary<long, int>();
+		d[1] = 1;
 
 		for (int i = 0; i < n; i++)
 		{
-			var nd = d[i + 1];
+			var nd = new Dictionary<long, int>();
 
-			foreach (var (v, c) in d[i])
+			foreach (var (dv, c) in d)
 			{
 				foreach (var av in a[i])
 				{
-					try
-					{
-						checked
-						{
-							var nv = v * av;
+					if (dv > x / av) continue;
+					var nv = dv * av;
 
-							if (nd.ContainsKey(nv))
-							{
-								nd[nv] += c;
-							}
-							else
-							{
-								nd[nv] = c;
-							}
-						}
-					}
-					catch (Exception)
-					{
-					}
+					if (nd.ContainsKey(nv))
+						nd[nv] += c;
+					else
+						nd[nv] = c;
 				}
 			}
+
+			d = nd;
 		}
 
-		if (d[n].ContainsKey(x)) return d[n][x];
-		return 0;
+		return d.ContainsKey(x) ? d[x] : 0;
 	}
 }
