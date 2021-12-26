@@ -110,8 +110,7 @@ namespace CoderLib8.DataTrees
 		{
 			Count++;
 			var key = keySelector(item);
-			Queue<T> q;
-			if (!sd.TryGetValue(key, out q)) sd[key] = q = new Queue<T>();
+			if (!sd.TryGetValue(key, out var q)) sd[key] = q = new Queue<T>();
 			q.Enqueue(item);
 		}
 	}
