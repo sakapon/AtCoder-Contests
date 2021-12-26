@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace CoderLib8.DataTrees
 {
+	// Test: https://atcoder.jp/contests/abc223/tasks/abc223_d
 	// 要素が重複しない (すべての値の順序が異なる) 場合に利用できます。
 	public class DistinctPriorityQueue<T>
 	{
@@ -36,6 +37,9 @@ namespace CoderLib8.DataTrees
 		public bool Push(T item) => ss.Add(item);
 	}
 
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/9/ALDS1_9_C
+	// Test: https://atcoder.jp/contests/abc141/tasks/abc141_d
+	// Test: https://atcoder.jp/contests/abc212/tasks/abc212_d
 	// 要素が重複する場合も利用できます (一般的な優先度付きキュー)。
 	public class BstPriorityQueue<T>
 	{
@@ -75,6 +79,7 @@ namespace CoderLib8.DataTrees
 		}
 	}
 
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_f
 	// 要素に対して優先度を表すキーを指定する場合に利用します。
 	public class KeyedPriorityQueue<T, TKey>
 	{
