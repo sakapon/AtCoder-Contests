@@ -10,8 +10,10 @@ namespace CoderLib8.DataTrees
 		// 要素をそのままキーとして使用します。
 		SortedSet<T> ss;
 
-		public DistinctPriorityQueue() : this(Comparer<T>.Default) { }
-		public DistinctPriorityQueue(IComparer<T> comparer) => ss = new SortedSet<T>(comparer);
+		public DistinctPriorityQueue(IComparer<T> comparer = null)
+		{
+			ss = new SortedSet<T>(comparer ?? Comparer<T>.Default);
+		}
 
 		public int Count => ss.Count;
 
@@ -40,8 +42,10 @@ namespace CoderLib8.DataTrees
 		// 要素をそのままキーとして使用します。
 		SortedDictionary<T, int> sd;
 
-		public BstPriorityQueue() : this(Comparer<T>.Default) { }
-		public BstPriorityQueue(IComparer<T> comparer) => sd = new SortedDictionary<T, int>(comparer);
+		public BstPriorityQueue(IComparer<T> comparer = null)
+		{
+			sd = new SortedDictionary<T, int>(comparer ?? Comparer<T>.Default);
+		}
 
 		public int Count { get; private set; }
 
@@ -77,11 +81,10 @@ namespace CoderLib8.DataTrees
 		SortedDictionary<TKey, Queue<T>> sd;
 		Func<T, TKey> keySelector;
 
-		public KeyedPriorityQueue(Func<T, TKey> keySelector) : this(keySelector, Comparer<TKey>.Default) { }
-		public KeyedPriorityQueue(Func<T, TKey> keySelector, IComparer<TKey> comparer)
+		public KeyedPriorityQueue(Func<T, TKey> keySelector, IComparer<TKey> comparer = null)
 		{
 			this.keySelector = keySelector ?? throw new ArgumentNullException(nameof(keySelector));
-			sd = new SortedDictionary<TKey, Queue<T>>(comparer);
+			sd = new SortedDictionary<TKey, Queue<T>>(comparer ?? Comparer<TKey>.Default);
 		}
 
 		public int Count { get; private set; }
