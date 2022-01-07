@@ -30,7 +30,7 @@ class F2
 
 	public static HashSet<TVertex> Dfs<TVertex>(Func<TVertex, TVertex[]> nexts, TVertex sv, TVertex ev)
 	{
-		var eq = EqualityComparer<TVertex>.Default;
+		var comp = EqualityComparer<TVertex>.Default;
 		var u = new HashSet<TVertex>();
 		var q = new Stack<TVertex>();
 		u.Add(sv);
@@ -44,7 +44,7 @@ class F2
 			{
 				if (u.Contains(nv)) continue;
 				u.Add(nv);
-				if (eq.Equals(nv, ev)) return u;
+				if (comp.Equals(nv, ev)) return u;
 				q.Push(nv);
 			}
 		}

@@ -59,10 +59,13 @@ public class SppWeightedGraph<TVertex>
 		Map[to].Add(new Edge(to, from, cost));
 	}
 
+	static readonly Edge[] EmptyEdges = new Edge[0];
+	public Dictionary<TVertex, long> Dijkstra(TVertex sv, TVertex ev) => Dijkstra(v => Map.ContainsKey(v) ? Map[v].ToArray() : EmptyEdges, sv, ev);
+
 	// 終点を指定しないときは、ev に null, -1 などを指定します。
-	public Dictionary<TVertex, long> Dijkstra(TVertex sv, TVertex ev)
+	public static Dictionary<TVertex, long> Dijkstra(Func<TVertex, Edge[]> nexts, TVertex sv, TVertex ev)
 	{
-		var eq = EqualityComparer<TVertex>.Default;
+		var comp = EqualityComparer<TVertex>.Default;
 		var costs = new Dictionary<TVertex, long>();
 		var q = PriorityQueue<TVertex>.CreateWithKey(v => costs[v]);
 		costs[sv] = 0;
@@ -71,11 +74,10 @@ public class SppWeightedGraph<TVertex>
 		while (q.Any)
 		{
 			var (v, c) = q.Pop();
-			if (eq.Equals(v, ev)) break;
+			if (comp.Equals(v, ev)) break;
 			if (costs[v] < c) continue;
 
-			if (!Map.ContainsKey(v)) continue;
-			foreach (var e in Map[v])
+			foreach (var e in nexts(v))
 			{
 				var (nv, nc) = (e.To, c + e.Cost);
 				if (costs.ContainsKey(nv) && costs[nv] <= nc) continue;
