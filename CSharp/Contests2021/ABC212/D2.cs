@@ -9,7 +9,7 @@ class D2
 	{
 		var qc = int.Parse(Console.ReadLine());
 
-		var pq = new BstPQ<long>();
+		var pq = new BstPriorityQueue<long>();
 		var d = 0L;
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
@@ -33,24 +33,41 @@ class D2
 	}
 }
 
-class BstPQ<T>
+// 要素が重複する場合も利用できます (一般的な優先度付きキュー)。
+public class BstPriorityQueue<T>
 {
-	SortedDictionary<T, int> d = new SortedDictionary<T, int>();
-	public bool Any => d.Count > 0;
-	public T First => d.First().Key;
+	// 要素をそのままキーとして使用します。
+	SortedDictionary<T, int> sd;
 
-	public void Push(T v)
+	public BstPriorityQueue(IComparer<T> comparer = null)
 	{
-		int c;
-		d.TryGetValue(v, out c);
-		d[v] = c + 1;
+		sd = new SortedDictionary<T, int>(comparer ?? Comparer<T>.Default);
+	}
+
+	public int Count { get; private set; }
+
+	public T Peek()
+	{
+		if (Count == 0) throw new InvalidOperationException("The container is empty.");
+
+		return sd.First().Key;
 	}
 
 	public T Pop()
 	{
-		var v = First;
-		if (d[v] == 1) d.Remove(v);
-		else --d[v];
-		return v;
+		if (Count == 0) throw new InvalidOperationException("The container is empty.");
+
+		Count--;
+		var (item, count) = sd.First();
+		if (count == 1) sd.Remove(item);
+		else sd[item] = count - 1;
+		return item;
+	}
+
+	public void Push(T item)
+	{
+		Count++;
+		sd.TryGetValue(item, out var count);
+		sd[item] = count + 1;
 	}
 }
