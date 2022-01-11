@@ -4,18 +4,30 @@ using System.Linq;
 
 class E
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var x = long.Parse(Console.ReadLine());
 
-		return string.Join(" ", a);
+		var nums = new List<long>();
+
+		for (int k = 1; k <= 17; k++)
+		{
+			var ks = Enumerable.Range(0, k).ToArray();
+
+			for (int d1 = 1; d1 <= 9; d1++)
+			{
+				for (int d = -9; d <= 9; d++)
+				{
+					var ds = ks.Select(v => d1 + v * d).ToArray();
+					if (ds.Any(v => v < 0 || v > 9)) continue;
+					var s = string.Join("", ds);
+					nums.Add(long.Parse(s));
+				}
+			}
+		}
+		nums.Add(111111_111111_111111);
+
+		return nums.First(v => v >= x);
 	}
 }

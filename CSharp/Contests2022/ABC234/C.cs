@@ -1,21 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 class C
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var k = long.Parse(Console.ReadLine());
+		return k.ConvertAsString(2).Replace("1", "2");
+	}
+}
 
-		return string.Join(" ", a);
+public static class PositionalNotation
+{
+	public static int[] Convert(this long x, int b)
+	{
+		var r = new List<int>();
+		for (; x > 0; x /= b) r.Add((int)(x % b));
+		return r.ToArray();
+	}
+
+	const string AN = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+	public static string ConvertAsString(this long x, int b)
+	{
+		if (x == 0) return "0";
+		if (x < 0) return "-" + ConvertAsString(-x, b);
+		var r = Convert(x, b);
+		Array.Reverse(r);
+		return new string(Array.ConvertAll(r, d => AN[d]));
 	}
 }
