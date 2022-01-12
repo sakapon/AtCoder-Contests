@@ -11,7 +11,7 @@ class E
 
 		var nums = new List<long>();
 
-		for (int k = 1; k <= 17; k++)
+		for (int k = 1; k <= 18; k++)
 		{
 			var ks = Enumerable.Range(0, k).ToArray();
 
@@ -26,7 +26,6 @@ class E
 				}
 			}
 		}
-		nums.Add(111111_111111_111111);
 
 		return nums.First(v => v >= x);
 	}
