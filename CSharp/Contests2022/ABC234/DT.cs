@@ -28,6 +28,8 @@ public class TrieNode
 	public TrieNode Left { get; internal set; }
 	public TrieNode Right { get; internal set; }
 	public int Count { get; internal set; }
+	public int LeftCount => Left?.Count ?? 0;
+	public int RightCount => Right?.Count ?? 0;
 }
 
 public class Int32BinaryTrie : TrieNode
@@ -54,7 +56,7 @@ public class Int32BinaryTrie : TrieNode
 		TrieNode node = this;
 		for (int k = MaxDigit; k >= 0; --k)
 		{
-			var d = index - (node.Left?.Count ?? 0);
+			var d = index - node.LeftCount;
 			if (d < 0)
 			{
 				node = node.Left;
