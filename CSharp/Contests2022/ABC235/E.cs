@@ -16,11 +16,8 @@ class E
 		var uf = new UF(n + 1);
 
 		foreach (var e in es.Concat(qs).OrderBy(e => e[2]))
-		{
-			if (e[3] != -1) r[e[3]] = !uf.AreUnited(e[0], e[1]);
-			if (e[3] != -1 || uf.AreUnited(e[0], e[1])) continue;
-			uf.Unite(e[0], e[1]);
-		}
+			if (e[3] == -1) uf.Unite(e[0], e[1]);
+			else r[e[3]] = !uf.AreUnited(e[0], e[1]);
 
 		return string.Join("\n", r.Select(b => b ? "Yes" : "No"));
 	}
