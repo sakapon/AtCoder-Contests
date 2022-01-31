@@ -11,11 +11,32 @@ class D
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var a = Array.ConvertAll(new bool[2 * n - 1], _ => Read());
 
-		return string.Join(" ", a);
+		var r = 0;
+		Dfs(0, Enumerable.Range(0, 2 * n).ToList());
+		return r;
+
+		void Dfs(int xor, List<int> l)
+		{
+			if (l.Count == 0)
+			{
+				r = Math.Max(r, xor);
+				return;
+			}
+
+			var i = l[0];
+			l.RemoveAt(0);
+
+			for (int ji = 0; ji < l.Count; ji++)
+			{
+				var j = l[ji];
+				l.RemoveAt(ji);
+				Dfs(xor ^ a[i][j - i - 1], l);
+				l.Insert(ji, j);
+			}
+
+			l.Insert(0, i);
+		}
 	}
 }
