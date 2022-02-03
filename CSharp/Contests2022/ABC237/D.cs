@@ -11,11 +11,23 @@ class D
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
 		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		var l = new LinkedList<int>();
+		var node = l.AddFirst(0);
+
+		for (int i = 1; i <= n; i++)
+		{
+			if (s[i - 1] == 'L')
+			{
+				node = l.AddBefore(node, i);
+			}
+			else
+			{
+				node = l.AddAfter(node, i);
+			}
+		}
+
+		return string.Join(" ", l);
 	}
 }
