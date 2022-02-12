@@ -21,7 +21,7 @@ class E
 			var hv = h[v - 1];
 
 			spp.AddEdge(u, v, hu < hv ? hv - hu : 0, true);
-			spp.AddEdge(v, u, hu > hv ? hu - hv : 0, true);
+			spp.AddEdge(v, u, hv < hu ? hu - hv : 0, true);
 		}
 
 		var d = spp.Dijkstra(1, -1);
