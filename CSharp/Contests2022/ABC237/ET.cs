@@ -36,6 +36,7 @@ public class SppWeightedGraph<TVertex>
 		public TVertex From, To;
 		public long Cost;
 		public Edge(TVertex from, TVertex to, long cost) { From = from; To = to; Cost = cost; }
+		public Edge GetReverse() => new Edge(To, From, Cost);
 	}
 
 	public Dictionary<TVertex, List<Edge>> Map = new Dictionary<TVertex, List<Edge>>();
