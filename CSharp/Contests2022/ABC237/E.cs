@@ -24,7 +24,7 @@ class E
 			spp.AddEdge(v, u, hv < hu ? hu - hv : 0, true);
 		}
 
-		var d = spp.Dijkstra(1, -1);
+		var d = spp.Dijkstra(1);
 		return Enumerable.Range(1, n).Max(v => h[0] - h[v - 1] - d[v]);
 	}
 }
@@ -49,16 +49,21 @@ public class SppWeightedGraph
 	public SppWeightedGraph(int n)
 	{
 		VertexesCount = n;
-		Map = Array.ConvertAll(new bool[n], _ => new List<Edge>());
+		Map = new List<Edge>[n];
 	}
 
 	public void AddEdge(int from, int to, long cost, bool directed)
 	{
+		if (Map[from] == null) Map[from] = new List<Edge>();
 		Map[from].Add(new Edge(from, to, cost));
-		if (!directed) Map[to].Add(new Edge(to, from, cost));
+
+		if (directed) return;
+		if (Map[to] == null) Map[to] = new List<Edge>();
+		Map[to].Add(new Edge(to, from, cost));
 	}
 
-	public long[] Dijkstra(int sv, int ev = -1) => Dijkstra(VertexesCount, v => Map[v].ToArray(), sv, ev);
+	static readonly Edge[] EmptyEdges = new Edge[0];
+	public long[] Dijkstra(int sv, int ev = -1) => Dijkstra(VertexesCount, v => Map[v]?.ToArray() ?? EmptyEdges, sv, ev);
 
 	// 終点を指定しないときは、-1 を指定します。
 	public static long[] Dijkstra(int n, Func<int, Edge[]> nexts, int sv, int ev = -1)
