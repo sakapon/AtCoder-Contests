@@ -41,14 +41,20 @@ public class SppWeightedGraph<TVertex>
 
 	public Dictionary<TVertex, List<Edge>> Map = new Dictionary<TVertex, List<Edge>>();
 
-	public void AddEdge(TVertex from, TVertex to, long cost, bool directed)
+	public void AddEdge(TVertex from, TVertex to, long cost, bool directed) => AddEdge(new Edge(from, to, cost), directed);
+	public void AddEdge(Edge e, bool directed)
 	{
-		if (!Map.ContainsKey(from)) Map[from] = new List<Edge>();
-		Map[from].Add(new Edge(from, to, cost));
+		if (!Map.ContainsKey(e.From)) Map[e.From] = new List<Edge>();
+		Map[e.From].Add(e);
 
 		if (directed) return;
-		if (!Map.ContainsKey(to)) Map[to] = new List<Edge>();
-		Map[to].Add(new Edge(to, from, cost));
+		if (!Map.ContainsKey(e.To)) Map[e.To] = new List<Edge>();
+		Map[e.To].Add(e.GetReverse());
+	}
+
+	public void AddEdges(IEnumerable<Edge> es, bool directed)
+	{
+		foreach (var e in es) AddEdge(e, directed);
 	}
 
 	static readonly Edge[] EmptyEdges = new Edge[0];
