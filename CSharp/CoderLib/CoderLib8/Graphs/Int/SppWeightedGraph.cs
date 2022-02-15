@@ -27,14 +27,28 @@ namespace CoderLib8.Graphs.Int
 			Map = new List<Edge>[n];
 		}
 
-		public void AddEdge(int from, int to, long cost, bool directed)
+		public void AddEdge(int from, int to, long cost, bool directed) => AddEdge(new Edge(from, to, cost), directed);
+		public void AddEdge(Edge e, bool directed)
 		{
-			if (Map[from] == null) Map[from] = new List<Edge>();
-			Map[from].Add(new Edge(from, to, cost));
+			if (Map[e.From] == null) Map[e.From] = new List<Edge>();
+			Map[e.From].Add(e);
 
 			if (directed) return;
-			if (Map[to] == null) Map[to] = new List<Edge>();
-			Map[to].Add(new Edge(to, from, cost));
+			if (Map[e.To] == null) Map[e.To] = new List<Edge>();
+			Map[e.To].Add(e.GetReverse());
+		}
+
+		public void AddEdges(IEnumerable<int[]> es, bool directed)
+		{
+			foreach (var e in es) AddEdge(new Edge(e), directed);
+		}
+		public void AddEdges(IEnumerable<long[]> es, bool directed)
+		{
+			foreach (var e in es) AddEdge(new Edge(e), directed);
+		}
+		public void AddEdges(IEnumerable<Edge> es, bool directed)
+		{
+			foreach (var e in es) AddEdge(e, directed);
 		}
 
 		static readonly Edge[] EmptyEdges = new Edge[0];
