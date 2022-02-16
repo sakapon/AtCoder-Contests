@@ -10,12 +10,30 @@ class C
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var n = long.Parse(Console.ReadLine());
 
-		return string.Join(" ", a);
+		var s = n % M * ((n + 1) % M) % M * MHalf % M;
+		var r = 0L;
+
+		for (long d = 10; ; d *= 10)
+		{
+			if (d > n)
+			{
+				var c = n - d / 10 + 1;
+				r += c % M * ((d / 10 - 1) % M) % M;
+				r %= M;
+				break;
+			}
+			else
+			{
+				var c = d - d / 10;
+				r += c % M * ((d / 10 - 1) % M) % M;
+				r %= M;
+			}
+		}
+		return (s - r + M) % M;
 	}
+
+	const long M = 998244353;
+	const long MHalf = (M + 1) / 2;
 }
