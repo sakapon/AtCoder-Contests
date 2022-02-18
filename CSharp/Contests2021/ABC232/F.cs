@@ -12,31 +12,22 @@ class F
 		var a = ReadL();
 		var b = ReadL();
 
-		const long max = 1L << 60;
 		var dp = new long[1 << n];
-		Array.Fill(dp, max);
+		Array.Fill(dp, 1L << 60);
 		dp[0] = 0;
 
-		for (int i = 0; i < n; i++)
+		for (uint s = 0; s < 1U << n; s++)
 		{
-			for (uint z = 0; z < 1 << n; z++)
+			var i = BitOperations.PopCount(s);
+
+			for (int j = 0; j < n; j++)
 			{
-				if (BitOperations.PopCount(z) != i) continue;
+				var ns = s | (1U << j);
+				if (ns == s) continue;
 
-				for (int j = 0; j < n; j++)
-				{
-					var nz = z | (1U << j);
-					if (nz == z) continue;
-
-					// j はフラグ 0 のビットのうち何番目か
-					var k = 0;
-					for (int l = 0; l < j; l++)
-					{
-						if ((z & (1 << l)) == 0) k++;
-					}
-
-					dp[nz] = Math.Min(dp[nz], dp[z] + y * k + x * Math.Abs(a[j] - b[i]));
-				}
+				// j はフラグ 0 のビットのうち何番目か
+				var k = j - BitOperations.PopCount(s & ((1U << j) - 1));
+				dp[ns] = Math.Min(dp[ns], dp[s] + y * k + x * Math.Abs(a[j] - b[i]));
 			}
 		}
 
