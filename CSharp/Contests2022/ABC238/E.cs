@@ -11,15 +11,48 @@ class E
 		var (n, m) = Read2();
 		var es = Array.ConvertAll(new bool[m], _ => Read2());
 
-		var map = Array.ConvertAll(new bool[n + 1], _ => new List<int>());
+		var spp = new SppUnweightedGraph(n + 1);
 		foreach (var (l, r) in es)
-		{
-			map[l - 1].Add(r);
-			map[r].Add(l - 1);
-		}
-		return Dfs(n + 1, v => map[v].ToArray(), 0, n)[n];
+			spp.AddEdge(l - 1, r, false);
+		return spp.Dfs(0, n)[n];
+	}
+}
+
+public class SppUnweightedGraph
+{
+	static readonly int[] EmptyVertexes = new int[0];
+
+	public int VertexesCount { get; }
+	// Map[v] が null である可能性があります。
+	List<int>[] Map;
+
+	public SppUnweightedGraph(int n)
+	{
+		VertexesCount = n;
+		Map = new List<int>[n];
 	}
 
+	public int[][] GetMap() => Array.ConvertAll(Map, l => l?.ToArray() ?? EmptyVertexes);
+
+	public void AddEdge(int[] e, bool directed) => AddEdge(e[0], e[1], directed);
+	public void AddEdge(int from, int to, bool directed)
+	{
+		if (Map[from] == null) Map[from] = new List<int>();
+		Map[from].Add(to);
+
+		if (directed) return;
+		if (Map[to] == null) Map[to] = new List<int>();
+		Map[to].Add(from);
+	}
+
+	public void AddEdges(IEnumerable<int[]> es, bool directed)
+	{
+		foreach (var e in es) AddEdge(e[0], e[1], directed);
+	}
+
+	public bool[] Dfs(int sv, int ev = -1) => Dfs(VertexesCount, v => Map[v]?.ToArray() ?? EmptyVertexes, sv, ev);
+
+	// 終点を指定しないときは、-1 を指定します。
 	public static bool[] Dfs(int n, Func<int, int[]> nexts, int sv, int ev = -1)
 	{
 		var u = new bool[n];
