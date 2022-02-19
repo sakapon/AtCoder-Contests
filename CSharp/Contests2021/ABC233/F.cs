@@ -21,10 +21,18 @@ class F
 		var es = new bool[m].Select((_, i) => { var a = Read(); return new Edge(i + 1, a[0], a[1]); }).ToArray();
 
 		var uf = new UF(n);
+		var map = Array.ConvertAll(new bool[n], _ => new List<Edge>());
+		var eCounts = new int[n];
 
 		foreach (var e in es)
 		{
-			uf.Unite(e.From, e.To);
+			// Avoids cycle.
+			if (!uf.Unite(e.From, e.To)) continue;
+
+			map[e.From].Add(e);
+			map[e.To].Add(e.GetReverse());
+			eCounts[e.From]++;
+			eCounts[e.To]++;
 		}
 
 		var gs = uf.ToGroups();
@@ -32,16 +40,6 @@ class F
 		{
 			var set = vs.ToHashSet();
 			if (!set.SetEquals(vs.Select(i => p[i]))) return -1;
-		}
-
-		var map = Array.ConvertAll(new bool[n], _ => new List<Edge>());
-		var eCounts = new int[n];
-		foreach (var e in es)
-		{
-			map[e.From].Add(e);
-			map[e.To].Add(e.GetReverse());
-			eCounts[e.From]++;
-			eCounts[e.To]++;
 		}
 
 		var r = new List<int>();
