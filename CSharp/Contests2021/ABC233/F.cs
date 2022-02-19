@@ -48,44 +48,35 @@ class F
 
 		foreach (var vs in gs)
 		{
-			q.Clear();
 			foreach (var v in vs)
 				if (eCounts[v] == 1) q.Enqueue(v);
 
-			var end = 0;
-			while (end < vs.Length)
+			while (q.Count > 0)
 			{
-				if (q.Count == 0)
+				var v0 = q.Dequeue();
+				if (p[v0] != v0) Dfs(v0, -1);
+				u[v0] = true;
+				foreach (var e in map[v0])
 				{
-					var v0 = vs.First(v => !u[v]);
-					q.Enqueue(v0);
+					if (u[e.To]) continue;
+					if (--eCounts[e.To] == 1) q.Enqueue(e.To);
 				}
 
-				while (q.Count > 0)
+				bool Dfs(int v, int pv)
 				{
-					var v0 = q.Dequeue();
-					if (p[v0] != v0) Dfs(v0, -1);
-					u[v0] = true;
-					end++;
-					foreach (var e in map[v0])
-						if (--eCounts[e.To] == 1) q.Enqueue(e.To);
-
-					bool Dfs(int v, int pv)
+					foreach (var e in map[v])
 					{
-						foreach (var e in map[v])
-						{
-							if (e.To == pv) continue;
-							if (u[e.To]) continue;
+						if (e.To == pv) continue;
+						if (u[e.To]) continue;
 
-							if (p[e.To] == v0 || Dfs(e.To, v))
-							{
-								r.Add(e.Id);
-								(p[e.From], p[e.To]) = (p[e.To], p[e.From]);
-								return true;
-							}
+						if (p[e.To] == v0 || Dfs(e.To, v))
+						{
+							r.Add(e.Id);
+							(p[e.From], p[e.To]) = (p[e.To], p[e.From]);
+							return true;
 						}
-						return false;
 					}
+					return false;
 				}
 			}
 		}
