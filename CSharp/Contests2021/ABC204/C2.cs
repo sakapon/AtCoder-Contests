@@ -14,7 +14,8 @@ class C2
 
 		var spp = new SppUnweightedGraph(n + 1);
 		spp.AddEdges(es, true);
-		return Enumerable.Range(1, n).Sum(sv => spp.ConnectionByDfs(sv).Count(b => b));
+		var map = spp.GetMap();
+		return Enumerable.Range(1, n).Sum(sv => SppUnweightedGraph.ConnectionByDfs(n + 1, v => map[v], sv).Count(b => b));
 	}
 }
 
