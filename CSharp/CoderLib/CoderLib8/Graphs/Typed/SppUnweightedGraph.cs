@@ -8,16 +8,17 @@ namespace CoderLib8.Graphs.Typed
 	{
 		static readonly TVertex[] EmptyVertexes = new TVertex[0];
 
-		public Dictionary<TVertex, List<TVertex>> Map = new Dictionary<TVertex, List<TVertex>>();
+		Dictionary<TVertex, List<TVertex>> map = new Dictionary<TVertex, List<TVertex>>();
+		public Dictionary<TVertex, List<TVertex>> Map => map;
 
 		public void AddEdge(TVertex[] e, bool directed) => AddEdge(e[0], e[1], directed);
 		public void AddEdge(TVertex from, TVertex to, bool directed)
 		{
-			var l = Map.ContainsKey(from) ? Map[from] : Map[from] = new List<TVertex>();
+			var l = map.ContainsKey(from) ? map[from] : (map[from] = new List<TVertex>());
 			l.Add(to);
 
 			if (directed) return;
-			l = Map.ContainsKey(to) ? Map[to] : Map[to] = new List<TVertex>();
+			l = map.ContainsKey(to) ? map[to] : (map[to] = new List<TVertex>());
 			l.Add(from);
 		}
 
@@ -26,10 +27,10 @@ namespace CoderLib8.Graphs.Typed
 			foreach (var e in es) AddEdge(e[0], e[1], directed);
 		}
 
-		public HashSet<TVertex> Dfs(TVertex sv, TVertex ev) => Dfs(v => Map.ContainsKey(v) ? Map[v].ToArray() : EmptyVertexes, sv, ev);
+		public HashSet<TVertex> ConnectionByDfs(TVertex sv, TVertex ev) => ConnectionByDfs(v => map.ContainsKey(v) ? map[v].ToArray() : EmptyVertexes, sv, ev);
 
 		// 終点を指定しないときは、ev に null, -1 などを指定します。
-		public static HashSet<TVertex> Dfs(Func<TVertex, TVertex[]> nexts, TVertex sv, TVertex ev)
+		public static HashSet<TVertex> ConnectionByDfs(Func<TVertex, TVertex[]> nexts, TVertex sv, TVertex ev)
 		{
 			var comp = EqualityComparer<TVertex>.Default;
 			var u = new HashSet<TVertex>();
@@ -52,22 +53,22 @@ namespace CoderLib8.Graphs.Typed
 			return u;
 		}
 
-		public static HashSet<TVertex> Dfs2(Func<TVertex, TVertex[]> nexts, TVertex sv, TVertex ev)
+		public static HashSet<TVertex> ConnectionByDfs2(Func<TVertex, TVertex[]> nexts, TVertex sv, TVertex ev)
 		{
 			var comp = EqualityComparer<TVertex>.Default;
 			var u = new HashSet<TVertex>();
 			u.Add(sv);
-			_Dfs(sv);
+			Dfs(sv);
 			return u;
 
-			bool _Dfs(TVertex v)
+			bool Dfs(TVertex v)
 			{
 				foreach (var nv in nexts(v))
 				{
 					if (u.Contains(nv)) continue;
 					u.Add(nv);
 					if (comp.Equals(nv, ev)) return true;
-					if (_Dfs(nv)) return true;
+					if (Dfs(nv)) return true;
 				}
 				return false;
 			}
