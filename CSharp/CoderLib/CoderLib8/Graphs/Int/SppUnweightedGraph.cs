@@ -36,10 +36,10 @@ namespace CoderLib8.Graphs.Int
 			foreach (var e in es) AddEdge(e[0], e[1], directed);
 		}
 
-		public bool[] Dfs(int sv, int ev = -1) => Dfs(VertexesCount, v => map[v]?.ToArray() ?? EmptyVertexes, sv, ev);
+		public bool[] ConnectionByDfs(int sv, int ev = -1) => ConnectionByDfs(VertexesCount, v => map[v]?.ToArray() ?? EmptyVertexes, sv, ev);
 
 		// 終点を指定しないときは、-1 を指定します。
-		public static bool[] Dfs(int n, Func<int, int[]> nexts, int sv, int ev = -1)
+		public static bool[] ConnectionByDfs(int n, Func<int, int[]> nexts, int sv, int ev = -1)
 		{
 			var u = new bool[n];
 			var q = new Stack<int>();
@@ -61,21 +61,21 @@ namespace CoderLib8.Graphs.Int
 			return u;
 		}
 
-		public static bool[] Dfs2(int n, Func<int, int[]> nexts, int sv, int ev = -1)
+		public static bool[] ConnectionByDfs2(int n, Func<int, int[]> nexts, int sv, int ev = -1)
 		{
 			var u = new bool[n];
 			u[sv] = true;
-			_Dfs(sv);
+			Dfs(sv);
 			return u;
 
-			bool _Dfs(int v)
+			bool Dfs(int v)
 			{
 				foreach (var nv in nexts(v))
 				{
 					if (u[nv]) continue;
 					u[nv] = true;
 					if (nv == ev) return true;
-					if (_Dfs(nv)) return true;
+					if (Dfs(nv)) return true;
 				}
 				return false;
 			}
