@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CoderLib8.DataTrees;
 
+// Test: https://atcoder.jp/contests/abc237/tasks/abc237_e
 namespace CoderLib8.Graphs.Int
 {
 	public class SppWeightedGraph
@@ -18,24 +19,29 @@ namespace CoderLib8.Graphs.Int
 			public Edge GetReverse() => new Edge(To, From, Cost);
 		}
 
+		static readonly Edge[] EmptyEdges = new Edge[0];
+
 		public int VertexesCount { get; }
-		public List<Edge>[] Map;
+		// map[v] が null である可能性があります。
+		List<Edge>[] map;
 
 		public SppWeightedGraph(int n)
 		{
 			VertexesCount = n;
-			Map = new List<Edge>[n];
+			map = new List<Edge>[n];
 		}
+
+		public Edge[][] GetMap() => Array.ConvertAll(map, l => l?.ToArray() ?? EmptyEdges);
 
 		public void AddEdge(int from, int to, long cost, bool directed) => AddEdge(new Edge(from, to, cost), directed);
 		public void AddEdge(Edge e, bool directed)
 		{
-			if (Map[e.From] == null) Map[e.From] = new List<Edge>();
-			Map[e.From].Add(e);
+			var l = map[e.From] ?? (map[e.From] = new List<Edge>());
+			l.Add(e);
 
 			if (directed) return;
-			if (Map[e.To] == null) Map[e.To] = new List<Edge>();
-			Map[e.To].Add(e.GetReverse());
+			l = map[e.To] ?? (map[e.To] = new List<Edge>());
+			l.Add(e.GetReverse());
 		}
 
 		public void AddEdges(IEnumerable<int[]> es, bool directed)
@@ -51,8 +57,7 @@ namespace CoderLib8.Graphs.Int
 			foreach (var e in es) AddEdge(e, directed);
 		}
 
-		static readonly Edge[] EmptyEdges = new Edge[0];
-		public long[] Dijkstra(int sv, int ev = -1) => Dijkstra(VertexesCount, v => Map[v]?.ToArray() ?? EmptyEdges, sv, ev);
+		public long[] Dijkstra(int sv, int ev = -1) => Dijkstra(VertexesCount, v => map[v]?.ToArray() ?? EmptyEdges, sv, ev);
 
 		// 終点を指定しないときは、-1 を指定します。
 		public static long[] Dijkstra(int n, Func<int, Edge[]> nexts, int sv, int ev = -1)

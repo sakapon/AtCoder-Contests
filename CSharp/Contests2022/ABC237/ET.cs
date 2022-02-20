@@ -39,17 +39,21 @@ public class SppWeightedGraph<TVertex>
 		public Edge GetReverse() => new Edge(To, From, Cost);
 	}
 
-	public Dictionary<TVertex, List<Edge>> Map = new Dictionary<TVertex, List<Edge>>();
+	static readonly Edge[] EmptyEdges = new Edge[0];
+
+	Dictionary<TVertex, List<Edge>> map = new Dictionary<TVertex, List<Edge>>();
+
+	public Dictionary<TVertex, Edge[]> GetMap() => map.ToDictionary(p => p.Key, p => p.Value.ToArray());
 
 	public void AddEdge(TVertex from, TVertex to, long cost, bool directed) => AddEdge(new Edge(from, to, cost), directed);
 	public void AddEdge(Edge e, bool directed)
 	{
-		if (!Map.ContainsKey(e.From)) Map[e.From] = new List<Edge>();
-		Map[e.From].Add(e);
+		var l = map.ContainsKey(e.From) ? map[e.From] : (map[e.From] = new List<Edge>());
+		l.Add(e);
 
 		if (directed) return;
-		if (!Map.ContainsKey(e.To)) Map[e.To] = new List<Edge>();
-		Map[e.To].Add(e.GetReverse());
+		l = map.ContainsKey(e.To) ? map[e.To] : (map[e.To] = new List<Edge>());
+		l.Add(e.GetReverse());
 	}
 
 	public void AddEdges(IEnumerable<Edge> es, bool directed)
@@ -57,8 +61,7 @@ public class SppWeightedGraph<TVertex>
 		foreach (var e in es) AddEdge(e, directed);
 	}
 
-	static readonly Edge[] EmptyEdges = new Edge[0];
-	public Dictionary<TVertex, long> Dijkstra(TVertex sv, TVertex ev) => Dijkstra(v => Map.ContainsKey(v) ? Map[v].ToArray() : EmptyEdges, sv, ev);
+	public Dictionary<TVertex, long> Dijkstra(TVertex sv, TVertex ev) => Dijkstra(v => map.ContainsKey(v) ? map[v].ToArray() : EmptyEdges, sv, ev);
 
 	// 終点を指定しないときは、ev に null, -1 などを指定します。
 	public static Dictionary<TVertex, long> Dijkstra(Func<TVertex, Edge[]> nexts, TVertex sv, TVertex ev)
