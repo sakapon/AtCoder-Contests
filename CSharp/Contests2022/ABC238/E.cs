@@ -78,19 +78,18 @@ public class SppUnweightedGraph
 	public static bool[] Dfs2(int n, Func<int, int[]> nexts, int sv, int ev = -1)
 	{
 		var u = new bool[n];
-		_Dfs(sv, -1);
+		u[sv] = true;
+		_Dfs(sv);
 		return u;
 
-		bool _Dfs(int v, int pv)
+		bool _Dfs(int v)
 		{
-			u[v] = true;
-			if (v == ev) return true;
-
 			foreach (var nv in nexts(v))
 			{
-				if (nv == pv) continue;
 				if (u[nv]) continue;
-				if (_Dfs(nv, v)) return true;
+				u[nv] = true;
+				if (nv == ev) return true;
+				if (_Dfs(nv)) return true;
 			}
 			return false;
 		}
