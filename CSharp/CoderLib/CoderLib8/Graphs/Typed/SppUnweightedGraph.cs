@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
+// Test: https://atcoder.jp/contests/abc204/tasks/abc204_c
 // Test: https://atcoder.jp/contests/abc238/tasks/abc238_e
 namespace CoderLib8.Graphs.Typed
 {
@@ -9,7 +11,8 @@ namespace CoderLib8.Graphs.Typed
 		static readonly TVertex[] EmptyVertexes = new TVertex[0];
 
 		Dictionary<TVertex, List<TVertex>> map = new Dictionary<TVertex, List<TVertex>>();
-		public Dictionary<TVertex, List<TVertex>> Map => map;
+
+		public Dictionary<TVertex, TVertex[]> GetMap() => map.ToDictionary(p => p.Key, p => p.Value.ToArray());
 
 		public void AddEdge(TVertex[] e, bool directed) => AddEdge(e[0], e[1], directed);
 		public void AddEdge(TVertex from, TVertex to, bool directed)
