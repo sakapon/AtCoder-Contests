@@ -9,26 +9,26 @@ namespace CoderLib8.Graphs.Int
 		static readonly int[] EmptyVertexes = new int[0];
 
 		public int VertexesCount { get; }
-		// Map[v] が null である可能性があります。
-		List<int>[] Map;
+		// map[v] が null である可能性があります。
+		List<int>[] map;
 
 		public SppUnweightedGraph(int n)
 		{
 			VertexesCount = n;
-			Map = new List<int>[n];
+			map = new List<int>[n];
 		}
 
-		public int[][] GetMap() => Array.ConvertAll(Map, l => l?.ToArray() ?? EmptyVertexes);
+		public int[][] GetMap() => Array.ConvertAll(map, l => l?.ToArray() ?? EmptyVertexes);
 
 		public void AddEdge(int[] e, bool directed) => AddEdge(e[0], e[1], directed);
 		public void AddEdge(int from, int to, bool directed)
 		{
-			if (Map[from] == null) Map[from] = new List<int>();
-			Map[from].Add(to);
+			var l = map[from] ?? (map[from] = new List<int>());
+			l.Add(to);
 
 			if (directed) return;
-			if (Map[to] == null) Map[to] = new List<int>();
-			Map[to].Add(from);
+			l = map[to] ?? (map[to] = new List<int>());
+			l.Add(from);
 		}
 
 		public void AddEdges(IEnumerable<int[]> es, bool directed)
@@ -36,7 +36,7 @@ namespace CoderLib8.Graphs.Int
 			foreach (var e in es) AddEdge(e[0], e[1], directed);
 		}
 
-		public bool[] Dfs(int sv, int ev = -1) => Dfs(VertexesCount, v => Map[v]?.ToArray() ?? EmptyVertexes, sv, ev);
+		public bool[] Dfs(int sv, int ev = -1) => Dfs(VertexesCount, v => map[v]?.ToArray() ?? EmptyVertexes, sv, ev);
 
 		// 終点を指定しないときは、-1 を指定します。
 		public static bool[] Dfs(int n, Func<int, int[]> nexts, int sv, int ev = -1)
