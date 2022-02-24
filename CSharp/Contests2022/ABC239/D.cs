@@ -12,23 +12,7 @@ class D
 		var (a, b, c, d) = Read4();
 
 		var ps = GetPrimes(b + d);
-
-		for (int i = a; i <= b; i++)
-		{
-			var isPrime = false;
-
-			for (int j = c; j <= d; j++)
-			{
-				if (!ps[i + j])
-				{
-					isPrime = true;
-					break;
-				}
-			}
-			if (!isPrime) return true;
-		}
-
-		return false;
+		return Enumerable.Range(a, b - a + 1).Any(i => Enumerable.Range(c, d - c + 1).All(j => ps[i + j]));
 	}
 
 	static bool[] GetPrimes(int n)

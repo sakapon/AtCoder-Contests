@@ -11,11 +11,7 @@ class B
 	static object Solve()
 	{
 		var x = long.Parse(Console.ReadLine());
-
-		var d = 1000000000000000000;
-		x += d;
-		x /= 10;
-		x -= d / 10;
-		return x;
+		x -= (x + 1000000000000000000) % 10;
+		return x / 10;
 	}
 }
