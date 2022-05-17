@@ -23,8 +23,8 @@ namespace CoderLib8
 		static decimal[] ReadDec() => Array.ConvertAll(Console.ReadLine().Split(), decimal.Parse);
 		static (decimal, decimal) Read2Dec() { var a = ReadDec(); return (a[0], a[1]); }
 
-		//const long M = 998244353;
-		const long M = 1000000007;
+		//const long M = 1000000007;
+		const long M = 998244353;
 		const int max = 1 << 30;
 		const int min = -1 << 30;
 		//const long max = 1L << 60;

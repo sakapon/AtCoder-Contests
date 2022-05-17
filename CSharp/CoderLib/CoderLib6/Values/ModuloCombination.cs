@@ -5,8 +5,8 @@ namespace CoderLib6.Values
 	// Test: https://atcoder.jp/contests/dp/tasks/dp_y
 	public class MCombination
 	{
-		//const long M = 998244353;
-		const long M = 1000000007;
+		//const long M = 1000000007;
+		const long M = 998244353;
 		static long MPow(long b, long i)
 		{
 			long r = 1;
