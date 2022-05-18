@@ -1,21 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 class D
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
-	static object Solve()
+	class BallSet
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		public long x, c;
+	}
 
-		return string.Join(" ", a);
+	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+	static void Main()
+	{
+		var qc = int.Parse(Console.ReadLine());
+		var qs = Array.ConvertAll(new bool[qc], _ => ReadL());
+
+		var q = new Queue<BallSet>();
+
+		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
+		foreach (var z in qs)
+		{
+			if (z[0] == 1)
+			{
+				q.Enqueue(new BallSet { x = z[1], c = z[2] });
+			}
+			else
+			{
+				var c = z[1];
+				var r = 0L;
+
+				while (c > 0)
+				{
+					var bs = q.Peek();
+
+					if (c < bs.c)
+					{
+						r += bs.x * c;
+						bs.c -= c;
+						c = 0;
+					}
+					else
+					{
+						r += bs.x * bs.c;
+						q.Dequeue();
+						c -= bs.c;
+					}
+				}
+
+				Console.WriteLine(r);
+			}
+		}
+		Console.Out.Flush();
 	}
 }
