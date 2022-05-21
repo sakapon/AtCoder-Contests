@@ -1,21 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 class C
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
-	static object Solve()
+	static void Main() => Console.WriteLine(Solve() ? "Yes" : "No");
+	static bool Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (n, x) = Read2();
+		var ps = Array.ConvertAll(new bool[n], _ => Read2());
 
-		return string.Join(" ", a);
+		const int max = 10000;
+
+		var dp = new bool[max + 1];
+		dp[0] = true;
+		var t = new bool[max + 1];
+
+		foreach (var (a, b) in ps)
+		{
+			for (int j = 0; j <= max; j++)
+			{
+				if (!dp[j]) continue;
+
+				t[j + a] = true;
+				t[j + b] = true;
+			}
+
+			(dp, t) = (t, dp);
+			Array.Clear(t, 0, t.Length);
+		}
+
+		return dp[x];
 	}
 }
