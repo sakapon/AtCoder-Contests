@@ -10,12 +10,14 @@ class B
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (h, w) = Read2();
+		var s = Array.ConvertAll(new bool[h], _ => Console.ReadLine());
 
-		return string.Join(" ", a);
+		var q = from i in Enumerable.Range(0, h)
+				from j in Enumerable.Range(0, w)
+				select (i, j);
+
+		var ps = q.Where(p => s[p.i][p.j] == 'o').ToArray();
+		return Math.Abs(ps[0].i - ps[1].i) + Math.Abs(ps[0].j - ps[1].j);
 	}
 }

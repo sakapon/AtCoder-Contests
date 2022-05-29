@@ -1,21 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 class C
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
-	static object Solve()
+	static void Main()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var qc = int.Parse(Console.ReadLine());
+		var qs = Array.ConvertAll(new bool[qc], _ => Read());
 
-		return string.Join(" ", a);
+		var set = new SortedSet<int>();
+		var d = new Dictionary<int, int>();
+
+		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
+		foreach (var q in qs)
+		{
+			if (q[0] == 1)
+			{
+				var x = q[1];
+				if (d.ContainsKey(x))
+				{
+					d[x]++;
+				}
+				else
+				{
+					set.Add(x);
+					d[x] = 1;
+				}
+			}
+			else if (q[0] == 2)
+			{
+				var x = q[1];
+				var c = q[2];
+				if (d.ContainsKey(x))
+				{
+					if (d[x] <= c)
+					{
+						set.Remove(x);
+						d.Remove(x);
+					}
+					else
+					{
+						d[x] -= c;
+					}
+				}
+			}
+			else
+			{
+				Console.WriteLine(set.Max - set.Min);
+			}
+		}
+		Console.Out.Flush();
 	}
 }
