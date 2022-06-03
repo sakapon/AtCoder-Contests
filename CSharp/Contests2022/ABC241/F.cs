@@ -5,7 +5,6 @@ using TreesLab.WBTrees;
 
 class F
 {
-	const int max = 1 << 30;
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int x, int y) Read2() { var a = Read(); return (a[0], a[1]); }
 	static (int, int, int) Read3() { var a = Read(); return (a[0], a[1], a[2]); }
@@ -15,45 +14,34 @@ class F
 		var (h, w, n) = Read3();
 		var s = Read2();
 		var g = Read2();
-		var stops = Array.ConvertAll(new bool[n], _ => Read2()).ToHashSet();
+		var ps = Array.ConvertAll(new bool[n], _ => Read2());
 
-		var stops_xy = new Dictionary<int, WBSet<int>>();
-		var stops_yx = new Dictionary<int, WBSet<int>>();
 		var ps_xy = new Dictionary<int, WBSet<int>>();
 		var ps_yx = new Dictionary<int, WBSet<int>>();
 
-		if (!ps_xy.ContainsKey(s.x)) ps_xy[s.x] = new WBSet<int>();
-		ps_xy[s.x].Add(s.y);
-		if (!ps_yx.ContainsKey(s.y)) ps_yx[s.y] = new WBSet<int>();
-		ps_yx[s.y].Add(s.x);
-
-		foreach (var (x, y) in stops)
+		foreach (var (x, y) in ps)
 		{
-			if (!stops_xy.ContainsKey(x)) stops_xy[x] = new WBSet<int>();
-			stops_xy[x].Add(y);
+			if (!ps_xy.ContainsKey(x)) ps_xy[x] = new WBSet<int>();
+			ps_xy[x].Add(y);
 
-			if (!stops_yx.ContainsKey(y)) stops_yx[y] = new WBSet<int>();
-			stops_yx[y].Add(x);
-
-			if (!ps_xy.ContainsKey(x - 1)) ps_xy[x - 1] = new WBSet<int>();
-			ps_xy[x - 1].Add(y);
-
-			if (!ps_xy.ContainsKey(x + 1)) ps_xy[x + 1] = new WBSet<int>();
-			ps_xy[x + 1].Add(y);
-
-			if (!ps_yx.ContainsKey(y - 1)) ps_yx[y - 1] = new WBSet<int>();
-			ps_yx[y - 1].Add(x);
-
-			if (!ps_yx.ContainsKey(y + 1)) ps_yx[y + 1] = new WBSet<int>();
-			ps_yx[y + 1].Add(x);
+			if (!ps_yx.ContainsKey(y)) ps_yx[y] = new WBSet<int>();
+			ps_yx[y].Add(x);
 		}
 
 		var id_p = new List<(int, int)>();
 		var p_id = new Dictionary<(int, int), int>();
-		id_p.Add(s);
-		id_p.Add(g);
-		p_id[s] = 0;
-		p_id[g] = 1;
+		AddPoint(s);
+		AddPoint(g);
+
+		int AddPoint((int x, int y) p)
+		{
+			if (!p_id.ContainsKey(p))
+			{
+				p_id[p] = id_p.Count;
+				id_p.Add(p);
+			}
+			return p_id[p];
+		}
 
 		var r = Bfs(4 * n, id =>
 		{
@@ -61,56 +49,23 @@ class F
 
 			var nids = new List<int>();
 
-			if (stops.Contains((px - 1, py)))
+			if (ps_xy.ContainsKey(px))
 			{
-				var stopx = stops_yx[py].GetFirst(v => v > px).GetItemOrDefault(max);
-				if (ps_yx.ContainsKey(py))
-					foreach (var x in ps_yx[py].GetItems(v => v > px, v => v < stopx))
-						AddId(x, py);
+				{ if (ps_xy[px].GetLast(v => v < py).TryGetItem(out var y)) nids.Add(AddPoint((px, y + 1))); }
+				{ if (ps_xy[px].GetFirst(v => v > py).TryGetItem(out var y)) nids.Add(AddPoint((px, y - 1))); }
 			}
-			if (stops.Contains((px + 1, py)))
+			if (ps_yx.ContainsKey(py))
 			{
-				var stopx = stops_yx[py].GetLast(v => v < px).GetItemOrDefault(0);
-				if (ps_yx.ContainsKey(py))
-					foreach (var x in ps_yx[py].GetItems(v => v > stopx, v => v < px))
-						AddId(x, py);
-			}
-			if (stops.Contains((px, py - 1)))
-			{
-				var stopy = stops_xy[px].GetFirst(v => v > py).GetItemOrDefault(max);
-				if (ps_xy.ContainsKey(px))
-					foreach (var y in ps_xy[px].GetItems(v => v > py, v => v < stopy))
-						AddId(px, y);
-			}
-			if (stops.Contains((px, py + 1)))
-			{
-				var stopy = stops_xy[px].GetLast(v => v < py).GetItemOrDefault(0);
-				if (ps_xy.ContainsKey(px))
-					foreach (var y in ps_xy[px].GetItems(v => v > stopy, v => v < py))
-						AddId(px, y);
+				{ if (ps_yx[py].GetLast(v => v < px).TryGetItem(out var x)) nids.Add(AddPoint((x + 1, py))); }
+				{ if (ps_yx[py].GetFirst(v => v > px).TryGetItem(out var x)) nids.Add(AddPoint((x - 1, py))); }
 			}
 
 			return nids.ToArray();
-
-			void AddId(int x, int y)
-			{
-				if (p_id.ContainsKey((x, y)))
-				{
-					nids.Add(p_id[(x, y)]);
-				}
-				else
-				{
-					var nid = id_p.Count;
-					id_p.Add((x, y));
-					p_id[(x, y)] = nid;
-					nids.Add(nid);
-				}
-			}
 		},
-		1, 0);
+		0, 1);
 
-		if (r[0] == long.MaxValue) return -1;
-		return r[0];
+		if (r[1] == long.MaxValue) return -1;
+		return r[1];
 	}
 
 	public static long[] Bfs(int n, Func<int, int[]> nexts, int sv, int ev = -1)
