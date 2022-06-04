@@ -28,4 +28,21 @@ namespace CoderLib8.Collections
 			(Raw, ReverseMap, Map) = (a, r, map);
 		}
 	}
+
+	public class IdMap<T>
+	{
+		List<T> l = new List<T>();
+		Dictionary<T, int> map = new Dictionary<T, int>();
+
+		public int Count => l.Count;
+		public T this[int id] => l[id];
+		public int GetId(T item) => map.ContainsKey(item) ? map[item] : -1;
+		public bool Contains(T item) => map.ContainsKey(item);
+		public int Add(T item)
+		{
+			if (map.ContainsKey(item)) return map[item];
+			l.Add(item);
+			return map[item] = l.Count - 1;
+		}
+	}
 }
