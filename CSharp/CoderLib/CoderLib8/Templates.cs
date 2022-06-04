@@ -126,10 +126,10 @@ namespace CoderLib8
 			Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 			foreach (var q in qs)
 			{
-				if (q[0] == 0)
+				if (q[0] == 1)
 				{
 				}
-				else if (q[0] == 1)
+				else if (q[0] == 2)
 				{
 				}
 				else
