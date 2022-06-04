@@ -29,6 +29,7 @@ namespace CoderLib8.Collections
 		}
 	}
 
+	// Test: https://atcoder.jp/contests/abc241/tasks/abc241_f
 	public class IdMap<T>
 	{
 		List<T> l = new List<T>();
