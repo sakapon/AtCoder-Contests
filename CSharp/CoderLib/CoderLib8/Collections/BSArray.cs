@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CoderLib8.Collections
 {
+	// TODO: Use Comparer
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/6/ITP2_6_C
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/6/ITP2_6_D
 	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_g
+	// Test: https://atcoder.jp/contests/abc143/tasks/abc143_d
 	// Test: https://atcoder.jp/contests/abc241/tasks/abc241_f
+	[System.Diagnostics.DebuggerDisplay(@"Count = {Count}")]
 	public class BSArray<T>
 	{
 		T[] a;
@@ -15,6 +21,12 @@ namespace CoderLib8.Collections
 		public int GetFirstIndex(Func<T, bool> predicate) => First(0, Count, i => predicate(a[i]));
 		public int GetLastIndex(Func<T, bool> predicate) => Last(-1, Count - 1, i => predicate(a[i]));
 
+		public int GetCount(Func<T, bool> startPredicate, Func<T, bool> endPredicate)
+		{
+			var c = GetLastIndex(endPredicate) - GetFirstIndex(startPredicate) + 1;
+			return c >= 0 ? c : 0;
+		}
+
 		public Maybe<T> GetFirst(Func<T, bool> predicate)
 		{
 			var i = GetFirstIndex(predicate);
@@ -23,7 +35,18 @@ namespace CoderLib8.Collections
 		public Maybe<T> GetLast(Func<T, bool> predicate)
 		{
 			var i = GetLastIndex(predicate);
-			return i > -1 ? a[i] : Maybe<T>.None;
+			return i >= 0 ? a[i] : Maybe<T>.None;
+		}
+
+		public IEnumerable<T> GetItems(Func<T, bool> startPredicate, Func<T, bool> endPredicate)
+		{
+			for (var i = GetFirstIndex(startPredicate); i < Count && (endPredicate?.Invoke(a[i]) ?? true); ++i)
+				yield return a[i];
+		}
+		public IEnumerable<T> GetItemsDescending(Func<T, bool> startPredicate, Func<T, bool> endPredicate)
+		{
+			for (var i = GetLastIndex(endPredicate); i >= 0 && (startPredicate?.Invoke(a[i]) ?? true); --i)
+				yield return a[i];
 		}
 
 		static int First(int l, int r, Func<int, bool> f)
@@ -40,6 +63,7 @@ namespace CoderLib8.Collections
 		}
 	}
 
+	[System.Diagnostics.DebuggerDisplay(@"\{{Value}\}")]
 	public struct Maybe<T>
 	{
 		public static readonly Maybe<T> None = new Maybe<T>();
