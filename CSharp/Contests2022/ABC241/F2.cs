@@ -94,26 +94,44 @@ public class IdMap<T>
 	}
 }
 
+[System.Diagnostics.DebuggerDisplay(@"Count = {Count}")]
 public class BSArray<T>
 {
 	T[] a;
 	public T[] Raw => a;
-	public int Count => a.Length;
+	public int Count { get; }
 	public T this[int i] => a[i];
-	public BSArray(T[] array) { a = array; }
+	public BSArray(T[] array) { a = array; Count = a.Length; }
 
 	public int GetFirstIndex(Func<T, bool> predicate) => First(0, Count, i => predicate(a[i]));
 	public int GetLastIndex(Func<T, bool> predicate) => Last(-1, Count - 1, i => predicate(a[i]));
 
+	public int GetCount(Func<T, bool> startPredicate, Func<T, bool> endPredicate)
+	{
+		var c = GetLastIndex(endPredicate) - GetFirstIndex(startPredicate) + 1;
+		return c >= 0 ? c : 0;
+	}
+
 	public Maybe<T> GetFirst(Func<T, bool> predicate)
 	{
 		var i = GetFirstIndex(predicate);
-		return i != Count ? a[i] : Maybe<T>.None;
+		return i < Count ? a[i] : Maybe<T>.None;
 	}
 	public Maybe<T> GetLast(Func<T, bool> predicate)
 	{
 		var i = GetLastIndex(predicate);
-		return i != -1 ? a[i] : Maybe<T>.None;
+		return i >= 0 ? a[i] : Maybe<T>.None;
+	}
+
+	public IEnumerable<T> GetItems(Func<T, bool> startPredicate, Func<T, bool> endPredicate)
+	{
+		for (var i = GetFirstIndex(startPredicate); i < Count && (endPredicate?.Invoke(a[i]) ?? true); ++i)
+			yield return a[i];
+	}
+	public IEnumerable<T> GetItemsDescending(Func<T, bool> startPredicate, Func<T, bool> endPredicate)
+	{
+		for (var i = GetLastIndex(endPredicate); i >= 0 && (startPredicate?.Invoke(a[i]) ?? true); --i)
+			yield return a[i];
 	}
 
 	static int First(int l, int r, Func<int, bool> f)
@@ -130,6 +148,7 @@ public class BSArray<T>
 	}
 }
 
+[System.Diagnostics.DebuggerDisplay(@"\{{Value}\}")]
 public struct Maybe<T>
 {
 	public static readonly Maybe<T> None = new Maybe<T>();
@@ -142,7 +161,7 @@ public struct Maybe<T>
 		HasValue = true;
 	}
 
-	public static explicit operator T(Maybe<T> value) => value.Value;
+	public static explicit operator T(Maybe<T> o) => o.Value;
 	public static implicit operator Maybe<T>(T value) => new Maybe<T>(value);
 
 	public T Value => HasValue ? v : throw new InvalidOperationException("This has no value.");
