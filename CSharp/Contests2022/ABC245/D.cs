@@ -15,10 +15,10 @@ class D
 
 		for (int j = m; j >= 0; j--)
 		{
-			var t = c[j + n];
-			for (int i = Math.Min(n - 1, j + n); i >= 0 && j + n - i <= m; i--)
+			var t = c[n + j];
+			for (int i = n - 1; i >= 0 && n + j - i <= m; i--)
 			{
-				t -= a[i] * b[j + n - i];
+				t -= a[i] * b[n + j - i];
 			}
 			b[j] = t / a[n];
 		}

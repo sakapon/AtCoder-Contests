@@ -16,7 +16,7 @@ class F
 
 		var u = new bool[n + 1];
 		var end = new bool[n + 1];
-		var path = new HashSet<int>();
+		var path = new bool[n + 1];
 
 		for (int v = 1; v <= n; v++)
 		{
@@ -27,21 +27,21 @@ class F
 		bool Dfs(int v)
 		{
 			if (end[v]) return u[v];
-			if (path.Contains(v)) return true;
+			if (path[v]) return true;
 
-			path.Add(v);
+			path[v] = true;
 
 			foreach (var nv in map[v])
 			{
 				if (Dfs(nv))
 				{
-					path.Remove(v);
+					path[v] = false;
 					end[v] = true;
 					return u[v] = true;
 				}
 			}
 
-			path.Remove(v);
+			path[v] = false;
 			end[v] = true;
 			return false;
 		}
