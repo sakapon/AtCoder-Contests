@@ -4,6 +4,8 @@ namespace CoderLib8.Collections
 {
 	public class RingBuffer<T>
 	{
+		static int ToPowerOf2(int n) { for (var p = 1; ; p <<= 1) if (p >= n) return p; }
+
 		int n;
 		T[] a;
 
@@ -16,7 +18,7 @@ namespace CoderLib8.Collections
 
 		public RingBuffer(int size = 8)
 		{
-			a = new T[n = size];
+			a = new T[n = ToPowerOf2(size)];
 		}
 
 		public void Expand(int start)

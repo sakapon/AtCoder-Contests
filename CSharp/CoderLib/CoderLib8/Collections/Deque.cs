@@ -2,6 +2,9 @@
 
 namespace CoderLib8.Collections
 {
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/1/ITP2_1_B
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_ar
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_bi
 	public class Deque<T>
 	{
 		static int ToPowerOf2(int n) { for (var p = 1; ; p <<= 1) if (p >= n) return p; }
