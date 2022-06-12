@@ -14,11 +14,9 @@ class F
 		var b = Read();
 		var qs = Array.ConvertAll(new bool[qc], _ => Read());
 
-		const int inv = 0;
-		static int Gcd2(int x, int y) => x == inv ? y : y == inv ? x : Gcd(x, y);
-
-		var sta = new ST1<int>(n, Gcd2, inv, Enumerable.Range(0, n - 1).Select(i => Math.Abs(a[i + 1] - a[i])).ToArray());
-		var stb = new ST1<int>(n, Gcd2, inv, Enumerable.Range(0, n - 1).Select(i => Math.Abs(b[i + 1] - b[i])).ToArray());
+		// 差が 0 であれば任意
+		var sta = new ST1<int>(n, Gcd2, any, Enumerable.Range(0, n - 1).Select(i => Math.Abs(a[i + 1] - a[i])).ToArray());
+		var stb = new ST1<int>(n, Gcd2, any, Enumerable.Range(0, n - 1).Select(i => Math.Abs(b[i + 1] - b[i])).ToArray());
 
 		return string.Join("\n", qs.Select(q =>
 		{
@@ -30,6 +28,8 @@ class F
 	}
 
 	static int Gcd(int a, int b) { for (int r; (r = a % b) > 0; a = b, b = r) ; return b; }
+	const int any = 0;
+	static int Gcd2(int a, int b) => a == any ? b : b == any ? a : Gcd(a, b);
 }
 
 class ST1<TV>
