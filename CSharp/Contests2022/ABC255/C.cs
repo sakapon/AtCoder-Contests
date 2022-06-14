@@ -8,26 +8,13 @@ class C
 	static object Solve()
 	{
 		var (x, a, d, n) = Read4L();
+		if (d < 0) (a, d) = (a + d * (n - 1), -d);
 
-		if (d >= 0)
-		{
-			var min = a;
-			var max = a + d * (n - 1);
-			if (x <= min) return min - x;
-			if (x >= max) return x - max;
+		x -= a;
+		var max = d * (n - 1);
 
-			var mod = (x - a) % d;
-			return Math.Min(mod, d - mod);
-		}
-		else
-		{
-			var min = a + d * (n - 1);
-			var max = a;
-			if (x <= min) return min - x;
-			if (x >= max) return x - max;
-
-			var mod = (a - x) % -d;
-			return Math.Min(mod, -d - mod);
-		}
+		if (x <= 0) return -x;
+		if (x >= max) return x - max;
+		return Math.Min(x % d, d - x % d);
 	}
 }

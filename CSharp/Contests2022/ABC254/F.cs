@@ -14,22 +14,20 @@ class F
 		var b = Read();
 		var qs = Array.ConvertAll(new bool[qc], _ => Read());
 
-		// 差が 0 であれば任意
-		var sta = new ST1<int>(n, Gcd2, any, Enumerable.Range(0, n - 1).Select(i => Math.Abs(a[i + 1] - a[i])).ToArray());
-		var stb = new ST1<int>(n, Gcd2, any, Enumerable.Range(0, n - 1).Select(i => Math.Abs(b[i + 1] - b[i])).ToArray());
+		var rn = Enumerable.Range(0, n - 1).ToArray();
+		var sta = new ST1<int>(n, Gcd, 0, Array.ConvertAll(rn, i => Math.Abs(a[i + 1] - a[i])));
+		var stb = new ST1<int>(n, Gcd, 0, Array.ConvertAll(rn, i => Math.Abs(b[i + 1] - b[i])));
 
 		return string.Join("\n", qs.Select(q =>
 		{
 			var g = a[q[0] - 1] + b[q[2] - 1];
-			g = Gcd2(g, sta.Get(q[0] - 1, q[1] - 1));
-			g = Gcd2(g, stb.Get(q[2] - 1, q[3] - 1));
+			g = Gcd(g, sta.Get(q[0] - 1, q[1] - 1));
+			g = Gcd(g, stb.Get(q[2] - 1, q[3] - 1));
 			return g;
 		}));
 	}
 
-	static int Gcd(int a, int b) { for (int r; (r = a % b) > 0; a = b, b = r) ; return b; }
-	const int any = 0;
-	static int Gcd2(int a, int b) => a == any ? b : b == any ? a : Gcd(a, b);
+	static int Gcd(int a, int b) { if (b == 0) return a; for (int r; (r = a % b) > 0; a = b, b = r) ; return b; }
 }
 
 class ST1<TV>
