@@ -9,6 +9,7 @@ namespace CoderLib8.Collections
 	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_g
 	// Test: https://atcoder.jp/contests/abc143/tasks/abc143_d
 	// Test: https://atcoder.jp/contests/abc241/tasks/abc241_f
+	// Test: https://atcoder.jp/contests/abc255/tasks/abc255_d
 	[System.Diagnostics.DebuggerDisplay(@"Count = {Count}")]
 	public class BSArray<T>
 	{
