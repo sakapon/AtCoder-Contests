@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 namespace CoderLib6.Collections
 {
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/7/ITP2_7_B
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_aa
 	public class ChainHashSet<T> : IEnumerable<T>
 	{
 		const long a = 1000003;
