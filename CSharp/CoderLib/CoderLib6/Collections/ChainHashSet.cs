@@ -27,7 +27,7 @@ namespace CoderLib6.Collections
 		public IEqualityComparer<T> Comparer { get; }
 		public int Count { get; private set; }
 
-		public ChainHashSet(int size, IEqualityComparer<T> comparer = null)
+		public ChainHashSet(int size = 16, IEqualityComparer<T> comparer = null)
 		{
 			nodes = new Node[this.size = ToPowerOf2(size)];
 			Comparer = comparer ?? EqualityComparer<T>.Default;
@@ -43,12 +43,12 @@ namespace CoderLib6.Collections
 
 		public bool Add(T item)
 		{
+			if (Count == size >> 1) Expand();
 			var h = Hash(item);
 
 			if (nodes[h] == null)
 			{
-				nodes[h] = new Node { Item = item };
-				++Count;
+				nodes[h] = CreateNode(item);
 				return true;
 			}
 
@@ -57,11 +57,16 @@ namespace CoderLib6.Collections
 				if (Comparer.Equals(n.Item, item)) return false;
 				if (n.Next == null)
 				{
-					n.Next = new Node { Item = item };
-					++Count;
+					n.Next = CreateNode(item);
 					return true;
 				}
 			}
+		}
+
+		Node CreateNode(T item)
+		{
+			++Count;
+			return new Node { Item = item };
 		}
 
 		public bool Remove(T item)
@@ -98,6 +103,17 @@ namespace CoderLib6.Collections
 				for (var n = nodes[i]; n != null; n = n.Next)
 					yield return n.Item;
 			}
+		}
+
+		void Expand()
+		{
+			var data = new T[Count];
+			var i = -1;
+			foreach (var item in this) data[++i] = item;
+
+			nodes = new Node[size <<= 1];
+			Count = 0;
+			foreach (var item in data) Add(item);
 		}
 	}
 }
