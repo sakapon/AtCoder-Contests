@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace CoderLib6.Collections
 {
-	public class ChainHashSet<T>
+	public class ChainHashSet<T> : IEnumerable<T>
 	{
-		const long a = 10007;
-		const long p = 2013265921;
+		const long a = 1000003;
+		const long p = 100000000003;
 		static long ModP(long x) => (x %= p) < 0 ? x + p : x;
 		static int ToPowerOf2(int n) { for (var p = 1; ; p <<= 1) if (p >= n) return p; }
 
@@ -24,12 +24,13 @@ namespace CoderLib6.Collections
 
 		Node[] nodes;
 		int size;
-		public IEqualityComparer<T> Comparer { get; } = EqualityComparer<T>.Default;
+		public IEqualityComparer<T> Comparer { get; }
 		public int Count { get; private set; }
 
-		public ChainHashSet(int size)
+		public ChainHashSet(int size, IEqualityComparer<T> comparer = null)
 		{
 			nodes = new Node[this.size = ToPowerOf2(size)];
+			Comparer = comparer ?? EqualityComparer<T>.Default;
 		}
 
 		public bool Contains(T item)
@@ -86,6 +87,17 @@ namespace CoderLib6.Collections
 				}
 			}
 			return false;
+		}
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+		public IEnumerator<T> GetEnumerator()
+		{
+			for (int i = 0; i < size; ++i)
+			{
+				if (nodes[i] == null) continue;
+				for (var n = nodes[i]; n != null; n = n.Next)
+					yield return n.Item;
+			}
 		}
 	}
 }
