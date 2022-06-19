@@ -5,17 +5,49 @@ using System.Linq;
 class E
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var x = Read();
+		var c = Read();
 
-		return string.Join(" ", a);
+		var indeg = new int[n + 1];
+		foreach (var v in x)
+		{
+			++indeg[v];
+		}
+
+		var u = new bool[n + 1];
+		var q = new Queue<int>();
+		for (int v = 1; v <= n; ++v)
+			if (indeg[v] == 0)
+				q.Enqueue(v);
+
+		while (q.Count > 0)
+		{
+			var v = q.Dequeue();
+			u[v] = true;
+
+			var nv = x[v - 1];
+			if (--indeg[nv] > 0) continue;
+			q.Enqueue(nv);
+		}
+
+		var r = 0L;
+
+		for (int v = 1; v <= n; v++)
+		{
+			if (u[v]) continue;
+
+			var path = new List<int>();
+			for (int t = v; !u[t]; t = x[t - 1])
+			{
+				u[t] = true;
+				path.Add(t);
+			}
+			r += path.Min(t => c[t - 1]);
+		}
+		return r;
 	}
 }

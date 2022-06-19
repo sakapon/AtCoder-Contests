@@ -1,21 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 class C
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
 		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var h = a[..3];
+		var w = a[3..];
 
-		return string.Join(" ", a);
+		var rows = Array.ConvertAll(new bool[3], _ => new List<(int, int, int)>());
+
+		for (int ri = 0; ri < 3; ri++)
+		{
+			var row = rows[ri];
+			var sum = h[ri];
+
+			for (int i = 1; i < sum; i++)
+			{
+				for (int j = 1; i + j < sum; j++)
+				{
+					row.Add((i, j, sum - i - j));
+				}
+			}
+		}
+
+		var r = 0;
+		foreach (var r0 in rows[0])
+		{
+			foreach (var r1 in rows[1])
+			{
+				foreach (var r2 in rows[2])
+				{
+					if (r0.Item1 + r1.Item1 + r2.Item1 == w[0] &&
+						r0.Item2 + r1.Item2 + r2.Item2 == w[1] &&
+						r0.Item3 + r1.Item3 + r2.Item3 == w[2]) r++;
+				}
+			}
+		}
+		return r;
 	}
 }

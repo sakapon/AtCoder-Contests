@@ -11,11 +11,20 @@ class B
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
 		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		var b = new int[8];
+
+		foreach (var x in a)
+		{
+			b[0] = 1;
+
+			for (int i = 3; i >= 0; i--)
+			{
+				b[i + x] += b[i];
+				b[i] = 0;
+			}
+		}
+		return b[4..].Sum();
 	}
 }
