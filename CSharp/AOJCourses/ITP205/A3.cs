@@ -15,9 +15,9 @@ class A3
 		return string.Join("\n", a.Select(p => $"{p.x} {p.y}"));
 	}
 
-	static void MergeSort<T>(T[] a)
+	static void MergeSort<T>(T[] a, IComparer<T> c = null)
 	{
-		var c = Comparer<T>.Default;
+		c = c ?? Comparer<T>.Default;
 		var n = a.Length;
 		var t = new T[n];
 
