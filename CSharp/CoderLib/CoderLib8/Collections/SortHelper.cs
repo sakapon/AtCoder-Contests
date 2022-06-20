@@ -72,6 +72,49 @@ namespace CoderLib8.Collections
 			BucketSort(a, x => (int)(x >> 56) & f ^ 0x80, f);
 		}
 
+		// Test: https://atcoder.jp/contests/typical90/tasks/typical90_g
+		static void MergeSort(int[] a)
+		{
+			var n = a.Length;
+			var t = new int[n];
+
+			for (int k = 1; k < n; k <<= 1)
+			{
+				var ti = 0;
+				for (int L = 0; L < n; L += k << 1)
+				{
+					int R1 = L | k, R2 = R1 + k;
+					if (R2 > n) R2 = n;
+					int i1 = L, i2 = R1;
+					while (ti < R2) t[ti++] = (i2 >= R2 || i1 < R1 && i2 < R2 && a[i1] <= a[i2]) ? a[i1++] : a[i2++];
+				}
+				Array.Copy(t, a, n);
+			}
+		}
+
+		// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/5/ITP2_5_A
+		// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/5/ITP2_5_B
+		// Test: https://atcoder.jp/contests/abc256/tasks/abc256_d
+		static void MergeSort<T>(T[] a, IComparer<T> c = null)
+		{
+			var n = a.Length;
+			var t = new T[n];
+			c = c ?? Comparer<T>.Default;
+
+			for (int k = 1; k < n; k <<= 1)
+			{
+				var ti = 0;
+				for (int L = 0; L < n; L += k << 1)
+				{
+					int R1 = L | k, R2 = R1 + k;
+					if (R2 > n) R2 = n;
+					int i1 = L, i2 = R1;
+					while (ti < R2) t[ti++] = (i2 >= R2 || i1 < R1 && i2 < R2 && c.Compare(a[i1], a[i2]) <= 0) ? a[i1++] : a[i2++];
+				}
+				Array.Copy(t, a, n);
+			}
+		}
+
 		// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/5/ITP2_5_A
 		// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/5/ITP2_5_B
 		static void Sort<T, TKey>(T[] a, params Func<T, TKey>[] toKeys)
