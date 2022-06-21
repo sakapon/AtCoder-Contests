@@ -4,15 +4,15 @@ using System.Linq;
 class A
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static void Main()
 	{
-		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
-		var h = Read();
-		int n = h[0], qc = h[1];
+		var (n, qc) = Read2();
 		var qs = Array.ConvertAll(new bool[qc], _ => Read());
 
 		var uf = new UF(n);
 
+		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		foreach (var q in qs)
 			if (q[0] == 0)
 				uf.Unite(q[1], q[2]);
