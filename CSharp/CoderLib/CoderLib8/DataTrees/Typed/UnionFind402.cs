@@ -4,6 +4,10 @@ using System.Linq;
 
 namespace CoderLib8.DataTrees.Typed
 {
+	// Test: https://atcoder.jp/contests/atc001/tasks/unionfind_a
+	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_a
+	// Test: https://atcoder.jp/contests/abl/tasks/abl_c
+	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_l
 	// typed vertexes
 	// 頂点を動的に追加できる方式
 	[System.Diagnostics.DebuggerDisplay(@"Count = {Count}, GroupsCount = {GroupsCount}")]
