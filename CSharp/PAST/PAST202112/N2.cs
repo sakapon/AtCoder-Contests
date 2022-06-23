@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-class N
+class N2
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
@@ -51,9 +51,12 @@ class N
 		}
 
 		if (pl.Count == 0) return 0;
-		var p0 = pl[0];
-		var ps = pl.Skip(1).Where(p => p != p0).OrderBy(p => (p - p0).Angle).ToArray();
-		return Enumerable.Range(0, ps.Length).Select(i => V.Area(ps[i] - p0, ps[(i + 1) % ps.Length] - p0)).Where(a => a > 0).Sum() / 2;
+
+		// 原点の Angle が 0 となることを利用します。
+		var ps = pl.OrderBy(p => p.X).ThenBy(p => p.Y).ToArray();
+		var p0 = ps[^1];
+		ps = ps.OrderBy(p => (p - p0).Angle).ToArray();
+		return Enumerable.Range(0, ps.Length).Select(i => Area(ps[i] - p0, ps[(i + 1) % ps.Length] - p0)).Sum() / 2;
 	}
 
 	static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
@@ -85,38 +88,10 @@ class N
 		var d = a1 * b2 - a2 * b1;
 		return new V((b1 * c2 - b2 * c1) / d, -(a1 * c2 - a2 * c1) / d);
 	}
-}
 
-struct V : IEquatable<V>
-{
-	public static V Zero = new V();
-	public static V UnitX = new V(1, 0);
-	public static V UnitY = new V(0, 1);
-
-	public double X, Y;
-	public V(double x, double y) { X = x; Y = y; }
-	public override string ToString() => $"{X:F9} {Y:F9}";
-	public static V Parse(string s) => Array.ConvertAll(s.Split(), double.Parse);
-
-	public static implicit operator V(double[] v) => new V(v[0], v[1]);
-	public static explicit operator double[](V v) => new[] { v.X, v.Y };
-
-	public bool Equals(V other) => X == other.X && Y == other.Y;
-	public static bool operator ==(V v1, V v2) => v1.Equals(v2);
-	public static bool operator !=(V v1, V v2) => !v1.Equals(v2);
-	public override bool Equals(object obj) => obj is V && Equals((V)obj);
-	public override int GetHashCode() => Tuple.Create(X, Y).GetHashCode();
-
-	public static V operator +(V v) => v;
-	public static V operator -(V v) => new V(-v.X, -v.Y);
-	public static V operator +(V v1, V v2) => new V(v1.X + v2.X, v1.Y + v2.Y);
-	public static V operator -(V v1, V v2) => new V(v1.X - v2.X, v1.Y - v2.Y);
-	public static V operator *(double c, V v) => v * c;
-	public static V operator *(V v, double c) => new V(v.X * c, v.Y * c);
-	public static V operator /(V v, double c) => new V(v.X / c, v.Y / c);
-
-	public double Angle => Math.Atan2(Y, X);
-
-	// 菱形の面積 (三角形の面積の 2 倍、符号あり)
-	public static double Area(V v1, V v2) => v1.X * v2.Y - v2.X * v1.Y;
+	// ベクトル P1P2 と x 軸による台形の面積の 2 倍 (符号あり)
+	static double Area(V p1, V p2)
+	{
+		return (p1.X - p2.X) * (p1.Y + p2.Y);
+	}
 }
