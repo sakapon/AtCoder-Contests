@@ -11,15 +11,29 @@ class C2
 
 		var rsq = new StaticRSQ1(w);
 		var dp = new long[n + 1, n + 1];
+		var center = new int[n + 1, n + 1];
 
-		for (int d = 2; d <= n; d++)
+		// d == 2
+		for (int l = 0; l + 2 <= n; l++)
+		{
+			dp[l, l + 2] = w[l] + w[l + 1];
+			center[l, l + 2] = l + 1;
+		}
+
+		for (int d = 3; d <= n; d++)
 		{
 			for (int l = 0; l + d <= n; l++)
 			{
 				dp[l, l + d] = 1L << 60;
-				for (int c = 1; c < d; c++)
+
+				for (int c = center[l, l + d - 1]; c <= center[l + 1, l + d]; c++)
 				{
-					dp[l, l + d] = Math.Min(dp[l, l + d], dp[l, l + c] + dp[l + c, l + d]);
+					var nv = dp[l, c] + dp[c, l + d];
+					if (dp[l, l + d] > nv)
+					{
+						dp[l, l + d] = nv;
+						center[l, l + d] = c;
+					}
 				}
 				dp[l, l + d] += rsq.GetSum(l, l + d);
 			}
