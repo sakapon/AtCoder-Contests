@@ -1,23 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CoderLib8.Collections
 {
-	// TODO: Use Comparer
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/6/ITP2_6_A
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/6/ITP2_6_B
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/6/ITP2_6_C
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/6/ITP2_6_D
 	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_g
 	// Test: https://atcoder.jp/contests/abc143/tasks/abc143_d
 	// Test: https://atcoder.jp/contests/abc241/tasks/abc241_f
 	// Test: https://atcoder.jp/contests/abc255/tasks/abc255_d
+	// sorted multiset として扱われます。
 	[System.Diagnostics.DebuggerDisplay(@"Count = {Count}")]
 	public class BSArray<T>
 	{
 		T[] a;
-		public T[] Raw => a;
+		public T[] Items => a;
 		public int Count { get; }
+		public IComparer<T> Comparer { get; }
 		public T this[int i] => a[i];
-		public BSArray(T[] array) { a = array; Count = a.Length; }
+
+		public BSArray(IEnumerable<T> items, bool useRawItems = false, IComparer<T> comparer = null)
+		{
+			Comparer = comparer ?? Comparer<T>.Default;
+			if (items == null) throw new ArgumentNullException(nameof(items));
+			if (useRawItems) a = items as T[] ?? items.ToArray();
+			else a = items.OrderBy(x => x, Comparer).ToArray(); // stable sort
+			Count = a.Length;
+		}
 
 		public int GetFirstIndex(Func<T, bool> predicate) => First(0, Count, i => predicate(a[i]));
 		public int GetLastIndex(Func<T, bool> predicate) => Last(-1, Count - 1, i => predicate(a[i]));
@@ -38,6 +50,20 @@ namespace CoderLib8.Collections
 			var i = GetLastIndex(predicate);
 			return i >= 0 ? a[i] : Maybe<T>.None;
 		}
+
+		public int GetFirstIndex(T item)
+		{
+			var i = GetFirstIndex(x => Comparer.Compare(x, item) >= 0);
+			return i < Count && Comparer.Compare(a[i], item) == 0 ? i : -1;
+		}
+		public int GetLastIndex(T item)
+		{
+			var i = GetLastIndex(x => Comparer.Compare(x, item) <= 0);
+			return i >= 0 && Comparer.Compare(a[i], item) == 0 ? i : -1;
+		}
+
+		public bool Contains(T item) => GetFirstIndex(item) != -1;
+		public int GetCount(T item) => GetCount(x => Comparer.Compare(x, item) >= 0, x => Comparer.Compare(x, item) <= 0);
 
 		public IEnumerable<T> GetItems(Func<T, bool> startPredicate, Func<T, bool> endPredicate)
 		{
