@@ -12,36 +12,38 @@ class F
 		var (n, m) = Read2();
 		var es = Array.ConvertAll(new bool[m], _ => Read());
 
-		var map = ToMapList(n + 1, es);
+		var map = ToMap(n + 1, es, false);
 
 		// v0: Fake
-		var r1 = Bfs(n + 1, v => map[v].ToArray(), 1);
-		var rn = Bfs(n + 1, v => map[v].ToArray(), n);
+		var r1 = Bfs(n + 1, v => map[v], 1);
+		var rn = Bfs(n + 1, v => map[v], n);
 
 		return string.Join(" ", Enumerable.Range(1, n).Select(v =>
 		{
 			var r = r1[n];
-			if (r1[0] < long.MaxValue && rn[0] < long.MaxValue) r = Math.Min(r, r1[0] + rn[0]);
-			if (r1[0] < long.MaxValue && rn[v] < long.MaxValue) r = Math.Min(r, r1[0] + rn[v]);
-			if (r1[v] < long.MaxValue && rn[0] < long.MaxValue) r = Math.Min(r, r1[v] + rn[0]);
-			return r == long.MaxValue ? -1 : r;
+			r = Math.Min(r, r1[0] + rn[0]);
+			r = Math.Min(r, r1[0] + rn[v]);
+			r = Math.Min(r, r1[v] + rn[0]);
+			return r < max ? r : -1;
 		}));
 	}
 
-	public static List<int>[] ToMapList(int n, int[][] es)
+	public static int[][] ToMap(int n, int[][] es, bool directed) => Array.ConvertAll(ToMapList(n, es, directed), l => l.ToArray());
+	public static List<int>[] ToMapList(int n, int[][] es, bool directed)
 	{
 		var map = Array.ConvertAll(new bool[n], _ => new List<int>());
 		foreach (var e in es)
 		{
 			if (e[0] != 0) map[e[0]].Add(e[1]);
-			map[e[1]].Add(e[0]);
+			if (!directed) map[e[1]].Add(e[0]);
 		}
 		return map;
 	}
 
+	const long max = 1L << 40;
 	public static long[] Bfs(int n, Func<int, int[]> nexts, int sv, int ev = -1)
 	{
-		var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
+		var costs = Array.ConvertAll(new bool[n], _ => max);
 		var q = new Queue<int>();
 		costs[sv] = 0;
 		q.Enqueue(sv);
