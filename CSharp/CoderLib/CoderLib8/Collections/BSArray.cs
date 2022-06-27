@@ -4,10 +4,8 @@ using System.Linq;
 
 namespace CoderLib8.Collections
 {
-	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/6/ITP2_6_A
-	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/6/ITP2_6_B
-	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/6/ITP2_6_C
-	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/6/ITP2_6_D
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/6
+	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/4/ALDS1_4_B
 	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_g
 	// Test: https://atcoder.jp/contests/abc143/tasks/abc143_d
 	// Test: https://atcoder.jp/contests/abc241/tasks/abc241_f
