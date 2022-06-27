@@ -21,7 +21,6 @@ class F
 		return string.Join(" ", Enumerable.Range(1, n).Select(v =>
 		{
 			var r = r1[n];
-			r = Math.Min(r, r1[0] + rn[0]);
 			r = Math.Min(r, r1[0] + rn[v]);
 			r = Math.Min(r, r1[v] + rn[0]);
 			return r < max ? r : -1;
@@ -34,7 +33,7 @@ class F
 		var map = Array.ConvertAll(new bool[n], _ => new List<int>());
 		foreach (var e in es)
 		{
-			if (e[0] != 0) map[e[0]].Add(e[1]);
+			map[e[0]].Add(e[1]);
 			if (!directed) map[e[1]].Add(e[0]);
 		}
 		return map;
