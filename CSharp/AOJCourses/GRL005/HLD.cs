@@ -39,14 +39,16 @@ public class HLD
 	public Node[] Nodes { get; }
 	public Node[] NodesByOrder { get; }
 	public List<Group> Groups { get; } = new List<Group>();
+	public Node Root { get; }
 
 	public HLD(int n, int[][] map, int root)
 	{
 		Map = map;
 		Nodes = new Node[n];
 		for (int i = 0; i < n; ++i) Nodes[i] = new Node { Id = i };
+		Root = Nodes[root];
 
-		Dfs(Nodes[root], new Node { Id = -1 });
+		Dfs(Root, new Node { Id = -1 });
 
 		NodesByOrder = new Node[n];
 		var order = -1;
@@ -64,7 +66,7 @@ public class HLD
 				g.Parent.Children.Add(g);
 			}
 		}
-		DfsForGroup(Nodes[root].Group);
+		DfsForGroup(Root.Group);
 	}
 
 	void Dfs(Node cn, Node pn)
