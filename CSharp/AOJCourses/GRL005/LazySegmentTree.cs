@@ -86,9 +86,9 @@ namespace CoderLib8.DataTrees
 		public void Set(int l_in, int r_ex, TO op)
 		{
 			int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
-			Dfs(1, n2 >> 1);
 
-			void Dfs(STNode n, int length)
+			Action<STNode, int> Dfs = null;
+			Dfs = (n, length) =>
 			{
 				int nl = n.i * length, nr = nl + length;
 
@@ -100,12 +100,13 @@ namespace CoderLib8.DataTrees
 				else
 				{
 					PushDown(n, length);
-					var nm = nl + nr >> 1;
+					var nm = (nl + nr) >> 1;
 					if (al < nm && nl < ar) Dfs(n.Child0, length >> 1);
 					if (al < nr && nm < ar) Dfs(n.Child1, length >> 1);
 					a2[n.i] = Union(a2[n.Child0.i], a2[n.Child1.i]);
 				}
-			}
+			};
+			Dfs(1, n2 >> 1);
 		}
 
 		public TV Get(int i) => Get(i, i + 1);
@@ -116,10 +117,9 @@ namespace CoderLib8.DataTrees
 		{
 			int al = (n2 >> 1) + l_in, ar = (n2 >> 1) + r_ex;
 			var rv = r0;
-			Dfs(1, n2 >> 1);
-			return rv;
 
-			void Dfs(STNode n, int length)
+			Action<STNode, int> Dfs = null;
+			Dfs = (n, length) =>
 			{
 				int nl = n.i * length, nr = nl + length;
 
@@ -130,11 +130,13 @@ namespace CoderLib8.DataTrees
 				else
 				{
 					PushDown(n, length);
-					var nm = nl + nr >> 1;
+					var nm = (nl + nr) >> 1;
 					if (al < nm && nl < ar) Dfs(n.Child0, length >> 1);
 					if (al < nr && nm < ar) Dfs(n.Child1, length >> 1);
 				}
-			}
+			};
+			Dfs(1, n2 >> 1);
+			return rv;
 		}
 	}
 }
