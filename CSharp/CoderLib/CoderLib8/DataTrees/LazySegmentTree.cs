@@ -55,7 +55,7 @@ namespace CoderLib8.DataTrees
 			Union = union;
 			v0 = _v0;
 			Transform = transform;
-			if (!TOEquals(id, default) || !Equals(v0, default(TV)) || a0 != null) Init(a0);
+			if (!TOEquals(id, default(TO)) || !Equals(v0, default(TV)) || a0 != null) Init(a0);
 		}
 
 		public void Init(TV[] a0 = null)
