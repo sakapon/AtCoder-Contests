@@ -12,6 +12,8 @@ namespace CoderLib8.DataTrees.SBTs
 		public static Monoid<int> Int32_Max { get; } = new Monoid<int>((x, y) => x >= y ? x : y, int.MinValue);
 
 		public static Monoid<int> Int32_ArgMin(int[] a) => new Monoid<int>((x, y) => a[x] <= a[y] ? x : y);
+
+		public static Monoid<int> Int32_Update { get; } = new Monoid<int>((x, y) => x != -1 ? x : y, -1);
 	}
 
 	public struct Monoid<T>
