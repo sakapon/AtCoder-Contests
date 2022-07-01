@@ -13,7 +13,7 @@ class DBT
 		var qs = Array.ConvertAll(new bool[qc], _ => Read());
 
 		var iv = Array.ConvertAll(new bool[n], _ => int.MaxValue);
-		var st = new SinkSBT<int>(n, Monoid.Int32_Update, iv);
+		var st = new PushSBT<int>(n, Monoid.Int32_Update, iv);
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		foreach (var q in qs)

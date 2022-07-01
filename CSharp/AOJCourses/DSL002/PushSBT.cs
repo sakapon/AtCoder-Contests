@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace CoderLib8.DataTrees.SBTs
 {
-	// top-down segment binary tree
+	// root-to-leaves segment binary tree
 	[System.Diagnostics.DebuggerDisplay(@"Count = {Count}")]
-	public class SinkSBT<TOp>
+	public class PushSBT<TOp>
 	{
 		[System.Diagnostics.DebuggerDisplay(@"\{{Op}, Count = {Count}\}")]
 		public class Node
@@ -16,18 +16,18 @@ namespace CoderLib8.DataTrees.SBTs
 			public Node Left, Right;
 		}
 
-		public Monoid<TOp> Sink { get; }
+		public Monoid<TOp> Push { get; }
 		Node[] Leaves;
 		public int Count => Leaves.Length;
 		Node Root;
 
-		public SinkSBT(int n, Monoid<TOp> sink, IEnumerable<TOp> items = null)
+		public PushSBT(int n, Monoid<TOp> push, IEnumerable<TOp> items = null)
 		{
-			Sink = sink;
+			Push = push;
 			var a = items as TOp[] ?? items?.ToArray();
 			if (a?.Length < n) throw new ArgumentException("", nameof(items));
 			Leaves = new Node[n];
-			for (int i = 0; i < n; ++i) Leaves[i] = new Node { Op = a != null ? a[i] : sink.Id };
+			for (int i = 0; i < n; ++i) Leaves[i] = new Node { Op = a != null ? a[i] : push.Id };
 			Root = CreateSubtree(0, n);
 		}
 
@@ -37,7 +37,7 @@ namespace CoderLib8.DataTrees.SBTs
 			var m = (l + r) >> 1;
 			return new Node
 			{
-				Op = Sink.Id,
+				Op = Push.Id,
 				Count = r - l,
 				Left = CreateSubtree(l, m),
 				Right = CreateSubtree(m, r),
@@ -58,9 +58,9 @@ namespace CoderLib8.DataTrees.SBTs
 		TOp Get(Node n, int i)
 		{
 			if (n.Count == 1) return n.Op;
-			n.Left.Op = Sink.Op(n.Op, n.Left.Op);
-			n.Right.Op = Sink.Op(n.Op, n.Right.Op);
-			n.Op = Sink.Id;
+			n.Left.Op = Push.Op(n.Op, n.Left.Op);
+			n.Right.Op = Push.Op(n.Op, n.Right.Op);
+			n.Op = Push.Id;
 
 			if (i < n.Left.Count) return Get(n.Left, i);
 			else return Get(n.Right, i - n.Left.Count);
@@ -68,10 +68,10 @@ namespace CoderLib8.DataTrees.SBTs
 
 		void SetRange(Node n, int l, int r, TOp op)
 		{
-			if (l <= 0 && n.Count <= r) { n.Op = Sink.Op(op, n.Op); return; }
-			n.Left.Op = Sink.Op(n.Op, n.Left.Op);
-			n.Right.Op = Sink.Op(n.Op, n.Right.Op);
-			n.Op = Sink.Id;
+			if (l <= 0 && n.Count <= r) { n.Op = Push.Op(op, n.Op); return; }
+			n.Left.Op = Push.Op(n.Op, n.Left.Op);
+			n.Right.Op = Push.Op(n.Op, n.Right.Op);
+			n.Op = Push.Id;
 
 			var lc = n.Left.Count;
 			if (r <= lc) SetRange(n.Left, l, r, op);

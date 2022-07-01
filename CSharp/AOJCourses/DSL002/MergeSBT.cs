@@ -23,7 +23,7 @@ namespace CoderLib8.DataTrees.SBTs
 		public Monoid(Func<T, T, T> op, T id = default(T)) { Op = op; Id = id; }
 	}
 
-	// bottom-up segment binary tree
+	// leaves-to-root segment binary tree
 	[System.Diagnostics.DebuggerDisplay(@"Count = {Count}")]
 	public class MergeSBT<TValue>
 	{

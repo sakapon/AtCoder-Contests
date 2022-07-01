@@ -12,7 +12,7 @@ class EBT
 		var (n, qc) = Read2();
 		var qs = Array.ConvertAll(new bool[qc], _ => Read());
 
-		var st = new SinkSBT<int>(n + 1, Monoid.Int32_Add);
+		var st = new PushSBT<int>(n + 1, Monoid.Int32_Add);
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		foreach (var q in qs)
