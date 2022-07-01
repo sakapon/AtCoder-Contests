@@ -82,5 +82,22 @@ namespace CoderLib8.DataTrees.SBTs
 				SetRange(n.Right, 0, r - lc, op);
 			}
 		}
+
+		public TOp[] ToArray()
+		{
+			PushAll(Root);
+			return Array.ConvertAll(Leaves, n => n.Op);
+		}
+
+		void PushAll(Node n)
+		{
+			if (n.Count == 1) return;
+			n.Left.Op = Push.Op(n.Op, n.Left.Op);
+			n.Right.Op = Push.Op(n.Op, n.Right.Op);
+			n.Op = Push.Id;
+
+			PushAll(n.Left);
+			PushAll(n.Right);
+		}
 	}
 }
