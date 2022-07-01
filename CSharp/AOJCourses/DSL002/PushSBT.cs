@@ -74,13 +74,8 @@ namespace CoderLib8.DataTrees.SBTs
 			n.Op = Push.Id;
 
 			var lc = n.Left.Count;
-			if (r <= lc) SetRange(n.Left, l, r, op);
-			else if (lc <= l) SetRange(n.Right, l - lc, r - lc, op);
-			else
-			{
-				SetRange(n.Left, l, lc, op);
-				SetRange(n.Right, 0, r - lc, op);
-			}
+			if (l < lc) SetRange(n.Left, l, lc < r ? lc : r, op);
+			if (lc < r) SetRange(n.Right, l < lc ? 0 : l - lc, r - lc, op);
 		}
 
 		public TOp[] ToArray()
