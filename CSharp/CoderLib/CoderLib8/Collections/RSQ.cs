@@ -26,31 +26,20 @@ namespace CoderLib8.Collections
 			get => a2[n2 | i];
 			set => Add(i, value - a2[n2 | i]);
 		}
-		public long this[int l, int r] => GetRange(l, r);
 		public void Add(int i, long d) { for (i |= n2; i > 0; i >>= 1) a2[i] += d; }
 
-		long GetRange(int l, int r)
+		public long this[int l, int r]
 		{
-			l |= n2; r += n2;
-			var s = 0L;
-
-			for (int i = 0; l + (1 << i) <= r; ++i)
+			get
 			{
-				if ((l & (1 << i)) != 0)
+				var s = 0L;
+				for (l |= n2, r += n2; l < r; l >>= 1, r >>= 1)
 				{
-					s += a2[l >> i];
-					l += 1 << i;
+					if ((l & 1) != 0) s += a2[l++];
+					if ((r & 1) != 0) s += a2[--r];
 				}
+				return s;
 			}
-			for (int i = 0; l < r; ++i)
-			{
-				if ((r & (1 << i)) != 0)
-				{
-					s += a2[(r >> i) - 1];
-					r -= 1 << i;
-				}
-			}
-			return s;
 		}
 	}
 }
