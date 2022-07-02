@@ -1,6 +1,8 @@
 ﻿using System;
 
+// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/5/ALDS1_5_D
 // Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/2/DSL_2_B
+// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/5/GRL/5/GRL_5_D
 // Test: https://atcoder.jp/contests/practice2/tasks/practice2_b
 // RSQ に特化したクラスです。
 // 一般的なセグメント木のアルゴリズムとは異なります。
@@ -35,7 +37,7 @@ namespace CoderLib8.Collections
 			get
 			{
 				var s = 0L;
-				for (l |= n, r += n; l < r; l >>= 1, r >>= 1)
+				for (l += n, r += n; l < r; l >>= 1, r >>= 1)
 				{
 					if ((l & 1) != 0) s += a[l++];
 					if ((r & 1) != 0) s += a[--r];
