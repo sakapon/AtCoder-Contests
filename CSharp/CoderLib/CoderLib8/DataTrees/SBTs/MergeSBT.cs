@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
+// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/2/DSL_2_A
+// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/2/DSL_2_B
+// Test: https://atcoder.jp/contests/practice2/tasks/practice2_b
 namespace CoderLib8.DataTrees.SBTs
 {
 	public static class Monoid
@@ -44,7 +47,7 @@ namespace CoderLib8.DataTrees.SBTs
 		{
 			Merge = merge;
 			var a = items as TValue[] ?? items?.ToArray();
-			if (a?.Length < n) throw new ArgumentException("", nameof(items));
+			if (a?.Length < n) throw new ArgumentException("n items must be given.", nameof(items));
 			Leaves = new Node[n];
 			for (int i = 0; i < n; ++i) Leaves[i] = new Node { Value = a != null ? a[i] : merge.Id };
 			Root = CreateSubtree(0, n);

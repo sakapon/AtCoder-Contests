@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
+// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/2/DSL_2_D
+// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/2/DSL_2_E
+// Test: https://atcoder.jp/contests/abl/tasks/abl_d
 namespace CoderLib8.DataTrees.SBTs
 {
 	// root-to-leaves segment binary tree
@@ -25,7 +28,7 @@ namespace CoderLib8.DataTrees.SBTs
 		{
 			Push = push;
 			var a = items as TOp[] ?? items?.ToArray();
-			if (a?.Length < n) throw new ArgumentException("", nameof(items));
+			if (a?.Length < n) throw new ArgumentException("n items must be given.", nameof(items));
 			Leaves = new Node[n];
 			for (int i = 0; i < n; ++i) Leaves[i] = new Node { Op = a != null ? a[i] : push.Id };
 			Root = CreateSubtree(0, n);
