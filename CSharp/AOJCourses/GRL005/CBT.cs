@@ -21,13 +21,13 @@ class CBT
 
 		return string.Join("\n", qs.Select(q =>
 		{
-			var u = q[0];
-			var v = q[1];
+			var u = tree.Nodes[q[0]];
+			var v = tree.Nodes[q[1]];
 
-			if (u == v) return u;
-			if (tree.Nodes[u].Orders[0] > tree.Nodes[v].Orders[0]) { var t = u; u = v; v = t; }
-			if (tree.Nodes[u].Orders.Last() > tree.Nodes[v].Orders.Last()) return u;
-			return st[tree.Nodes[u].Orders.Last(), tree.Nodes[v].Orders[0]].Id;
+			if (u == v) return u.Id;
+			if (u.Orders[0] > v.Orders[0]) { var t = u; u = v; v = t; }
+			if (u.Orders.Last() > v.Orders.Last()) return u.Id;
+			return st[u.Orders.Last(), v.Orders[0]].Id;
 		}));
 	}
 }
