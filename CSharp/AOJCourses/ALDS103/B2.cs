@@ -1,48 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 class B2
 {
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static void Main()
 	{
-		var r = new List<string>();
-		var h = Console.ReadLine().Split().Select(int.Parse).ToArray();
-		int n = h[0], q = h[1];
-		var ps = new int[h[0]].Select(_ => Console.ReadLine().Split()).Select(x => Tuple.Create(x[0], int.Parse(x[1])));
+		var (n, qt) = Read2();
 
-		var queue = new Queue0<Tuple<string, int>>(1000000);
-		foreach (var p in ps) queue.Push(p);
-
-		var t = 0;
-		while (queue.Length > 0)
+		var q = new ArrayQueue<(string, int)>(1000000);
+		while (n-- > 0)
 		{
-			var v = queue.Pop();
-			if (v.Item2 <= q)
+			var p = Console.ReadLine().Split();
+			q.Push((p[0], int.Parse(p[1])));
+		}
+		var t = 0;
+
+		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
+		while (q.Count > 0)
+		{
+			var (name, time) = q.Pop();
+			if (time <= qt)
 			{
-				r.Add($"{v.Item1} {t += v.Item2}");
+				Console.WriteLine($"{name} {t += time}");
 			}
 			else
 			{
-				t += q;
-				queue.Push(Tuple.Create(v.Item1, v.Item2 - q));
+				t += qt;
+				q.Push((name, time - qt));
 			}
 		}
-		Console.WriteLine(string.Join("\n", r));
+		Console.Out.Flush();
 	}
 }
 
-class Queue0<T>
+public class ArrayQueue<T>
 {
 	T[] a;
-	int fiIn, liEx;
+	int fi, li;
+	public int Count => li - fi;
 
-	public Queue0(int size) { a = new T[size]; }
+	public ArrayQueue(int capacity) => a = new T[capacity];
 
-	public int Length => liEx - fiIn;
-	public T First => a[fiIn];
-	public T this[int i] => a[fiIn + i];
-
-	public void Push(T v) => a[liEx++] = v;
-	public T Pop() => a[fiIn++];
+	public void Push(T item) => a[li++] = item;
+	public T Pop() => a[fi++];
 }
