@@ -10,12 +10,9 @@ class A
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
 		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		if (a[1] >= a[2]) return a[3];
+		return a[3] - a[4] * (a[2] - a[1]);
 	}
 }
