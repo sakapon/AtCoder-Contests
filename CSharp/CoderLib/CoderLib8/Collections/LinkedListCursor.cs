@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+// https://github.com/sakapon/Samples-2020/blob/master/AlgorithmSample/AlgorithmLab/Collections/LinkedListCursor.cs
 namespace CoderLib8.Collections
 {
 	public static class LinkedListCursor
@@ -8,91 +9,95 @@ namespace CoderLib8.Collections
 		public static LinkedListCursor<T> CreateCursor<T>(this LinkedList<T> list) => new LinkedListCursor<T>(list);
 	}
 
+	[System.Diagnostics.DebuggerDisplay(@"Index = {Index}, IsAtEnd = {IsAtEnd}")]
 	public class LinkedListCursor<T>
 	{
+		readonly LinkedList<T> l;
 		int i;
-		LinkedList<T> l;
-		LinkedListNode<T> n;
+		LinkedListNode<T> node;
+
+		public LinkedListCursor(LinkedList<T> list)
+		{
+			l = list;
+			JumpToFirst();
+		}
+
+		public LinkedList<T> List => l;
 
 		public int Index
 		{
 			get => i;
-			set => Move(value - i);
+			set => Jump(value);
 		}
-		public bool IsAtEnd => i == l.Count;
+		public bool IsAtEnd => i >= l.Count;
 
 		public T Item
 		{
-			get => n.Value;
-			set => n.Value = value;
+			get => node.Value;
+			set => node.Value = value;
 		}
 
-		public LinkedListCursor(LinkedList<T> list)
+		public void JumpToFirst()
 		{
-			l = list ?? throw new ArgumentNullException(nameof(list));
-			n = l.First;
+			i = 0;
+			node = l.First;
+		}
+
+		public void JumpToEnd()
+		{
+			i = l.Count;
+			node = null;
 		}
 
 		public bool MoveNext()
 		{
-			if (i == l.Count) return false;
+			if (i >= l.Count) return false;
 			++i;
-			n = n.Next;
+			node = node.Next;
 			return true;
 		}
 
 		public bool MovePrevious()
 		{
-			if (i == 0) return false;
+			if (i <= 0) return false;
 			--i;
-			n = n?.Previous ?? l.Last;
+			node = node?.Previous ?? l.Last;
 			return true;
 		}
 
-		public bool Move(int delta)
+		void MoveOnly(int delta)
 		{
-			var ti = i + delta;
-			if (ti < 0 || l.Count < ti) return false;
-			i = ti;
-			if (delta >= 0) while (delta-- > 0) n = n.Next;
-			else while (delta++ < 0) n = n?.Previous ?? l.Last;
-			return true;
+			i += delta;
+			if (delta >= 0) while (delta-- > 0) node = node.Next;
+			else while (delta++ < 0) node = node?.Previous ?? l.Last;
 		}
 
 		public void Repoint(int index = -1)
 		{
-			if (index != -1) i = index;
-
-			if (i == l.Count)
-			{
-				n = null;
-			}
-			else if (i < l.Count >> 1)
-			{
-				n = l.First;
-				var delta = i;
-				while (delta-- > 0) n = n.Next;
-			}
-			else
-			{
-				n = l.Last;
-				var delta = i - l.Count + 1;
-				while (delta++ < 0) n = n.Previous;
-			}
+			if (index == -1) index = i;
+			if (index < 0 || l.Count < index) throw new ArgumentOutOfRangeException(nameof(index));
+			if (index <= l.Count >> 1) JumpToFirst();
+			else JumpToEnd();
+			MoveOnly(index - i);
 		}
 
-		public void Insert(T item)
+		void Jump(int index)
 		{
-			n = IsAtEnd ? l.AddLast(item) : l.AddBefore(n, item);
+			if (index < 0 || l.Count < index) throw new ArgumentOutOfRangeException(nameof(index));
+			if (index < i >> 1) JumpToFirst();
+			else if ((i + l.Count) >> 1 < index) JumpToEnd();
+			MoveOnly(index - i);
 		}
+		public void MoveDelta(int delta) => Jump(i + delta);
 
-		public bool Remove()
+		public void Add(T item) => node = IsAtEnd ? l.AddLast(item) : l.AddBefore(node, item);
+		public T Pop()
 		{
-			if (IsAtEnd) return false;
-			var tn = n.Next;
-			l.Remove(n);
-			n = tn;
-			return true;
+			if (IsAtEnd) throw new InvalidOperationException();
+			var tn = node;
+			node = node.Next;
+			l.Remove(tn);
+			return tn.Value;
 		}
 	}
 }
