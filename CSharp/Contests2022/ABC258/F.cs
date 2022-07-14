@@ -70,6 +70,8 @@ public class AsciiIO
 	void NextValid() { while (sp[b = si.ReadByte()]) ; }
 	bool Next() => !sp[b = si.ReadByte()];
 
+	public char Char() { NextValid(); return (char)b; }
+
 	public int Int() => (int)Long();
 	public (int, int) Int2() => (Int(), Int());
 
