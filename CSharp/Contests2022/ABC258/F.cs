@@ -24,35 +24,37 @@ class F
 
 		(long, long, long t)[] ToMainStreet(long x, long y)
 		{
+			var (xm, ym) = (x % b, y % b);
 			return new[]
 			{
-				(x / b * b, y, x % b * k),
-				(x / b * b + b, y, (b - x % b) * k),
-				(x, y / b * b, y % b * k),
-				(x, y / b * b + b, (b - y % b) * k),
+				(x - xm, y, xm * k),
+				(x - xm + b, y, (b - xm) * k),
+				(x, y - ym, ym * k),
+				(x, y - ym + b, (b - ym) * k),
 			};
 		}
 
 		// 大通りの座標同士
 		long OnMainStreet(long x1, long y1, long x2, long y2)
 		{
-			if ((x1 / b, y1 / b) == (x2 / b, y2 / b)) return Distance(x1, y1, x2, y2);
+			if (x1 == x2 && x1 % b == 0 || y1 == y2 && y1 % b == 0) return Distance(x1, y1, x2, y2);
 
-			if (x1 % b == 0)
+			if (y1 % b != 0)
 			{
 				(x1, y1) = (y1, x1);
 				(x2, y2) = (y2, x2);
 			}
 
-			var d1 = Distance(x1 / b * b, y1, x2, y2) + x1 % b;
-			var d2 = Distance(x1 / b * b + b, y1, x2, y2) + b - x1 % b;
+			var xm = x1 % b;
+			var d1 = Distance(x1 - xm, y1, x2, y2) + xm;
+			var d2 = Distance(x1 - xm + b, y1, x2, y2) + b - xm;
 			return Math.Min(d1, d2);
 		}
+	}
 
-		long Distance(long x1, long y1, long x2, long y2)
-		{
-			return Math.Abs(x1 - x2) + Math.Abs(y1 - y2);
-		}
+	static long Distance(long x1, long y1, long x2, long y2)
+	{
+		return Math.Abs(x1 - x2) + Math.Abs(y1 - y2);
 	}
 }
 
