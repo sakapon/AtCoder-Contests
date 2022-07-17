@@ -115,6 +115,57 @@ namespace CoderLib8.Collections
 			}
 		}
 
+		// Test: https://atcoder.jp/contests/typical90/tasks/typical90_g
+		// in-place
+		static void HeapSort(int[] a)
+		{
+			int i = 0, c, p;
+			while (++i < a.Length)
+			{
+				for (c = i; c > 0 && a[c] > a[p = (c - 1) >> 1]; c = p)
+				{
+					(a[c], a[p]) = (a[p], a[c]);
+				}
+			}
+			while (--i > 0)
+			{
+				(a[0], a[i]) = (a[i], a[0]);
+				for (p = 0; (c = p << 1 | 1) < i; p = c)
+				{
+					if (c + 1 < i && a[c] < a[c + 1]) ++c;
+					if (a[c] <= a[p]) break;
+					(a[c], a[p]) = (a[p], a[c]);
+				}
+			}
+		}
+
+		// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/5/ITP2_5_A
+		// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/5/ITP2_5_B
+		// Test: https://atcoder.jp/contests/abc256/tasks/abc256_d
+		// in-place
+		static void HeapSort<T>(T[] a, IComparer<T> comp = null)
+		{
+			comp = comp ?? Comparer<T>.Default;
+			int i = 0, c, p;
+			while (++i < a.Length)
+			{
+				for (c = i; c > 0 && comp.Compare(a[c], a[p = (c - 1) >> 1]) > 0; c = p)
+				{
+					(a[c], a[p]) = (a[p], a[c]);
+				}
+			}
+			while (--i > 0)
+			{
+				(a[0], a[i]) = (a[i], a[0]);
+				for (p = 0; (c = p << 1 | 1) < i; p = c)
+				{
+					if (c + 1 < i && comp.Compare(a[c], a[c + 1]) < 0) ++c;
+					if (comp.Compare(a[c], a[p]) <= 0) break;
+					(a[c], a[p]) = (a[p], a[c]);
+				}
+			}
+		}
+
 		// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/5/ITP2_5_A
 		// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/5/ITP2_5_B
 		static void Sort<T, TKey>(T[] a, params Func<T, TKey>[] toKeys)
