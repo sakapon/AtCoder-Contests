@@ -7,8 +7,8 @@ namespace CoderLib6.Values
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/7/DPL/5
 	public class MTwelvefold
 	{
-		//const long M = 998244353;
-		const long M = 1000000007;
+		//const long M = 1000000007;
+		const long M = 998244353;
 		static long MInt(long x) => (x %= M) < 0 ? x + M : x;
 		static long MPow(long b, long i)
 		{

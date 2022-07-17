@@ -5,7 +5,7 @@ class A2
 	static void Main()
 	{
 		var es = Console.ReadLine().Split();
-		var s = new Stack0<int>(200);
+		var s = new ArrayStack<int>(200);
 
 		foreach (var e in es)
 		{
@@ -29,17 +29,13 @@ class A2
 	}
 }
 
-class Stack0<T>
+public class ArrayStack<T>
 {
 	T[] a;
-	int liEx;
+	int n;
 
-	public Stack0(int size) { a = new T[size]; }
+	public ArrayStack(int capacity) => a = new T[capacity];
 
-	public int Length => liEx;
-	public T First => a[liEx - 1];
-	public T this[int i] => a[i];
-
-	public void Push(T v) => a[liEx++] = v;
-	public T Pop() => a[--liEx];
+	public void Push(T item) => a[n++] = item;
+	public T Pop() => a[--n];
 }

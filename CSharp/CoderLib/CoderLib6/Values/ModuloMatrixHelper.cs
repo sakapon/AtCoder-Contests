@@ -4,7 +4,8 @@ namespace CoderLib6.Values
 {
 	public static class ModuloMatrixHelper
 	{
-		const long M = 1000000007;
+		//const long M = 1000000007;
+		const long M = 998244353;
 		static long MInt(long x) => (x %= M) < 0 ? x + M : x;
 
 		// 正方行列

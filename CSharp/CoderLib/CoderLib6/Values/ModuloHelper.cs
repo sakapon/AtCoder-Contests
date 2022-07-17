@@ -7,8 +7,8 @@ namespace CoderLib6.Values
 	// Test: https://atcoder.jp/contests/atc002/tasks/atc002_b
 	static class ModuloHelper
 	{
-		//const long M = 998244353;
-		const long M = 1000000007;
+		//const long M = 1000000007;
+		const long M = 998244353;
 		const long MHalf = (M + 1) / 2;
 		// 0^0 は未定義
 		static long MPow(long b, long i)

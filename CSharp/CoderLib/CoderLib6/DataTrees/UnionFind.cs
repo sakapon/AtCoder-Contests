@@ -9,26 +9,26 @@ namespace CoderLib6.DataTrees
 	// Test: https://atcoder.jp/contests/practice2/tasks/practice2_a
 	// Test: https://atcoder.jp/contests/abl/tasks/abl_c
 	// Test: https://atcoder.jp/contests/abc183/tasks/abc183_f
-	class UF
+	public class UF
 	{
 		int[] p, sizes;
-		public int GroupsCount;
+		public int GroupsCount { get; private set; }
+
 		public UF(int n)
 		{
-			p = Enumerable.Range(0, n).ToArray();
+			p = Array.ConvertAll(new bool[n], _ => -1);
 			sizes = Array.ConvertAll(p, _ => 1);
 			GroupsCount = n;
 		}
 
-		public int GetRoot(int x) => p[x] == x ? x : p[x] = GetRoot(p[x]);
+		public int GetRoot(int x) => p[x] == -1 ? x : p[x] = GetRoot(p[x]);
+		public bool AreUnited(int x, int y) => GetRoot(x) == GetRoot(y);
 		public int GetSize(int x) => sizes[GetRoot(x)];
 
-		public bool AreUnited(int x, int y) => GetRoot(x) == GetRoot(y);
 		public bool Unite(int x, int y)
 		{
 			if ((x = GetRoot(x)) == (y = GetRoot(y))) return false;
 
-			// 要素数が大きいほうのグループにマージします。
 			if (sizes[x] < sizes[y]) Merge(y, x);
 			else Merge(x, y);
 			return true;
@@ -39,10 +39,10 @@ namespace CoderLib6.DataTrees
 			sizes[x] += sizes[y];
 			--GroupsCount;
 		}
-		public int[][] ToGroups() => Enumerable.Range(0, p.Length).GroupBy(GetRoot).Select(g => g.ToArray()).ToArray();
+		public ILookup<int, int> ToGroups() => Enumerable.Range(0, p.Length).ToLookup(GetRoot);
 	}
 
-	class UF<T> : UF
+	public class UF<T> : UF
 	{
 		T[] a;
 		// (parent, child) => result

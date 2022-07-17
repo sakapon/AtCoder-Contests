@@ -16,5 +16,14 @@ namespace CoderLib8.Collections
 				else d1[k] = v;
 			return d1;
 		}
+
+		// XOR の場合。SymmetricExceptWith メソッドでも可。
+		public static HashSet<int> Merge(HashSet<int> s1, HashSet<int> s2)
+		{
+			if (s1.Count < s2.Count) (s1, s2) = (s2, s1);
+			foreach (var v in s2)
+				if (!s1.Add(v)) s1.Remove(v);
+			return s1;
+		}
 	}
 }

@@ -7,23 +7,25 @@ class C3
 	static void Main()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var qs = new int[n].Select(_ => Console.ReadLine().Split());
 
 		var l = new List<int>();
 		var fi = 0;
 
-		var actions = new Dictionary<string, Action<string[]>>();
-		actions["insert"] = q => l.Add(int.Parse(q[1]));
-		actions["delete"] = q =>
+		var ac = new Dictionary<string, Action<string[]>>();
+		ac["insert"] = q => l.Add(int.Parse(q[1]));
+		ac["delete"] = q =>
 		{
-			var x = int.Parse(q[1]);
-			for (int i = l.Count - 1; i >= fi; i--)
-				if (l[i] == x) { l.RemoveAt(i); break; }
+			var i = l.LastIndexOf(int.Parse(q[1]));
+			if (i != -1) l.RemoveAt(i);
 		};
-		actions["deleteFirst"] = q => l.RemoveAt(l.Count - 1);
-		actions["deleteLast"] = q => fi++;
+		ac["deleteFirst"] = q => l.RemoveAt(l.Count - 1);
+		ac["deleteLast"] = q => fi++;
 
-		foreach (var q in qs) actions[q[0]](q);
+		while (n-- > 0)
+		{
+			var q = Console.ReadLine().Split();
+			ac[q[0]](q);
+		}
 		l.Reverse();
 		Console.WriteLine(string.Join(" ", l.Take(l.Count - fi)));
 	}

@@ -24,9 +24,9 @@ namespace CoderLibTest.DataTrees
 			}
 			var actual = uf.ToGroups();
 
-			Assert.AreEqual(groups.Count, actual.Length);
+			Assert.AreEqual(groups.Count, actual.Count);
 			foreach (var _ in groups.Zip(actual, (x, y) => new { x, y }))
-				CollectionAssert.AreEqual(_.x.ToArray(), _.y);
+				CollectionAssert.AreEqual(_.x.ToArray(), _.y.ToArray());
 		}
 	}
 }

@@ -1,64 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 class M2
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static void Main()
+	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
+	static void Main() => Console.WriteLine(Solve());
+	static object Solve()
 	{
-		var h = Read();
-		int n = h[0], qc = h[1];
-		var es = new bool[n - 1].Select(_ => Read()).Select((e, ei) => new[] { e[0], e[1], ei + 1 }).ToArray();
-		var map = EdgesToMap(n + 1, es, false);
+		var (n, qc) = Read2();
+		var es = Array.ConvertAll(new bool[n - 1], _ => Read());
+		var qs = Array.ConvertAll(new bool[qc], _ => Read());
 
-		var colorsMap = Array.ConvertAll(new bool[n + 1], _ => new SortedList<int, int>());
-		for (int qi = 0; qi < qc; qi++)
+		var map = Array.ConvertAll(new bool[n + 1], _ => new List<int[]>());
+		for (int ei = 0; ei < n - 1; ei++)
 		{
-			var q = Read();
-			colorsMap[q[0]][-qi] = q[2];
-			colorsMap[q[1]][-qi] = q[2];
+			var e = es[ei];
+			map[e[0]].Add(new[] { e[0], e[1], ei });
+			map[e[1]].Add(new[] { e[1], e[0], ei });
 		}
 
-		var uf = new UF<SortedList<int, int>>(n + 1, (d1, d2) =>
+		var qis = Array.ConvertAll(new bool[n + 1], _ => new SortedSet<int>());
+		for (int qi = 0; qi < qc; qi++)
 		{
-			if (d1.Count < d2.Count) (d1, d2) = (d2, d1);
-			foreach (var (qi, c) in d2)
-				if (!d1.Remove(qi))
-					d1[qi] = c;
-			return d1;
-		},
-		colorsMap);
+			var q = qs[qi];
+			qis[q[0]].Add(qi);
+			qis[q[1]].Add(qi);
+		}
 
-		var colors = new int[n];
+		var colors = new int[n - 1];
+		Dfs(1, -1);
+		return string.Join("\n", colors);
 
-		void Dfs(int v, int pv = -1)
+		SortedSet<int> Dfs(int v, int pv)
 		{
+			var r = qis[v];
+
 			foreach (var e in map[v])
 			{
 				if (e[1] == pv) continue;
-
-				Dfs(e[1], v);
-
-				// 先頭の要素にアクセスするため、SortedDictionary よりも SortedList が適しています。
-				var d = uf.GetValue(e[1]);
-				if (d.Count > 0) colors[e[2]] = d.Values[0];
-				uf.Unite(e[1], v);
+				var s = Dfs(e[1], v);
+				if (s.Count > 0) colors[e[2]] = qs[s.Max][2];
+				r = Merge(r, s);
 			}
+			return r;
 		}
-
-		Dfs(1);
-		Console.WriteLine(string.Join("\n", colors.Skip(1)));
 	}
 
-	static List<int[]>[] EdgesToMap(int n, int[][] es, bool directed)
+	public static SortedSet<int> Merge(SortedSet<int> s1, SortedSet<int> s2)
 	{
-		var map = Array.ConvertAll(new bool[n], _ => new List<int[]>());
-		foreach (var e in es)
-		{
-			map[e[0]].Add(new[] { e[0], e[1], e[2] });
-			if (!directed) map[e[1]].Add(new[] { e[1], e[0], e[2] });
-		}
-		return map;
+		if (s1.Count < s2.Count) (s1, s2) = (s2, s1);
+		foreach (var v in s2)
+			if (!s1.Add(v)) s1.Remove(v);
+		return s1;
 	}
 }

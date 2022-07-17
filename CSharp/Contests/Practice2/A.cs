@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Linq;
 
 class A
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static void Main()
 	{
-		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
-		var h = Read();
-		int n = h[0], qc = h[1];
+		var (n, qc) = Read2();
 		var qs = Array.ConvertAll(new bool[qc], _ => Read());
 
 		var uf = new UF(n);
 
+		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		foreach (var q in qs)
 			if (q[0] == 0)
 				uf.Unite(q[1], q[2]);
@@ -22,28 +21,26 @@ class A
 	}
 }
 
-class UF
+public class UF
 {
 	int[] p, sizes;
-	public int GroupsCount;
+	public int GroupsCount { get; private set; }
+
 	public UF(int n)
 	{
-		p = Enumerable.Range(0, n).ToArray();
+		p = Array.ConvertAll(new bool[n], _ => -1);
 		sizes = Array.ConvertAll(p, _ => 1);
 		GroupsCount = n;
 	}
 
-	public int GetRoot(int x) => p[x] == x ? x : p[x] = GetRoot(p[x]);
+	public int GetRoot(int x) => p[x] == -1 ? x : p[x] = GetRoot(p[x]);
+	public bool AreUnited(int x, int y) => GetRoot(x) == GetRoot(y);
 	public int GetSize(int x) => sizes[GetRoot(x)];
 
-	public bool AreUnited(int x, int y) => GetRoot(x) == GetRoot(y);
 	public bool Unite(int x, int y)
 	{
-		x = GetRoot(x);
-		y = GetRoot(y);
-		if (x == y) return false;
+		if ((x = GetRoot(x)) == (y = GetRoot(y))) return false;
 
-		// 要素数が大きいほうのグループに合流します。
 		if (sizes[x] < sizes[y]) Merge(y, x);
 		else Merge(x, y);
 		return true;

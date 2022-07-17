@@ -42,7 +42,7 @@ namespace CoderLib8.DataTrees
 
 			Multiply = multiply;
 			id = _id;
-			if (!TOEquals(id, default)) Init();
+			if (!TOEquals(id, default(TO))) Init();
 		}
 
 		public void Init() { for (int i = 1; i < n2; ++i) a1[i] = id; }

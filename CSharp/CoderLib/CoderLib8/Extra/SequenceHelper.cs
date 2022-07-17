@@ -1,4 +1,5 @@
 ﻿using System;
+using CoderLib8.Collections;
 
 namespace CoderLib8.Extra
 {
@@ -42,9 +43,23 @@ namespace CoderLib8.Extra
 			//return dp[n, m];
 		}
 
-		// for permutation (1..n)
+		// for permutation (0, 1, ..., n-1)
 		// 任意の数列に対しては、座標圧縮してから呼び出します。
-		public static long InversionNumber(int n, int[] a)
+		public static long InversionNumberFrom0(int max_ex, int[] a)
+		{
+			var r = 0L;
+			var rsq = new RSQ(max_ex);
+			foreach (var v in a)
+			{
+				r += rsq[v + 1, max_ex];
+				rsq.Add(v, 1);
+			}
+			return r;
+		}
+
+		// for permutation (1, 2, ..., n)
+		// 任意の数列に対しては、座標圧縮してから呼び出します。
+		public static long InversionNumberFrom1(int n, int[] a)
 		{
 			var r = 0L;
 			var bit = new BIT(n);
