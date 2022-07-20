@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 class B
@@ -13,22 +12,12 @@ class B
 		var a = Read();
 		var b = Read();
 
-		var r = new List<int>();
 		var q = Enumerable.Range(0, n).Select(i => (id: i + 1, a: a[i], b: b[i])).ToArray();
 
 		q = q.OrderBy(p => -p.a).ThenBy(p => p.id).ToArray();
-		r.AddRange(q[..x].Select(p => p.id));
-		q = q[x..];
+		q[x..].OrderBy(p => -p.b).ThenBy(p => p.id).ToArray().CopyTo(q, x);
+		q[(x + y)..].OrderBy(p => -p.a - p.b).ThenBy(p => p.id).ToArray().CopyTo(q, x + y);
 
-		q = q.OrderBy(p => -p.b).ThenBy(p => p.id).ToArray();
-		r.AddRange(q[..y].Select(p => p.id));
-		q = q[y..];
-
-		q = q.OrderBy(p => -p.a - p.b).ThenBy(p => p.id).ToArray();
-		r.AddRange(q[..z].Select(p => p.id));
-		q = q[z..];
-
-		r.Sort();
-		return string.Join("\n", r);
+		return string.Join("\n", q[..(x + y + z)].Select(p => p.id).OrderBy(x => x));
 	}
 }

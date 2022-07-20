@@ -11,27 +11,26 @@ class F
 		var (s, t, m) = Read3();
 		var es = Array.ConvertAll(new bool[m], _ => Read());
 
-		var map = ToMap(s + t + 1, es, false);
-		var u = Array.ConvertAll(new bool[s + t + 1], _ => new Dictionary<int, int>());
+		var map = ToMapList(s + t + 1, es, false);
+		var u = NewArray2<int>(t + 1, t + 1);
 
 		for (int v = 1; v <= s; v++)
 		{
 			var to = map[v];
-
-			for (int i = 0; i < to.Length; i++)
+			for (int i = 0; i < to.Count; i++)
 			{
-				for (int j = i + 1; j < to.Length; j++)
+				var a = to[i] - s;
+				for (int j = i + 1; j < to.Count; j++)
 				{
-					var (a, b) = (to[i], to[j]);
-					if (a > b) (a, b) = (b, a);
+					var b = to[j] - s;
 
-					if (u[a].ContainsKey(b))
+					if (u[a][b] == 0)
 					{
-						return $"{v} {a} {b} {u[a][b]}";
+						u[a][b] = u[b][a] = v;
 					}
 					else
 					{
-						u[a][b] = v;
+						return $"{v} {to[i]} {to[j]} {u[a][b]}";
 					}
 				}
 			}
@@ -39,7 +38,8 @@ class F
 		return -1;
 	}
 
-	public static int[][] ToMap(int n, int[][] es, bool directed) => Array.ConvertAll(ToMapList(n, es, directed), l => l.ToArray());
+	static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
+
 	public static List<int>[] ToMapList(int n, int[][] es, bool directed)
 	{
 		var map = Array.ConvertAll(new bool[n], _ => new List<int>());
