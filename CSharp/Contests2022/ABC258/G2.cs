@@ -26,7 +26,7 @@ class G2
 			{
 				if (!a[i][j]) continue;
 
-				var and = a[i].And(a[j]);
+				var and = a[i] & a[j];
 				r += and.PopCount();
 			}
 		}
