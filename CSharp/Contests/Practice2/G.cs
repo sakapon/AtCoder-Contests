@@ -1,48 +1,68 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
 
 class G
 {
-	static int[] Read() => Console.ReadLine().Split().Select(int.Parse).ToArray();
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static void Main()
 	{
-		var h = Read();
-		var n = h[0];
-		var es = new int[h[1]].Select(_ => Read()).ToArray();
+		var (n, m) = Read2();
+		var es = Array.ConvertAll(new bool[m], _ => Read());
+		var sb = new StringBuilder();
 
-		var map = Array.ConvertAll(new int[n], _ => new List<int>());
-		var map_r = Array.ConvertAll(new int[n], _ => new List<int>());
+		var gs = SCCToGroups(n, es);
+
+		sb.Append(gs.Length).AppendLine();
+		foreach (var g in gs)
+			sb.Append(g.Count).Append(' ').AppendLine(string.Join(" ", g));
+		Console.Write(sb);
+	}
+
+	public static (int gc, int[] gis) SCC(int n, int[][] es)
+	{
+		var map = Array.ConvertAll(new bool[n], _ => new List<int>());
+		var mapr = Array.ConvertAll(new bool[n], _ => new List<int>());
 		foreach (var e in es)
 		{
 			map[e[0]].Add(e[1]);
-			map_r[e[1]].Add(e[0]);
+			mapr[e[1]].Add(e[0]);
 		}
 
 		var u = new bool[n];
-		var order = new int[n];
-		var c = n;
-		var gs = new List<List<int>>();
-		List<int> lg = null;
+		var t = n;
+		var vs = new int[n];
+		for (int v = 0; v < n; ++v) Dfs(v);
+
+		Array.Clear(u, 0, n);
+		var gis = new int[n];
+		foreach (var v in vs) if (Dfsr(v)) ++t;
+		return (t, gis);
 
 		void Dfs(int v)
 		{
+			if (u[v]) return;
 			u[v] = true;
-			foreach (var nv in map[v]) if (!u[nv]) Dfs(nv);
-			order[--c] = v;
+			foreach (var nv in map[v]) Dfs(nv);
+			vs[--t] = v;
 		}
-		for (int v = 0; v < n; v++) if (!u[v]) Dfs(v);
 
-		void Dfs_r(int v)
+		bool Dfsr(int v)
 		{
+			if (u[v]) return false;
 			u[v] = true;
-			foreach (var nv in map_r[v]) if (!u[nv]) Dfs_r(nv);
-			lg.Add(v);
+			foreach (var nv in mapr[v]) Dfsr(nv);
+			gis[v] = t;
+			return true;
 		}
-		Array.Clear(u, 0, n);
-		foreach (var v in order) if (!u[v]) { gs.Add(lg = new List<int>()); Dfs_r(v); }
+	}
 
-		Console.WriteLine(gs.Count);
-		Console.WriteLine(string.Join("\n", gs.Select(g => string.Join(" ", g.Prepend(g.Count)))));
+	public static List<int>[] SCCToGroups(int n, int[][] es)
+	{
+		var (gc, gis) = SCC(n, es);
+		var gs = Array.ConvertAll(new bool[gc], _ => new List<int>());
+		for (int v = 0; v < n; ++v) gs[gis[v]].Add(v);
+		return gs;
 	}
 }

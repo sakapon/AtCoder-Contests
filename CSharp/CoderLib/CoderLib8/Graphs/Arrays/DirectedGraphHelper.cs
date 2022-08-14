@@ -44,5 +44,52 @@ namespace CoderLib8.Graphs.Arrays
 			if (r.Count < n) return null;
 			return r.ToArray();
 		}
+
+		// 1-based の場合、頂点 0 は最後のグループに含まれます。
+		public static (int gc, int[] gis) SCC(int n, int[][] es)
+		{
+			var map = Array.ConvertAll(new bool[n], _ => new List<int>());
+			var mapr = Array.ConvertAll(new bool[n], _ => new List<int>());
+			foreach (var e in es)
+			{
+				map[e[0]].Add(e[1]);
+				mapr[e[1]].Add(e[0]);
+			}
+
+			var u = new bool[n];
+			var t = n;
+			var vs = new int[n];
+			for (int v = 0; v < n; ++v) Dfs(v);
+
+			Array.Clear(u, 0, n);
+			var gis = new int[n];
+			foreach (var v in vs) if (Dfsr(v)) ++t;
+			return (t, gis);
+
+			void Dfs(int v)
+			{
+				if (u[v]) return;
+				u[v] = true;
+				foreach (var nv in map[v]) Dfs(nv);
+				vs[--t] = v;
+			}
+
+			bool Dfsr(int v)
+			{
+				if (u[v]) return false;
+				u[v] = true;
+				foreach (var nv in mapr[v]) Dfsr(nv);
+				gis[v] = t;
+				return true;
+			}
+		}
+
+		public static List<int>[] SCCToGroups(int n, int[][] es)
+		{
+			var (gc, gis) = SCC(n, es);
+			var gs = Array.ConvertAll(new bool[gc], _ => new List<int>());
+			for (int v = 0; v < n; ++v) gs[gis[v]].Add(v);
+			return gs;
+		}
 	}
 }
