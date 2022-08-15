@@ -66,17 +66,17 @@ class C
 			if (s.Length <= k) return s;
 
 			var l = new List<char>();
-			var pq = PQ<int>.CreateWithKey(i => s[i]);
+			var pq = PQ<int>.Create(i => s[i] * 1000000L + i);
 			for (int i = 0; i < s.Length - k; i++) pq.Push(i);
 			var t = -1;
 
 			for (int i = s.Length - k; i < s.Length; i++)
 			{
 				pq.Push(i);
-				while (pq.First.Value <= t) pq.Pop();
+				while (pq.First <= t) pq.Pop();
 
-				var (c, j) = pq.Pop();
-				l.Add(c);
+				var j = pq.Pop();
+				l.Add(s[j]);
 				t = j;
 			}
 			return new string(l.ToArray());
@@ -141,14 +141,6 @@ class PQ<T> : List<T>
 			new PQ<T>((x, y) => c.Compare(toKey(x), toKey(y)));
 	}
 
-	public static PQ<T, TKey> CreateWithKey<TKey>(Func<T, TKey> toKey, bool desc = false)
-	{
-		var c = Comparer<TKey>.Default;
-		return desc ?
-			new PQ<T, TKey>(toKey, (x, y) => c.Compare(y.Key, x.Key)) :
-			new PQ<T, TKey>(toKey, (x, y) => c.Compare(x.Key, y.Key));
-	}
-
 	Comparison<T> c;
 	public T First => this[0];
 	internal PQ(Comparison<T> _c) { c = _c; }
@@ -179,13 +171,4 @@ class PQ<T> : List<T>
 		DownHeap(0);
 		return r;
 	}
-}
-
-class PQ<T, TKey> : PQ<KeyValuePair<TKey, T>>
-{
-	Func<T, TKey> ToKey;
-	internal PQ(Func<T, TKey> toKey, Comparison<KeyValuePair<TKey, T>> c) : base(c) { ToKey = toKey; }
-
-	public void Push(T v) => Push(new KeyValuePair<TKey, T>(ToKey(v), v));
-	public void PushRange(T[] vs) { foreach (var v in vs) Push(v); }
 }
