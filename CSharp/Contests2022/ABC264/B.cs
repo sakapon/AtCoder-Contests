@@ -1,21 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 class B
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
-	static object Solve()
+	static void Main() => Console.WriteLine(Solve() ? "black" : "white");
+	static bool Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (r, c) = Read2();
 
-		return string.Join(" ", a);
+		var n = 15;
+		var u = new bool[n, n];
+
+		for (int k = 0; k <= n / 2; k++)
+		{
+			var v = k % 2 == 0;
+
+			for (int i = k; i < n - k; i++)
+			{
+				for (int j = k; j < n - k; j++)
+				{
+					u[i, j] = v;
+				}
+			}
+		}
+		return u[r - 1, c - 1];
 	}
 }

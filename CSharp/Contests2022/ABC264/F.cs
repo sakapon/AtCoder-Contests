@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 class F
@@ -10,12 +9,65 @@ class F
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (h, w) = Read2();
+		var r = ReadL();
+		var c = ReadL();
+		var a = Array.ConvertAll(new bool[h], _ => Console.ReadLine().Select(x => x == '1').ToArray());
 
-		return string.Join(" ", a);
+		// 0: 反転なし
+		// 1: r 反転
+		// 2: c 反転
+		// 3: rc 反転
+		var dp = NewArray3(h, w, 4, max);
+		dp[0][0][0] = 0;
+		dp[0][0][1] = r[0];
+		dp[0][0][2] = c[0];
+		dp[0][0][3] = r[0] + c[0];
+
+		for (int i = 0; i < h; i++)
+		{
+			for (int j = 0; j < w; j++)
+			{
+				if (i > 0)
+				{
+					if (a[i][j] == a[i - 1][j])
+					{
+						dp[i][j][0] = Math.Min(dp[i][j][0], dp[i - 1][j][0]);
+						dp[i][j][1] = Math.Min(dp[i][j][1], dp[i - 1][j][1] + r[i]);
+						dp[i][j][2] = Math.Min(dp[i][j][2], dp[i - 1][j][2]);
+						dp[i][j][3] = Math.Min(dp[i][j][3], dp[i - 1][j][3] + r[i]);
+					}
+					else
+					{
+						dp[i][j][0] = Math.Min(dp[i][j][0], dp[i - 1][j][1]);
+						dp[i][j][1] = Math.Min(dp[i][j][1], dp[i - 1][j][0] + r[i]);
+						dp[i][j][2] = Math.Min(dp[i][j][2], dp[i - 1][j][3]);
+						dp[i][j][3] = Math.Min(dp[i][j][3], dp[i - 1][j][2] + r[i]);
+					}
+				}
+
+				if (j > 0)
+				{
+					if (a[i][j] == a[i][j - 1])
+					{
+						dp[i][j][0] = Math.Min(dp[i][j][0], dp[i][j - 1][0]);
+						dp[i][j][1] = Math.Min(dp[i][j][1], dp[i][j - 1][1]);
+						dp[i][j][2] = Math.Min(dp[i][j][2], dp[i][j - 1][2] + c[j]);
+						dp[i][j][3] = Math.Min(dp[i][j][3], dp[i][j - 1][3] + c[j]);
+					}
+					else
+					{
+						dp[i][j][0] = Math.Min(dp[i][j][0], dp[i][j - 1][2]);
+						dp[i][j][1] = Math.Min(dp[i][j][1], dp[i][j - 1][3]);
+						dp[i][j][2] = Math.Min(dp[i][j][2], dp[i][j - 1][0] + c[j]);
+						dp[i][j][3] = Math.Min(dp[i][j][3], dp[i][j - 1][1] + c[j]);
+					}
+				}
+			}
+		}
+		return dp[^1][^1].Min();
 	}
+
+	const long max = 1L << 60;
+	static T[][][] NewArray3<T>(int n1, int n2, int n3, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => Array.ConvertAll(new bool[n3], ___ => v)));
 }
