@@ -10,12 +10,10 @@ class B
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var n = Read()[0];
+		var p = Read();
 
-		return string.Join(" ", a);
+		for (int k = 1, x = n; ; k++, x = p[x - 2])
+			if (p[x - 2] == 1) return k;
 	}
 }
