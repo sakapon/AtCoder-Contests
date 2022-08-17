@@ -32,17 +32,17 @@ class F
 				{
 					if (a[i][j] == a[i - 1][j])
 					{
-						dp[i][j][0] = Math.Min(dp[i][j][0], dp[i - 1][j][0]);
-						dp[i][j][1] = Math.Min(dp[i][j][1], dp[i - 1][j][1] + r[i]);
-						dp[i][j][2] = Math.Min(dp[i][j][2], dp[i - 1][j][2]);
-						dp[i][j][3] = Math.Min(dp[i][j][3], dp[i - 1][j][3] + r[i]);
+						SetMin3(dp, i, j, 0, dp[i - 1][j][0]);
+						SetMin3(dp, i, j, 1, dp[i - 1][j][1] + r[i]);
+						SetMin3(dp, i, j, 2, dp[i - 1][j][2]);
+						SetMin3(dp, i, j, 3, dp[i - 1][j][3] + r[i]);
 					}
 					else
 					{
-						dp[i][j][0] = Math.Min(dp[i][j][0], dp[i - 1][j][1]);
-						dp[i][j][1] = Math.Min(dp[i][j][1], dp[i - 1][j][0] + r[i]);
-						dp[i][j][2] = Math.Min(dp[i][j][2], dp[i - 1][j][3]);
-						dp[i][j][3] = Math.Min(dp[i][j][3], dp[i - 1][j][2] + r[i]);
+						SetMin3(dp, i, j, 0, dp[i - 1][j][1]);
+						SetMin3(dp, i, j, 1, dp[i - 1][j][0] + r[i]);
+						SetMin3(dp, i, j, 2, dp[i - 1][j][3]);
+						SetMin3(dp, i, j, 3, dp[i - 1][j][2] + r[i]);
 					}
 				}
 
@@ -50,17 +50,17 @@ class F
 				{
 					if (a[i][j] == a[i][j - 1])
 					{
-						dp[i][j][0] = Math.Min(dp[i][j][0], dp[i][j - 1][0]);
-						dp[i][j][1] = Math.Min(dp[i][j][1], dp[i][j - 1][1]);
-						dp[i][j][2] = Math.Min(dp[i][j][2], dp[i][j - 1][2] + c[j]);
-						dp[i][j][3] = Math.Min(dp[i][j][3], dp[i][j - 1][3] + c[j]);
+						SetMin3(dp, i, j, 0, dp[i][j - 1][0]);
+						SetMin3(dp, i, j, 1, dp[i][j - 1][1]);
+						SetMin3(dp, i, j, 2, dp[i][j - 1][2] + c[j]);
+						SetMin3(dp, i, j, 3, dp[i][j - 1][3] + c[j]);
 					}
 					else
 					{
-						dp[i][j][0] = Math.Min(dp[i][j][0], dp[i][j - 1][2]);
-						dp[i][j][1] = Math.Min(dp[i][j][1], dp[i][j - 1][3]);
-						dp[i][j][2] = Math.Min(dp[i][j][2], dp[i][j - 1][0] + c[j]);
-						dp[i][j][3] = Math.Min(dp[i][j][3], dp[i][j - 1][1] + c[j]);
+						SetMin3(dp, i, j, 0, dp[i][j - 1][2]);
+						SetMin3(dp, i, j, 1, dp[i][j - 1][3]);
+						SetMin3(dp, i, j, 2, dp[i][j - 1][0] + c[j]);
+						SetMin3(dp, i, j, 3, dp[i][j - 1][1] + c[j]);
 					}
 				}
 			}
@@ -70,4 +70,5 @@ class F
 
 	const long max = 1L << 60;
 	static T[][][] NewArray3<T>(int n1, int n2, int n3, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => Array.ConvertAll(new bool[n3], ___ => v)));
+	static void SetMin3(long[][][] a, int i, int j, int k, long v) { if (a[i][j][k] > v) a[i][j][k] = v; }
 }
