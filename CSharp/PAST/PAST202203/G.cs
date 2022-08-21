@@ -14,15 +14,7 @@ class G
 		var (a, b, c) = Read3();
 
 		double f(double x) => a * x * x * x * x * x + b * x + c;
-
-		if (f(1) < 0)
-		{
-			return First(1, 2, x => f(x) >= 0);
-		}
-		else
-		{
-			return First(1, 2, x => f(x) <= 0);
-		}
+		return First(1, 2, x => f(x) >= 0);
 	}
 
 	static double First(double l, double r, Func<double, bool> f, int digits = 9)
