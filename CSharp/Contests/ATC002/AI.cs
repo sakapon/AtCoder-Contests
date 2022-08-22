@@ -6,18 +6,21 @@ class AI
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static void Main() => Console.WriteLine(Solve() ? "Yes" : "No");
-	static bool Solve()
+	static void Main() => Console.WriteLine(Solve());
+	static object Solve()
 	{
 		var (h, w) = Read2();
+		var (si, sj) = Read2();
+		var (ei, ej) = Read2();
 		var s = Array.ConvertAll(new bool[h], _ => Console.ReadLine());
 
-		var map = GetAdjacencyList(h, w, s);
-		var sseq = s.SelectMany(a => a).ToArray();
-		var sv = Array.IndexOf(sseq, 's');
-		var ev = Array.IndexOf(sseq, 'g');
+		si--; sj--;
+		ei--; ej--;
+		var sv = w * si + sj;
+		var ev = w * ei + ej;
 
-		var r = Dfs(h * w, v => map[v].ToArray(), sv, ev);
+		var map = GetAdjacencyList(h, w, s);
+		var r = Bfs(h * w, v => map[v].ToArray(), sv, ev);
 		return r[ev];
 	}
 
@@ -43,26 +46,26 @@ class AI
 		return map;
 	}
 
-	// 再帰関数よりも Stack のほうが高速です。
-	public static bool[] Dfs(int n, Func<int, int[]> nexts, int sv, int ev = -1)
+	public static long[] Bfs(int n, Func<int, int[]> nexts, int sv, int ev = -1)
 	{
-		var u = new bool[n];
-		var q = new Stack<int>();
-		u[sv] = true;
-		q.Push(sv);
+		var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
+		var q = new Queue<int>();
+		costs[sv] = 0;
+		q.Enqueue(sv);
 
 		while (q.Count > 0)
 		{
-			var v = q.Pop();
+			var v = q.Dequeue();
+			var nc = costs[v] + 1;
 
 			foreach (var nv in nexts(v))
 			{
-				if (u[nv]) continue;
-				u[nv] = true;
-				if (nv == ev) return u;
-				q.Push(nv);
+				if (costs[nv] <= nc) continue;
+				costs[nv] = nc;
+				if (nv == ev) return costs;
+				q.Enqueue(nv);
 			}
 		}
-		return u;
+		return costs;
 	}
 }
