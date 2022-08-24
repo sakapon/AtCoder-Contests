@@ -12,9 +12,6 @@ class F
 		var m = Read()[0];
 		var c = Read();
 
-		var cf = 0;
-		foreach (var x in c) cf |= 1 << x;
-
 		// 上から i 桁、数字の部分集合 j
 		// s[..i] 未満の個数および和
 		var cdp = new long[p10];
@@ -66,10 +63,10 @@ class F
 			Array.Clear(sdt, 0, sdt.Length);
 		}
 
-		var r = Enumerable.Range(0, p10).Where(x => (x & cf) == cf).Sum(x => sdp[x]);
+		var cf = c.Sum(x => 1 << x);
+		var r = sdp.Where((_, x) => (x & cf) == cf).Sum();
 		if ((ef & cf) == cf) r += ev;
-		r %= M;
-		return r;
+		return r %= M;
 	}
 
 	const int p10 = 1 << 10;
