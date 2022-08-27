@@ -10,12 +10,30 @@ class C
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (h, w) = Read2();
+		var g = Array.ConvertAll(new bool[h], _ => Console.ReadLine());
 
-		return string.Join(" ", a);
+		var u = new bool[h, w];
+		var (i, j) = (0, 0);
+		u[i, j] = true;
+
+		while (true)
+		{
+			var (ni, nj) = Next(i, j);
+			if ((ni, nj) == (i, j)) return $"{i + 1} {j + 1}";
+
+			(i, j) = (ni, nj);
+			if (u[i, j]) return -1;
+			u[i, j] = true;
+		}
+
+		(int, int) Next(int i, int j)
+		{
+			var c = g[i][j];
+			if (c == 'U') return (i == 0 ? 0 : i - 1, j);
+			else if (c == 'D') return (i == h - 1 ? h - 1 : i + 1, j);
+			else if (c == 'L') return (i, j == 0 ? 0 : j - 1);
+			else return (i, j == w - 1 ? w - 1 : j + 1);
+		}
 	}
 }
