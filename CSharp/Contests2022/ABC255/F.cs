@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 class F
@@ -8,7 +7,7 @@ class F
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
+		var n = Read()[0];
 		var P = Read();
 		var I = Read();
 
@@ -17,25 +16,24 @@ class F
 
 		var L = new int[n + 1];
 		var R = new int[n + 1];
-
-		var pi = -1;
+		var pi = 0;
 
 		bool Dfs(int l, int r)
 		{
-			var v = P[++pi];
-			var ii = map[v];
-			if (ii < l || r <= ii) return false;
+			var v = P[pi];
+			var m = map[v];
+			if (m < l || r <= m) return false;
 
-			if (l < ii)
+			if (l < m)
 			{
-				L[v] = P[pi + 1];
-				if (!Dfs(l, ii)) return false;
+				L[v] = P[++pi];
+				if (!Dfs(l, m)) return false;
 			}
 
-			if (ii + 1 < r)
+			if (m + 1 < r)
 			{
-				R[v] = P[pi + 1];
-				if (!Dfs(ii + 1, r)) return false;
+				R[v] = P[++pi];
+				if (!Dfs(m + 1, r)) return false;
 			}
 
 			return true;
