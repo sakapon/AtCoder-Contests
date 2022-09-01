@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using CoderLib8.Collections;
 
 namespace CoderLib8.Extra
@@ -44,17 +45,26 @@ namespace CoderLib8.Extra
 		}
 
 		// for permutation (0, 1, ..., n-1)
-		// 任意の数列に対しては、座標圧縮してから呼び出します。
-		public static long InversionNumberFrom0(int max_ex, int[] a)
+		// 値が重複する場合も可能です。
+		public static long InversionNumber(int aMax_ex, int[] a)
 		{
 			var r = 0L;
-			var rsq = new RSQ(max_ex);
+			var rsq = new RSQ(aMax_ex);
 			foreach (var v in a)
 			{
-				r += rsq[v + 1, max_ex];
+				r += rsq[v + 1, aMax_ex];
 				rsq.Add(v, 1);
 			}
 			return r;
+		}
+
+		public static long InversionNumber<T>(T[] a)
+		{
+			// 値が重複しない場合、次の方法で高速化できます。
+			//var p = Enumerable.Range(0, a.Length).ToArray();
+			//Array.Sort(a, p);
+			var p = Enumerable.Range(0, a.Length).OrderBy(i => a[i]).ToArray();
+			return InversionNumber(a.Length, p);
 		}
 
 		// for permutation (1, 2, ..., n)
