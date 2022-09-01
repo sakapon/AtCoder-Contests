@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CoderLib8.Collections;
 
@@ -42,6 +43,41 @@ namespace CoderLib8.Extra
 
 			// 最大長を求める場合。
 			//return dp[n, m];
+		}
+
+		// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/5/ALDS1_5_D
+		// merge sort を利用します。
+		public static long InversionNumber<T>(T[] a, IComparer<T> c = null)
+		{
+			var n = a.Length;
+			var t = new T[n];
+			c = c ?? Comparer<T>.Default;
+			var r = 0L;
+
+			for (int k = 1; k < n; k <<= 1)
+			{
+				var ti = 0;
+				for (int L = 0; L < n; L += k << 1)
+				{
+					int R1 = L | k, R2 = R1 + k;
+					if (R2 > n) R2 = n;
+					int i1 = L, i2 = R1;
+					while (ti < R2)
+					{
+						if (i2 >= R2 || i1 < R1 && i2 < R2 && c.Compare(a[i1], a[i2]) <= 0)
+						{
+							t[ti++] = a[i1++];
+						}
+						else
+						{
+							r += R1 - i1;
+							t[ti++] = a[i2++];
+						}
+					}
+				}
+				Array.Copy(t, a, n);
+			}
+			return r;
 		}
 
 		// for permutation (0, 1, ..., n-1)
