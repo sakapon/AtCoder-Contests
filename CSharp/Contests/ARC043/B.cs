@@ -10,8 +10,6 @@ class B
 		var d = Array.ConvertAll(new bool[n], _ => int.Parse(Console.ReadLine()));
 
 		const int dMax = 100000;
-		Array.Sort(d);
-
 		var dp0 = new long[dMax + 1];
 		foreach (var v in d)
 		{
