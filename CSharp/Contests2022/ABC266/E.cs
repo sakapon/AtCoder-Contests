@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 class E
 {
@@ -7,17 +8,8 @@ class E
 	{
 		var n = int.Parse(Console.ReadLine());
 
-		var r = 0.0;
-
-		for (int i = 0; i < n; i++)
-		{
-			var t = 0.0;
-			for (int x = 1; x <= 6; x++)
-			{
-				t += Math.Max(x, r);
-			}
-			r = t / 6;
-		}
+		var r = 0D;
+		while (n-- > 0) r = Enumerable.Range(1, 6).Average(x => Math.Max(x, r));
 		return r;
 	}
 }
