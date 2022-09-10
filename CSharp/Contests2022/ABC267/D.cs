@@ -10,12 +10,25 @@ class D
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (n, m) = Read2();
+		var a = ReadL();
 
-		return string.Join(" ", a);
+		const long min = -1L << 60;
+		var dp = new long[m + 1];
+		var dt = new long[m + 1];
+		Array.Fill(dp, min);
+		dp[0] = 0;
+
+		for (int i = 0; i < n; i++)
+		{
+			for (int j = 1; j <= m; j++)
+			{
+				dt[j] = dp[j];
+				if (dp[j - 1] != min) dt[j] = Math.Max(dt[j], dp[j - 1] + j * a[i]);
+			}
+
+			(dp, dt) = (dt, dp);
+		}
+		return dp[m];
 	}
 }
