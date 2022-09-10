@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 class E
 {
@@ -29,7 +28,7 @@ class E
 		var u = new bool[n + 1];
 		var q = new Queue<int>();
 
-		return First(0, 1L << 60, x =>
+		return First(0, 1L << 50, x =>
 		{
 			var c = (long[])cost.Clone();
 			Array.Clear(u, 0, u.Length);
@@ -58,7 +57,7 @@ class E
 					}
 				}
 			}
-			return u.All(v => v);
+			return Array.TrueForAll(u, v => v);
 		});
 	}
 
