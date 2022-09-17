@@ -10,15 +10,19 @@ class F
 		var n = int.Parse(Console.ReadLine());
 		var ss = Array.ConvertAll(new bool[n], _ => Console.ReadLine());
 
-		var r = ss.Sum(Score);
-		var comp = Comparer<(long x, long y)>.Create((v1, v2) => -(v1.x * v2.y).CompareTo(v2.x * v1.y));
-		r += Score(ss.Select(Compress).OrderBy(p => p, comp));
-		return r;
+		var comp = Comparer<(long x, long y)>.Create((v1, v2) => (v2.x * v1.y).CompareTo(v1.x * v2.y));
+		var ps = Array.ConvertAll(ss, Compress);
+		Array.Sort(ps, comp);
+		return ss.Sum(Score) + Score(ps);
 	}
 
-	static (long, long) Compress(string s)
+	static (long x, long y) Compress(string s)
 	{
-		return (s.Count(c => c == 'X'), s.Where(c => c != 'X').Sum(c => (long)(c - '0')));
+		long x = 0, y = 0;
+		foreach (var c in s)
+			if (c == 'X') x++;
+			else y += c - '0';
+		return (x, y);
 	}
 
 	static long Score(string s)
