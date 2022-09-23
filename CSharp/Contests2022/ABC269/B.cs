@@ -7,15 +7,18 @@ class B
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
-	static object Solve()
+	static void Main()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var s = Array.ConvertAll(new bool[10], _ => Console.ReadLine());
 
-		return string.Join(" ", a);
+		var r10 = Enumerable.Range(0, 10).ToArray();
+		var a = r10.First(i => s[i].Contains('#'));
+		var b = r10.Last(i => s[i].Contains('#'));
+
+		var c = s[a].IndexOf('#');
+		var d = s[a].LastIndexOf('#');
+
+		Console.WriteLine($"{a + 1} {b + 1}");
+		Console.WriteLine($"{c + 1} {d + 1}");
 	}
 }
