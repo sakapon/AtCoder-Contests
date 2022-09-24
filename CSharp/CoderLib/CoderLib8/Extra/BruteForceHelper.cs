@@ -6,6 +6,7 @@ namespace CoderLib8.Extra
 	public static class BruteForceHelper
 	{
 		// Test: https://atcoder.jp/contests/abc184/tasks/abc184_f
+		// Test: https://atcoder.jp/contests/abc269/tasks/abc269_c
 		// O(2^n)
 		public static long[] CreateAllSums(int[] a)
 		{

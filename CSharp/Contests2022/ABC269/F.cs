@@ -28,28 +28,14 @@ class F
 
 			if (h % 2 == 1 && w % 2 == 0)
 			{
-				if (h == 1)
-				{
-					return QueryRow(a, b, c, d);
-				}
-				else
-				{
-					return (QueryRow(a, a, c, d) + Query(a + 1, b, c, d)) % M;
-				}
+				return (Query(a, b, c, c) + Query(a, b, c + 1, d)) % M;
 			}
 			if (h % 2 == 0 && w % 2 == 1)
 			{
-				if (w == 1)
-				{
-					return QueryCol(a, b, c, d);
-				}
-				else
-				{
-					return (QueryCol(a, b, c, c) + Query(a, b, c + 1, d)) % M;
-				}
+				return (Query(a, a, c, d) + Query(a + 1, b, c, d)) % M;
 			}
 
-			var count = h % 2 == 0 || w % 2 == 0 || (a + c) % 2 == 1 ? h * w / 2 : (h * w + 1) / 2;
+			var count = h % 2 == 0 || (a + c) % 2 == 1 ? h * w / 2 : (h * w + 1) / 2;
 			count %= M;
 
 			var start = GetValue(a, c);
@@ -57,23 +43,7 @@ class F
 			var value = start + end;
 			value %= M;
 
-			var r = value * count % M;
-			r = r * MHalf % M;
-			return r;
-		}
-
-		// 横一列 (a==b)、偶数個
-		long QueryRow(long a, long b, long c, long d)
-		{
-			var start = (a + c) % 2 == 1 ? 0 : GetValue(a, c);
-			return (start + Query(a, b, c + 1, d)) % M;
-		}
-
-		// 縦一列 (c==d)、偶数個
-		long QueryCol(long a, long b, long c, long d)
-		{
-			var start = (a + c) % 2 == 1 ? 0 : GetValue(a, c);
-			return (start + Query(a + 1, b, c, d)) % M;
+			return value * count % M * MHalf % M;
 		}
 	}
 

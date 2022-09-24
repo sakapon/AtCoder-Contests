@@ -17,28 +17,24 @@ class D
 		const int Offset = 1010;
 
 		var u = new int[Size, Size];
-		for (int i = 0; i < Size; i++)
-			for (int j = 0; j < Size; j++)
-				u[i, j] = -1;
+		var uf = new UF(n + 1);
 
-		var uf = new UF(n);
-
-		for (int pi = 0; pi < n; pi++)
+		for (int pi = 1; pi <= n; pi++)
 		{
-			var (i, j) = ps[pi];
+			var (i, j) = ps[pi - 1];
 			i += Offset;
 			j += Offset;
 
 			u[i, j] = pi;
 
-			if (u[i - 1, j - 1] != -1) uf.Unite(pi, u[i - 1, j - 1]);
-			if (u[i - 1, j] != -1) uf.Unite(pi, u[i - 1, j]);
-			if (u[i, j - 1] != -1) uf.Unite(pi, u[i, j - 1]);
-			if (u[i, j + 1] != -1) uf.Unite(pi, u[i, j + 1]);
-			if (u[i + 1, j] != -1) uf.Unite(pi, u[i + 1, j]);
-			if (u[i + 1, j + 1] != -1) uf.Unite(pi, u[i + 1, j + 1]);
+			if (u[i - 1, j - 1] != 0) uf.Unite(pi, u[i - 1, j - 1]);
+			if (u[i - 1, j] != 0) uf.Unite(pi, u[i - 1, j]);
+			if (u[i, j - 1] != 0) uf.Unite(pi, u[i, j - 1]);
+			if (u[i, j + 1] != 0) uf.Unite(pi, u[i, j + 1]);
+			if (u[i + 1, j] != 0) uf.Unite(pi, u[i + 1, j]);
+			if (u[i + 1, j + 1] != 0) uf.Unite(pi, u[i + 1, j + 1]);
 		}
-		return uf.GroupsCount;
+		return uf.GroupsCount - 1;
 	}
 }
 
