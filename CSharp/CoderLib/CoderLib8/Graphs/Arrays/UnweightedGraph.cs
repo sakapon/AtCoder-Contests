@@ -43,4 +43,37 @@ namespace CoderLib8.Graphs.Arrays
 			return map;
 		}
 	}
+
+	public class UnweightedEdgesGraph
+	{
+		int n;
+		int[][] edges;
+
+		public UnweightedEdgesGraph(int n, int[][] edges)
+		{
+			this.n = n;
+			this.edges = edges;
+		}
+
+		public List<int>[] ToMap(bool directed)
+		{
+			var map = Array.ConvertAll(new bool[n], _ => new List<int>());
+			foreach (var e in edges)
+			{
+				map[e[0]].Add(e[1]);
+				if (!directed) map[e[1]].Add(e[0]);
+			}
+			return map;
+		}
+
+		public List<int>[] ToReverseMap()
+		{
+			var map = Array.ConvertAll(new bool[n], _ => new List<int>());
+			foreach (var e in edges)
+			{
+				map[e[1]].Add(e[0]);
+			}
+			return map;
+		}
+	}
 }

@@ -5,10 +5,10 @@ namespace CoderLib6.Collections
 {
 	// Dictionary with Default Value
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/8/ITP2_8_C
-	class Map<TK, TV> : Dictionary<TK, TV>
+	class HashMap<TK, TV> : Dictionary<TK, TV>
 	{
 		TV _v0;
-		public Map(TV v0 = default(TV)) { _v0 = v0; }
+		public HashMap(TV v0 = default(TV)) { _v0 = v0; }
 
 		public new TV this[TK key]
 		{
@@ -18,7 +18,7 @@ namespace CoderLib6.Collections
 	}
 
 	// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/8/ITP2/8/ITP2_8_D
-	class MultiMap<TK, TV> : Dictionary<TK, List<TV>>
+	class HashMultiMap<TK, TV> : Dictionary<TK, List<TV>>
 	{
 		static List<TV> empty = new List<TV>();
 

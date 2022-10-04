@@ -18,6 +18,14 @@ namespace CoderLib8.Collections
 		static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
 		static T[][][] NewArray3<T>(int n1, int n2, int n3, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => Array.ConvertAll(new bool[n3], ___ => v)));
 
+		static void SetMin1(long[] a, int i, long v) { if (a[i] > v) a[i] = v; }
+		static void SetMin2(long[][] a, int i, int j, long v) { if (a[i][j] > v) a[i][j] = v; }
+		static void SetMin3(long[][][] a, int i, int j, int k, long v) { if (a[i][j][k] > v) a[i][j][k] = v; }
+
+		static void SetMax1(long[] a, int i, long v) { if (a[i] < v) a[i] = v; }
+		static void SetMax2(long[][] a, int i, int j, long v) { if (a[i][j] < v) a[i][j] = v; }
+		static void SetMax3(long[][][] a, int i, int j, int k, long v) { if (a[i][j][k] < v) a[i][j][k] = v; }
+
 		static int[] Range(int start, int count)
 		{
 			var a = new int[count];

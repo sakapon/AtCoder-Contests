@@ -106,6 +106,18 @@ namespace CoderLib8.Numerics
 			}
 		}
 
+		// 最下位・最上位ビット
+		static int MinBit(int x) => -x & x;
+		static int MaxBit(int x)
+		{
+			x |= x >> 1;
+			x |= x >> 2;
+			x |= x >> 4;
+			x |= x >> 8;
+			x |= x >> 16;
+			return x ^ (x >> 1);
+		}
+
 		const ulong m1 = 0x5555555555555555;
 		const ulong m2 = 0x3333333333333333;
 		const ulong m4 = 0x0F0F0F0F0F0F0F0F;

@@ -7,59 +7,68 @@ class F
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var s = Console.ReadLine().Select(c => c - '0').ToArray();
+		var s = Console.ReadLine();
 		var n = s.Length;
-		var m = int.Parse(Console.ReadLine());
+		var m = Read()[0];
 		var c = Read();
 
-		var pm = 1 << 10;
-		var dp = NewArray2(n + 1, pm, min);
+		// 上から i 桁、数字の部分集合 j
+		// s[..i] 未満の個数および和
+		var cdp = new long[p10];
+		var sdp = new long[p10];
+		var cdt = new long[p10];
+		var sdt = new long[p10];
 
-		var sx = 0;
-		var sv = 0L;
-		long v;
+		// s[..i] に対する部分集合
+		var ef = 0;
+		// s[..i] の値
+		var ev = 0L;
 
 		for (int i = 0; i < n; i++)
 		{
-			for (int x = 0; x < pm; x++)
+			var d = s[i] - '0';
+
+			for (int j = 0; j < p10; j++)
 			{
-				if ((v = dp[i][x]) != min)
+				for (int k = 0; k < 10; k++)
 				{
-					for (int k = 0; k < 10; k++)
-					{
-						var nx = (x, k) == (0, 0) ? 0 : (x | (1 << k));
-						var nv = v * 10 + k;
-						if (dp[i + 1][nx] == min) dp[i + 1][nx] = 0;
-						dp[i + 1][nx] += nv;
-					}
+					var nj = j | (1 << k);
+					if ((j, k) == (0, 0)) nj = 0;
+
+					cdt[nj] += cdp[j];
+					sdt[nj] += sdp[j] * 10 + cdp[j] * k;
+					cdt[nj] %= M;
+					sdt[nj] %= M;
 				}
 			}
 
-			for (int k = 0; k < s[i]; k++)
+			for (int k = 0; k < d; k++)
 			{
-				var nx = (sx, k) == (0, 0) ? 0 : (sx | (1 << k));
-				var nv = sv * 10 + k;
-				if (dp[i + 1][nx] == min) dp[i + 1][nx] = 0;
-				dp[i + 1][nx] += nv;
+				var nj = ef | (1 << k);
+				if ((ef, k) == (0, 0)) nj = 0;
+
+				cdt[nj] += 1;
+				sdt[nj] += ev * 10 + k;
+				cdt[nj] %= M;
+				sdt[nj] %= M;
 			}
 
-			sx |= 1 << s[i];
-			sv = sv * 10 + s[i];
-			sv %= M;
+			ef |= 1 << d;
+			ev = ev * 10 + d;
+			ev %= M;
 
-			for (int x = 0; x < pm; x++)
-			{
-				dp[i + 1][x] %= M;
-			}
+			(cdp, cdt) = (cdt, cdp);
+			(sdp, sdt) = (sdt, sdp);
+			Array.Clear(cdt, 0, cdt.Length);
+			Array.Clear(sdt, 0, sdt.Length);
 		}
 
-		var f = c.Select(x => 1 << x).Aggregate((x, y) => x | y);
-		var r = Enumerable.Range(0, pm).Where(x => (x & f) == f).Where(x => dp[n][x] != min).Sum(x => dp[n][x]);
-		if ((sx & f) == f) r += sv;
-		return r % M;
+		var cf = c.Sum(x => 1 << x);
+		var r = sdp.Where((_, x) => (x & cf) == cf).Sum();
+		if ((ef & cf) == cf) r += ev;
+		return r %= M;
 	}
 
-	const long min = -1;
+	const int p10 = 1 << 10;
 	const long M = 998244353;
-	static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
 }
