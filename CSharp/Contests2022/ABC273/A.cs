@@ -11,12 +11,6 @@ class A
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		return f(n);
-
-		long f(long k)
-		{
-			if (k == 0) return 1;
-			return k * f(k - 1);
-		}
+		return Enumerable.Range(1, n).Aggregate(1, (x, y) => x * y);
 	}
 }
