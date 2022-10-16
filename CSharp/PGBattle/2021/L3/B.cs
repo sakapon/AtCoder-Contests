@@ -10,12 +10,32 @@ class B
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (n, s0) = Read2();
+		long s = s0;
+		var d = Read();
 
-		return string.Join(" ", a);
+		var p10 = new long[15];
+		p10[0] = 1;
+		for (int i = 1; i < 15; i++)
+		{
+			p10[i] = p10[i - 1] * 10;
+		}
+
+		var mins = Array.ConvertAll(d, x => p10[x - 1]);
+		var maxs = Array.ConvertAll(d, x => p10[x] - 1);
+
+		var min = mins.Sum();
+		var max = maxs.Sum();
+		if (s < min || max < s) return -1;
+
+		s -= min;
+
+		for (int i = 0; i < n && s > 0; i++)
+		{
+			var delta = Math.Min(maxs[i] - mins[i], s);
+			mins[i] += delta;
+			s -= delta;
+		}
+		return string.Join(" ", mins);
 	}
 }
