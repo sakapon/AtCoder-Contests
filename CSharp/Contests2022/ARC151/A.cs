@@ -19,46 +19,20 @@ class A
 			}
 		}
 
-		var s1 = s.Count(c => c == '1');
-		var t1 = t.Count(c => c == '1');
-		var d = s1 + t1;
-		if (d % 2 != 0) return -1;
+		var rn = Enumerable.Range(0, n).ToArray();
+		var s1 = Array.FindAll(rn, i => s[i] == '1');
+		var t1 = Array.FindAll(rn, i => t[i] == '1');
 
-		var m1s = Math.Min(s1, t1);
-		var m1t = m1s;
-		for (int i = 0; i < n; i++)
+		if (s1.Length < t1.Length) (s1, t1) = (t1, s1);
+		s1 = s1[t1.Length..];
+		if (s1.Length % 2 != 0) return -1;
+		s1 = s1[(s1.Length / 2)..];
+
+		var r = new int[n];
+		foreach (var i in s1)
 		{
-			if (s[i] == '1' && m1s > 0)
-			{
-				s[i] = '0';
-				m1s--;
-				s1--;
-			}
-			if (t[i] == '1' && m1t > 0)
-			{
-				t[i] = '0';
-				m1t--;
-				t1--;
-			}
+			r[i] = 1;
 		}
-
-		if (s1 == 0)
-		{
-			s = t;
-			s1 = t1;
-		}
-
-		m1s = s1 / 2;
-		for (int i = 0; i < n; i++)
-		{
-			if (s[i] == '1' && m1s > 0)
-			{
-				s[i] = '0';
-				m1s--;
-				s1--;
-			}
-		}
-
-		return new string(s);
+		return string.Join("", r);
 	}
 }
