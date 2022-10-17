@@ -13,9 +13,8 @@ class B
 		var x = Console.ReadLine();
 		var n = x.Length;
 
-		if (!x.Contains('0')) return x;
-
 		var i = x.IndexOf('0');
+		if (i == -1) return x;
 		return x[..i] + new string('1', n - i);
 	}
 }
