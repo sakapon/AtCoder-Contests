@@ -11,11 +11,7 @@ class A
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
-
-		return string.Join(" ", a);
+		var ss = Array.ConvertAll(new bool[n], _ => Console.ReadLine());
+		return ss.Count(s => s != "AC") * 5;
 	}
 }
