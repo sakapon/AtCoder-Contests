@@ -16,37 +16,19 @@ class D
 
 		if (h % 2 == 1 && w % 2 == 1) return 0;
 
-		// 0: 横 開
-		// 1: 横 閉
-		// 2: 縦 開
-		// 3: 縦 閉
-		var states = new List<int[]>();
-		Power(new[] { 0, 1, 2, 3 }, w, p => states.Add((int[])p.Clone()));
-		var avail1 = states.Select(Avail1).ToArray();
+		var states = RowState.Create(w);
+		var pow = states.Length;
 
-		var p4w = states.Count;
-		var map = Array.ConvertAll(avail1, _ => new List<int>());
-
-		for (int i = 0; i < p4w; i++)
-		{
-			for (int j = 0; j < p4w; j++)
-			{
-				if (avail1[i] && avail1[j] && Avail2(states[i], states[j]))
-				{
-					map[i].Add(j);
-				}
-			}
-		}
-
-		var dp = Enumerable.Range(0, p4w).Select(i => avail1[i] && states[i].All(x => x != 3) ? 1L : 0L).ToArray();
-		var dt = new long[p4w];
+		var dp = Array.ConvertAll(states, s => s.IsTop ? 1L : 0L);
+		var dt = new long[pow];
 
 		for (int i = 1; i < h; i++)
 		{
-			for (int j = 0; j < p4w; j++)
+			for (int j = 0; j < pow; j++)
 			{
-				foreach (var nj in map[j])
+				foreach (var ns in states[j].NextRowStates)
 				{
+					var nj = ns.Id;
 					dt[nj] += dp[j];
 					dt[nj] %= M;
 				}
@@ -55,60 +37,101 @@ class D
 			(dp, dt) = (dt, dp);
 			Array.Clear(dt, 0, dt.Length);
 		}
+		return states.Where(s => s.IsBottom).Sum(s => dp[s.Id]) % M;
+	}
+}
 
-		return Enumerable.Range(0, p4w).Where(i => avail1[i] && states[i].All(x => x != 2)).Sum(i => dp[i]) % M;
+// 横の長さは十分小さいとします。
+public class RowState
+{
+	public static RowState[] Create(int width)
+	{
+		var pow = 1;
+		for (int k = 0; k < width; ++k) pow *= CellStatesCount;
 
-		bool Avail1(int[] s)
+		var states = new RowState[pow];
+		for (int id = 0; id < pow; ++id) states[id] = new RowState(id, width);
+
+		for (int i = 0; i < pow; ++i)
 		{
-			for (int i = 0; i < w; i++)
+			if (!states[i].IsRowAvailable) continue;
+			for (int j = 0; j < pow; ++j)
 			{
-				if (s[i] == 0)
-				{
-					if (i + 1 >= w || s[i + 1] != 1) return false;
-				}
-				else if (s[i] == 1)
-				{
-					if (i - 1 < 0 || s[i - 1] != 0) return false;
-				}
+				if (!states[j].IsRowAvailable) continue;
+				if (GetIsNextAvailable(states[i].Cells, states[j].Cells)) states[i].NextRowStates.Add(states[j]);
 			}
-			return true;
 		}
-
-		bool Avail2(int[] s1, int[] s2)
-		{
-			for (int i = 0; i < w; i++)
-			{
-				if (s1[i] == 2)
-				{
-					if (s2[i] != 3) return false;
-				}
-				else if (s2[i] == 3)
-				{
-					if (s1[i] != 2) return false;
-				}
-			}
-			return true;
-		}
+		return states;
 	}
 
-	public static void Power<T>(T[] values, int r, Action<T[]> action)
+	// 横置きの左側・右側、縦置きの上側・下側
+	public enum CellState
 	{
-		var n = values.Length;
-		var p = new T[r];
+		Left,
+		Right,
+		Top,
+		Bottom,
+	}
+	const int CellStatesCount = 4;
 
-		if (r > 0) Dfs(0);
-		else action(p);
+	public int Id { get; }
+	public CellState[] Cells { get; }
+	public bool IsRowAvailable { get; }
+	public bool IsTop { get; }
+	public bool IsBottom { get; }
+	public List<RowState> NextRowStates { get; } = new List<RowState>();
 
-		void Dfs(int i)
+	RowState(int id, int width)
+	{
+		Id = id;
+		Cells = GetCells(id, width);
+		IsRowAvailable = GetIsRowAvailable(Cells);
+		IsTop = IsRowAvailable && Cells.All(x => x != CellState.Bottom);
+		IsBottom = IsRowAvailable && Cells.All(x => x != CellState.Top);
+	}
+
+	static CellState[] GetCells(int id, int w)
+	{
+		var c = new CellState[w];
+		for (int i = 0; i < w; ++i)
 		{
-			var i2 = i + 1;
-			for (int j = 0; j < n; ++j)
-			{
-				p[i] = values[j];
+			id = Math.DivRem(id, CellStatesCount, out var rem);
+			c[i] = (CellState)rem;
+		}
+		return c;
+	}
 
-				if (i2 < r) Dfs(i2);
-				else action(p);
+	static bool GetIsRowAvailable(CellState[] c)
+	{
+		var w = c.Length;
+		for (int i = 0; i < w; ++i)
+		{
+			if (c[i] == CellState.Left)
+			{
+				if (i == w - 1 || c[i + 1] != CellState.Right) return false;
+			}
+			else if (c[i] == CellState.Right)
+			{
+				if (i == 0 || c[i - 1] != CellState.Left) return false;
 			}
 		}
+		return true;
+	}
+
+	static bool GetIsNextAvailable(CellState[] c, CellState[] nc)
+	{
+		var w = c.Length;
+		for (int i = 0; i < w; ++i)
+		{
+			if (c[i] == CellState.Top)
+			{
+				if (nc[i] != CellState.Bottom) return false;
+			}
+			else if (nc[i] == CellState.Bottom)
+			{
+				if (c[i] != CellState.Top) return false;
+			}
+		}
+		return true;
 	}
 }
