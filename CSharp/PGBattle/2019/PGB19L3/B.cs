@@ -11,11 +11,46 @@ class B
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
 		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		// 第1段の人数
+		var c = (n + 1) / 2;
+
+		var r = new int[n];
+		var tl = 1;
+		var tr = n;
+
+		for (int i = 0; i < c; i++)
+		{
+			if (s[i] == 'L')
+			{
+				r[i] = tl;
+				tl += 2;
+			}
+			else
+			{
+				r[i] = tr;
+				tr -= 2;
+			}
+		}
+
+		var rn = Enumerable.Range(1, n).ToArray();
+		var ll = new LinkedList<int>(rn.Except(r[..c]));
+
+		for (int i = c; i < n; i++)
+		{
+			if (s[i] == 'L')
+			{
+				r[i] = ll.First.Value;
+				ll.RemoveFirst();
+			}
+			else
+			{
+				r[i] = ll.Last.Value;
+				ll.RemoveLast();
+			}
+		}
+
+		return string.Join("\n", r);
 	}
 }
