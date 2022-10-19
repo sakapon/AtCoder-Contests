@@ -41,7 +41,8 @@ class D
 	}
 }
 
-// 横の長さは十分小さいとします。
+// 横の長さは十分小さいと仮定します。
+[System.Diagnostics.DebuggerDisplay(@"Id = {Id}, IsRowAvailable = {IsRowAvailable}")]
 public class RowState
 {
 	public static RowState[] Create(int width)
