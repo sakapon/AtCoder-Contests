@@ -33,6 +33,7 @@ class C
 }
 
 // 改造
+// int 型、(-1, -1) が原点
 public class StaticRSQ2C
 {
 	readonly int[,] a;
@@ -43,9 +44,14 @@ public class StaticRSQ2C
 		var n2 = a.GetLength(1);
 
 		for (int i = 0; i < n1; ++i)
-			for (int j = 1; j < n2; ++j) a[i, j] += a[i, j - 1];
-		for (int j = 0; j < n2; ++j)
-			for (int i = 1; i < n1; ++i) a[i, j] += a[i - 1, j];
+		{
+			var t = 0;
+			for (int j = 0; j < n2; ++j)
+			{
+				a[i, j] = t += a[i, j];
+				if (i != 0) a[i, j] += a[i - 1, j];
+			}
+		}
 	}
 
 	public long GetSum(int l1, int l2, int r1, int r2) => a[r1, r2] - a[l1, r2] - a[r1, l2] + a[l1, l2];
