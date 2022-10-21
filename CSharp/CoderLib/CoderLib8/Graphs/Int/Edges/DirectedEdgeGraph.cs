@@ -27,15 +27,15 @@ namespace CoderLib8.Graphs.Int.Edges
 			public int Id { get; }
 			public Vertex From { get; }
 			public Vertex To { get; }
+			public long Cost { get; }
 
-			public Edge(int id, Vertex from, Vertex to)
+			public Edge(int id, Vertex from, Vertex to, long cost = 1)
 			{
 				Id = id;
 				From = from;
 				To = to;
+				Cost = cost;
 			}
-
-			public Edge Reverse() => new Edge(Id, To, From);
 		}
 
 		public Vertex[] Vertexes { get; }
@@ -43,23 +43,36 @@ namespace CoderLib8.Graphs.Int.Edges
 		public int VertexesCount => Vertexes.Length;
 		public int EdgesCount => Edges.Count;
 
-		public DirectedEdgeGraph(int vertexesCount, IEnumerable<(int u, int v)> edges = null)
+		public DirectedEdgeGraph(int vertexesCount)
 		{
 			Vertexes = new Vertex[vertexesCount];
 			for (int v = 0; v < vertexesCount; ++v) Vertexes[v] = new Vertex(v);
-			if (edges != null) foreach (var (u, v) in edges) AddEdge(u, v);
+		}
+		public DirectedEdgeGraph(int vertexesCount, IEnumerable<(int from, int to)> edges, bool twoWay = false) : this(vertexesCount)
+		{
+			foreach (var (from, to) in edges) AddEdge(from, to, twoWay: twoWay);
+		}
+		public DirectedEdgeGraph(int vertexesCount, IEnumerable<(int from, int to, long cost)> edges, bool twoWay = false) : this(vertexesCount)
+		{
+			foreach (var (from, to, cost) in edges) AddEdge(from, to, cost, twoWay);
 		}
 
-		public void AddEdge(int u, int v)
+		public void AddEdge(int from, int to, long cost = 1, bool twoWay = false)
 		{
-			if (u > v) (u, v) = (v, u);
-			var lv = Vertexes[u];
-			var uv = Vertexes[v];
-			var e = new Edge(Edges.Count, lv, uv);
-			// 片側のみ登録します。
-			Edges.Add(e);
-			lv.Edges.Add(e);
-			uv.Edges.Add(e.Reverse());
+			var fv = Vertexes[from];
+			var tv = Vertexes[to];
+
+			var e1 = new Edge(Edges.Count, fv, tv, cost);
+			Edges.Add(e1);
+			fv.Edges.Add(e1);
+
+			// 異なる辺として登録します。
+			if (twoWay)
+			{
+				var e2 = new Edge(Edges.Count, tv, fv, cost);
+				Edges.Add(e2);
+				tv.Edges.Add(e2);
+			}
 		}
 	}
 }
