@@ -11,11 +11,13 @@ class A
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var b = Read();
 
-		return string.Join(" ", a);
+		var min = b.Min();
+		var max = b.Max();
+		var d = (max - min) / n;
+
+		var a = Enumerable.Range(0, n + 1).Select(i => min + d * i).ToArray();
+		return a.Except(b).First();
 	}
 }
