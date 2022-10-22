@@ -10,12 +10,11 @@ class B
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (h, w) = Read2();
+		var c = Array.ConvertAll(new bool[h], _ => Console.ReadLine());
 
-		return string.Join(" ", a);
+		var rh = Enumerable.Range(0, h).ToArray();
+		var rw = Enumerable.Range(0, w).ToArray();
+		return string.Join(" ", rw.Select(j => rh.Count(i => c[i][j] == '#')));
 	}
 }

@@ -10,12 +10,10 @@ class A
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (a, b) = Read2();
 
-		return string.Join(" ", a);
+		var r = (double)b / a;
+		r = Math.Round(r, 3, MidpointRounding.AwayFromZero);
+		return r.ToString("F3");
 	}
 }
