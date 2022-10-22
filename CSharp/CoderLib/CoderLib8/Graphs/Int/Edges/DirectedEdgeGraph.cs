@@ -21,7 +21,7 @@ namespace CoderLib8.Graphs.Int.Edges
 			}
 		}
 
-		[System.Diagnostics.DebuggerDisplay(@"\{Edge {Id} : {From.Id} --- {To.Id}\}")]
+		[System.Diagnostics.DebuggerDisplay(@"\{Edge {Id} : {From.Id} --> {To.Id}, Cost = {Cost}\}")]
 		public class Edge
 		{
 			public int Id { get; }
