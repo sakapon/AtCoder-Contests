@@ -43,6 +43,8 @@ namespace CoderLib8.Graphs.Int.Edges
 		public int VertexesCount => Vertexes.Length;
 		public int EdgesCount => Edges.Count;
 
+		public Vertex this[int v] => Vertexes[v];
+
 		public DirectedEdgeGraph(int vertexesCount)
 		{
 			Vertexes = new Vertex[vertexesCount];
