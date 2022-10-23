@@ -71,5 +71,6 @@ public class MCombinationMod2
 		f = MFactorials(nMax);
 	}
 
+	// (n & r) == r でも可能
 	public long MNcr(int n, int r) => f[n] == f[n - r] + f[r] ? 1 : 0;
 }
