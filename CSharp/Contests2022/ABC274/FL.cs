@@ -27,10 +27,10 @@ class FL
 				if (0 <= x && x <= a) tw += w;
 
 				if (v == 0) continue;
-				var t0 = -x / (double)v;
-				var ta = (a - x) / (double)v;
-				if (t0 > 0 || t0 == 0 && v < 0) l.Add((new Rational(-x, v), v > 0 ? w : -w));
-				if (ta > 0 || ta == 0 && v > 0) l.Add((new Rational(a - x, v), v < 0 ? w : -w));
+				var t0 = new Rational(-x, v);
+				var ta = new Rational(a - x, v);
+				if (t0 > 0 || t0 == 0 && v < 0) l.Add((t0, v > 0 ? w : -w));
+				if (ta > 0 || ta == 0 && v > 0) l.Add((ta, v < 0 ? w : -w));
 			}
 			r = Math.Max(r, tw);
 
@@ -60,6 +60,10 @@ public struct Rational : IEquatable<Rational>, IComparable<Rational>
 	public override int GetHashCode() => (X, Y).GetHashCode();
 
 	public int CompareTo(Rational other) => (X * other.Y).CompareTo(other.X * Y);
+	public static bool operator <(Rational v1, Rational v2) => v1.CompareTo(v2) < 0;
+	public static bool operator >(Rational v1, Rational v2) => v1.CompareTo(v2) > 0;
+	public static bool operator <=(Rational v1, Rational v2) => v1.CompareTo(v2) <= 0;
+	public static bool operator >=(Rational v1, Rational v2) => v1.CompareTo(v2) >= 0;
 
 	public static Rational operator -(Rational v) => new Rational(-v.X, v.Y);
 }
