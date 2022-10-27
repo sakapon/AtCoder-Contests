@@ -7,91 +7,71 @@ using CoderLib8.Graphs.Int.Edges;
 class D
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static (int, int, int) Read3() { var a = Read(); return (a[0], a[1], a[2]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
 		var es = Array.ConvertAll(new bool[n - 1], _ => Read3());
 
-		var rn = Enumerable.Range(1, n).ToArray();
-
 		var tree = new UndirectedEdgeGraph(n + 1);
 		foreach (var (u, v, c) in es) tree.AddEdge(u, v, c);
 
-		var d1 = new long[n + 1];
-		var d2 = new long[n + 1];
 		// 中間の辺
 		UndirectedEdgeGraph.Edge me = null;
-
-		var sv = 1;
-		Dfs1(new UndirectedEdgeGraph.Edge(-1, null, tree[sv]));
-		var dmax = d1.Max();
-		sv = rn.First(v => d1[v] == dmax);
-		Dfs1(new UndirectedEdgeGraph.Edge(-1, null, tree[sv]));
-		dmax = d1.Max();
-		var ev = rn.First(v => d1[v] == dmax);
-		Dfs2(new UndirectedEdgeGraph.Edge(-1, null, tree[ev]));
-
+		Dfs2(new UndirectedEdgeGraph.Edge(-1, null, tree[1]));
 		if (me == null) return 0;
-		var v1 = me.To.Id;
-		var v2 = me.From.Id;
 
-		for (int v = 1; v <= n; v++)
-		{
-			if (d2[v] >= d2[v2])
-			{
-				d1[v] = dmax - d2[v];
-			}
-			else
-			{
-				d2[v] = dmax - d1[v];
-			}
-		}
+		var v1 = me.From.Id;
+		var v2 = me.To.Id;
+		var d1 = new long[n + 1];
+		var d2 = new long[n + 1];
 
-		var set1 = new ArrayItemSet<long>(d1[1..].OrderBy(x => x).ToArray());
-		var set2 = new ArrayItemSet<long>(d2[1..].OrderBy(x => x).ToArray());
+		Array.Fill(d1, -1);
+		Array.Fill(d2, -1);
+		d1[v2] = 0;
+		d2[v1] = 0;
+
+		Dfs1(me.Reverse, d1);
+		Dfs1(me, d2);
+
+		var set1 = new ArrayItemSet<long>(d1.Where(x => x >= 0).OrderBy(x => x).ToArray());
+		var set2 = new ArrayItemSet<long>(d2.Where(x => x >= 0).OrderBy(x => x).ToArray());
 
 		var r = 0L;
 		for (int v = 1; v <= n; v++)
 		{
-			if (d1[v] <= d1[v1])
+			if (d1[v] > 0)
 			{
-				var sd = 2 * d1[v1] - d1[v];
-				var ed = 2 * d1[v2] - d1[v];
-				r += set1.GetCount(sd + 1, ed + 1);
+				var sd = d1[v] - d1[v1];
+				var ed = d1[v] + d1[v1];
+				r += set2.GetCount(sd + 1, ed + 1);
 			}
 			else
 			{
-				var sd = 2 * d2[v2] - d2[v];
-				var ed = 2 * d2[v1] - d2[v];
-				r += set2.GetCount(sd + 1, ed + 1);
+				var sd = d2[v] - d2[v2];
+				var ed = d2[v] + d2[v2];
+				r += set1.GetCount(sd + 1, ed + 1);
 			}
 		}
 		return r;
 
-		void Dfs1(UndirectedEdgeGraph.Edge e)
+		void Dfs1(UndirectedEdgeGraph.Edge e, long[] d)
 		{
-			var v = e.To;
-			d1[v.Id] = e.From == null ? 0 : d1[e.From.Id] + e.Cost;
+			d[e.To.Id] = d[e.From.Id] + e.Cost;
 
-			foreach (var ne in v.Edges)
+			foreach (var ne in e.To.Edges)
 			{
 				if (ne.Id == e.Id) continue;
-				Dfs1(ne);
+				Dfs1(ne, d);
 			}
 		}
 
-		// 部分木の頂点の個数
 		int Dfs2(UndirectedEdgeGraph.Edge e)
 		{
-			var v = e.To;
-			d2[v.Id] = e.From == null ? 0 : d2[e.From.Id] + e.Cost;
+			// 部分木の頂点の個数
 			var vc = 1;
-
-			foreach (var ne in v.Edges)
+			foreach (var ne in e.To.Edges)
 			{
 				if (ne.Id == e.Id) continue;
 				vc += Dfs2(ne);
