@@ -14,12 +14,11 @@ class D
 		var n = int.Parse(Console.ReadLine());
 		var es = Array.ConvertAll(new bool[n - 1], _ => Read3());
 
-		var tree = new UndirectedEdgeGraph(n + 1);
-		foreach (var (u, v, c) in es) tree.AddEdge(u, v, c);
+		var tree = new EdgeGraph(n + 1, es, true);
 
 		// 中間の辺
-		UndirectedEdgeGraph.Edge me = null;
-		Dfs2(new UndirectedEdgeGraph.Edge(-1, null, tree[1]));
+		EdgeGraph.Edge me = null;
+		Dfs2(new EdgeGraph.Edge(-1, null, tree[1], false));
 		if (me == null) return 0;
 
 		var v1 = me.From.Id;
@@ -56,7 +55,7 @@ class D
 		}
 		return r;
 
-		void Dfs1(UndirectedEdgeGraph.Edge e, long[] d)
+		void Dfs1(EdgeGraph.Edge e, long[] d)
 		{
 			d[e.To.Id] = d[e.From.Id] + e.Cost;
 
@@ -67,7 +66,7 @@ class D
 			}
 		}
 
-		int Dfs2(UndirectedEdgeGraph.Edge e)
+		int Dfs2(EdgeGraph.Edge e)
 		{
 			// 部分木の頂点の個数
 			var vc = 1;
@@ -85,10 +84,10 @@ class D
 namespace CoderLib8.Graphs.Int.Edges
 {
 	/// <summary>
-	/// 無向グラフを表します。
+	/// グラフを表します。辺をオブジェクトとして扱います。
 	/// </summary>
 	[System.Diagnostics.DebuggerDisplay(@"\{{VertexesCount} vertexes, {EdgesCount} edges\}")]
-	public class UndirectedEdgeGraph
+	public class EdgeGraph
 	{
 		[System.Diagnostics.DebuggerDisplay(@"\{Vertex {Id} : {Edges.Count} edges\}")]
 		public class Vertex
@@ -109,52 +108,56 @@ namespace CoderLib8.Graphs.Int.Edges
 			public Vertex From { get; }
 			public Vertex To { get; }
 			public long Cost { get; }
-			public Edge Reverse { get; internal set; }
+			public Edge Reverse { get; private set; }
 
-			public Edge(int id, Vertex from, Vertex to, long cost = 1)
+			public Edge(int id, Vertex from, Vertex to, bool twoWay, long cost = 1)
 			{
 				Id = id;
 				From = from;
 				To = to;
 				Cost = cost;
+				if (twoWay) Reverse = new Edge(id, to, from, false, cost) { Reverse = this };
 			}
 		}
 
+		readonly int n;
+		// id -> vertex
 		public Vertex[] Vertexes { get; }
+		// id -> edge
 		public List<Edge> Edges { get; } = new List<Edge>();
-		public int VertexesCount => Vertexes.Length;
+		public int VertexesCount => n;
 		public int EdgesCount => Edges.Count;
 
 		public Vertex this[int v] => Vertexes[v];
 
-		public UndirectedEdgeGraph(int vertexesCount)
+		public EdgeGraph(int vertexesCount)
 		{
+			n = vertexesCount;
 			Vertexes = new Vertex[vertexesCount];
 			for (int v = 0; v < vertexesCount; ++v) Vertexes[v] = new Vertex(v);
 		}
-		public UndirectedEdgeGraph(int vertexesCount, IEnumerable<(int u, int v)> edges) : this(vertexesCount)
+		public EdgeGraph(int vertexesCount, IEnumerable<(int from, int to)> edges, bool twoWay) : this(vertexesCount)
 		{
-			foreach (var (u, v) in edges) AddEdge(u, v);
+			foreach (var (from, to) in edges) AddEdge(from, to, twoWay);
 		}
-		public UndirectedEdgeGraph(int vertexesCount, IEnumerable<(int u, int v, long cost)> edges) : this(vertexesCount)
+		public EdgeGraph(int vertexesCount, IEnumerable<(int from, int to, int cost)> edges, bool twoWay) : this(vertexesCount)
 		{
-			foreach (var (u, v, cost) in edges) AddEdge(u, v, cost);
+			foreach (var (from, to, cost) in edges) AddEdge(from, to, twoWay, cost);
+		}
+		public EdgeGraph(int vertexesCount, IEnumerable<(int from, int to, long cost)> edges, bool twoWay) : this(vertexesCount)
+		{
+			foreach (var (from, to, cost) in edges) AddEdge(from, to, twoWay, cost);
 		}
 
-		public void AddEdge(int u, int v, long cost = 1)
+		public void AddEdge(int from, int to, bool twoWay, long cost = 1)
 		{
-			var fv = Vertexes[u];
-			var tv = Vertexes[v];
+			var fv = Vertexes[from];
+			var tv = Vertexes[to];
 
-			var e1 = new Edge(Edges.Count, fv, tv, cost);
-			var e2 = new Edge(Edges.Count, tv, fv, cost);
-			e1.Reverse = e2;
-			e2.Reverse = e1;
-
-			// 片側のみ登録します。
+			var e1 = new Edge(Edges.Count, fv, tv, twoWay, cost);
 			Edges.Add(e1);
 			fv.Edges.Add(e1);
-			tv.Edges.Add(e2);
+			if (twoWay) tv.Edges.Add(e1.Reverse);
 		}
 	}
 }

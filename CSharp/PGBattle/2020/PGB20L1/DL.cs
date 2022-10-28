@@ -12,7 +12,7 @@ class DL
 		var (n, m) = Read2();
 		var es = Array.ConvertAll(new bool[m], _ => Read2());
 
-		var graph = new DirectedEdgeGraph(n + 1, es);
+		var graph = new EdgeGraph(n + 1, es, false);
 		var (c, p) = graph.BFS(1, n);
 		if (c[n] == long.MaxValue) return -1;
 		return string.Join(" ", GetPathVertexes(p, n));
@@ -28,7 +28,7 @@ class DL
 }
 
 [System.Diagnostics.DebuggerDisplay(@"\{{VertexesCount} vertexes, {EdgesCount} edges\}")]
-public class DirectedEdgeGraph
+public class EdgeGraph
 {
 	[System.Diagnostics.DebuggerDisplay(@"\{Vertex {Id} : {Edges.Count} edges\}")]
 	public class Vertex
@@ -49,55 +49,56 @@ public class DirectedEdgeGraph
 		public Vertex From { get; }
 		public Vertex To { get; }
 		public long Cost { get; }
+		public Edge Reverse { get; private set; }
 
-		public Edge(int id, Vertex from, Vertex to, long cost = 1)
+		public Edge(int id, Vertex from, Vertex to, bool twoWay, long cost = 1)
 		{
 			Id = id;
 			From = from;
 			To = to;
 			Cost = cost;
+			if (twoWay) Reverse = new Edge(id, to, from, false, cost) { Reverse = this };
 		}
 	}
 
 	readonly int n;
+	// id -> vertex
 	public Vertex[] Vertexes { get; }
+	// id -> edge
 	public List<Edge> Edges { get; } = new List<Edge>();
 	public int VertexesCount => n;
 	public int EdgesCount => Edges.Count;
 
 	public Vertex this[int v] => Vertexes[v];
 
-	public DirectedEdgeGraph(int vertexesCount)
+	public EdgeGraph(int vertexesCount)
 	{
 		n = vertexesCount;
 		Vertexes = new Vertex[vertexesCount];
 		for (int v = 0; v < vertexesCount; ++v) Vertexes[v] = new Vertex(v);
 	}
-	public DirectedEdgeGraph(int vertexesCount, IEnumerable<(int from, int to)> edges, bool twoWay = false) : this(vertexesCount)
+	public EdgeGraph(int vertexesCount, IEnumerable<(int from, int to)> edges, bool twoWay) : this(vertexesCount)
 	{
-		foreach (var (from, to) in edges) AddEdge(from, to, twoWay: twoWay);
+		foreach (var (from, to) in edges) AddEdge(from, to, twoWay);
 	}
-	public DirectedEdgeGraph(int vertexesCount, IEnumerable<(int from, int to, long cost)> edges, bool twoWay = false) : this(vertexesCount)
+	public EdgeGraph(int vertexesCount, IEnumerable<(int from, int to, int cost)> edges, bool twoWay) : this(vertexesCount)
 	{
-		foreach (var (from, to, cost) in edges) AddEdge(from, to, cost, twoWay);
+		foreach (var (from, to, cost) in edges) AddEdge(from, to, twoWay, cost);
+	}
+	public EdgeGraph(int vertexesCount, IEnumerable<(int from, int to, long cost)> edges, bool twoWay) : this(vertexesCount)
+	{
+		foreach (var (from, to, cost) in edges) AddEdge(from, to, twoWay, cost);
 	}
 
-	public void AddEdge(int from, int to, long cost = 1, bool twoWay = false)
+	public void AddEdge(int from, int to, bool twoWay, long cost = 1)
 	{
 		var fv = Vertexes[from];
 		var tv = Vertexes[to];
 
-		var e1 = new Edge(Edges.Count, fv, tv, cost);
+		var e1 = new Edge(Edges.Count, fv, tv, twoWay, cost);
 		Edges.Add(e1);
 		fv.Edges.Add(e1);
-
-		// 異なる辺として登録します。
-		if (twoWay)
-		{
-			var e2 = new Edge(Edges.Count, tv, fv, cost);
-			Edges.Add(e2);
-			tv.Edges.Add(e2);
-		}
+		if (twoWay) tv.Edges.Add(e1.Reverse);
 	}
 
 	public (long[] costs, int[] prevs) BFS(int sv, int ev = -1)
