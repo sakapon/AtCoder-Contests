@@ -4,18 +4,23 @@ using System.Linq;
 
 class D
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var n = long.Parse(Console.ReadLine());
 
-		return string.Join(" ", a);
+		var d = new Dictionary<long, long>();
+		d[0] = 1;
+
+		return f(n);
+
+		long f(long k)
+		{
+			if (d.ContainsKey(k)) return d[k];
+
+			var r = f(k / 2) + f(k / 3);
+			d[k] = r;
+			return r;
+		}
 	}
 }
