@@ -12,8 +12,6 @@ class A
 	{
 		var n = int.Parse(Console.ReadLine());
 		var a = Read();
-
-		var max = a.Max();
-		return Enumerable.Range(0, n).First(i => a[i] == max) + 1;
+		return Array.IndexOf(a, a.Max()) + 1;
 	}
 }

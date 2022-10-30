@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 class D
 {
@@ -8,19 +7,9 @@ class D
 	static object Solve()
 	{
 		var n = long.Parse(Console.ReadLine());
-
-		var d = new Dictionary<long, long>();
-		d[0] = 1;
-
+		var d = new Dictionary<long, long> { [0] = 1 };
 		return f(n);
 
-		long f(long k)
-		{
-			if (d.ContainsKey(k)) return d[k];
-
-			var r = f(k / 2) + f(k / 3);
-			d[k] = r;
-			return r;
-		}
+		long f(long k) => d.ContainsKey(k) ? d[k] : d[k] = f(k / 2) + f(k / 3);
 	}
 }
