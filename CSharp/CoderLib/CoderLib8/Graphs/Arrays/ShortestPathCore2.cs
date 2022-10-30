@@ -8,7 +8,7 @@ namespace CoderLib8.Graphs.Arrays
 	// テンプレートとして使えます。
 	public static class ShortestPathCore2
 	{
-		// 経路の有無のみを判定する場合は、DFS を使います。
+		// 経路の有無のみを判定する場合は、DFS を使います。最短とは限りません。
 		public static (bool[] conns, int[] prevs) Dfs(int n, Func<int, int[]> nexts, int sv, int ev = -1)
 		{
 			var u = new bool[n];
