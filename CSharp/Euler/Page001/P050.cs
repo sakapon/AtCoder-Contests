@@ -7,10 +7,10 @@ class P050
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = 3945;
+		const int n = 1000000;
 		var (b, ps) = GetPrimes(n);
 
-		for (int k = ps.Length; k > 0; k--)
+		for (int k = 600; k > 0; k--)
 		{
 			var r = Sum(k);
 			if (r != -1) return r;
@@ -42,8 +42,7 @@ class P050
 
 		bool CheckPrime(int x)
 		{
-			if (x <= n) return !b[x];
-			return ps.All(p => x % p != 0);
+			return x <= n && !b[x];
 		}
 	}
 
