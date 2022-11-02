@@ -7,7 +7,7 @@ class P049
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = 10000;
+		const int n = 10000;
 		var gs = GetPrimes(n).Where(p => p >= 1000).ToLookup(p => string.Join("", p.ToString().OrderBy(c => c)));
 
 		var l = new List<string>();

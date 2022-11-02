@@ -7,7 +7,7 @@ class P002
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = 4000000;
+		const int n = 4000000;
 
 		var r = 2;
 		var (t1, t2) = (1, 2);
