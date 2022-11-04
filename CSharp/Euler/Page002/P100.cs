@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 
 class P100
 {
@@ -11,25 +10,25 @@ class P100
 		// n: total
 		// m: blue
 		// n * (n-1) = 2 * m * (m-1)
-		// m / n > 1 / √2 > (m-1) / (n-1) 
-		// (1 / √2) * n < m < (1 / √2) * n + 1 - 1 / √2
+		// x := 2 * n - 1, y := 2 * m - 1
 
-		BigInteger nmin = 1000000;
-		double c = Math.Sqrt(2) / 2;
+		// Pell's equation
+		// x^2 - 2 y^2 = -1
+		// 初期値: (x0, y0) = (1, 1)
+		// 解 (x, y) は 1 + √2 の奇数乗から求められる。
 
-		for (BigInteger n = nmin; ; n++)
+		const long n_min = 1000000000000;
+		var (x, y) = (1L, 1L);
+
+		while (true)
 		{
-			double mmin = c * (long)n;
-			double mmax = mmin + 1 - c;
-			BigInteger n2 = n * (n - 1) / 2;
-
-			for (BigInteger m = (BigInteger)Math.Ceiling(mmin); (long)m < mmax; m++)
+			var (n, m) = ((x + 1) / 2, (y + 1) / 2);
+			if (n >= n_min)
 			{
-				if (n2 == m * (m - 1))
-				{
-					return n;
-				}
+				return m;
 			}
+
+			(x, y) = (3 * x + 4 * y, 2 * x + 3 * y);
 		}
 		throw new InvalidOperationException();
 	}
