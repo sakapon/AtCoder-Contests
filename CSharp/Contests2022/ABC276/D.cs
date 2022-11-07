@@ -5,17 +5,34 @@ using System.Linq;
 class D
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
 		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		var g = a.Aggregate(Gcd);
+
+		var r = 0;
+		foreach (var x in a)
+		{
+			var d = x / g;
+
+			while (d % 2 == 0)
+			{
+				d /= 2;
+				r++;
+			}
+			while (d % 3 == 0)
+			{
+				d /= 3;
+				r++;
+			}
+
+			if (d != 1) return -1;
+		}
+		return r;
 	}
+
+	static int Gcd(int a, int b) { for (int r; (r = a % b) > 0; a = b, b = r) ; return b; }
 }
