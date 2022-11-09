@@ -13,7 +13,6 @@ class CL
 		return string.Join(" ", p);
 	}
 
-	// 値は何でもかまいません。
 	public static bool PrevPermutation(int[] p)
 	{
 		var n = p.Length;
