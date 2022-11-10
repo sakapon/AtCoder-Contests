@@ -16,16 +16,20 @@ namespace YGR001.Lib.Dijkstra401
 			Vertexes = new Vertex[vertexesCount];
 			for (int v = 0; v < vertexesCount; ++v) Vertexes[v] = new Vertex(v);
 		}
-		public Dijkstra(int vertexesCount, IEnumerable<(int from, int to, int cost)> edges) : this(vertexesCount)
+		public Dijkstra(int vertexesCount, IEnumerable<(int from, int to, int cost)> edges, bool twoWay) : this(vertexesCount)
 		{
-			foreach (var (from, to, cost) in edges) AddEdge(from, to, cost);
+			foreach (var (from, to, cost) in edges) AddEdge(from, to, twoWay, cost);
 		}
-		public Dijkstra(int vertexesCount, IEnumerable<(int from, int to, long cost)> edges) : this(vertexesCount)
+		public Dijkstra(int vertexesCount, IEnumerable<(int from, int to, long cost)> edges, bool twoWay) : this(vertexesCount)
 		{
-			foreach (var (from, to, cost) in edges) AddEdge(from, to, cost);
+			foreach (var (from, to, cost) in edges) AddEdge(from, to, twoWay, cost);
 		}
 
-		public void AddEdge(int from, int to, long cost) => Vertexes[from].Edges.Add((to, cost));
+		public void AddEdge(int from, int to, bool twoWay, long cost)
+		{
+			Vertexes[from].Edges.Add((to, cost));
+			if (twoWay) Vertexes[to].Edges.Add((from, cost));
+		}
 
 		public void Execute(int sv, int ev = -1)
 		{
@@ -84,7 +88,7 @@ namespace YGR001.Lib.Dijkstra401
 		{
 			if (map[v] == 0)
 			{
-				if (n == a.Length) Expand();
+				if (n == a.Length) Array.Resize(ref a, a.Length << 1);
 				map[a[n] = v] = n++;
 			}
 
@@ -109,7 +113,5 @@ namespace YGR001.Lib.Dijkstra401
 			}
 			return v;
 		}
-
-		void Expand() => Array.Resize(ref a, a.Length << 1);
 	}
 }

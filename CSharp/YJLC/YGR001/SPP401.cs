@@ -14,7 +14,7 @@ class SPP401
 		var (n, m, s, t) = Read4();
 		var es = Array.ConvertAll(new bool[m], _ => Read3());
 
-		var spp = new Dijkstra(n, es);
+		var spp = new Dijkstra(n, es, false);
 		spp.Execute(s, t);
 		if (spp[t].Cost == long.MaxValue) return -1;
 
