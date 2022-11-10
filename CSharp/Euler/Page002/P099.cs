@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
+using static Util;
 
 class P099
 {
@@ -17,12 +17,4 @@ class P099
 	}
 
 	public static T Max<T>(T o1, T o2, Func<T, double> toKey) => toKey(o1) >= toKey(o2) ? o1 : o2;
-
-	public static string GetText(string url)
-	{
-		using var http = new HttpClient();
-		var task = http.GetStringAsync(url);
-		task.Wait();
-		return task.Result;
-	}
 }
