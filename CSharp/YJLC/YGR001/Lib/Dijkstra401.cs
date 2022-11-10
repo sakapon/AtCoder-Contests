@@ -39,18 +39,18 @@ namespace YGR001.Lib.Dijkstra401
 
 			while (q.Count > 0)
 			{
-				var vid = q.Pop();
-				if (vid == ev) break;
-				var v = Vertexes[vid];
+				var v = q.Pop();
+				if (v == ev) break;
+				var vo = Vertexes[v];
 
-				foreach (var (to, cost) in v.Edges)
+				foreach (var (nv, cost) in vo.Edges)
 				{
-					var nv = Vertexes[to];
-					var nc = v.Cost + cost;
-					if (nv.Cost <= nc) continue;
-					nv.Cost = nc;
-					nv.Previous = v;
-					q.AddOrUpdate(to);
+					var nvo = Vertexes[nv];
+					var nc = vo.Cost + cost;
+					if (nvo.Cost <= nc) continue;
+					nvo.Cost = nc;
+					nvo.Previous = vo;
+					q.AddOrUpdate(nv);
 				}
 			}
 		}

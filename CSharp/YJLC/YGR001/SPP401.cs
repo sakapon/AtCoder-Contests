@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using YGR001.Lib.Dijkstra401;
 
+// 401, 402
 class SPP401
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);

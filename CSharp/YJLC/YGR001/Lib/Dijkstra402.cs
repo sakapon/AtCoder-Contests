@@ -38,20 +38,20 @@ namespace YGR001.Lib.Dijkstra402
 
 			while (q.Count > 0)
 			{
-				var (c, vid) = q.Min;
-				q.Remove((c, vid));
-				if (vid == ev) break;
-				var v = Vertexes[vid];
+				var (c, v) = q.Min;
+				q.Remove((c, v));
+				if (v == ev) break;
+				var vo = Vertexes[v];
 
-				foreach (var (to, cost) in v.Edges)
+				foreach (var (nv, cost) in vo.Edges)
 				{
-					var nv = Vertexes[to];
+					var nvo = Vertexes[nv];
 					var nc = c + cost;
-					if (nv.Cost <= nc) continue;
-					if (nv.Cost != long.MaxValue) q.Remove((nv.Cost, to));
-					nv.Cost = nc;
-					nv.Previous = v;
-					q.Add((nc, to));
+					if (nvo.Cost <= nc) continue;
+					if (nvo.Cost != long.MaxValue) q.Remove((nvo.Cost, nv));
+					nvo.Cost = nc;
+					nvo.Previous = vo;
+					q.Add((nc, nv));
 				}
 			}
 		}
