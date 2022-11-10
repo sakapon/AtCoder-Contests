@@ -54,6 +54,14 @@ namespace YGR001.Lib.Dijkstra401
 				}
 			}
 		}
+
+		public Vertex[] GetPathVertexes(int ev)
+		{
+			var path = new Stack<Vertex>();
+			for (var v = Vertexes[ev]; v != null; v = v.Previous)
+				path.Push(v);
+			return path.ToArray();
+		}
 	}
 
 	[System.Diagnostics.DebuggerDisplay(@"\{{Id}: {Edges.Count} edges, Cost = {Cost}\}")]

@@ -19,15 +19,7 @@ class SPP401
 		spp.Execute(s, t);
 		if (spp[t].Cost == long.MaxValue) return -1;
 
-		var path = GetPathVertexes(spp[t]);
+		var path = spp.GetPathVertexes(t);
 		return $"{spp[t].Cost} {path.Length - 1}\n" + string.Join("\n", path[1..].Select(v => $"{v.Previous.Id} {v.Id}"));
-	}
-
-	static Vertex[] GetPathVertexes(Vertex ev)
-	{
-		var path = new Stack<Vertex>();
-		for (var v = ev; v != null; v = v.Previous)
-			path.Push(v);
-		return path.ToArray();
 	}
 }
