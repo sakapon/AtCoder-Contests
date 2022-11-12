@@ -33,7 +33,7 @@ namespace CoderLib8.Graphs.Arrays.PathCore111
 
 		// 最短経路とは限りません。
 		// 連結性のみを判定する場合は、DFS または Union-Find を利用します。
-		public static bool[] ConnectivityByDFS(int[][] map, int sv, int ev = -1)
+		public static bool[] ConnectivityByDFS(this int[][] map, int sv, int ev = -1)
 		{
 			var n = map.Length;
 			var u = new bool[n];
@@ -56,7 +56,7 @@ namespace CoderLib8.Graphs.Arrays.PathCore111
 			return u;
 		}
 
-		public static long[] ShortestByBFS(int[][] map, int sv, int ev = -1)
+		public static long[] ShortestByBFS(this int[][] map, int sv, int ev = -1)
 		{
 			var n = map.Length;
 			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
@@ -80,7 +80,7 @@ namespace CoderLib8.Graphs.Arrays.PathCore111
 			return costs;
 		}
 
-		public static long[] Dijkstra(int[][][] map, int sv, int ev = -1)
+		public static long[] Dijkstra(this int[][][] map, int sv, int ev = -1)
 		{
 			var n = map.Length;
 			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
@@ -105,7 +105,7 @@ namespace CoderLib8.Graphs.Arrays.PathCore111
 			return costs;
 		}
 
-		public static long[] ShortestByModBFS(int mod, int[][][] map, int sv, int ev = -1)
+		public static long[] ShortestByModBFS(this int[][][] map, int mod, int sv, int ev = -1)
 		{
 			var n = map.Length;
 			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);

@@ -33,7 +33,7 @@ namespace CoderLib8.Graphs.Arrays.PathCore121
 
 		// 最短経路とは限りません。
 		// 連結性のみを判定する場合は、DFS または Union-Find を利用します。
-		public static bool[] ConnectivityByDFS(int[][] map, int sv, int ev = -1) => ConnectivityByDFS(map.Length, v => map[v], sv, ev);
+		public static bool[] ConnectivityByDFS(this int[][] map, int sv, int ev = -1) => ConnectivityByDFS(map.Length, v => map[v], sv, ev);
 		public static bool[] ConnectivityByDFS(int n, Func<int, int[]> nexts, int sv, int ev = -1)
 		{
 			var u = new bool[n];
@@ -56,7 +56,7 @@ namespace CoderLib8.Graphs.Arrays.PathCore121
 			return u;
 		}
 
-		public static long[] ShortestByBFS(int[][] map, int sv, int ev = -1) => ShortestByBFS(map.Length, v => map[v], sv, ev);
+		public static long[] ShortestByBFS(this int[][] map, int sv, int ev = -1) => ShortestByBFS(map.Length, v => map[v], sv, ev);
 		public static long[] ShortestByBFS(int n, Func<int, int[]> nexts, int sv, int ev = -1)
 		{
 			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
@@ -80,7 +80,7 @@ namespace CoderLib8.Graphs.Arrays.PathCore121
 			return costs;
 		}
 
-		public static long[] Dijkstra(int[][][] map, int sv, int ev = -1) => Dijkstra(map.Length, v => map[v], sv, ev);
+		public static long[] Dijkstra(this int[][][] map, int sv, int ev = -1) => Dijkstra(map.Length, v => map[v], sv, ev);
 		public static long[] Dijkstra(int n, Func<int, int[][]> nexts, int sv, int ev = -1)
 		{
 			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
@@ -105,8 +105,8 @@ namespace CoderLib8.Graphs.Arrays.PathCore121
 			return costs;
 		}
 
-		public static long[] ShortestByModBFS(int mod, int[][][] map, int sv, int ev = -1) => ShortestByModBFS(mod, map.Length, v => map[v], sv, ev);
-		public static long[] ShortestByModBFS(int mod, int n, Func<int, int[][]> nexts, int sv, int ev = -1)
+		public static long[] ShortestByModBFS(this int[][][] map, int mod, int sv, int ev = -1) => ShortestByModBFS(map.Length, v => map[v], mod, sv, ev);
+		public static long[] ShortestByModBFS(int n, Func<int, int[][]> nexts, int mod, int sv, int ev = -1)
 		{
 			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
 			var qs = Array.ConvertAll(new bool[mod], _ => new Queue<int>());
