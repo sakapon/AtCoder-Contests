@@ -33,9 +33,9 @@ namespace CoderLib8.Graphs.Arrays.PathCore111
 
 		// 最短経路とは限りません。
 		// 連結性のみを判定する場合は、DFS または Union-Find を利用します。
-		public static bool[] ConnectivityByDFS(int[][] map, int sv, int ev = -1) => ConnectivityByDFS(map.Length, v => map[v], sv, ev);
-		public static bool[] ConnectivityByDFS(int n, Func<int, int[]> nexts, int sv, int ev = -1)
+		public static bool[] ConnectivityByDFS(int[][] map, int sv, int ev = -1)
 		{
+			var n = map.Length;
 			var u = new bool[n];
 			var q = new Stack<int>();
 			u[sv] = true;
@@ -45,7 +45,7 @@ namespace CoderLib8.Graphs.Arrays.PathCore111
 			{
 				var v = q.Pop();
 
-				foreach (var nv in nexts(v))
+				foreach (var nv in map[v])
 				{
 					if (u[nv]) continue;
 					u[nv] = true;
@@ -56,9 +56,9 @@ namespace CoderLib8.Graphs.Arrays.PathCore111
 			return u;
 		}
 
-		public static long[] ShortestByBFS(int[][] map, int sv, int ev = -1) => ShortestByBFS(map.Length, v => map[v], sv, ev);
-		public static long[] ShortestByBFS(int n, Func<int, int[]> nexts, int sv, int ev = -1)
+		public static long[] ShortestByBFS(int[][] map, int sv, int ev = -1)
 		{
+			var n = map.Length;
 			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
 			var q = new Queue<int>();
 			costs[sv] = 0;
@@ -69,7 +69,7 @@ namespace CoderLib8.Graphs.Arrays.PathCore111
 				var v = q.Dequeue();
 				var nc = costs[v] + 1;
 
-				foreach (var nv in nexts(v))
+				foreach (var nv in map[v])
 				{
 					if (costs[nv] <= nc) continue;
 					costs[nv] = nc;
@@ -80,9 +80,9 @@ namespace CoderLib8.Graphs.Arrays.PathCore111
 			return costs;
 		}
 
-		public static long[] Dijkstra(int[][][] map, int sv, int ev = -1) => Dijkstra(map.Length, v => map[v], sv, ev);
-		public static long[] Dijkstra(int n, Func<int, int[][]> nexts, int sv, int ev = -1)
+		public static long[] Dijkstra(int[][][] map, int sv, int ev = -1)
 		{
+			var n = map.Length;
 			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
 			costs[sv] = 0;
 			var q = new SortedSet<(long, int)> { (0, sv) };
@@ -93,7 +93,7 @@ namespace CoderLib8.Graphs.Arrays.PathCore111
 				q.Remove((c, v));
 				if (v == ev) break;
 
-				foreach (var e in nexts(v))
+				foreach (var e in map[v])
 				{
 					var (nv, nc) = (e[1], c + e[2]);
 					if (costs[nv] <= nc) continue;
@@ -105,9 +105,9 @@ namespace CoderLib8.Graphs.Arrays.PathCore111
 			return costs;
 		}
 
-		public static long[] ShortestByModBFS(int mod, int[][][] map, int sv, int ev = -1) => ShortestByModBFS(mod, map.Length, v => map[v], sv, ev);
-		public static long[] ShortestByModBFS(int mod, int n, Func<int, int[][]> nexts, int sv, int ev = -1)
+		public static long[] ShortestByModBFS(int mod, int[][][] map, int sv, int ev = -1)
 		{
+			var n = map.Length;
 			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
 			var qs = Array.ConvertAll(new bool[mod], _ => new Queue<int>());
 			costs[sv] = 0;
@@ -122,7 +122,7 @@ namespace CoderLib8.Graphs.Arrays.PathCore111
 					if (v == ev) return costs;
 					if (costs[v] < c) continue;
 
-					foreach (var e in nexts(v))
+					foreach (var e in map[v])
 					{
 						var (nv, nc) = (e[1], c + e[2]);
 						if (costs[nv] <= nc) continue;
