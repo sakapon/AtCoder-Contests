@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CoderLib8.Graphs.Arrays
+namespace CoderLib8.Graphs.Arrays.PathCore111
 {
 	public static class PathCore
 	{
