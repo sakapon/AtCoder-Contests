@@ -33,8 +33,8 @@ namespace CoderLib8.Graphs.Arrays
 
 		// 最短経路とは限りません。
 		// 連結性のみを判定する場合は、DFS または Union-Find を利用します。
-		public static bool[] DFS(int[][] map, int sv, int ev = -1) => DFS(map.Length, v => map[v], sv, ev);
-		public static bool[] DFS(int n, Func<int, int[]> nexts, int sv, int ev = -1)
+		public static bool[] ConnectivityByDFS(int[][] map, int sv, int ev = -1) => ConnectivityByDFS(map.Length, v => map[v], sv, ev);
+		public static bool[] ConnectivityByDFS(int n, Func<int, int[]> nexts, int sv, int ev = -1)
 		{
 			var u = new bool[n];
 			var q = new Stack<int>();
@@ -56,8 +56,8 @@ namespace CoderLib8.Graphs.Arrays
 			return u;
 		}
 
-		public static long[] BFS(int[][] map, int sv, int ev = -1) => BFS(map.Length, v => map[v], sv, ev);
-		public static long[] BFS(int n, Func<int, int[]> nexts, int sv, int ev = -1)
+		public static long[] ShortestByBFS(int[][] map, int sv, int ev = -1) => ShortestByBFS(map.Length, v => map[v], sv, ev);
+		public static long[] ShortestByBFS(int n, Func<int, int[]> nexts, int sv, int ev = -1)
 		{
 			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
 			var q = new Queue<int>();
@@ -100,6 +100,35 @@ namespace CoderLib8.Graphs.Arrays
 					if (costs[nv] != long.MaxValue) q.Remove((costs[nv], nv));
 					q.Add((nc, nv));
 					costs[nv] = nc;
+				}
+			}
+			return costs;
+		}
+
+		public static long[] ShortestByModBFS(int mod, int[][][] map, int sv, int ev = -1) => ShortestByModBFS(mod, map.Length, v => map[v], sv, ev);
+		public static long[] ShortestByModBFS(int mod, int n, Func<int, int[][]> nexts, int sv, int ev = -1)
+		{
+			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
+			var qs = Array.ConvertAll(new bool[mod], _ => new Queue<int>());
+			costs[sv] = 0;
+			qs[0].Enqueue(sv);
+
+			for (long c = 0; Array.Exists(qs, q => q.Count > 0); ++c)
+			{
+				var q = qs[c % mod];
+				while (q.Count > 0)
+				{
+					var v = q.Dequeue();
+					if (v == ev) return costs;
+					if (costs[v] < c) continue;
+
+					foreach (var e in nexts(v))
+					{
+						var (nv, nc) = (e[1], c + e[2]);
+						if (costs[nv] <= nc) continue;
+						costs[nv] = nc;
+						qs[nc % mod].Enqueue(nv);
+					}
 				}
 			}
 			return costs;
