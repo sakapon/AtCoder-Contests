@@ -14,7 +14,7 @@ class A64
 		var es = Array.ConvertAll(new bool[m], _ => Read());
 
 		var map = PathCore.ToWeightedMap(n + 1, es, true);
-		var r = PathCore.Dijkstra(map, 1);
+		var r = map.Dijkstra(1);
 		return string.Join("\n", r[1..].Select(x => x == long.MaxValue ? -1 : x));
 	}
 }

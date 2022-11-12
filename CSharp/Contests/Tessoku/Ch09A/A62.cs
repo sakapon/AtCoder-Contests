@@ -14,7 +14,7 @@ class A62
 		var es = Array.ConvertAll(new bool[m], _ => Read());
 
 		var map = PathCore.ToMap(n + 1, es, true);
-		var r = PathCore.ConnectivityByDFS(map, 1);
+		var r = map.ConnectivityByDFS(1);
 		return $"The graph is {(r[1..].All(b => b) ? "" : "not ")}connected.";
 	}
 }

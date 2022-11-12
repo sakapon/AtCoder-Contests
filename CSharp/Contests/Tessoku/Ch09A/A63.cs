@@ -14,7 +14,7 @@ class A63
 		var es = Array.ConvertAll(new bool[m], _ => Read());
 
 		var map = PathCore.ToMap(n + 1, es, true);
-		var r = PathCore.ShortestByBFS(map, 1);
+		var r = map.ShortestByBFS(1);
 		return string.Join("\n", r[1..].Select(x => x == long.MaxValue ? -1 : x));
 	}
 }
