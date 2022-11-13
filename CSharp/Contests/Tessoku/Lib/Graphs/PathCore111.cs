@@ -105,6 +105,7 @@ namespace CoderLib8.Graphs.Arrays.PathCore111
 			return costs;
 		}
 
+		// Dijkstra 法と互換性があります。
 		public static long[] ShortestByModBFS(this int[][][] map, int mod, int sv, int ev = -1)
 		{
 			var n = map.Length;
