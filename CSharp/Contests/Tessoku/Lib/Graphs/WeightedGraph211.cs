@@ -75,6 +75,36 @@ namespace CoderLib8.Graphs.Int.WeightedGraph211
 			}
 		}
 
+		// Dijkstra 法と互換性があります。
+		public void ShortestByModBFS(int mod, int sv, int ev = -1)
+		{
+			Vertexes[sv].Cost = 0;
+			var qs = Array.ConvertAll(new bool[mod], _ => new Queue<int>());
+			qs[0].Enqueue(sv);
+
+			for (long c = 0; Array.Exists(qs, q => q.Count > 0); ++c)
+			{
+				var q = qs[c % mod];
+				while (q.Count > 0)
+				{
+					var v = q.Dequeue();
+					if (v == ev) return;
+					var vo = Vertexes[v];
+					if (vo.Cost < c) continue;
+
+					foreach (var (nv, cost) in vo.Edges)
+					{
+						var nvo = Vertexes[nv];
+						var nc = c + cost;
+						if (nvo.Cost <= nc) continue;
+						nvo.Cost = nc;
+						nvo.Previous = v;
+						qs[nc % mod].Enqueue(nv);
+					}
+				}
+			}
+		}
+
 		public int[] GetPathVertexes(int ev)
 		{
 			var path = new Stack<int>();
