@@ -101,19 +101,19 @@ namespace CoderLib8.Graphs.SPPs.Typed.UnweightedGraph211
 			}
 		}
 
-		public Vertex<T>[] GetPathVertexes(T ev)
+		public T[] GetPathVertexes(T ev)
 		{
-			var path = new Stack<Vertex<T>>();
+			var path = new Stack<T>();
 			for (var v = Vertexes[ev]; v != null; v = v.Previous)
-				path.Push(v);
+				path.Push(v.Id);
 			return path.ToArray();
 		}
 
-		public (Vertex<T>, Vertex<T>)[] GetPathEdges(T ev)
+		public (T, T)[] GetPathEdges(T ev)
 		{
-			var path = new Stack<(Vertex<T>, Vertex<T>)>();
+			var path = new Stack<(T, T)>();
 			for (var v = Vertexes[ev]; v.Previous != null; v = v.Previous)
-				path.Push((v.Previous, v));
+				path.Push((v.Previous.Id, v.Id));
 			return path.ToArray();
 		}
 	}
