@@ -10,7 +10,7 @@ namespace CoderLib8.Graphs.Int.WeightedGraph211
 		public List<(int to, long cost)> Edges { get; } = new List<(int, long)>();
 		public long Cost { get; set; } = long.MaxValue;
 		public bool IsConnected => Cost != long.MaxValue;
-		public Vertex Previous { get; set; }
+		public int Previous { get; set; } = -1;
 		public Vertex(int id) { Id = id; }
 	}
 
@@ -41,6 +41,15 @@ namespace CoderLib8.Graphs.Int.WeightedGraph211
 			if (twoWay) Vertexes[to].Edges.Add((from, cost));
 		}
 
+		public void ClearResult()
+		{
+			foreach (var v in Vertexes)
+			{
+				v.Cost = long.MaxValue;
+				v.Previous = -1;
+			}
+		}
+
 		public void Dijkstra(int sv, int ev = -1)
 		{
 			Vertexes[sv].Cost = 0;
@@ -59,18 +68,26 @@ namespace CoderLib8.Graphs.Int.WeightedGraph211
 					var nc = c + cost;
 					if (nvo.Cost <= nc) continue;
 					if (nvo.Cost != long.MaxValue) q.Remove((nvo.Cost, nv));
-					nvo.Cost = nc;
-					nvo.Previous = vo;
 					q.Add((nc, nv));
+					nvo.Cost = nc;
+					nvo.Previous = v;
 				}
 			}
 		}
 
-		public Vertex[] GetPathVertexes(int ev)
+		public int[] GetPathVertexes(int ev)
 		{
-			var path = new Stack<Vertex>();
-			for (var v = Vertexes[ev]; v != null; v = v.Previous)
+			var path = new Stack<int>();
+			for (var v = ev; v != -1; v = Vertexes[v].Previous)
 				path.Push(v);
+			return path.ToArray();
+		}
+
+		public (int, int)[] GetPathEdges(int ev)
+		{
+			var path = new Stack<(int, int)>();
+			for (int v = ev, pv = Vertexes[v].Previous; pv != -1; v = pv, pv = Vertexes[v].Previous)
+				path.Push((pv, v));
 			return path.ToArray();
 		}
 	}
