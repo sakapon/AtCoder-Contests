@@ -27,19 +27,16 @@ namespace CoderLib8.Graphs.SPPs.Typed.UnweightedGraph211
 			foreach (var (from, to) in edges) AddEdge(from, to, twoWay);
 		}
 
-		public bool AddVertex(T v)
+		public Vertex<T> AddOrGetVertex(T v)
 		{
-			if (Vertexes.ContainsKey(v)) return false;
-			Vertexes[v] = new Vertex<T>(v);
-			return true;
+			if (!Vertexes.TryGetValue(v, out var vo)) Vertexes[v] = vo = new Vertex<T>(v);
+			return vo;
 		}
 
 		public void AddEdge(T from, T to, bool twoWay)
 		{
-			AddVertex(from);
-			AddVertex(to);
-			var fv = Vertexes[from];
-			var tv = Vertexes[to];
+			var fv = AddOrGetVertex(from);
+			var tv = AddOrGetVertex(to);
 			fv.Edges.Add(tv);
 			if (twoWay) tv.Edges.Add(fv);
 		}
@@ -57,9 +54,8 @@ namespace CoderLib8.Graphs.SPPs.Typed.UnweightedGraph211
 		// 連結性のみを判定する場合は、DFS または Union-Find を利用します。
 		public void ConnectivityByDFS(T sv, T ev)
 		{
-			if (!Vertexes.ContainsKey(sv)) return;
-			var svo = Vertexes[sv];
-			var evo = Vertexes.ContainsKey(ev) ? Vertexes[ev] : null;
+			if (!Vertexes.TryGetValue(sv, out var svo)) return;
+			Vertexes.TryGetValue(ev, out var evo);
 
 			svo.Cost = 0;
 			var q = new Stack<Vertex<T>>();
@@ -82,9 +78,8 @@ namespace CoderLib8.Graphs.SPPs.Typed.UnweightedGraph211
 
 		public void ShortestByBFS(T sv, T ev)
 		{
-			if (!Vertexes.ContainsKey(sv)) return;
-			var svo = Vertexes[sv];
-			var evo = Vertexes.ContainsKey(ev) ? Vertexes[ev] : null;
+			if (!Vertexes.TryGetValue(sv, out var svo)) return;
+			Vertexes.TryGetValue(ev, out var evo);
 
 			svo.Cost = 0;
 			var q = new Queue<Vertex<T>>();

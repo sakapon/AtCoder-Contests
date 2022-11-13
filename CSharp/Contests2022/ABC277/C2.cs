@@ -14,7 +14,7 @@ class C2
 		var es = Array.ConvertAll(new bool[n], _ => Read2());
 
 		var graph = new UnweightedGraph<int>(es, true);
-		graph.AddVertex(1);
+		graph.AddOrGetVertex(1);
 		graph.ConnectivityByDFS(1, -1);
 		return graph.Vertexes.Values.Where(v => v.IsConnected).Max(v => v.Id);
 	}
