@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CoderLib8.Graphs.SPPs.Typed.UnweightedGraph211
+namespace CoderLib8.Graphs.SPPs.Typed.UnweightedGraph221
 {
 	[System.Diagnostics.DebuggerDisplay(@"\{{Id}: {Edges.Count} edges, Cost = {Cost}\}")]
 	public class Vertex<T>
