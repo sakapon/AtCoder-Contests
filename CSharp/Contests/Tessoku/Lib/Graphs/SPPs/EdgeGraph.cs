@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CoderLib8.Graphs.Int.Edges
+namespace CoderLib8.Graphs.SPPs.Int.Edges
 {
 	/// <summary>
 	/// グラフを表します。辺をオブジェクトとして扱います。

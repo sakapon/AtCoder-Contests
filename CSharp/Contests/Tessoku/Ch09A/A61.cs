@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CoderLib8.Graphs.Arrays.PathCore111;
+using CoderLib8.Graphs.SPPs.Arrays.PathCore111;
 
 class A61
 {

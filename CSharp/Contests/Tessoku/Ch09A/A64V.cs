@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoderLib8.Graphs.Int.WeightedGraph211;
+using CoderLib8.Graphs.SPPs.Int.WeightedGraph211;
 
 class A64V
 {
