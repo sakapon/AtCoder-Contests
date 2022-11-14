@@ -5,10 +5,12 @@ using System.Collections.Generic;
 // Test: https://atcoder.jp/contests/atc002/tasks/abc007_3
 namespace CoderLib8.Graphs.Arrays
 {
-	public class GridManager
+	public class GeneralGrid
 	{
 		readonly int h, w;
-		public GridManager(int h, int w) { this.h = h; this.w = w; }
+		public int Height => h;
+		public int Width => w;
+		public GeneralGrid(int h, int w) { this.h = h; this.w = w; }
 
 		public int ToVertexId(int i, int j) => w * i + j;
 		public (int i, int j) FromVertexId(int v) => (v / w, v % w);
@@ -29,10 +31,14 @@ namespace CoderLib8.Graphs.Arrays
 	{
 		readonly int h, w;
 		readonly int[][] s;
-		public IntGrid(int h, int w, int[][] s)
+		public int Height => h;
+		public int Width => w;
+		public int[][] Raw => s;
+
+		public IntGrid(int[][] s)
 		{
-			this.h = h;
-			this.w = w;
+			h = s.Length;
+			w = s[0].Length;
 			this.s = s;
 		}
 
@@ -56,14 +62,18 @@ namespace CoderLib8.Graphs.Arrays
 		readonly int h, w;
 		readonly char[][] s;
 		readonly char wall;
-		public CharGrid(int h, int w, char[][] s, char wall = '#')
+		public int Height => h;
+		public int Width => w;
+		public char[][] Raw => s;
+
+		public CharGrid(char[][] s, char wall = '#')
 		{
-			this.h = h;
-			this.w = w;
+			h = s.Length;
+			w = s[0].Length;
 			this.s = s;
 			this.wall = wall;
 		}
-		public CharGrid(int h, int w, string[] s, char wall = '#') : this(h, w, Array.ConvertAll(s, l => l.ToCharArray()), wall) { }
+		public CharGrid(string[] s, char wall = '#') : this(Array.ConvertAll(s, l => l.ToCharArray()), wall) { }
 
 		public int ToVertexId(int i, int j) => w * i + j;
 		public (int i, int j) FromVertexId(int v) => (v / w, v % w);
@@ -79,6 +89,7 @@ namespace CoderLib8.Graphs.Arrays
 			return l.ToArray();
 		}
 
+		// 1 桁の整数が設定されている場合
 		public int[][] GetWeightedNexts(int v)
 		{
 			var (i, j) = (v / w, v % w);
