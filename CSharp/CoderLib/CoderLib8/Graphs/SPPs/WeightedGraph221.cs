@@ -66,7 +66,7 @@ namespace CoderLib8.Graphs.SPPs.Typed.WeightedGraph221
 			{
 				var (c, v) = q.Min;
 				q.Remove((c, v));
-				if (v == evo) break;
+				if (v == evo) return;
 
 				foreach (var (nv, cost) in v.Edges)
 				{

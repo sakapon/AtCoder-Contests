@@ -91,7 +91,7 @@ namespace CoderLib8.Graphs.SPPs.Arrays.PathCore121
 			{
 				var (c, v) = q.Min;
 				q.Remove((c, v));
-				if (v == ev) break;
+				if (v == ev) return costs;
 
 				foreach (var e in nexts(v))
 				{
