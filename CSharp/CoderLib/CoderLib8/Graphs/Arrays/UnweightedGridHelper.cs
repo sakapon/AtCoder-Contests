@@ -7,7 +7,7 @@ namespace CoderLib8.Graphs.Arrays
 {
 	public class GridManager
 	{
-		int h, w;
+		readonly int h, w;
 		public GridManager(int h, int w) { this.h = h; this.w = w; }
 
 		public int ToVertexId(int i, int j) => w * i + j;
@@ -27,8 +27,8 @@ namespace CoderLib8.Graphs.Arrays
 
 	public class IntGrid
 	{
-		int h, w;
-		int[][] s;
+		readonly int h, w;
+		readonly int[][] s;
 		public IntGrid(int h, int w, int[][] s)
 		{
 			this.h = h;
@@ -53,9 +53,9 @@ namespace CoderLib8.Graphs.Arrays
 
 	public class StringGrid
 	{
-		int h, w;
-		string[] s;
-		char wall;
+		readonly int h, w;
+		readonly string[] s;
+		readonly char wall;
 		public StringGrid(int h, int w, string[] s, char wall = '#')
 		{
 			this.h = h;
