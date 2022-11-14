@@ -97,5 +97,21 @@ namespace CoderLib8.Graphs.SPPs.Int.EdgeGraph311
 				v.Previous = null;
 			}
 		}
+
+		public Vertex[] GetPathVertexes(int ev)
+		{
+			var path = new Stack<Vertex>();
+			for (var v = Vertexes[ev]; v != null; v = v.Previous?.From)
+				path.Push(v);
+			return path.ToArray();
+		}
+
+		public Edge[] GetPathEdges(int ev)
+		{
+			var path = new Stack<Edge>();
+			for (var e = Vertexes[ev].Previous; e != null; e = e.From.Previous)
+				path.Push(e);
+			return path.ToArray();
+		}
 	}
 }
