@@ -5,9 +5,9 @@ using System.Collections.Generic;
 // Test: https://atcoder.jp/contests/atc002/tasks/abc007_3
 namespace CoderLib8.Graphs.Arrays
 {
-	public static class UnweightedGridHelper
+	// undirected
+	public static class GridHelper
 	{
-		// undirected
 		public static List<int>[] GetAdjacencyList(int h, int w)
 		{
 			var map = Array.ConvertAll(new bool[h * w], _ => new List<int>());
@@ -28,7 +28,6 @@ namespace CoderLib8.Graphs.Arrays
 			return map;
 		}
 
-		// undirected
 		public static List<int>[] GetAdjacencyList(int h, int w, string[] s, char wall = '#')
 		{
 			var map = Array.ConvertAll(new bool[h * w], _ => new List<int>());
@@ -50,12 +49,8 @@ namespace CoderLib8.Graphs.Arrays
 				}
 			return map;
 		}
-	}
 
-	public static class WeightedGridHelper
-	{
-		// undirected
-		public static List<int[]>[] GetAdjacencyList(int h, int w, int[][] s)
+		public static List<int[]>[] GetWeightedAdjacencyList(int h, int w, int[][] s)
 		{
 			var map = Array.ConvertAll(new bool[h * w], _ => new List<int[]>());
 			for (int i = 0; i < h; ++i)
@@ -75,8 +70,7 @@ namespace CoderLib8.Graphs.Arrays
 			return map;
 		}
 
-		// undirected
-		public static List<int[]>[] GetAdjacencyList(int h, int w, string[] s, char wall = '#')
+		public static List<int[]>[] GetWeightedAdjacencyList(int h, int w, string[] s, char wall = '#')
 		{
 			var map = Array.ConvertAll(new bool[h * w], _ => new List<int[]>());
 			for (int i = 0; i < h; ++i)
