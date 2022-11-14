@@ -14,14 +14,14 @@ namespace CoderLib8.Graphs.Arrays
 			for (int i = 0; i < h; ++i)
 				for (int j = 1; j < w; ++j)
 				{
-					var v = i * w + j;
+					var v = w * i + j;
 					map[v].Add(v - 1);
 					map[v - 1].Add(v);
 				}
 			for (int j = 0; j < w; ++j)
 				for (int i = 1; i < h; ++i)
 				{
-					var v = i * w + j;
+					var v = w * i + j;
 					map[v].Add(v - w);
 					map[v - w].Add(v);
 				}
@@ -35,16 +35,16 @@ namespace CoderLib8.Graphs.Arrays
 			for (int i = 0; i < h; ++i)
 				for (int j = 1; j < w; ++j)
 				{
-					var v = i * w + j;
 					if (s[i][j] == wall || s[i][j - 1] == wall) continue;
+					var v = w * i + j;
 					map[v].Add(v - 1);
 					map[v - 1].Add(v);
 				}
 			for (int j = 0; j < w; ++j)
 				for (int i = 1; i < h; ++i)
 				{
-					var v = i * w + j;
 					if (s[i][j] == wall || s[i - 1][j] == wall) continue;
+					var v = w * i + j;
 					map[v].Add(v - w);
 					map[v - w].Add(v);
 				}
