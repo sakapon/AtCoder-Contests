@@ -36,7 +36,8 @@ namespace CoderLib8.Graphs.Arrays
 			return map;
 		}
 
-		public List<int>[] GetAdjacencyList(string[] s, char wall = '#')
+		public List<int>[] GetAdjacencyList(string[] s, char wall = '#') => GetAdjacencyList(Array.ConvertAll(s, l => l.ToCharArray()), wall);
+		public List<int>[] GetAdjacencyList(char[][] s, char wall = '#')
 		{
 			var map = Array.ConvertAll(new bool[h * w], _ => new List<int>());
 			for (int i = 0; i < h; ++i)
@@ -78,7 +79,8 @@ namespace CoderLib8.Graphs.Arrays
 			return map;
 		}
 
-		public List<int[]>[] GetWeightedAdjacencyList(string[] s, char wall = '#')
+		public List<int[]>[] GetWeightedAdjacencyList(string[] s, char wall = '#') => GetWeightedAdjacencyList(Array.ConvertAll(s, l => l.ToCharArray()), wall);
+		public List<int[]>[] GetWeightedAdjacencyList(char[][] s, char wall = '#')
 		{
 			var map = Array.ConvertAll(new bool[h * w], _ => new List<int[]>());
 			for (int i = 0; i < h; ++i)
