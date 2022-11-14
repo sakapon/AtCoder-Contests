@@ -54,7 +54,8 @@ namespace CoderLib8.Graphs.SPPs.Typed.UnweightedGraph221
 		// 連結性のみを判定する場合は、DFS または Union-Find を利用します。
 		public void ConnectivityByDFS(T sv, T ev)
 		{
-			if (!Vertexes.TryGetValue(sv, out var svo)) return;
+			// 始点が存在しない場合には追加します。
+			var svo = AddOrGetVertex(sv);
 			Vertexes.TryGetValue(ev, out var evo);
 
 			svo.Cost = 0;
@@ -78,7 +79,8 @@ namespace CoderLib8.Graphs.SPPs.Typed.UnweightedGraph221
 
 		public void ShortestByBFS(T sv, T ev)
 		{
-			if (!Vertexes.TryGetValue(sv, out var svo)) return;
+			// 始点が存在しない場合には追加します。
+			var svo = AddOrGetVertex(sv);
 			Vertexes.TryGetValue(ev, out var evo);
 
 			svo.Cost = 0;

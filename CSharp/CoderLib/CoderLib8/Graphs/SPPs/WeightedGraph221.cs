@@ -56,11 +56,18 @@ namespace CoderLib8.Graphs.SPPs.Typed.WeightedGraph221
 
 		public void Dijkstra(T sv, T ev)
 		{
-			if (!Vertexes.TryGetValue(sv, out var svo)) return;
+			// 始点が存在しない場合には追加します。
+			var svo = AddOrGetVertex(sv);
 			Vertexes.TryGetValue(ev, out var evo);
 
 			svo.Cost = 0;
-			var q = new SortedSet<(long, Vertex<T>)> { (0, svo) };
+			var comp = Comparer<(long c, Vertex<T> v)>.Create((x, y) =>
+			{
+				var d = x.c.CompareTo(y.c);
+				if (d != 0) return d;
+				return x.v.GetHashCode().CompareTo(y.v.GetHashCode());
+			});
+			var q = new SortedSet<(long, Vertex<T>)>(comp) { (0, svo) };
 
 			while (q.Count > 0)
 			{
@@ -83,7 +90,8 @@ namespace CoderLib8.Graphs.SPPs.Typed.WeightedGraph221
 		// Dijkstra 法の特別な場合です。
 		public void ShortestByModBFS(int mod, T sv, T ev)
 		{
-			if (!Vertexes.TryGetValue(sv, out var svo)) return;
+			// 始点が存在しない場合には追加します。
+			var svo = AddOrGetVertex(sv);
 			Vertexes.TryGetValue(ev, out var evo);
 
 			svo.Cost = 0;
