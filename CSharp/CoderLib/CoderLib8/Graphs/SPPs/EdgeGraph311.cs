@@ -98,6 +98,55 @@ namespace CoderLib8.Graphs.SPPs.Int.EdgeGraph311
 			}
 		}
 
+		// 最短経路とは限りません。
+		// 連結性のみを判定する場合は、DFS または Union-Find を利用します。
+		public void ConnectivityByDFS(int sv, int ev = -1)
+		{
+			Vertexes[sv].Cost = 0;
+			var q = new Stack<int>();
+			q.Push(sv);
+
+			while (q.Count > 0)
+			{
+				var v = q.Pop();
+				var vo = Vertexes[v];
+
+				foreach (var e in vo.Edges)
+				{
+					var nvo = e.To;
+					if (nvo.Cost == 0) continue;
+					nvo.Cost = 0;
+					nvo.Previous = e;
+					if (nvo.Id == ev) return;
+					q.Push(nvo.Id);
+				}
+			}
+		}
+
+		public void ShortestByBFS(int sv, int ev = -1)
+		{
+			Vertexes[sv].Cost = 0;
+			var q = new Queue<int>();
+			q.Enqueue(sv);
+
+			while (q.Count > 0)
+			{
+				var v = q.Dequeue();
+				var vo = Vertexes[v];
+				var nc = vo.Cost + 1;
+
+				foreach (var e in vo.Edges)
+				{
+					var nvo = e.To;
+					if (nvo.Cost <= nc) continue;
+					nvo.Cost = nc;
+					nvo.Previous = e;
+					if (nvo.Id == ev) return;
+					q.Enqueue(nvo.Id);
+				}
+			}
+		}
+
 		public Vertex[] GetPathVertexes(int ev)
 		{
 			var path = new Stack<Vertex>();
