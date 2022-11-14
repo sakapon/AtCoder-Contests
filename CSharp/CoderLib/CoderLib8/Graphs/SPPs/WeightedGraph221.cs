@@ -7,7 +7,7 @@ namespace CoderLib8.Graphs.SPPs.Typed.WeightedGraph221
 	public class Vertex<T>
 	{
 		public T Id { get; }
-		public List<Vertex<T>> Edges { get; } = new List<Vertex<T>>();
+		public List<(Vertex<T> to, long cost)> Edges { get; } = new List<(Vertex<T>, long)>();
 		public long Cost { get; set; } = long.MaxValue;
 		public bool IsConnected => Cost != long.MaxValue;
 		public Vertex<T> Previous { get; set; }
@@ -22,9 +22,13 @@ namespace CoderLib8.Graphs.SPPs.Typed.WeightedGraph221
 		public Vertex<T> this[T v] => Vertexes[v];
 
 		public WeightedGraph() { }
-		public WeightedGraph(IEnumerable<(T from, T to)> edges, bool twoWay)
+		public WeightedGraph(IEnumerable<(T from, T to, int cost)> edges, bool twoWay)
 		{
-			foreach (var (from, to) in edges) AddEdge(from, to, twoWay);
+			foreach (var (from, to, cost) in edges) AddEdge(from, to, twoWay, cost);
+		}
+		public WeightedGraph(IEnumerable<(T from, T to, long cost)> edges, bool twoWay)
+		{
+			foreach (var (from, to, cost) in edges) AddEdge(from, to, twoWay, cost);
 		}
 
 		public Vertex<T> AddOrGetVertex(T v)
@@ -33,12 +37,12 @@ namespace CoderLib8.Graphs.SPPs.Typed.WeightedGraph221
 			return vo;
 		}
 
-		public void AddEdge(T from, T to, bool twoWay)
+		public void AddEdge(T from, T to, bool twoWay, long cost)
 		{
 			var fv = AddOrGetVertex(from);
 			var tv = AddOrGetVertex(to);
-			fv.Edges.Add(tv);
-			if (twoWay) tv.Edges.Add(fv);
+			fv.Edges.Add((tv, cost));
+			if (twoWay) tv.Edges.Add((fv, cost));
 		}
 
 		public void ClearResult()
@@ -50,53 +54,62 @@ namespace CoderLib8.Graphs.SPPs.Typed.WeightedGraph221
 			}
 		}
 
-		// 最短経路とは限りません。
-		// 連結性のみを判定する場合は、DFS または Union-Find を利用します。
-		public void ConnectivityByDFS(T sv, T ev)
+		public void Dijkstra(T sv, T ev)
 		{
 			if (!Vertexes.TryGetValue(sv, out var svo)) return;
 			Vertexes.TryGetValue(ev, out var evo);
 
 			svo.Cost = 0;
-			var q = new Stack<Vertex<T>>();
-			q.Push(svo);
+			var q = new SortedSet<(long, Vertex<T>)> { (0, svo) };
 
 			while (q.Count > 0)
 			{
-				var v = q.Pop();
+				var (c, v) = q.Min;
+				q.Remove((c, v));
+				if (v == evo) break;
 
-				foreach (var nv in v.Edges)
+				foreach (var (nv, cost) in v.Edges)
 				{
-					if (nv.Cost == 0) continue;
-					nv.Cost = 0;
+					var nc = c + cost;
+					if (nv.Cost <= nc) continue;
+					if (nv.Cost != long.MaxValue) q.Remove((nv.Cost, nv));
+					q.Add((nc, nv));
+					nv.Cost = nc;
 					nv.Previous = v;
-					if (nv == evo) return;
-					q.Push(nv);
 				}
 			}
 		}
 
-		public void ShortestByBFS(T sv, T ev)
+		// Dijkstra 法の特別な場合です。
+		public void ShortestByModBFS(int mod, T sv, T ev)
 		{
 			if (!Vertexes.TryGetValue(sv, out var svo)) return;
 			Vertexes.TryGetValue(ev, out var evo);
 
 			svo.Cost = 0;
-			var q = new Queue<Vertex<T>>();
-			q.Enqueue(svo);
+			var qs = Array.ConvertAll(new bool[mod], _ => new Queue<Vertex<T>>());
+			qs[0].Enqueue(svo);
+			var qc = 1;
 
-			while (q.Count > 0)
+			for (long c = 0; qc > 0; ++c)
 			{
-				var v = q.Dequeue();
-				var nc = v.Cost + 1;
-
-				foreach (var nv in v.Edges)
+				var q = qs[c % mod];
+				while (q.Count > 0)
 				{
-					if (nv.Cost <= nc) continue;
-					nv.Cost = nc;
-					nv.Previous = v;
-					if (nv == evo) return;
-					q.Enqueue(nv);
+					var v = q.Dequeue();
+					--qc;
+					if (v == evo) return;
+					if (v.Cost < c) continue;
+
+					foreach (var (nv, cost) in v.Edges)
+					{
+						var nc = c + cost;
+						if (nv.Cost <= nc) continue;
+						nv.Cost = nc;
+						nv.Previous = v;
+						qs[nc % mod].Enqueue(nv);
+						++qc;
+					}
 				}
 			}
 		}
