@@ -147,6 +147,64 @@ namespace CoderLib8.Graphs.SPPs.Int.EdgeGraph311
 			}
 		}
 
+		public void Dijkstra(int sv, int ev = -1)
+		{
+			Vertexes[sv].Cost = 0;
+			var q = new SortedSet<(long, int)> { (0, sv) };
+
+			while (q.Count > 0)
+			{
+				var (c, v) = q.Min;
+				q.Remove((c, v));
+				if (v == ev) return;
+				var vo = Vertexes[v];
+
+				foreach (var e in vo.Edges)
+				{
+					var nvo = e.To;
+					var nc = c + e.Cost;
+					if (nvo.Cost <= nc) continue;
+					if (nvo.Cost != long.MaxValue) q.Remove((nvo.Cost, nvo.Id));
+					q.Add((nc, nvo.Id));
+					nvo.Cost = nc;
+					nvo.Previous = e;
+				}
+			}
+		}
+
+		// Dijkstra 法の特別な場合です。
+		public void ShortestByModBFS(int mod, int sv, int ev = -1)
+		{
+			Vertexes[sv].Cost = 0;
+			var qs = Array.ConvertAll(new bool[mod], _ => new Queue<int>());
+			qs[0].Enqueue(sv);
+			var qc = 1;
+
+			for (long c = 0; qc > 0; ++c)
+			{
+				var q = qs[c % mod];
+				while (q.Count > 0)
+				{
+					var v = q.Dequeue();
+					--qc;
+					if (v == ev) return;
+					var vo = Vertexes[v];
+					if (vo.Cost < c) continue;
+
+					foreach (var e in vo.Edges)
+					{
+						var nvo = e.To;
+						var nc = c + e.Cost;
+						if (nvo.Cost <= nc) continue;
+						nvo.Cost = nc;
+						nvo.Previous = e;
+						qs[nc % mod].Enqueue(nvo.Id);
+						++qc;
+					}
+				}
+			}
+		}
+
 		public Vertex[] GetPathVertexes(int ev)
 		{
 			var path = new Stack<Vertex>();
