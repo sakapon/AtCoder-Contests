@@ -79,6 +79,7 @@ namespace CoderLib8.Graphs.SPPs.Arrays.PathCore111
 			return map;
 		}
 
+		// 1 桁の整数が設定されている場合
 		public List<int[]>[] GetWeightedAdjacencyList(string[] s, char wall = '#') => GetWeightedAdjacencyList(Array.ConvertAll(s, l => l.ToCharArray()), wall);
 		public List<int[]>[] GetWeightedAdjacencyList(char[][] s, char wall = '#')
 		{
