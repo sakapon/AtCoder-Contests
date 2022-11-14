@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 // Test: https://atcoder.jp/contests/atc001/tasks/dfs_a
 // Test: https://atcoder.jp/contests/atc002/tasks/abc007_3
-namespace CoderLib8.Graphs.Arrays
+namespace CoderLib8.Graphs.SPPs.Arrays.PathCore111
 {
 	// undirected
 	public class GridHelper
