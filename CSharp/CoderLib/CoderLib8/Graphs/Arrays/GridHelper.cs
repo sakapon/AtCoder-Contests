@@ -6,9 +6,17 @@ using System.Collections.Generic;
 namespace CoderLib8.Graphs.Arrays
 {
 	// undirected
-	public static class GridHelper
+	public class GridHelper
 	{
-		public static List<int>[] GetAdjacencyList(int h, int w)
+		readonly int h, w;
+		public int Height => h;
+		public int Width => w;
+		public GridHelper(int h, int w) { this.h = h; this.w = w; }
+
+		public int ToVertexId(int i, int j) => w * i + j;
+		public (int i, int j) FromVertexId(int v) => (v / w, v % w);
+
+		public List<int>[] GetAdjacencyList()
 		{
 			var map = Array.ConvertAll(new bool[h * w], _ => new List<int>());
 			for (int i = 0; i < h; ++i)
@@ -28,7 +36,7 @@ namespace CoderLib8.Graphs.Arrays
 			return map;
 		}
 
-		public static List<int>[] GetAdjacencyList(int h, int w, string[] s, char wall = '#')
+		public List<int>[] GetAdjacencyList(string[] s, char wall = '#')
 		{
 			var map = Array.ConvertAll(new bool[h * w], _ => new List<int>());
 			for (int i = 0; i < h; ++i)
@@ -50,7 +58,7 @@ namespace CoderLib8.Graphs.Arrays
 			return map;
 		}
 
-		public static List<int[]>[] GetWeightedAdjacencyList(int h, int w, int[][] s)
+		public List<int[]>[] GetWeightedAdjacencyList(int[][] s)
 		{
 			var map = Array.ConvertAll(new bool[h * w], _ => new List<int[]>());
 			for (int i = 0; i < h; ++i)
@@ -70,7 +78,7 @@ namespace CoderLib8.Graphs.Arrays
 			return map;
 		}
 
-		public static List<int[]>[] GetWeightedAdjacencyList(int h, int w, string[] s, char wall = '#')
+		public List<int[]>[] GetWeightedAdjacencyList(string[] s, char wall = '#')
 		{
 			var map = Array.ConvertAll(new bool[h * w], _ => new List<int[]>());
 			for (int i = 0; i < h; ++i)
