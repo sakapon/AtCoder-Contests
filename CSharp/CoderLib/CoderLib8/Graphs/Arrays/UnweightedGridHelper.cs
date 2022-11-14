@@ -51,18 +51,19 @@ namespace CoderLib8.Graphs.Arrays
 		}
 	}
 
-	public class StringGrid
+	public class CharGrid
 	{
 		readonly int h, w;
-		readonly string[] s;
+		readonly char[][] s;
 		readonly char wall;
-		public StringGrid(int h, int w, string[] s, char wall = '#')
+		public CharGrid(int h, int w, char[][] s, char wall = '#')
 		{
 			this.h = h;
 			this.w = w;
 			this.s = s;
 			this.wall = wall;
 		}
+		public CharGrid(int h, int w, string[] s, char wall = '#') : this(h, w, Array.ConvertAll(s, l => l.ToCharArray()), wall) { }
 
 		public int ToVertexId(int i, int j) => w * i + j;
 		public (int i, int j) FromVertexId(int v) => (v / w, v % w);
