@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Util;
+using static EulerLib8.Common;
 
 class P099
 {
