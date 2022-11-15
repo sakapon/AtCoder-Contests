@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Page001", "Page001\Page001.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Page002", "Page002\Page002.csproj", "{C3064B55-4E14-4494-9AB6-ED7366D6F3A8}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoderLib8", "..\CoderLib\CoderLib8\CoderLib8.csproj", "{F58D860C-0B63-4780-85E8-5D8C6C69785B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EulerLib8", "EulerLib8\EulerLib8.csproj", "{FB9C5A25-160F-4781-99DB-0856A3578A19}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{C3064B55-4E14-4494-9AB6-ED7366D6F3A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3064B55-4E14-4494-9AB6-ED7366D6F3A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3064B55-4E14-4494-9AB6-ED7366D6F3A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F58D860C-0B63-4780-85E8-5D8C6C69785B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F58D860C-0B63-4780-85E8-5D8C6C69785B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F58D860C-0B63-4780-85E8-5D8C6C69785B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F58D860C-0B63-4780-85E8-5D8C6C69785B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB9C5A25-160F-4781-99DB-0856A3578A19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB9C5A25-160F-4781-99DB-0856A3578A19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB9C5A25-160F-4781-99DB-0856A3578A19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB9C5A25-160F-4781-99DB-0856A3578A19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
