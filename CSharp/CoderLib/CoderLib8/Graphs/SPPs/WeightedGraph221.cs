@@ -61,28 +61,28 @@ namespace CoderLib8.Graphs.SPPs.Typed.WeightedGraph221
 			Vertexes.TryGetValue(ev, out var evo);
 
 			svo.Cost = 0;
-			var comp = Comparer<(long c, Vertex<T> v)>.Create((x, y) =>
+			var comp = Comparer<Vertex<T>>.Create((x, y) =>
 			{
-				var d = x.c.CompareTo(y.c);
+				var d = x.Cost.CompareTo(y.Cost);
 				if (d != 0) return d;
-				return x.v.GetHashCode().CompareTo(y.v.GetHashCode());
+				return x.GetHashCode().CompareTo(y.GetHashCode());
 			});
-			var q = new SortedSet<(long, Vertex<T>)>(comp) { (0, svo) };
+			var q = new SortedSet<Vertex<T>>(comp) { svo };
 
 			while (q.Count > 0)
 			{
-				var (c, v) = q.Min;
-				q.Remove((c, v));
+				var v = q.Min;
+				q.Remove(v);
 				if (v == evo) return;
 
 				foreach (var (nv, cost) in v.Edges)
 				{
-					var nc = c + cost;
+					var nc = v.Cost + cost;
 					if (nv.Cost <= nc) continue;
-					if (nv.Cost != long.MaxValue) q.Remove((nv.Cost, nv));
-					q.Add((nc, nv));
+					if (nv.Cost != long.MaxValue) q.Remove(nv);
 					nv.Cost = nc;
 					nv.Previous = v;
+					q.Add(nv);
 				}
 			}
 		}
