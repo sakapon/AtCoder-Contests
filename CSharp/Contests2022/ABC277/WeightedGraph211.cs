@@ -59,7 +59,7 @@ namespace CoderLib8.Graphs.SPPs.Int.WeightedGraph211
 			{
 				var (c, v) = q.Min;
 				q.Remove((c, v));
-				if (v == ev) break;
+				if (v == ev) return;
 				var vo = Vertexes[v];
 
 				foreach (var (nv, cost) in vo.Edges)
