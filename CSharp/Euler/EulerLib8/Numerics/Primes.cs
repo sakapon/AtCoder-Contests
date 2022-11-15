@@ -38,5 +38,13 @@ namespace EulerLib8.Numerics
 			for (int x = 2; x <= n; ++x) if (!b[x]) r.Add(x);
 			return r.ToArray();
 		}
+		public static bool[] GetIsPrimes(int n)
+		{
+			var b = new bool[n + 1];
+			Array.Fill(b, true);
+			b[0] = b[1] = false;
+			for (int p = 2; p * p <= n; ++p) if (b[p]) for (int x = p * p; x <= n; x += p) b[x] = false;
+			return b;
+		}
 	}
 }

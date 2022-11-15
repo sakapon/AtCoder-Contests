@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EulerLib8.Numerics;
 
 class P051
 {
@@ -12,7 +13,7 @@ class P051
 		var format = $"D{digits}";
 		var n = (int)Math.Pow(10, digits);
 
-		var b = GetPrimes(n);
+		var b = Primes.GetIsPrimes(n);
 
 		for (int x = 1; x < n; x += 2)
 		{
@@ -24,7 +25,7 @@ class P051
 			var c = 0;
 			for (int i = s[0] == '0' ? 0 : 1; i < 10; i++)
 			{
-				if (!b[x + d * i])
+				if (b[x + d * i])
 				{
 					c++;
 				}
@@ -32,12 +33,5 @@ class P051
 			if (c >= count) return s[0] == '0' ? x : x + d;
 		}
 		return -1;
-	}
-
-	static bool[] GetPrimes(int n)
-	{
-		var b = new bool[n + 1];
-		for (int p = 2; p * p <= n; ++p) if (!b[p]) for (int x = p * p; x <= n; x += p) b[x] = true;
-		return b;
 	}
 }
