@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace EulerLib8
 {
@@ -43,6 +44,20 @@ namespace EulerLib8
 		public static long Last(long l, long r, Func<long, bool> f)
 		{
 			long m;
+			while (l < r) if (f(m = r - (r - l - 1) / 2)) l = m; else r = m - 1;
+			return l;
+		}
+
+		public static BigInteger First(BigInteger l, BigInteger r, Func<BigInteger, bool> f)
+		{
+			BigInteger m;
+			while (l < r) if (f(m = l + (r - l - 1) / 2)) r = m; else l = m + 1;
+			return r;
+		}
+
+		public static BigInteger Last(BigInteger l, BigInteger r, Func<BigInteger, bool> f)
+		{
+			BigInteger m;
 			while (l < r) if (f(m = r - (r - l - 1) / 2)) l = m; else r = m - 1;
 			return l;
 		}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using EulerLib8;
 
 class P080
 {
@@ -20,14 +21,7 @@ class P080
 	static int SqrtDigitsSum(int x)
 	{
 		var v = x * BigInteger.Pow(10, 200);
-		var sqrt = Last(0, v, x => x * x <= v);
+		var sqrt = BinarySearch.Last(0, v, x => x * x <= v);
 		return sqrt.ToString()[..100].Sum(c => c - '0');
-	}
-
-	static BigInteger Last(BigInteger l, BigInteger r, Func<BigInteger, bool> f)
-	{
-		BigInteger m;
-		while (l < r) if (f(m = r - (r - l - 1) / 2)) l = m; else r = m - 1;
-		return l;
 	}
 }
