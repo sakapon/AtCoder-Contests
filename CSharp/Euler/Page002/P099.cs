@@ -15,6 +15,4 @@ class P099
 			.Aggregate((x, y) => Max(x, y, p => p.v));
 		return t.i + 1;
 	}
-
-	public static T Max<T>(T o1, T o2, Func<T, double> toKey) => toKey(o1) >= toKey(o2) ? o1 : o2;
 }
