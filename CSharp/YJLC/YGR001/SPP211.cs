@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using YGR001.Lib.Dijkstra401;
+using CoderLib8.Graphs.SPPs.Int.WeightedGraph211;
 
-// 401, 402
-class SPP401
+// 211, 221
+class SPP211
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int, int) Read3() { var a = Read(); return (a[0], a[1], a[2]); }
@@ -15,11 +15,11 @@ class SPP401
 		var (n, m, s, t) = Read4();
 		var es = Array.ConvertAll(new bool[m], _ => Read3());
 
-		var spp = new Dijkstra(n, es, false);
-		spp.Execute(s, t);
-		if (spp[t].Cost == long.MaxValue) return -1;
+		var graph = new WeightedGraph(n, es, false);
+		graph.Dijkstra(s, t);
+		if (!graph[t].IsConnected) return -1;
 
-		var path = spp.GetPathVertexes(t);
-		return $"{spp[t].Cost} {path.Length - 1}\n" + string.Join("\n", path[1..].Select(v => $"{v.Previous.Id} {v.Id}"));
+		var path = graph.GetPathEdges(t);
+		return $"{graph[t].Cost} {path.Length}\n" + string.Join("\n", path.Select(e => $"{e.Item1} {e.Item2}"));
 	}
 }
