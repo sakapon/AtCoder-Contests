@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Page002.Lib.Dijkstra402;
+using CoderLib8.Graphs.SPPs.Int.WeightedGraph211;
 using static EulerLib8.Common;
 
 class P081
@@ -10,29 +10,33 @@ class P081
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var a = GetText(textUrl).Split('\n', StringSplitOptions.RemoveEmptyEntries)
+		var s = GetText(textUrl).Split('\n', StringSplitOptions.RemoveEmptyEntries)
 			.Select(l => Array.ConvertAll(l.Split(','), int.Parse))
 			.ToArray();
-		var h = a.Length;
-		var w = a[0].Length;
+		var h = s.Length;
+		var w = s[0].Length;
 		var n = h * w;
 
-		var graph = new Dijkstra(n);
+		var graph = GetWeightedAdjacencyList(h, w, s);
+		graph.Dijkstra(0, n - 1);
+		return s[0][0] + graph[n - 1].Cost;
+	}
 
+	public static WeightedGraph GetWeightedAdjacencyList(int h, int w, int[][] s)
+	{
+		var graph = new WeightedGraph(h * w);
 		for (int i = 0; i < h; ++i)
 			for (int j = 1; j < w; ++j)
 			{
-				var v = i * w + j;
-				graph.AddEdge(v - 1, v, false, a[i][j]);
+				var v = w * i + j;
+				graph.AddEdge(v - 1, v, false, s[i][j]);
 			}
 		for (int j = 0; j < w; ++j)
 			for (int i = 1; i < h; ++i)
 			{
-				var v = i * w + j;
-				graph.AddEdge(v - w, v, false, a[i][j]);
+				var v = w * i + j;
+				graph.AddEdge(v - w, v, false, s[i][j]);
 			}
-
-		graph.Execute(0, n - 1);
-		return a[0][0] + graph[n - 1].Cost;
+		return graph;
 	}
 }

@@ -19,7 +19,6 @@ class P083
 
 		var grid = new WeightedGridHelper(h, w);
 		var graph = grid.GetWeightedAdjacencyList(s);
-
 		graph.Dijkstra(0, n - 1);
 		return s[0][0] + graph[n - 1].Cost;
 	}
