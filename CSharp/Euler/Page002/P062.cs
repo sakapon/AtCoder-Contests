@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using static EulerLib8.Common;
 
 class P062
 {
@@ -33,6 +34,4 @@ class P062
 		}
 		return dv[r.s];
 	}
-
-	public static void ChMax<T>(ref T o1, T o2, Func<T, int> toKey) { if (toKey(o1) < toKey(o2)) o1 = o2; }
 }
