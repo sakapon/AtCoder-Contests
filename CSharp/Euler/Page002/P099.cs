@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EulerLib8.Linq;
 using static EulerLib8.Common;
 
 class P099
@@ -12,7 +13,7 @@ class P099
 		var t = GetText(textUrl).Split('\n')
 			.Select(l => Array.ConvertAll(l.Split(','), int.Parse))
 			.Select((a, i) => (i, v: a[1] * Math.Log(a[0])))
-			.Aggregate((x, y) => Max(x, y, p => p.v));
+			.FirstMax(p => p.v);
 		return t.i + 1;
 	}
 }
