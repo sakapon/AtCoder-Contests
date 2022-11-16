@@ -4,13 +4,13 @@ using System.Collections.Generic;
 namespace CoderLib8.Graphs.SPPs.Arrays.PathCore111
 {
 	// undirected
-	public class Grid
+	public class GeneralGrid
 	{
 		protected readonly int h, w;
 		public int Height => h;
 		public int Width => w;
 		public int VertexesCount => h * w;
-		public Grid(int h, int w) { this.h = h; this.w = w; }
+		public GeneralGrid(int h, int w) { this.h = h; this.w = w; }
 
 		public int ToVertexId(int i, int j) => w * i + j;
 		public (int i, int j) FromVertexId(int v) => (v / w, v % w);
@@ -27,7 +27,7 @@ namespace CoderLib8.Graphs.SPPs.Arrays.PathCore111
 		}
 	}
 
-	public class IntGrid : Grid
+	public class IntGrid : GeneralGrid
 	{
 		readonly int[][] s;
 		public int[][] Raw => s;
@@ -46,7 +46,7 @@ namespace CoderLib8.Graphs.SPPs.Arrays.PathCore111
 		}
 	}
 
-	public class CharGrid : Grid
+	public class CharGrid : GeneralGrid
 	{
 		readonly char[][] s;
 		readonly char wall;
@@ -56,6 +56,22 @@ namespace CoderLib8.Graphs.SPPs.Arrays.PathCore111
 		public CharGrid(string[] s, char wall = '#') : this(ToArrays(s), wall) { }
 
 		public static char[][] ToArrays(string[] s) => Array.ConvertAll(s, l => l.ToCharArray());
+
+		public (int i, int j) FindCell(char c)
+		{
+			for (int i = 0; i < h; ++i)
+				for (int j = 0; j < w; ++j)
+					if (s[i][j] == c) return (i, j);
+			return (-1, -1);
+		}
+
+		public int FindVertexId(char c)
+		{
+			for (int i = 0; i < h; ++i)
+				for (int j = 0; j < w; ++j)
+					if (s[i][j] == c) return w * i + j;
+			return -1;
+		}
 
 		public int[] GetUnweightedNexts(int v)
 		{
