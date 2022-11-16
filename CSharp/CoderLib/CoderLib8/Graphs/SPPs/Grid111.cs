@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+// Test: https://atcoder.jp/contests/atc001/tasks/dfs_a
+// Test: https://atcoder.jp/contests/atc002/tasks/abc007_3
 namespace CoderLib8.Graphs.SPPs.Arrays.Grid111
 {
 	// undirected
@@ -23,6 +25,21 @@ namespace CoderLib8.Graphs.SPPs.Arrays.Grid111
 			if (j + 1 < w) l.Add(v + 1);
 			if (i > 0) l.Add(v - w);
 			if (i + 1 < h) l.Add(v + w);
+			return l.ToArray();
+		}
+
+		public int[] GetAllNexts8(int v)
+		{
+			var (i, j) = (v / w, v % w);
+			var l = new List<int>();
+			if (j > 0) l.Add(v - 1);
+			if (j + 1 < w) l.Add(v + 1);
+			if (i > 0) l.Add(v - w);
+			if (i + 1 < h) l.Add(v + w);
+			if (i > 0 && j > 0) l.Add(v - w - 1);
+			if (i > 0 && j + 1 < w) l.Add(v - w + 1);
+			if (i + 1 < h && j > 0) l.Add(v + w - 1);
+			if (i + 1 < h && j + 1 < w) l.Add(v + w + 1);
 			return l.ToArray();
 		}
 
