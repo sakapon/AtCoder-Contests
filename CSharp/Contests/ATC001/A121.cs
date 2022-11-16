@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CoderLib8.Graphs.SPPs.Arrays.Grid111;
 using CoderLib8.Graphs.SPPs.Arrays.PathCore121;
 
 class A121
@@ -13,12 +14,11 @@ class A121
 		var (h, w) = Read2();
 		var s = Array.ConvertAll(new bool[h], _ => Console.ReadLine());
 
-		var sseq = s.SelectMany(a => a).ToArray();
-		var sv = Array.IndexOf(sseq, 's');
-		var ev = Array.IndexOf(sseq, 'g');
-
 		var grid = new CharGrid(s);
-		var r = PathCore.ConnectivityByDFS(h * w, grid.GetNexts, sv, ev);
+		var sv = grid.FindVertexId('s');
+		var ev = grid.FindVertexId('g');
+
+		var r = PathCore.ConnectivityByDFS(grid.VertexesCount, grid.GetUnweightedNexts, sv, ev);
 		return r[ev];
 	}
 }

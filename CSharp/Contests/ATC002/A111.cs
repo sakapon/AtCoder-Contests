@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CoderLib8.Graphs.SPPs.Arrays.Grid111;
 using CoderLib8.Graphs.SPPs.Arrays.PathCore111;
 
 class A111
@@ -15,14 +16,14 @@ class A111
 		var (ei, ej) = Read2();
 		var s = Array.ConvertAll(new bool[h], _ => Console.ReadLine());
 
-		var grid = new GridHelper(h, w);
+		var grid = new CharGrid(s);
 
 		si--; sj--;
 		ei--; ej--;
 		var sv = grid.ToVertexId(si, sj);
 		var ev = grid.ToVertexId(ei, ej);
 
-		var map = grid.GetAdjacencyList(s).ToArrays();
+		var map = grid.GetUnweightedAdjacencyList().ToArrays();
 		var r = map.ShortestByBFS(sv, ev);
 		return r[ev];
 	}

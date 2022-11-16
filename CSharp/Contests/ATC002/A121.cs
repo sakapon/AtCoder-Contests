@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CoderLib8.Graphs.SPPs.Arrays.Grid111;
 using CoderLib8.Graphs.SPPs.Arrays.PathCore121;
 
 class A121
@@ -22,7 +23,7 @@ class A121
 		var sv = grid.ToVertexId(si, sj);
 		var ev = grid.ToVertexId(ei, ej);
 
-		var r = PathCore.ShortestByBFS(h * w, grid.GetNexts, sv, ev);
+		var r = PathCore.ShortestByBFS(grid.VertexesCount, grid.GetUnweightedNexts, sv, ev);
 		return r[ev];
 	}
 }
