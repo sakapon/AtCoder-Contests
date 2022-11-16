@@ -6,13 +6,13 @@ using System.Collections.Generic;
 namespace CoderLib8.Graphs.SPPs.Arrays.PathCore111
 {
 	// undirected
-	public class GridHelper
+	public class GridPath
 	{
 		readonly int h, w;
 		public int Height => h;
 		public int Width => w;
 		public int VertexesCount => h * w;
-		public GridHelper(int h, int w) { this.h = h; this.w = w; }
+		public GridPath(int h, int w) { this.h = h; this.w = w; }
 
 		public int ToVertexId(int i, int j) => w * i + j;
 		public (int i, int j) FromVertexId(int v) => (v / w, v % w);
