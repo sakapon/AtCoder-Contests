@@ -18,6 +18,14 @@ namespace CoderLib8.Graphs.SPPs.Arrays.PathCore111
 		public (int i, int j) FromVertexId(int v) => (v / w, v % w);
 		public static char[][] ToArrays(string[] s) => Array.ConvertAll(s, l => l.ToCharArray());
 
+		public (int i, int j) Find(char[][] s, char c)
+		{
+			for (int i = 0; i < h; ++i)
+				for (int j = 0; j < w; ++j)
+					if (s[i][j] == c) return (i, j);
+			return (-1, -1);
+		}
+
 		public List<int>[] GetAdjacencyList()
 		{
 			var map = Array.ConvertAll(new bool[h * w], _ => new List<int>());
