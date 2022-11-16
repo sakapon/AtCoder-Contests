@@ -11,10 +11,12 @@ namespace CoderLib8.Graphs.SPPs.Arrays.PathCore111
 		readonly int h, w;
 		public int Height => h;
 		public int Width => w;
+		public int VertexesCount => h * w;
 		public GridHelper(int h, int w) { this.h = h; this.w = w; }
 
 		public int ToVertexId(int i, int j) => w * i + j;
 		public (int i, int j) FromVertexId(int v) => (v / w, v % w);
+		public static char[][] ToArrays(string[] s) => Array.ConvertAll(s, l => l.ToCharArray());
 
 		public List<int>[] GetAdjacencyList()
 		{
@@ -36,7 +38,7 @@ namespace CoderLib8.Graphs.SPPs.Arrays.PathCore111
 			return map;
 		}
 
-		public List<int>[] GetAdjacencyList(string[] s, char wall = '#') => GetAdjacencyList(Array.ConvertAll(s, l => l.ToCharArray()), wall);
+		public List<int>[] GetAdjacencyList(string[] s, char wall = '#') => GetAdjacencyList(ToArrays(s), wall);
 		public List<int>[] GetAdjacencyList(char[][] s, char wall = '#')
 		{
 			var map = Array.ConvertAll(new bool[h * w], _ => new List<int>());
@@ -80,7 +82,7 @@ namespace CoderLib8.Graphs.SPPs.Arrays.PathCore111
 		}
 
 		// 1 桁の整数が設定されている場合
-		public List<int[]>[] GetWeightedAdjacencyList(string[] s, char wall = '#') => GetWeightedAdjacencyList(Array.ConvertAll(s, l => l.ToCharArray()), wall);
+		public List<int[]>[] GetWeightedAdjacencyList(string[] s, char wall = '#') => GetWeightedAdjacencyList(ToArrays(s), wall);
 		public List<int[]>[] GetWeightedAdjacencyList(char[][] s, char wall = '#')
 		{
 			var map = Array.ConvertAll(new bool[h * w], _ => new List<int[]>());
