@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CoderLib8.Graphs.SPPs.Arrays.PathCore111
+namespace CoderLib8.Graphs.SPPs.Arrays.Grid111
 {
 	// undirected
 	public class GeneralGrid
@@ -25,6 +25,26 @@ namespace CoderLib8.Graphs.SPPs.Arrays.PathCore111
 			if (i + 1 < h) l.Add(v + w);
 			return l.ToArray();
 		}
+
+		public List<int>[] GetAllAdjacencyList()
+		{
+			var map = Array.ConvertAll(new bool[h * w], _ => new List<int>());
+			for (int i = 0; i < h; ++i)
+				for (int j = 1; j < w; ++j)
+				{
+					var v = w * i + j;
+					map[v].Add(v - 1);
+					map[v - 1].Add(v);
+				}
+			for (int j = 0; j < w; ++j)
+				for (int i = 1; i < h; ++i)
+				{
+					var v = w * i + j;
+					map[v].Add(v - w);
+					map[v - w].Add(v);
+				}
+			return map;
+		}
 	}
 
 	public class IntGrid : GeneralGrid
@@ -43,6 +63,26 @@ namespace CoderLib8.Graphs.SPPs.Arrays.PathCore111
 			if (i > 0) l.Add(new[] { v, v - w, s[i - 1][j] });
 			if (i + 1 < h) l.Add(new[] { v, v + w, s[i + 1][j] });
 			return l.ToArray();
+		}
+
+		public List<int[]>[] GetWeightedAdjacencyList()
+		{
+			var map = Array.ConvertAll(new bool[h * w], _ => new List<int[]>());
+			for (int i = 0; i < h; ++i)
+				for (int j = 1; j < w; ++j)
+				{
+					var v = w * i + j;
+					map[v].Add(new[] { v, v - 1, s[i][j - 1] });
+					map[v - 1].Add(new[] { v - 1, v, s[i][j] });
+				}
+			for (int j = 0; j < w; ++j)
+				for (int i = 1; i < h; ++i)
+				{
+					var v = w * i + j;
+					map[v].Add(new[] { v, v - w, s[i - 1][j] });
+					map[v - w].Add(new[] { v - w, v, s[i][j] });
+				}
+			return map;
 		}
 	}
 
@@ -94,6 +134,51 @@ namespace CoderLib8.Graphs.SPPs.Arrays.PathCore111
 			if (i > 0 && s[i - 1][j] != wall) l.Add(new[] { v, v - w, s[i - 1][j] - '0' });
 			if (i + 1 < h && s[i + 1][j] != wall) l.Add(new[] { v, v + w, s[i + 1][j] - '0' });
 			return l.ToArray();
+		}
+
+		public List<int>[] GetUnweightedAdjacencyList()
+		{
+			var map = Array.ConvertAll(new bool[h * w], _ => new List<int>());
+			for (int i = 0; i < h; ++i)
+				for (int j = 1; j < w; ++j)
+				{
+					if (s[i][j] == wall || s[i][j - 1] == wall) continue;
+					var v = w * i + j;
+					map[v].Add(v - 1);
+					map[v - 1].Add(v);
+				}
+			for (int j = 0; j < w; ++j)
+				for (int i = 1; i < h; ++i)
+				{
+					if (s[i][j] == wall || s[i - 1][j] == wall) continue;
+					var v = w * i + j;
+					map[v].Add(v - w);
+					map[v - w].Add(v);
+				}
+			return map;
+		}
+
+		// 1 桁の整数が設定されている場合
+		public List<int[]>[] GetWeightedAdjacencyList()
+		{
+			var map = Array.ConvertAll(new bool[h * w], _ => new List<int[]>());
+			for (int i = 0; i < h; ++i)
+				for (int j = 1; j < w; ++j)
+				{
+					if (s[i][j] == wall || s[i][j - 1] == wall) continue;
+					var v = w * i + j;
+					map[v].Add(new[] { v, v - 1, s[i][j - 1] - '0' });
+					map[v - 1].Add(new[] { v - 1, v, s[i][j] - '0' });
+				}
+			for (int j = 0; j < w; ++j)
+				for (int i = 1; i < h; ++i)
+				{
+					if (s[i][j] == wall || s[i - 1][j] == wall) continue;
+					var v = w * i + j;
+					map[v].Add(new[] { v, v - w, s[i - 1][j] - '0' });
+					map[v - w].Add(new[] { v - w, v, s[i][j] - '0' });
+				}
+			return map;
 		}
 	}
 }
