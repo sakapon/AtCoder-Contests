@@ -10,11 +10,14 @@ class A
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (n, k) = Read2();
+		var a = Read().ToList();
+
+		while (k-- > 0)
+		{
+			a.RemoveAt(0);
+			a.Add(0);
+		}
 
 		return string.Join(" ", a);
 	}
