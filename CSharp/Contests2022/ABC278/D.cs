@@ -28,13 +28,14 @@ class D
 			{
 				var i = (int)q[1];
 				var x = q[2];
-				if (d.ContainsKey(i)) d[i] += x;
-				else d[i] = x;
+				d.TryGetValue(i, out var v);
+				d[i] = v + x;
 			}
 			else
 			{
 				var i = (int)q[1];
-				sb.Append(d.ContainsKey(i) ? v0 + d[i] : v0).AppendLine();
+				d.TryGetValue(i, out var v);
+				sb.Append(v + v0).AppendLine();
 			}
 		}
 		Console.Write(sb);
