@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 // 頂点を抽象化します。
-namespace CoderLib8.Graphs.SPPs.UnweightedGraph411
+namespace CoderLib8.Graphs.SPPs.UnweightedGraph421
 {
 	[System.Diagnostics.DebuggerDisplay(@"\{{Id}: Cost = {Cost}\}")]
 	public abstract class Vertex<T>
