@@ -44,12 +44,12 @@ namespace CoderLib8.Graphs.SPPs.Arrays.PathCore111
 			while (q.Count > 0)
 			{
 				var v = q.Pop();
+				if (v == ev) return u;
 
 				foreach (var nv in map[v])
 				{
 					if (u[nv]) continue;
 					u[nv] = true;
-					if (nv == ev) return u;
 					q.Push(nv);
 				}
 			}
@@ -67,13 +67,13 @@ namespace CoderLib8.Graphs.SPPs.Arrays.PathCore111
 			while (q.Count > 0)
 			{
 				var v = q.Dequeue();
+				if (v == ev) return costs;
 				var nc = costs[v] + 1;
 
 				foreach (var nv in map[v])
 				{
 					if (costs[nv] <= nc) continue;
 					costs[nv] = nc;
-					if (nv == ev) return costs;
 					q.Enqueue(nv);
 				}
 			}
