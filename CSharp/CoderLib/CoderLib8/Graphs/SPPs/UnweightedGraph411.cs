@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+// 頂点を抽象化します。
 namespace CoderLib8.Graphs.SPPs.UnweightedGraph411
 {
 	[System.Diagnostics.DebuggerDisplay(@"\{{Id}: Cost = {Cost}\}")]
@@ -83,24 +84,31 @@ namespace CoderLib8.Graphs.SPPs.UnweightedGraph411
 		}
 	}
 
-	public class IntVertex : Vertex<int>
+	public class ListVertex<T> : Vertex<T>
 	{
-		public IntVertex(int id) : base(id) { }
-		public List<IntVertex> Edges { get; } = new List<IntVertex>();
-		public override IEnumerable<Vertex<int>> GetEdges() => Edges;
+		public ListVertex(T id) : base(id) { }
+		public List<ListVertex<T>> Edges { get; } = new List<ListVertex<T>>();
+		public override IEnumerable<Vertex<T>> GetEdges() => Edges;
+	}
+
+	public class FuncVertex<T> : Vertex<T>
+	{
+		Func<FuncVertex<T>, IEnumerable<FuncVertex<T>>> getEdges;
+		public FuncVertex(T id, Func<FuncVertex<T>, IEnumerable<FuncVertex<T>>> getEdges) : base(id) { this.getEdges = getEdges; }
+		public override IEnumerable<Vertex<T>> GetEdges() => getEdges(this);
 	}
 
 	[System.Diagnostics.DebuggerDisplay(@"VertexesCount = {VertexesCount}")]
 	public class IntUnweightedGraph
 	{
-		public IntVertex[] Vertexes { get; }
+		public ListVertex<int>[] Vertexes { get; }
 		public int VertexesCount => Vertexes.Length;
-		public IntVertex this[int v] => Vertexes[v];
+		public ListVertex<int> this[int v] => Vertexes[v];
 
 		public IntUnweightedGraph(int vertexesCount)
 		{
-			Vertexes = new IntVertex[vertexesCount];
-			for (int v = 0; v < vertexesCount; ++v) Vertexes[v] = new IntVertex(v);
+			Vertexes = new ListVertex<int>[vertexesCount];
+			for (int v = 0; v < vertexesCount; ++v) Vertexes[v] = new ListVertex<int>(v);
 		}
 		public IntUnweightedGraph(int vertexesCount, IEnumerable<(int from, int to)> edges, bool twoWay) : this(vertexesCount)
 		{
@@ -108,7 +116,7 @@ namespace CoderLib8.Graphs.SPPs.UnweightedGraph411
 		}
 
 		public void AddEdge(int from, int to, bool twoWay) => AddEdge(Vertexes[from], Vertexes[to], twoWay);
-		public void AddEdge(IntVertex from, IntVertex to, bool twoWay)
+		public void AddEdge(ListVertex<int> from, ListVertex<int> to, bool twoWay)
 		{
 			from.Edges.Add(to);
 			if (twoWay) to.Edges.Add(from);
@@ -117,6 +125,38 @@ namespace CoderLib8.Graphs.SPPs.UnweightedGraph411
 		public void ClearResult()
 		{
 			foreach (var v in Vertexes) v.ClearResult();
+		}
+	}
+
+	[System.Diagnostics.DebuggerDisplay(@"VertexesCount = {VertexesCount}")]
+	public class UnweightedGraph<T>
+	{
+		public Dictionary<T, ListVertex<T>> Vertexes { get; } = new Dictionary<T, ListVertex<T>>();
+		public int VertexesCount => Vertexes.Count;
+		public ListVertex<T> this[T v] => Vertexes[v];
+
+		public UnweightedGraph() { }
+		public UnweightedGraph(IEnumerable<(T from, T to)> edges, bool twoWay)
+		{
+			foreach (var (from, to) in edges) AddEdge(from, to, twoWay);
+		}
+
+		public ListVertex<T> AddOrGetVertex(T v)
+		{
+			if (!Vertexes.TryGetValue(v, out var vo)) Vertexes[v] = vo = new ListVertex<T>(v);
+			return vo;
+		}
+
+		public void AddEdge(T from, T to, bool twoWay) => AddEdge(AddOrGetVertex(from), AddOrGetVertex(to), twoWay);
+		public void AddEdge(ListVertex<T> from, ListVertex<T> to, bool twoWay)
+		{
+			from.Edges.Add(to);
+			if (twoWay) to.Edges.Add(from);
+		}
+
+		public void ClearResult()
+		{
+			foreach (var v in Vertexes.Values) v.ClearResult();
 		}
 	}
 }
