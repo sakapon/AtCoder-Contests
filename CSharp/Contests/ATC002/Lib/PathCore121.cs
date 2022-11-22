@@ -56,6 +56,27 @@ namespace CoderLib8.Graphs.SPPs.Arrays.PathCore121
 			return u;
 		}
 
+		public static bool[] ConnectivityByDFS2(this int[][] map, int sv, int ev = -1) => ConnectivityByDFS2(map.Length, v => map[v], sv, ev);
+		public static bool[] ConnectivityByDFS2(int n, Func<int, int[]> nexts, int sv, int ev = -1)
+		{
+			var u = new bool[n];
+			u[sv] = true;
+			DFS(sv);
+			return u;
+
+			bool DFS(int v)
+			{
+				if (v == ev) return true;
+				foreach (var nv in nexts(v))
+				{
+					if (u[nv]) continue;
+					u[nv] = true;
+					if (DFS(nv)) return true;
+				}
+				return false;
+			}
+		}
+
 		public static long[] ShortestByBFS(this int[][] map, int sv, int ev = -1) => ShortestByBFS(map.Length, v => map[v], sv, ev);
 		public static long[] ShortestByBFS(int n, Func<int, int[]> nexts, int sv, int ev = -1)
 		{
