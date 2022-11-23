@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using EulerLib8;
 using EulerLib8.Linq;
 
 class P071
@@ -12,8 +11,8 @@ class P071
 		const int d_max = 1000000;
 
 		var (d0, n0) = Enumerable.Range(1, d_max)
-			.Select(d => (d, n: BinarySearch.Last(0, d, x => 7 * x < 3 * d)))
-			.FirstMax(p => (double)p.n / p.d);
+			.Select(d => (d, n: d * 3 % 7 == 0 ? d * 3 / 7 - 1 : Math.Floor(d * 3D / 7)))
+			.FirstMax(p => p.n / p.d);
 		return n0;
 	}
 }

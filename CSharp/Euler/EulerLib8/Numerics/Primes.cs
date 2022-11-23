@@ -46,5 +46,34 @@ namespace EulerLib8.Numerics
 			for (int p = 2; p * p <= n; ++p) if (b[p]) for (int x = p * p; x <= n; x += p) b[x] = false;
 			return b;
 		}
+
+		// オイラーの φ 関数 O(√n)
+		// Factorize をもとにしています。
+		// 候補 x を 2 または奇数に限定することで高速化できます。
+		public static long Totient(long n)
+		{
+			var r = n;
+			for (long x = 2; x * x <= n && n > 1; ++x)
+				if (n % x == 0)
+				{
+					r = r / x * (x - 1);
+					while ((n /= x) % x == 0) ;
+				}
+			if (n > 1) r = r / n * (n - 1);
+			return r;
+		}
+
+		// n 以下のすべてのオイラーの φ 関数 O(n)?
+		// GetPrimes をもとにしています。
+		// 候補 x を奇数に限定することで高速化できます。
+		public static int[] Totients(int n)
+		{
+			var b = new bool[n + 1];
+			for (int p = 2; p * p <= n; ++p) if (!b[p]) for (int x = p * p; x <= n; x += p) b[x] = true;
+			var r = new int[n + 1];
+			for (int x = 1; x <= n; ++x) r[x] = x;
+			for (int p = 2; p <= n; ++p) if (!b[p]) for (int x = p; x <= n; x += p) r[x] = r[x] / p * (p - 1);
+			return r;
+		}
 	}
 }
