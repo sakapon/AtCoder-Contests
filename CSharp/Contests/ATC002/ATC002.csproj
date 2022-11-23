@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <Compile Include="..\ATC001\Lib\Grid111.cs" Link="Lib\Grid111.cs" />
+    <Compile Include="..\ATC001\Lib\Grid112.cs" Link="Lib\Grid112.cs" />
+    <Compile Include="..\ATC001\Lib\Grid113.cs" Link="Lib\Grid113.cs" />
     <Compile Include="..\ATC001\Lib\PathCore111.cs" Link="Lib\PathCore111.cs" />
     <Compile Include="..\ATC001\Lib\PathCore121.cs" Link="Lib\PathCore121.cs" />
   </ItemGroup>
