@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using EulerLib8.Numerics;
 
 class P073
 {
@@ -11,14 +10,22 @@ class P073
 		const int d_max = 12000;
 
 		var r = 0;
-		for (int d = 4; d <= d_max; d++)
+		var reducibles = Array.ConvertAll(new bool[d_max + 1], _ => new HashSet<int>());
+
+		for (int d = 2; d <= d_max; d++)
 		{
-			var n = (int)Math.Ceiling(d / 3D);
-			var n_max = (int)Math.Floor(d / 2D);
+			var n = d / 3 + 1;
+			var n_max = (d - 1) / 2;
 
 			for (; n <= n_max; n++)
 			{
-				if (Primes.Gcd(d, n) == 1) r++;
+				if (reducibles[d].Contains(n)) continue;
+
+				r++;
+				for (var (d2, n2) = (d << 1, n << 1); d2 <= d_max; d2 += d, n2 += n)
+				{
+					reducibles[d2].Add(n2);
+				}
 			}
 		}
 		return r;
