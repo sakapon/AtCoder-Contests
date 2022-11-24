@@ -34,6 +34,11 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 			for (int v = 0; v < vertexesCount; ++v) Vertexes[v] = new Vertex(v);
 		}
 
+		public void ClearResult()
+		{
+			foreach (var v in Vertexes) v.ClearResult();
+		}
+
 		// 最短経路とは限りません。
 		// 連結性のみを判定する場合は、DFS または Union-Find を利用します。
 		public Vertex ConnectivityByDFS(int sv, int ev = -1)
@@ -149,11 +154,6 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 			map[from].Add(to);
 			if (twoWay) map[to].Add(from);
 		}
-
-		public void ClearResult()
-		{
-			foreach (var v in Vertexes) v.ClearResult();
-		}
 	}
 
 	public class UnweightedGrid : UnweightedGraphBase
@@ -188,7 +188,7 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 	{
 		readonly char[][] s;
 		readonly char wall;
-		public char[][] Raw => s;
+		public char[][] Cells => s;
 		public CharUnweightedGrid(char[][] s, char wall = '#') : base(s.Length, s[0].Length) { this.s = s; this.wall = wall; }
 		public CharUnweightedGrid(string[] s, char wall = '#') : this(ToArrays(s), wall) { }
 
