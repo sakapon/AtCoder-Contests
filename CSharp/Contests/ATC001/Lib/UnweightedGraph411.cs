@@ -102,17 +102,17 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 		}
 	}
 
-	public class IntUnweightedGraph : UnweightedGraphBase
+	public class UnweightedGraph : UnweightedGraphBase
 	{
-		readonly List<int>[] map;
+		protected readonly List<int>[] map;
 		public List<int>[] Map => map;
 		public override List<int> GetEdges(int v) => map[v];
 
-		public IntUnweightedGraph(int vertexesCount) : base(vertexesCount)
+		public UnweightedGraph(int vertexesCount) : base(vertexesCount)
 		{
 			map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int>());
 		}
-		public IntUnweightedGraph(int vertexesCount, IEnumerable<(int from, int to)> edges, bool twoWay) : this(vertexesCount)
+		public UnweightedGraph(int vertexesCount, IEnumerable<(int from, int to)> edges, bool twoWay) : this(vertexesCount)
 		{
 			foreach (var (from, to) in edges) AddEdge(from, to, twoWay);
 		}
@@ -126,6 +126,73 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 		public void ClearResult()
 		{
 			foreach (var v in Vertexes) v.ClearResult();
+		}
+	}
+
+	public class UnweightedGrid : UnweightedGraphBase
+	{
+		protected readonly int h, w;
+		public int Height => h;
+		public int Width => w;
+		public UnweightedGrid(int h, int w) : base(h * w) { this.h = h; this.w = w; }
+
+		public int ToVertexId(int i, int j) => w * i + j;
+		public (int i, int j) FromVertexId(int v) => (v / w, v % w);
+
+		public static (int, int)[] NextsDelta { get; } = new[] { (0, -1), (0, 1), (-1, 0), (1, 0) };
+		public static (int, int)[] NextsDelta8 { get; } = new[] { (0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1) };
+
+		public override List<int> GetEdges(int v) => GetAllNexts(v);
+		public List<int> GetAllNexts(int v)
+		{
+			var (i, j) = (v / w, v % w);
+			var l = new List<int>();
+			foreach (var (di, dj) in NextsDelta)
+			{
+				var (ni, nj) = (i + di, j + dj);
+				if (0 <= ni && ni < h && 0 <= nj && nj < w) l.Add(w * ni + nj);
+			}
+			return l;
+		}
+	}
+
+	public class CharUnweightedGrid : UnweightedGrid
+	{
+		readonly char[][] s;
+		readonly char wall;
+		public char[][] Raw => s;
+		public CharUnweightedGrid(char[][] s, char wall = '#') : base(s.Length, s[0].Length) { this.s = s; this.wall = wall; }
+		public CharUnweightedGrid(string[] s, char wall = '#') : this(ToArrays(s), wall) { }
+
+		public static char[][] ToArrays(string[] s) => Array.ConvertAll(s, l => l.ToCharArray());
+
+		public (int i, int j) FindCell(char c)
+		{
+			for (int i = 0; i < h; ++i)
+				for (int j = 0; j < w; ++j)
+					if (s[i][j] == c) return (i, j);
+			return (-1, -1);
+		}
+
+		public int FindVertexId(char c)
+		{
+			for (int i = 0; i < h; ++i)
+				for (int j = 0; j < w; ++j)
+					if (s[i][j] == c) return w * i + j;
+			return -1;
+		}
+
+		public override List<int> GetEdges(int v) => GetUnweightedNexts(v);
+		public List<int> GetUnweightedNexts(int v)
+		{
+			var (i, j) = (v / w, v % w);
+			var l = new List<int>();
+			foreach (var (di, dj) in NextsDelta)
+			{
+				var (ni, nj) = (i + di, j + dj);
+				if (0 <= ni && ni < h && 0 <= nj && nj < w && s[ni][nj] != wall) l.Add(w * ni + nj);
+			}
+			return l;
 		}
 	}
 }
