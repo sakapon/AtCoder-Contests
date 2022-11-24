@@ -36,53 +36,57 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 
 		// 最短経路とは限りません。
 		// 連結性のみを判定する場合は、DFS または Union-Find を利用します。
-		public Vertex ConnectivityByDFS(int svid, int evid = -1)
+		public Vertex ConnectivityByDFS(int sv, int ev = -1)
 		{
-			Vertexes[svid].Cost = 0;
+			var evo = ev != -1 ? Vertexes[ev] : null;
+
+			Vertexes[sv].Cost = 0;
 			var q = new Stack<int>();
-			q.Push(svid);
+			q.Push(sv);
 
 			while (q.Count > 0)
 			{
-				var vid = q.Pop();
-				if (vid == evid) return Vertexes[evid];
-				var v = Vertexes[vid];
+				var v = q.Pop();
+				if (v == ev) return evo;
+				var vo = Vertexes[v];
 
-				foreach (var nvid in GetEdges(vid))
+				foreach (var nv in GetEdges(v))
 				{
-					var nv = Vertexes[nvid];
-					if (nv.Cost == 0) continue;
-					nv.Cost = 0;
-					nv.Previous = v;
-					q.Push(nvid);
+					var nvo = Vertexes[nv];
+					if (nvo.Cost == 0) continue;
+					nvo.Cost = 0;
+					nvo.Previous = vo;
+					q.Push(nv);
 				}
 			}
-			return null;
+			return evo;
 		}
 
-		public Vertex ShortestByBFS(int svid, int evid = -1)
+		public Vertex ShortestByBFS(int sv, int ev = -1)
 		{
-			Vertexes[svid].Cost = 0;
+			var evo = ev != -1 ? Vertexes[ev] : null;
+
+			Vertexes[sv].Cost = 0;
 			var q = new Queue<int>();
-			q.Enqueue(svid);
+			q.Enqueue(sv);
 
 			while (q.Count > 0)
 			{
-				var vid = q.Dequeue();
-				if (vid == evid) return Vertexes[evid];
-				var v = Vertexes[vid];
-				var nc = v.Cost + 1;
+				var v = q.Dequeue();
+				if (v == ev) return evo;
+				var vo = Vertexes[v];
+				var nc = vo.Cost + 1;
 
-				foreach (var nvid in GetEdges(vid))
+				foreach (var nv in GetEdges(v))
 				{
-					var nv = Vertexes[nvid];
-					if (nv.Cost <= nc) continue;
-					nv.Cost = nc;
-					nv.Previous = v;
-					q.Enqueue(nvid);
+					var nvo = Vertexes[nv];
+					if (nvo.Cost <= nc) continue;
+					nvo.Cost = nc;
+					nvo.Previous = vo;
+					q.Enqueue(nv);
 				}
 			}
-			return null;
+			return evo;
 		}
 
 		public int[] GetPathVertexes(int ev)
@@ -136,6 +140,7 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 		public int Width => w;
 		public UnweightedGrid(int h, int w) : base(h * w) { this.h = h; this.w = w; }
 
+		public Vertex this[int i, int j] => Vertexes[w * i + j];
 		public int ToVertexId(int i, int j) => w * i + j;
 		public (int i, int j) FromVertexId(int v) => (v / w, v % w);
 
@@ -182,8 +187,8 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 			return -1;
 		}
 
-		public override List<int> GetEdges(int v) => GetUnweightedNexts(v);
-		public List<int> GetUnweightedNexts(int v)
+		public override List<int> GetEdges(int v) => GetNexts(v);
+		public List<int> GetNexts(int v)
 		{
 			var (i, j) = (v / w, v % w);
 			var l = new List<int>();
