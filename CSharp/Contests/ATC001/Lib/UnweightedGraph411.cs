@@ -62,6 +62,29 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 			return evo;
 		}
 
+		public Vertex ConnectivityByDFS2(int sv, int ev = -1)
+		{
+			Vertexes[sv].Cost = 0;
+			DFS(sv);
+			return ev != -1 ? Vertexes[ev] : null;
+
+			bool DFS(int v)
+			{
+				if (v == ev) return true;
+				var vo = Vertexes[v];
+
+				foreach (var nv in GetEdges(v))
+				{
+					var nvo = Vertexes[nv];
+					if (nvo.Cost == 0) continue;
+					nvo.Cost = 0;
+					nvo.Previous = vo;
+					if (DFS(nv)) return true;
+				}
+				return false;
+			}
+		}
+
 		public Vertex ShortestByBFS(int sv, int ev = -1)
 		{
 			var evo = ev != -1 ? Vertexes[ev] : null;
