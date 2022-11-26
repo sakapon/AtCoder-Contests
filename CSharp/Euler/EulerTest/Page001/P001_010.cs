@@ -62,12 +62,16 @@ namespace EulerTest.Page001
 
 		public static object P006()
 		{
-			return 0;
+			const int n = 100;
+			var ns = n * (n + 1) / 2;
+			var ns2 = n * (n + 1) * (2 * n + 1) / 6;
+			return ns * ns - ns2;
 		}
 
 		public static object P007()
 		{
-			var ps = Primes.GetPrimes(200000);
+			const int n = 200000;
+			var ps = Primes.GetPrimes(n);
 			return ps[10000];
 		}
 
@@ -83,7 +87,8 @@ namespace EulerTest.Page001
 
 		public static object P010()
 		{
-			return 0;
+			const int n = 2000000;
+			return Primes.GetPrimes(n).Sum(x => (long)x);
 		}
 	}
 }
