@@ -10,13 +10,10 @@ namespace EulerTest.Page001
 	{
 		#region Test Methods
 		[TestMethod]
-		public void Test001()
-		{
-			Console.WriteLine(P001());
-		}
+		public void Test001() => TestHelper.Execute();
 		#endregion
 
-		static object P001()
+		public static object P001()
 		{
 			const int n = 1000;
 			return Enumerable.Range(0, n).Where(x => x % 3 == 0 || x % 5 == 0).Sum();
