@@ -11,9 +11,6 @@ class A
 	static object Solve()
 	{
 		var s = Console.ReadLine();
-
-		s = s.Replace('v', '1');
-		s = s.Replace('w', '2');
-		return s.Sum(c => c - '0');
+		return s.Sum(c => c - 'u');
 	}
 }

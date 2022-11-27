@@ -12,25 +12,25 @@ class E
 		var (n, m) = Read2();
 		var a = Read();
 
-		var rm = Enumerable.Range(1, m).ToArray();
+		var rm = Enumerable.Range(0, m).ToArray();
 
 		var sets = Array.ConvertAll(new bool[n + 1], _ => new HashSet<int>());
 		sets[1] = rm.ToHashSet();
 
-		for (int i = 0; i < m; i++)
+		for (int j = 0; j < m; j++)
 		{
-			if (sets[a[i]].Contains(i + 1))
+			if (sets[a[j]].Contains(j))
 			{
-				sets[a[i]].Remove(i + 1);
-				sets[a[i] + 1].Add(i + 1);
+				sets[a[j]].Remove(j);
+				sets[a[j] + 1].Add(j);
 			}
-			else if (sets[a[i] + 1].Contains(i + 1))
+			else if (sets[a[j] + 1].Contains(j))
 			{
-				sets[a[i] + 1].Remove(i + 1);
-				sets[a[i]].Add(i + 1);
+				sets[a[j] + 1].Remove(j);
+				sets[a[j]].Add(j);
 			}
 
-			(sets[a[i]], sets[a[i] + 1]) = (sets[a[i] + 1], sets[a[i]]);
+			(sets[a[j]], sets[a[j] + 1]) = (sets[a[j] + 1], sets[a[j]]);
 		}
 
 		var r = new int[m];
@@ -38,7 +38,7 @@ class E
 		{
 			foreach (var j in sets[i])
 			{
-				r[j - 1] = i;
+				r[j] = i;
 			}
 		}
 		return string.Join("\n", r);
