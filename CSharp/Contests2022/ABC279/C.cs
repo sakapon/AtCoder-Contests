@@ -13,17 +13,21 @@ class C
 		var s = Array.ConvertAll(new bool[h], _ => Console.ReadLine());
 		var t = Array.ConvertAll(new bool[h], _ => Console.ReadLine());
 
-		var ts = Trans(s);
-		var tt = Trans(t);
+		var ts = Transpose(s);
+		var tt = Transpose(t);
+		Array.Sort(ts);
+		Array.Sort(tt);
 		return ts.SequenceEqual(tt);
 	}
 
-	static string[] Trans(string[] s)
+	public static string[] Transpose(string[] s)
 	{
-		var rh = Enumerable.Range(0, s.Length).ToArray();
-		var rw = Enumerable.Range(0, s[0].Length).ToArray();
-		s = rw.Select(j => string.Join("", rh.Select(i => s[i][j]))).ToArray();
-		Array.Sort(s);
-		return s;
+		var n = s.Length;
+		var m = s[0].Length;
+		var r = Array.ConvertAll(new bool[m], _ => new char[n]);
+		for (int i = 0; i < n; ++i)
+			for (int j = 0; j < m; ++j)
+				r[j][i] = s[i][j];
+		return Array.ConvertAll(r, l => new string(l));
 	}
 }

@@ -115,6 +115,39 @@ namespace CoderLib8.Extra
 			}
 			return r;
 		}
+
+		public static T[,] Transpose<T>(T[,] a)
+		{
+			var n = a.GetLength(0);
+			var m = a.GetLength(1);
+			var r = new T[m, n];
+			for (int i = 0; i < n; ++i)
+				for (int j = 0; j < m; ++j)
+					r[j, i] = a[i, j];
+			return r;
+		}
+
+		public static T[][] Transpose<T>(T[][] a)
+		{
+			var n = a.Length;
+			var m = a[0].Length;
+			var r = Array.ConvertAll(new bool[m], _ => new T[n]);
+			for (int i = 0; i < n; ++i)
+				for (int j = 0; j < m; ++j)
+					r[j][i] = a[i][j];
+			return r;
+		}
+
+		public static string[] Transpose(string[] s)
+		{
+			var n = s.Length;
+			var m = s[0].Length;
+			var r = Array.ConvertAll(new bool[m], _ => new char[n]);
+			for (int i = 0; i < n; ++i)
+				for (int j = 0; j < m; ++j)
+					r[j][i] = s[i][j];
+			return Array.ConvertAll(r, l => new string(l));
+		}
 	}
 
 	public static class GridHelper2
