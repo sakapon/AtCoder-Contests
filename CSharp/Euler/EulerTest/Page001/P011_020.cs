@@ -30,6 +30,18 @@ namespace EulerTest.Page001
 
 		public static object P012()
 		{
+			const int n_max = 100000;
+
+			var pf = new PrimeFactorization(n_max);
+			for (int i = 1; i < n_max; i++)
+			{
+				var f0 = pf.GetFactors(i);
+				var f1 = pf.GetFactors(i + 1);
+				var c = f0.Concat(f1)
+					.GroupBy(x => x)
+					.Aggregate(1, (v, g) => v * (g.Count() + (g.Key == 2 ? 0 : 1)));
+				if (c > 500) return i * (i + 1) / 2;
+			}
 			return 0;
 		}
 
@@ -80,7 +92,8 @@ namespace EulerTest.Page001
 
 		public static object P020()
 		{
-			return 0;
+			var r = Enumerable.Range(1, 100).Aggregate((BigInteger)1, (x, y) => x * y);
+			return r.ToString().Sum(c => c - '0');
 		}
 
 		const string Input018 = @"
