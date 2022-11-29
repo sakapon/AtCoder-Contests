@@ -9,16 +9,16 @@ namespace EulerTest.Page002
 	public class P051_060
 	{
 		#region Test Methods
-		[TestMethod] public void Test051() => TestHelper.Execute();
-		[TestMethod] public void Test052() => TestHelper.Execute();
-		[TestMethod] public void Test053() => TestHelper.Execute();
-		[TestMethod] public void Test054() => TestHelper.Execute();
-		[TestMethod] public void Test055() => TestHelper.Execute();
-		[TestMethod] public void Test056() => TestHelper.Execute();
-		[TestMethod] public void Test057() => TestHelper.Execute();
-		[TestMethod] public void Test058() => TestHelper.Execute();
-		[TestMethod] public void Test059() => TestHelper.Execute();
-		[TestMethod] public void Test060() => TestHelper.Execute();
+		[TestMethod] public void T051() => TestHelper.Execute();
+		[TestMethod] public void T052() => TestHelper.Execute();
+		[TestMethod] public void T053() => TestHelper.Execute();
+		[TestMethod] public void T054() => TestHelper.Execute();
+		[TestMethod] public void T055() => TestHelper.Execute();
+		[TestMethod] public void T056() => TestHelper.Execute();
+		[TestMethod] public void T057() => TestHelper.Execute();
+		[TestMethod] public void T058() => TestHelper.Execute();
+		[TestMethod] public void T059() => TestHelper.Execute();
+		[TestMethod] public void T060() => TestHelper.Execute();
 		#endregion
 
 		public static object P051()
