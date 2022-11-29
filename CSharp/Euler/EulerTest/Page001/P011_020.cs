@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using EulerLib8.Linq;
 using EulerLib8.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -52,7 +53,24 @@ namespace EulerTest.Page001
 
 		public static object P014()
 		{
-			return 0;
+			const int n = 1000000;
+
+			var dp = new Dictionary<long, int>();
+			dp[1] = 0;
+			var p = Enumerable.Range(1, n - 1).Select(i => (i, c: GetCost(i))).FirstMax(p => p.c);
+			return p.i;
+
+			int GetCost(long v)
+			{
+				if (!dp.TryGetValue(v, out var c))
+				{
+					var nv = Next(v);
+					dp[v] = c = GetCost(nv) + 1;
+				}
+				return c;
+			}
+
+			static long Next(long v) => (v & 1) == 0 ? v / 2 : 3 * v + 1;
 		}
 
 		public static object P015()
