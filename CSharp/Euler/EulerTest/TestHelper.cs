@@ -16,7 +16,7 @@ namespace EulerTest
 		public static void Execute([CallerFilePath] string typeName = "", [CallerMemberName] string methodName = "")
 		{
 			typeName = Path.GetFileNameWithoutExtension(typeName);
-			methodName = methodName.Replace("Test", "P");
+			methodName = methodName.Replace("T", "P");
 
 			if (types == null)
 			{
