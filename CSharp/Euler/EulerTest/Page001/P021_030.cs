@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EulerLib8.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EulerTest.Page001
@@ -38,7 +39,8 @@ namespace EulerTest.Page001
 
 		public static object P024()
 		{
-			return 0;
+			var r10 = Enumerable.Range(0, 10).Select(i => (char)(i + '0'));
+			return new string(r10.PermutationAt(999999));
 		}
 
 		public static object P025()
