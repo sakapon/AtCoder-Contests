@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using EulerLib8.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -45,7 +46,9 @@ namespace EulerTest.Page001
 
 		public static object P025()
 		{
-			return 0;
+			var d = BigInteger.Pow(10, 999);
+			var p = Fibonacci.FibonacciSeq(0, 1).Select((v, i) => (v, i)).First(p => p.v >= d);
+			return p.i;
 		}
 
 		public static object P026()
