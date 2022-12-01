@@ -23,7 +23,25 @@ namespace EulerTest.Page001
 
 		public static object P031()
 		{
-			return 0;
+			const int n = 200;
+			var coins = new[] { 1, 2, 5, 10, 20, 50, 100, 200 };
+
+			var dp = new long[n + 1];
+			dp[0] = 1;
+
+			foreach (var c in coins)
+			{
+				for (int i = n - 1; i >= 0; i--)
+				{
+					if (dp[i] == 0) continue;
+
+					for (int d = c; d <= n; d += c)
+					{
+						if (i + d <= n) dp[i + d] += dp[i];
+					}
+				}
+			}
+			return dp[n];
 		}
 
 		public static object P032()

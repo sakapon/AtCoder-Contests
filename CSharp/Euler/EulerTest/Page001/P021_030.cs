@@ -63,17 +63,43 @@ namespace EulerTest.Page001
 
 		public static object P028()
 		{
-			return 0;
+			const int w = 1001;
+
+			var r = 1;
+			for (int i = 3; i <= w; i += 2)
+			{
+				r += (i * i - 3 * (i - 1)) * 2;
+				r += i * i * 2;
+			}
+			return r;
 		}
 
 		public static object P029()
 		{
-			return 0;
+			const int n = 100;
+
+			var set = new HashSet<BigInteger>();
+			for (int a = 2; a <= n; a++)
+				for (int b = 2; b <= n; b++)
+					set.Add(BigInteger.Pow(a, b));
+			return set.Count;
 		}
 
 		public static object P030()
 		{
-			return 0;
+			const int n = 5;
+
+			var p = new int[10];
+			for (int i = 0; i < p.Length; ++i)
+				p[i] = (int)Math.Pow(i, n);
+
+			var r = 0;
+			for (int i = 10; i < 500000; i++)
+			{
+				var s = i.ToString().Sum(c => p[c - '0']);
+				if (s == i) r += i;
+			}
+			return r;
 		}
 	}
 }
