@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EulerLib8.Linq;
+using EulerLib8.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EulerTest.Page001
@@ -81,7 +83,18 @@ namespace EulerTest.Page001
 
 		public static object P039()
 		{
-			return 0;
+			const int p_max = 1000;
+
+			var r = new int[p_max + 1];
+			foreach (var (a, b, c) in SpecialSeqs.PythagoreanTriples(30))
+			{
+				var s = a + b + c;
+				for (var p = s; p <= p_max; p += s)
+				{
+					r[p]++;
+				}
+			}
+			return Enumerable.Range(1, p_max).FirstMax(p => r[p]);
 		}
 
 		public static object P040()

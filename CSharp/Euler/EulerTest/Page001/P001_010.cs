@@ -74,20 +74,10 @@ namespace EulerTest.Page001
 		{
 			const int s = 1000;
 
-			for (int m = 1; m < 10; m++)
+			foreach (var (a, b, c) in SpecialSeqs.PythagoreanTriples(10))
 			{
-				for (int n = 1; n < m; n++)
-				{
-					if ((m & 1) == (n & 1)) continue;
-
-					var a = m * m - n * n;
-					var b = 2 * m * n;
-					var c = m * m + n * n;
-					//Console.WriteLine($"{a} {b} {c}");
-
-					var q = Math.DivRem(s, a + b + c, out var rem);
-					if (rem == 0) return q * q * q * a * b * c;
-				}
+				var q = Math.DivRem(s, a + b + c, out var rem);
+				if (rem == 0) return q * q * q * a * b * c;
 			}
 			return 0;
 		}
