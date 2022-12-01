@@ -31,7 +31,7 @@ namespace EulerTest.Page001
 		public static object P002()
 		{
 			const int n = 4000000;
-			return Fibonacci.FibonacciSeq(1, 2).TakeWhile(x => x <= n).Where(x => x % 2 == 0).Sum(x => (int)x);
+			return SpecialSeqs.FibonacciSeq(1, 2).TakeWhile(x => x <= n).Where(x => x % 2 == 0).Sum(x => (int)x);
 		}
 
 		public static object P003()

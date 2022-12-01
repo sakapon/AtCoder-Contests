@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace EulerLib8.Numerics
 {
-	public static class Fibonacci
+	public static class SpecialSeqs
 	{
 		public static IEnumerable<BigInteger> FibonacciSeq(BigInteger f0, BigInteger f1)
 		{

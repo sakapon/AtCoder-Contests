@@ -47,7 +47,7 @@ namespace EulerTest.Page001
 		public static object P025()
 		{
 			var d = BigInteger.Pow(10, 999);
-			var p = Fibonacci.FibonacciSeq(0, 1).Select((v, i) => (v, i)).First(p => p.v >= d);
+			var p = SpecialSeqs.FibonacciSeq(0, 1).Select((v, i) => (v, i)).First(p => p.v >= d);
 			return p.i;
 		}
 
