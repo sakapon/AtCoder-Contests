@@ -44,7 +44,14 @@ namespace EulerTest.Page001
 
 		public static object P045()
 		{
-			return 0;
+			var rn = Enumerable.Range(1, 100000).ToArray();
+			var set3 = rn.Select(i => SpecialSeqs.PolygonalNumber(3, i)).ToHashSet();
+			var set5 = rn.Select(i => SpecialSeqs.PolygonalNumber(5, i)).ToHashSet();
+			var set6 = rn.Select(i => SpecialSeqs.PolygonalNumber(6, i)).ToHashSet();
+
+			set3.IntersectWith(set5);
+			set3.IntersectWith(set6);
+			return set3.OrderBy(x => x).ElementAt(2);
 		}
 
 		public static object P046()

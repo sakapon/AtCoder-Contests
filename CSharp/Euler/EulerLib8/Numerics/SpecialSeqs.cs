@@ -37,5 +37,11 @@ namespace EulerLib8.Numerics
 				}
 			}
 		}
+
+		// n 角数
+		public static long PolygonalNumber(long n, long i)
+		{
+			return i * ((n - 2) * i + 4 - n) / 2;
+		}
 	}
 }

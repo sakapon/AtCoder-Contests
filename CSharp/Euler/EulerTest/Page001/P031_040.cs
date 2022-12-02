@@ -99,7 +99,12 @@ namespace EulerTest.Page001
 
 		public static object P040()
 		{
-			return 0;
+			var l = new List<char>();
+			for (int i = 0; i < 200000; i++)
+			{
+				l.AddRange(i.ToString());
+			}
+			return Enumerable.Range(0, 7).Select(i => l[(int)Math.Pow(10, i)] - '0').Aggregate((x, y) => x * y);
 		}
 	}
 }
