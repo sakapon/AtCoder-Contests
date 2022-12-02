@@ -43,5 +43,12 @@ namespace EulerLib8.Numerics
 		{
 			return i * ((n - 2) * i + 4 - n) / 2;
 		}
+
+		// n 角数
+		public static IEnumerable<long> PolygonalNumbers(long n)
+		{
+			n -= 2;
+			for (var (v, d) = (0L, 1L); ; v += d, d += n) yield return v;
+		}
 	}
 }
