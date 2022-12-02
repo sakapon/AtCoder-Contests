@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using EulerLib8.Linq;
-using static EulerLib8.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static EulerLib8.Common;
 
 namespace EulerTest.Page002
 {
@@ -55,7 +56,8 @@ namespace EulerTest.Page002
 
 		public static object P097()
 		{
-			return 0;
+			const long M = 10000000000;
+			return (28433 * BigInteger.ModPow(2, 7830457, M) + 1) % M;
 		}
 
 		public static object P098()

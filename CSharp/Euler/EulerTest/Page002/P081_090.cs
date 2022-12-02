@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static EulerLib8.Common;
 
 namespace EulerTest.Page002
 {
@@ -43,7 +44,22 @@ namespace EulerTest.Page002
 
 		public static object P085()
 		{
-			return 0;
+			const int n = 2000000;
+			const int w_max = 2000;
+
+			var r = (area: 0, count: 0L);
+			for (int h = 1; h <= w_max; h++)
+			{
+				for (int w = 1; w <= w_max; w++)
+				{
+					var count = Count(h, w);
+					ChMin(ref r, (h * w, count), p => Math.Abs(p.count - n));
+					if (count > n) break;
+				}
+			}
+			return r.area;
+
+			static long Count(long h, long w) => h * (h + 1) / 2 * w * (w + 1) / 2;
 		}
 
 		public static object P086()
