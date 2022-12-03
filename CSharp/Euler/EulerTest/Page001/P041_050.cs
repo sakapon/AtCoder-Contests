@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using EulerLib8.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static EulerLib8.Common;
 
 namespace EulerTest.Page001
 {
@@ -39,7 +41,20 @@ namespace EulerTest.Page001
 
 		public static object P044()
 		{
-			return 0;
+			var p = SpecialSeqs.PolygonalNumbers(5).Take(1000000).ToArray();
+			var set = p.ToHashSet();
+
+			var r = 1L << 60;
+			for (int i = 1; i < 3000; i++)
+			{
+				for (int j = i + 1; j < 3000; j++)
+				{
+					var x = p[j] + p[i];
+					var y = p[j] - p[i];
+					if (set.Contains(x) && set.Contains(y)) ChMin(ref r, y);
+				}
+			}
+			return r;
 		}
 
 		public static object P045()
@@ -57,17 +72,42 @@ namespace EulerTest.Page001
 
 		public static object P046()
 		{
-			return 0;
+			var b = Primes.GetIsPrimes(10000);
+			return Enumerable.Range(1, 10000).Select(i => (i << 1) | 1).First(v => !b[v] && !IsTrue(v));
+
+			bool IsTrue(int v)
+			{
+				for (int x = 1; ; x++)
+				{
+					var y = v - 2 * x * x;
+					if (y < 0) return false;
+					if (b[y]) return true;
+				}
+			}
 		}
 
 		public static object P047()
 		{
+			const int k = 4;
+			const int n_max = 200000;
+
+			var pf = new PrimeFactorization(n_max);
+			var c = 0;
+			for (int x = 1; x <= n_max; x++)
+			{
+				if (pf.GetFactorTypes(x).Length >= k) c++;
+				else c = 0;
+				if (c == k) return x - k + 1;
+			}
 			return 0;
 		}
 
 		public static object P048()
 		{
-			return 0;
+			const int n = 1000;
+			const long M = 10000000000;
+			var rn = Enumerable.Range(1, n).ToArray();
+			return rn.Select(i => BigInteger.ModPow(i, i, M)).Aggregate((x, y) => x + y) % M;
 		}
 
 		public static object P049()
