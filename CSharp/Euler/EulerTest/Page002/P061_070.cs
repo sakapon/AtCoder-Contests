@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static EulerLib8.Common;
 
@@ -29,12 +30,43 @@ namespace EulerTest.Page002
 
 		public static object P062()
 		{
-			return 0;
+			const int count = 5;
+
+			var dc = new Dictionary<string, int>();
+			var dv = new Dictionary<string, long>();
+
+			var r = (s: "", c: 0);
+
+			for (long n = 1; r.c < count; n++)
+			{
+				var c = n * n * n;
+				var cs = c.ToString().ToCharArray();
+				Array.Sort(cs);
+				var s = new string(cs);
+				if (dc.ContainsKey(s))
+				{
+					dc[s]++;
+				}
+				else
+				{
+					dc[s] = 1;
+					dv[s] = c;
+				}
+				ChMax(ref r, (s, dc[s]), p => p.Item2);
+			}
+			return dv[r.s];
 		}
 
 		public static object P063()
 		{
-			return 0;
+			var r = 0L;
+			for (int n = 1; ; n++)
+			{
+				var t = Enumerable.Range(1, 9).Count(i => BigInteger.Pow(i, n).ToString().Length == n);
+				if (t == 0) break;
+				r += t;
+			}
+			return r;
 		}
 
 		public static object P064()
