@@ -25,7 +25,26 @@ namespace EulerTest.Page001
 
 		public static object P021()
 		{
-			return 0;
+			const int n = 10000;
+			const int n_max = 100000;
+
+			var pf = new PrimeFactorization(n_max);
+			var ds = new long[n_max + 1];
+			for (int x = 2; x <= n_max; x++)
+			{
+				ds[x] = DivisorsSum(x);
+			}
+
+			return Enumerable.Range(1, n).Where(IsAmicable).Sum();
+
+			long DivisorsSum(int x)
+			{
+				return pf.GetFactors(x)
+					.GroupBy(p => p)
+					.Aggregate(1L, (x, g) => x * ((long)Math.Pow(g.Key, g.Count() + 1) - 1) / (g.Key - 1)) - x;
+			}
+
+			bool IsAmicable(int x) => ds[x] != x && ds[ds[x]] == x;
 		}
 
 		public static object P022()
