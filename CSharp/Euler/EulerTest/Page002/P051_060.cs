@@ -60,7 +60,18 @@ namespace EulerTest.Page002
 
 		public static object P053()
 		{
-			return 0;
+			const int nMax = 100;
+
+			var c = 0;
+			var comb = new BigCombination(nMax);
+			for (int n = 1; n <= nMax; n++)
+			{
+				for (int r = 0; r <= n; r++)
+				{
+					if (comb.Ncr(n, r) > 1000000) c++;
+				}
+			}
+			return c;
 		}
 
 		public static object P054()
