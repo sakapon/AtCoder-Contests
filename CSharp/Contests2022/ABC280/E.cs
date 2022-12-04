@@ -15,14 +15,15 @@ class E
 		var p1 = 1 - p2;
 
 		var dp = new MInt[n + 1];
+		dp[1] = 1;
 
-		for (int i = n - 1; i >= 0; i--)
+		for (int i = 2; i <= n; i++)
 		{
 			dp[i] += 1;
-			dp[i] += dp[i + 1] * p1;
-			if (i + 2 <= n) dp[i] += dp[i + 2] * p2;
+			dp[i] += dp[i - 1] * p1;
+			dp[i] += dp[i - 2] * p2;
 		}
-		return dp[0].V;
+		return dp[n];
 	}
 }
 
