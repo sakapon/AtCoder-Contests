@@ -26,12 +26,48 @@ namespace EulerTest.Page002
 
 		public static object P091()
 		{
-			return 0;
+			const int n = 50;
+
+			var r = 0;
+			for (int x = 0; x <= n; x++)
+			{
+				for (int y = 0; y <= n; y++)
+				{
+					if ((x, y) == (0, 0)) continue;
+
+					var g = Gcd(x, y);
+					var (dx, dy) = (y / g, -x / g);
+
+					for (var (u, v) = (x + dx, y + dy); u <= n && v >= 0; u += dx, v += dy)
+					{
+						r++;
+					}
+				}
+			}
+			r <<= 1;
+			r += n * n;
+			return r;
+
+			// モノイドとする場合 (単位元は 0)
+			static int Gcd(int a, int b) { if (b == 0) return a; for (int r; (r = a % b) > 0; a = b, b = r) ; return b; }
 		}
 
 		public static object P092()
 		{
-			return 0;
+			const int n = 10000000;
+
+			var u = new bool?[n + 1];
+			u[1] = false;
+			u[89] = true;
+			return Enumerable.Range(1, n - 1).Count(i => GetValue(i) == true);
+
+			bool? GetValue(int x)
+			{
+				if (u[x] != null) return u[x];
+
+				var nx = x.ToString().Select(c => c - '0').Sum(x => x * x);
+				return u[x] = GetValue(nx);
+			}
 		}
 
 		public static object P093()
