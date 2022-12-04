@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using EulerLib8.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static EulerLib8.Common;
 
@@ -52,7 +53,7 @@ namespace EulerTest.Page002
 					dc[s] = 1;
 					dv[s] = c;
 				}
-				ChMax(ref r, (s, dc[s]), p => p.Item2);
+				ArgHelper.ChFirstMax(ref r, (s, dc[s]), p => p.Item2);
 			}
 			return dv[r.s];
 		}

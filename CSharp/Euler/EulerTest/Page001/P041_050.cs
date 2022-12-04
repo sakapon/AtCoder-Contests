@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using EulerLib8.Linq;
 using EulerLib8.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static EulerLib8.Common;
 
 namespace EulerTest.Page001
 {
@@ -51,7 +51,7 @@ namespace EulerTest.Page001
 				{
 					var x = p[j] + p[i];
 					var y = p[j] - p[i];
-					if (set.Contains(x) && set.Contains(y)) ChMin(ref r, y);
+					if (set.Contains(x) && set.Contains(y)) ArgHelper.ChFirstMin(ref r, y);
 				}
 			}
 			return r;

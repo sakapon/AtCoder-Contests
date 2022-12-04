@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using EulerLib8.Linq;
 using EulerLib8.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static EulerLib8.Common;
 
 namespace EulerTest.Page002
 {
@@ -81,7 +81,7 @@ namespace EulerTest.Page002
 				for (int b = 1; b < 100; b++)
 				{
 					var v = BigInteger.Pow(a, b);
-					ChMax(ref r, v.ToString().Sum(c => c - '0'));
+					ArgHelper.ChFirstMax(ref r, v.ToString().Sum(c => c - '0'));
 				}
 			}
 			return r;

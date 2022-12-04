@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CoderLib8.Graphs.SPPs.Int.WeightedGraph211;
+using EulerLib8.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static EulerLib8.Common;
 
@@ -121,7 +122,7 @@ namespace EulerTest.Page002
 				for (int w = 1; w <= w_max; w++)
 				{
 					var count = Count(h, w);
-					ChMin(ref r, (h * w, count), p => Math.Abs(p.count - n));
+					ArgHelper.ChFirstMin(ref r, (h * w, count), p => Math.Abs(p.count - n));
 					if (count > n) break;
 				}
 			}
