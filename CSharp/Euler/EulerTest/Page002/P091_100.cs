@@ -56,17 +56,23 @@ namespace EulerTest.Page002
 		{
 			const int n = 10000000;
 
-			var u = new bool?[n + 1];
-			u[1] = false;
-			u[89] = true;
-			return Enumerable.Range(1, n - 1).Count(i => GetValue(i) == true);
+			var d = Enumerable.Range(0, n).Select(DigitsSum).ToArray();
+			d[89] = 89;
+			for (int x = 1; x < n; x++) UpdateValue(x);
+			return d.Count(x => x == 89);
 
-			bool? GetValue(int x)
+			void UpdateValue(int x)
 			{
-				if (u[x] != null) return u[x];
+				if (d[x] == 1 || d[x] == 89) return;
+				UpdateValue(d[x]);
+				d[x] = d[d[x]];
+			}
 
-				var nx = x.ToString().Select(c => c - '0').Sum(x => x * x);
-				return u[x] = GetValue(nx);
+			static int DigitsSum(int x)
+			{
+				var r = 0;
+				foreach (var c in x.ToString()) r += (c - '0') * (c - '0');
+				return r;
 			}
 		}
 
