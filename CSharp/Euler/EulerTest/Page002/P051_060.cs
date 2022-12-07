@@ -100,7 +100,18 @@ namespace EulerTest.Page002
 
 		public static object P057()
 		{
-			return 0;
+			return ConvergentsSqrt2().Take(1000).Count(p => p.num.ToString().Length > p.denom.ToString().Length);
+
+			static IEnumerable<(BigInteger num, BigInteger denom)> ConvergentsSqrt2()
+			{
+				BigInteger u = 2, v = 1;
+
+				while (true)
+				{
+					yield return (u + v, u);
+					(u, v) = (v + u * 2, u);
+				}
+			}
 		}
 
 		public static object P058()
