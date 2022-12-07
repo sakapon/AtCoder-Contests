@@ -83,7 +83,45 @@ namespace EulerTest.Page002
 
 		public static object P094()
 		{
-			return 0;
+			const long pMax = 1000000000;
+
+			var sq = Enumerable.Range(1, 100000).ToDictionary(x => (long)x * x, x => (long)x);
+			var r = 0L;
+
+			for (long n = 1; n < 100000; n++)
+			{
+				var m2 = 3 * n * n + 1;
+				if (sq.ContainsKey(m2))
+				{
+					var m = sq[m2];
+					Check(m, n);
+					m += 2 * n;
+					Check(m, n);
+				}
+
+				m2 = 3 * n * n - 1;
+				if (sq.ContainsKey(m2))
+				{
+					var m = sq[m2];
+					Check(m, n);
+					m += 2 * n;
+					Check(m, n);
+				}
+			}
+			return r;
+
+			void Check(long m, long n)
+			{
+				var m2 = m * m;
+				var n2 = n * n;
+
+				var a = 2 * m * n;
+				var b = m2 - n2;
+				var c = m2 + n2;
+
+				var p = (ArgHelper.FirstMin(a, b) + c) * 2;
+				if (p <= pMax) r += p;
+			}
 		}
 
 		public static object P095()
