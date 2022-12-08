@@ -83,6 +83,8 @@ namespace EulerTest.Page002
 
 		public static object P094()
 		{
+			// mod 3 で考えることで、m = √(3 n^2 + 1), 2n + √(3 n^2 + 1)
+
 			const long pMax = 1000000000;
 
 			var sq = Enumerable.Range(1, 100000).ToDictionary(x => (long)x * x, x => (long)x);
@@ -91,15 +93,6 @@ namespace EulerTest.Page002
 			for (long n = 1; n < 100000; n++)
 			{
 				var m2 = 3 * n * n + 1;
-				if (sq.ContainsKey(m2))
-				{
-					var m = sq[m2];
-					Check(m, n);
-					m += 2 * n;
-					Check(m, n);
-				}
-
-				m2 = 3 * n * n - 1;
 				if (sq.ContainsKey(m2))
 				{
 					var m = sq[m2];
