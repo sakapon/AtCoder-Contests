@@ -11,11 +11,6 @@ class A
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
-
-		return string.Join(" ", a);
+		return string.Join("\n", Enumerable.Range(0, n + 1).Reverse());
 	}
 }
