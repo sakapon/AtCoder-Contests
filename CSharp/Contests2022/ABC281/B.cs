@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 class B
 {
@@ -11,19 +12,6 @@ class B
 	static bool Solve()
 	{
 		var s = Console.ReadLine();
-
-		if (s.Length != 8) return false;
-		if (!char.IsLetter(s[0])) return false;
-		if (!char.IsLetter(s[^1])) return false;
-
-		try
-		{
-			var i = int.Parse(s[1..^1]);
-			return s[1] >= '1';
-		}
-		catch (Exception)
-		{
-			return false;
-		}
+		return Regex.IsMatch(s, "^[A-Z][1-9][0-9]{5}[A-Z]$");
 	}
 }
