@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using EulerLib8.Fractions;
 using EulerLib8.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static EulerLib8.Common;
@@ -77,7 +78,9 @@ namespace EulerTest.Page002
 
 		public static object P065()
 		{
-			return 0;
+			var e = ContinuedFractions.ContinuedE().Take(100).ToArray();
+			var c = ContinuedFractions.Convergent(e);
+			return c.Numerator.ToString().Sum(c => c - '0');
 		}
 
 		public static object P066()
