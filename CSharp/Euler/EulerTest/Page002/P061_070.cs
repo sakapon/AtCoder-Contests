@@ -73,7 +73,11 @@ namespace EulerTest.Page002
 
 		public static object P064()
 		{
-			return 0;
+			const int nMax = 10000;
+
+			var sqset = Enumerable.Range(1, 100).Select(i => (long)i * i).ToHashSet();
+			return Enumerable.Range(1, nMax)
+				.Count(n => !sqset.Contains(n) && ContinuedFractions.Continued(new QuadraticIrrational(0, n, 1)).Count() % 2 == 0);
 		}
 
 		public static object P065()

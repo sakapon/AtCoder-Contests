@@ -16,7 +16,7 @@ namespace EulerLib8.Fractions
 		}
 	}
 
-	// (a + √c) / d
+	// 二次無理数 (a + √c) / d
 	[System.Diagnostics.DebuggerDisplay(@"{Value}")]
 	public struct QuadraticIrrational
 	{
@@ -53,6 +53,27 @@ namespace EulerLib8.Fractions
 				(n, d) = (d + n * a[i], n);
 			}
 			return new Fraction(n, d);
+		}
+
+		// 連分数展開 (無理数の場合は循環型)
+		public static IEnumerable<long> Continued(QuadraticIrrational x)
+		{
+			var set = new HashSet<QuadraticIrrational>();
+			long i;
+
+			while (true)
+			{
+				(i, x) = Next(x);
+				yield return i;
+				if (!set.Add(x)) break;
+			}
+		}
+
+		// (整数部分, 小数部分の逆数)
+		static (long, QuadraticIrrational) Next(QuadraticIrrational x)
+		{
+			var i = (long)Math.Floor(x.Value);
+			return (i, new QuadraticIrrational(x.a - i * x.d, x.c, x.d).Inverse);
 		}
 
 		// e の連分数展開
