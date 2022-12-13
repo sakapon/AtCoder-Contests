@@ -89,7 +89,19 @@ namespace EulerTest.Page002
 
 		public static object P066()
 		{
-			return 0;
+			const int dMax = 1000;
+
+			var sqset = Enumerable.Range(1, 100).Select(i => (long)i * i).ToHashSet();
+			var r = (d: 0, x: (BigInteger)0);
+
+			for (int d = 1; d <= dMax; d++)
+			{
+				if (sqset.Contains(d)) continue;
+
+				var (x, _) = ContinuedFractions.Pell(d);
+				ArgHelper.ChFirstMax(ref r, (d, x), p => p.x);
+			}
+			return r.d;
 		}
 
 		public static object P067()

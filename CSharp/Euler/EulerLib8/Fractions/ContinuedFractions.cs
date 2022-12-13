@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace EulerLib8.Fractions
@@ -14,6 +15,7 @@ namespace EulerLib8.Fractions
 			Numerator = numerator;
 			Denominator = denominator;
 		}
+		public void Deconstruct(out BigInteger n, out BigInteger d) => (n, d) = (Numerator, Denominator);
 	}
 
 	// 二次無理数 (a + √c) / d
@@ -86,6 +88,23 @@ namespace EulerLib8.Fractions
 				yield return 1;
 				yield return k << 1;
 				yield return 1;
+			}
+		}
+
+		// x^2 - n * y^2 = 1
+		public static (BigInteger x, BigInteger y) Pell(int n)
+		{
+			var sqrt = new QuadraticIrrational(0, n, 1);
+			var cont = Expand(sqrt).ToArray();
+			var (x, y) = Convergent(cont[..^1]);
+
+			if (cont.Length % 2 == 1)
+			{
+				return (x, y);
+			}
+			else
+			{
+				return (x * x + n * y * y, 2 * x * y);
 			}
 		}
 	}
