@@ -77,12 +77,12 @@ namespace EulerTest.Page002
 
 			var sqset = Enumerable.Range(1, 100).Select(i => (long)i * i).ToHashSet();
 			return Enumerable.Range(1, nMax)
-				.Count(n => !sqset.Contains(n) && ContinuedFractions.Continued(new QuadraticIrrational(0, n, 1)).Count() % 2 == 0);
+				.Count(n => !sqset.Contains(n) && ContinuedFractions.Expand(new QuadraticIrrational(0, n, 1)).Count() % 2 == 0);
 		}
 
 		public static object P065()
 		{
-			var e = ContinuedFractions.ContinuedE().Take(100).ToArray();
+			var e = ContinuedFractions.ExpandE().Take(100).ToArray();
 			var c = ContinuedFractions.Convergent(e);
 			return c.Numerator.ToString().Sum(c => c - '0');
 		}

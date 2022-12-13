@@ -56,7 +56,7 @@ namespace EulerLib8.Fractions
 		}
 
 		// 連分数展開 (無理数の場合は循環型)
-		public static IEnumerable<long> Continued(QuadraticIrrational x)
+		public static IEnumerable<long> Expand(QuadraticIrrational x)
 		{
 			var set = new HashSet<QuadraticIrrational>();
 			long i;
@@ -77,7 +77,7 @@ namespace EulerLib8.Fractions
 		}
 
 		// e の連分数展開
-		public static IEnumerable<long> ContinuedE()
+		public static IEnumerable<long> ExpandE()
 		{
 			yield return 2;
 
