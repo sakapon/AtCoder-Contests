@@ -107,16 +107,33 @@ namespace EulerLib8.Fractions
 		public static (BigInteger x, BigInteger y) Pell(int n)
 		{
 			var sqrt = new QuadraticIrrational(0, n, 1);
-			var cont = Expand(sqrt).ToArray();
-			var (x, y) = Convergent(cont[..^1]);
+			var exp = Expand(sqrt).ToArray();
+			var (x, y) = Convergent(exp[..^1]);
 
-			if (cont.Length % 2 == 1)
+			if (exp.Length % 2 == 1)
 			{
 				return (x, y);
 			}
 			else
 			{
 				return (x * x + n * y * y, 2 * x * y);
+			}
+		}
+
+		// x^2 - n * y^2 = -1
+		public static (BigInteger x, BigInteger y) Pell_1(int n)
+		{
+			var sqrt = new QuadraticIrrational(0, n, 1);
+			var exp = Expand(sqrt).ToArray();
+			var (x, y) = Convergent(exp[..^1]);
+
+			if (exp.Length % 2 == 1)
+			{
+				return (-1, -1);
+			}
+			else
+			{
+				return (x, y);
 			}
 		}
 	}
