@@ -57,6 +57,18 @@ namespace EulerLib8.Fractions
 			return new Fraction(n, d);
 		}
 
+		// 循環節の長さが 1 の場合、近似分数を列挙できます。
+		public static IEnumerable<Fraction> ConvergentsForPeriod1(long a0, long a1)
+		{
+			BigInteger n = a1, d = 1;
+
+			while (true)
+			{
+				yield return new Fraction(d + n * a0, n);
+				(n, d) = (d + n * a1, n);
+			}
+		}
+
 		// 連分数展開 (無理数の場合は循環型)
 		public static IEnumerable<long> Expand(QuadraticIrrational x)
 		{

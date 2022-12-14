@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using EulerLib8.Fractions;
 using EulerLib8.Linq;
 using EulerLib8.Numerics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -100,19 +101,8 @@ namespace EulerTest.Page002
 
 		public static object P057()
 		{
-			return ConvergentsSqrt2().Take(1000).Count(p => p.num.ToString().Length > p.denom.ToString().Length);
-
-			// 循環節の長さが 1 の場合、連分数展開を列挙できます。
-			static IEnumerable<(BigInteger num, BigInteger denom)> ConvergentsSqrt2()
-			{
-				BigInteger n = 2, d = 1;
-
-				while (true)
-				{
-					yield return (d + n, n);
-					(n, d) = (d + n * 2, n);
-				}
-			}
+			return ContinuedFractions.ConvergentsForPeriod1(1, 2).Take(1000)
+				.Count(p => p.Numerator.ToString().Length > p.Denominator.ToString().Length);
 		}
 
 		public static object P058()
