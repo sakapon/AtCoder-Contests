@@ -102,14 +102,15 @@ namespace EulerTest.Page002
 		{
 			return ConvergentsSqrt2().Take(1000).Count(p => p.num.ToString().Length > p.denom.ToString().Length);
 
+			// 循環節の長さが 1 の場合、連分数展開を列挙できます。
 			static IEnumerable<(BigInteger num, BigInteger denom)> ConvergentsSqrt2()
 			{
-				BigInteger u = 2, v = 1;
+				BigInteger n = 2, d = 1;
 
 				while (true)
 				{
-					yield return (u + v, u);
-					(u, v) = (v + u * 2, u);
+					yield return (d + n, n);
+					(n, d) = (d + n * 2, n);
 				}
 			}
 		}
