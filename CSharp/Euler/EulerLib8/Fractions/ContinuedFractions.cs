@@ -120,5 +120,34 @@ namespace EulerLib8.Fractions
 			var (x, y) = Convergent(exp[..^1]);
 			return exp.Length % 2 == 1 ? (-1, -1) : (x, y);
 		}
+
+		// x^2 - n * y^2 = 1
+		// 解 (x, y) は x0 + y0 √n の累乗から求められます。
+		public static IEnumerable<(BigInteger x, BigInteger y)> Pells(int n)
+		{
+			var (x0, y0) = Pell(n);
+			BigInteger x = 1, y = 0;
+
+			while (true)
+			{
+				yield return (x, y) = (x0 * x + n * y0 * y, x * y0 + x0 * y);
+			}
+		}
+
+		// x^2 - n * y^2 = -1
+		// 解 (x, y) は x0 + y0 √n の奇数乗から求められます。
+		public static IEnumerable<(BigInteger x, BigInteger y)> Pells_1(int n)
+		{
+			var (x0, y0) = Pell_1(n);
+			if (x0 == -1) yield break;
+			var (x, y) = (x0, y0);
+			(x0, y0) = (x0 * x0 + n * y0 * y0, 2 * x0 * y0);
+
+			while (true)
+			{
+				yield return (x, y);
+				(x, y) = (x0 * x + n * y0 * y, x * y0 + x0 * y);
+			}
+		}
 	}
 }

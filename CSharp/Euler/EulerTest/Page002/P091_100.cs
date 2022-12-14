@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using EulerLib8.Fractions;
 using EulerLib8.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static EulerLib8.Common;
@@ -160,15 +161,11 @@ namespace EulerTest.Page002
 			// 初期値: (x0, y0) = (1, 1)
 			// 解 (x, y) は 1 + √2 の奇数乗から求められます。
 
-			const long n_min = 1000000000000;
-			var (x, y) = (1L, 1L);
-			var (n, m) = (1L, 1L);
+			const long nMin = 1000000000000;
 
-			while (n < n_min)
-			{
-				(x, y) = (3 * x + 4 * y, 2 * x + 3 * y);
-				(n, m) = ((x + 1) / 2, (y + 1) / 2);
-			}
+			var (n, m) = ContinuedFractions.Pells_1(2)
+				.Select(p => (n: (p.x + 1) / 2, m: (p.y + 1) / 2))
+				.First(p => p.n > nMin);
 			return m;
 		}
 
