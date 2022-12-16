@@ -117,7 +117,59 @@ namespace EulerTest.Page002
 
 		public static object P060()
 		{
-			return 0;
+			const int length = 1300;
+
+			var ps = Primes.GetPrimes(100000000);
+			var set = ps.Select(p => p.ToString()).ToHashSet();
+			var r = 1 << 30;
+
+			for (int i1 = 0; i1 < length; i1++)
+			{
+				var p1 = ps[i1].ToString();
+
+				for (int i2 = i1 + 1; i2 < length; i2++)
+				{
+					var p2 = ps[i2].ToString();
+					if (!set.Contains(p1 + p2)) continue;
+					if (!set.Contains(p2 + p1)) continue;
+
+					for (int i3 = i2 + 1; i3 < length; i3++)
+					{
+						var p3 = ps[i3].ToString();
+						if (!set.Contains(p1 + p3)) continue;
+						if (!set.Contains(p3 + p1)) continue;
+						if (!set.Contains(p2 + p3)) continue;
+						if (!set.Contains(p3 + p2)) continue;
+
+						for (int i4 = i3 + 1; i4 < length; i4++)
+						{
+							var p4 = ps[i4].ToString();
+							if (!set.Contains(p1 + p4)) continue;
+							if (!set.Contains(p4 + p1)) continue;
+							if (!set.Contains(p2 + p4)) continue;
+							if (!set.Contains(p4 + p2)) continue;
+							if (!set.Contains(p3 + p4)) continue;
+							if (!set.Contains(p4 + p3)) continue;
+
+							for (int i5 = i4 + 1; i5 < length; i5++)
+							{
+								var p5 = ps[i5].ToString();
+								if (!set.Contains(p1 + p5)) continue;
+								if (!set.Contains(p5 + p1)) continue;
+								if (!set.Contains(p2 + p5)) continue;
+								if (!set.Contains(p5 + p2)) continue;
+								if (!set.Contains(p3 + p5)) continue;
+								if (!set.Contains(p5 + p3)) continue;
+								if (!set.Contains(p4 + p5)) continue;
+								if (!set.Contains(p5 + p4)) continue;
+
+								ArgHelper.ChFirstMin(ref r, ps[i1] + ps[i2] + ps[i3] + ps[i4] + ps[i5]);
+							}
+						}
+					}
+				}
+			}
+			return r;
 		}
 	}
 }

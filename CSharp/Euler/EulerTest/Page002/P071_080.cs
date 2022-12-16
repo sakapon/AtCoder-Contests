@@ -73,7 +73,38 @@ namespace EulerTest.Page002
 
 		public static object P074()
 		{
-			return 0;
+			const int vMax = 1000000;
+
+			var f = new int[10];
+			f[0] = 1;
+			for (int i = 1; i < 10; i++) f[i] = f[i - 1] * i;
+
+			var d = new int[10000000];
+			var path = new HashSet<int>();
+			for (int v = 0; v < vMax; v++)
+			{
+				SetCost(v);
+			}
+			return d[..vMax].Count(x => x == 60);
+
+			void SetCost(int v)
+			{
+				if (d[v] != 0) return;
+				if (path.Contains(v))
+				{
+					return;
+				}
+				var nv = v.ToString().Sum(c => f[c - '0']);
+				if (nv == v)
+				{
+					d[v] = 1;
+					return;
+				}
+				path.Add(v);
+				SetCost(nv);
+				path.Remove(v);
+				d[v] = d[nv] + 1;
+			}
 		}
 
 		public static object P075()
