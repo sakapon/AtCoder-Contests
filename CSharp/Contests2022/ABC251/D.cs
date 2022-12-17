@@ -10,12 +10,11 @@ class D
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var w = int.Parse(Console.ReadLine());
 
-		return string.Join(" ", a);
+		var r1 = Enumerable.Range(1, 100).ToArray();
+		var r2 = r1.Select(x => x * 100);
+		var r3 = r1.Select(x => x * 10000);
+		return "300\n" + string.Join(" ", r1.Concat(r2).Concat(r3));
 	}
 }
