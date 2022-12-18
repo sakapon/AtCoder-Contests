@@ -73,5 +73,30 @@ namespace EulerLib8.Linq
 			}
 			return mo;
 		}
+
+		public static TSource FirstMax<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> toKey, TSource seed) where TKey : IComparable<TKey>
+		{
+			TKey mkey = toKey(seed), key;
+			foreach (var o in source) if (mkey.CompareTo(key = toKey(o)) < 0) (seed, mkey) = (o, key);
+			return seed;
+		}
+		public static TSource FirstMin<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> toKey, TSource seed) where TKey : IComparable<TKey>
+		{
+			TKey mkey = toKey(seed), key;
+			foreach (var o in source) if (mkey.CompareTo(key = toKey(o)) > 0) (seed, mkey) = (o, key);
+			return seed;
+		}
+		public static TSource LastMax<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> toKey, TSource seed) where TKey : IComparable<TKey>
+		{
+			TKey mkey = toKey(seed), key;
+			foreach (var o in source) if (mkey.CompareTo(key = toKey(o)) <= 0) (seed, mkey) = (o, key);
+			return seed;
+		}
+		public static TSource LastMin<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> toKey, TSource seed) where TKey : IComparable<TKey>
+		{
+			TKey mkey = toKey(seed), key;
+			foreach (var o in source) if (mkey.CompareTo(key = toKey(o)) >= 0) (seed, mkey) = (o, key);
+			return seed;
+		}
 	}
 }

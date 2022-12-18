@@ -14,22 +14,16 @@ class C2
 			var p = Console.ReadLine().Split();
 			d.TryAdd(p[0], (i, int.Parse(p[1])));
 		}
-		return d.Values.FirstMax(p => p.t).i;
+		return d.Values.FirstMax(p => p.t, default).i;
 	}
 }
 
 public static class ArgHelper
 {
-	public static TSource FirstMax<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> toKey) where TKey : IComparable<TKey>
+	public static TSource FirstMax<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> toKey, TSource seed) where TKey : IComparable<TKey>
 	{
-		var e = source.GetEnumerator();
-		if (!e.MoveNext()) throw new ArgumentException("The source is empty.", nameof(source));
-		var (mo, mkey) = (e.Current, toKey(e.Current));
-		while (e.MoveNext())
-		{
-			var key = toKey(e.Current);
-			if (mkey.CompareTo(key) < 0) (mo, mkey) = (e.Current, key);
-		}
-		return mo;
+		TKey mkey = toKey(seed), key;
+		foreach (var o in source) if (mkey.CompareTo(key = toKey(o)) < 0) (seed, mkey) = (o, key);
+		return seed;
 	}
 }
