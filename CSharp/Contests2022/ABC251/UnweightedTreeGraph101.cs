@@ -48,13 +48,12 @@ namespace CoderLib8.Graphs.Int.UnweightedTreeGraph101
 			{
 				var vo = vs[v];
 				vo.Edges = Map[v];
-				var nc = vo.Depth + 1;
 
 				foreach (var nv in vo.Edges)
 				{
 					var nvo = vs[nv];
 					if (nvo.Depth != -1) continue;
-					nvo.Depth = nc;
+					nvo.Depth = vo.Depth + 1;
 					nvo.Parent = vo;
 					DFS(nv);
 				}
@@ -75,13 +74,12 @@ namespace CoderLib8.Graphs.Int.UnweightedTreeGraph101
 				var v = q.Dequeue();
 				var vo = vs[v];
 				vo.Edges = Map[v];
-				var nc = vo.Depth + 1;
 
 				foreach (var nv in vo.Edges)
 				{
 					var nvo = vs[nv];
 					if (nvo.Depth != -1) continue;
-					nvo.Depth = nc;
+					nvo.Depth = vo.Depth + 1;
 					nvo.Parent = vo;
 					q.Enqueue(nv);
 				}
