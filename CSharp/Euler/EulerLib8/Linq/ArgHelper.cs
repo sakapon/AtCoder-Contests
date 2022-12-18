@@ -49,5 +49,29 @@ namespace EulerLib8.Linq
 			}
 			return mo;
 		}
+		public static TSource LastMax<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> toKey) where TKey : IComparable<TKey>
+		{
+			var e = source.GetEnumerator();
+			if (!e.MoveNext()) throw new ArgumentException("The source is empty.", nameof(source));
+			var (mo, mkey) = (e.Current, toKey(e.Current));
+			while (e.MoveNext())
+			{
+				var key = toKey(e.Current);
+				if (mkey.CompareTo(key) <= 0) (mo, mkey) = (e.Current, key);
+			}
+			return mo;
+		}
+		public static TSource LastMin<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> toKey) where TKey : IComparable<TKey>
+		{
+			var e = source.GetEnumerator();
+			if (!e.MoveNext()) throw new ArgumentException("The source is empty.", nameof(source));
+			var (mo, mkey) = (e.Current, toKey(e.Current));
+			while (e.MoveNext())
+			{
+				var key = toKey(e.Current);
+				if (mkey.CompareTo(key) >= 0) (mo, mkey) = (e.Current, key);
+			}
+			return mo;
+		}
 	}
 }
