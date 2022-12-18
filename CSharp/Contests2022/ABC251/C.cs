@@ -13,8 +13,8 @@ class C
 		var n = int.Parse(Console.ReadLine());
 		var ps = Array.ConvertAll(new bool[n], _ => Console.ReadLine().Split());
 
-		return ps.
-			Select((p, i) => (s: p[0], t: int.Parse(p[1]), i))
+		return ps
+			.Select((p, i) => (s: p[0], t: int.Parse(p[1]), i))
 			.GroupBy(p => p.s)
 			.Select(g => g.First())
 			.OrderByDescending(p => p.t)
