@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CoderLib8.Graphs.Specialized.Int;
+using CoderLib8.Graphs.Int.UnweightedTreeGraph101;
 
 class F2
 {
