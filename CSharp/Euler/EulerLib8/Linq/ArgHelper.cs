@@ -29,11 +29,11 @@ namespace EulerLib8.Linq
 		{
 			var e = source.GetEnumerator();
 			if (!e.MoveNext()) throw new ArgumentException("The source is empty.", nameof(source));
-			var mo = e.Current;
+			var (mo, mkey) = (e.Current, toKey(e.Current));
 			while (e.MoveNext())
 			{
-				var o = e.Current;
-				if (toKey(mo).CompareTo(toKey(o)) < 0) mo = o;
+				var key = toKey(e.Current);
+				if (mkey.CompareTo(key) < 0) (mo, mkey) = (e.Current, key);
 			}
 			return mo;
 		}
@@ -41,11 +41,11 @@ namespace EulerLib8.Linq
 		{
 			var e = source.GetEnumerator();
 			if (!e.MoveNext()) throw new ArgumentException("The source is empty.", nameof(source));
-			var mo = e.Current;
+			var (mo, mkey) = (e.Current, toKey(e.Current));
 			while (e.MoveNext())
 			{
-				var o = e.Current;
-				if (toKey(mo).CompareTo(toKey(o)) > 0) mo = o;
+				var key = toKey(e.Current);
+				if (mkey.CompareTo(key) > 0) (mo, mkey) = (e.Current, key);
 			}
 			return mo;
 		}
