@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 // 連結成分ごとに探索するため、非連結でも可能です。
 // Root は連結成分の id を表します。
-namespace CoderLib8.Graphs.Int.BipartiteGraph201
+namespace CoderLib8.Graphs.Specialized.Int.BipartiteGraph201
 {
 	[System.Diagnostics.DebuggerDisplay(@"\{{Id}: {Edges?.Count ?? -1} edges, Color = {Color}\}")]
 	public class Vertex

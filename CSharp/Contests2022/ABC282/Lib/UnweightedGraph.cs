@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 // 頂点 id として整数 [0, n) を使います。
-namespace CoderLib8.Graphs.Int
+namespace CoderLib8.Graphs.Specialized.Int
 {
 	[System.Diagnostics.DebuggerDisplay(@"VertexesCount = {VertexesCount}")]
 	public abstract class UnweightedGraph

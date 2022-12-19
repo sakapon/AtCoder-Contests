@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoderLib8.Graphs.Int.BipartiteGraph101;
+using CoderLib8.Graphs.Specialized.Int.BipartiteGraph101;
 
 class D2
 {
