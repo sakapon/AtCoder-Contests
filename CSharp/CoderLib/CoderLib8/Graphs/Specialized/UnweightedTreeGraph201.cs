@@ -1,0 +1,71 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace CoderLib8.Graphs.Specialized.Int.UnweightedTreeGraph201
+{
+	[System.Diagnostics.DebuggerDisplay(@"\{{Id}: {Edges?.Count ?? -1} edges, Depth = {Depth}\}")]
+	public class Vertex
+	{
+		public int Id { get; }
+		public List<int> Edges { get; set; }
+		public long Depth { get; set; } = -1;
+		public bool IsConnected => Depth != -1;
+		public Vertex Parent { get; set; }
+		public Vertex(int id) { Id = id; }
+	}
+
+	public static class UnweightedTreeGraphEx
+	{
+		public static Vertex[] DFSTree(this UnweightedGraph graph, int root)
+		{
+			var vs = new Vertex[graph.VertexesCount];
+			for (int v = 0; v < vs.Length; ++v) vs[v] = new Vertex(v);
+
+			vs[root].Depth = 0;
+			DFS(root);
+			return vs;
+
+			void DFS(int v)
+			{
+				var vo = vs[v];
+				vo.Edges = graph.GetEdges(v);
+
+				foreach (var nv in vo.Edges)
+				{
+					var nvo = vs[nv];
+					if (nvo.Depth != -1) continue;
+					nvo.Depth = vo.Depth + 1;
+					nvo.Parent = vo;
+					DFS(nv);
+				}
+			}
+		}
+
+		public static Vertex[] BFSTree(this UnweightedGraph graph, int root)
+		{
+			var vs = new Vertex[graph.VertexesCount];
+			for (int v = 0; v < vs.Length; ++v) vs[v] = new Vertex(v);
+
+			vs[root].Depth = 0;
+			var q = new Queue<int>();
+			q.Enqueue(root);
+
+			while (q.Count > 0)
+			{
+				var v = q.Dequeue();
+				var vo = vs[v];
+				vo.Edges = graph.GetEdges(v);
+
+				foreach (var nv in vo.Edges)
+				{
+					var nvo = vs[nv];
+					if (nvo.Depth != -1) continue;
+					nvo.Depth = vo.Depth + 1;
+					nvo.Parent = vo;
+					q.Enqueue(nv);
+				}
+			}
+			return vs;
+		}
+	}
+}
