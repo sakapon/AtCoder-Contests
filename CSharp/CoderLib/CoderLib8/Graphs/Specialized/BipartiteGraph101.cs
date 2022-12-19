@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+// Test: https://atcoder.jp/contests/abc282/tasks/abc282_d
+
 // 連結成分ごとに探索するため、非連結でも可能です。
 // Root は連結成分の id を表します。
 namespace CoderLib8.Graphs.Specialized.Int.BipartiteGraph101

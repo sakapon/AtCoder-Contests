@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+// Test: https://atcoder.jp/contests/abc251/tasks/abc251_f
+
 namespace CoderLib8.Graphs.Specialized.Int.UnweightedTreeGraph201
 {
 	[System.Diagnostics.DebuggerDisplay(@"\{{Id}: {Edges?.Count ?? -1} edges, Depth = {Depth}\}")]
