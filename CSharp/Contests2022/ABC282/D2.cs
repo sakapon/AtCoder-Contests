@@ -13,23 +13,25 @@ class D2
 		var (n, m) = Read2();
 		var es = Array.ConvertAll(new bool[m], _ => Read2());
 
-		var r = 0L;
 		var graph = new BipartiteGraph(n + 1, es, true);
 		var vs = graph.BFSForest();
 		if (vs == null) return 0;
 
+		var r = (long)n * n - es.Length * 2;
+
 		foreach (var g in vs[1..].GroupBy(v => v.Root.Id))
 		{
-			var gvs = g.ToArray();
+			var c0 = 0L;
+			var c1 = 0L;
 
-			var counts = new long[2];
-			counts[0] = gvs.Count(v => !v.Color);
-			counts[1] = gvs.Length - counts[0];
-
-			foreach (var v in gvs)
+			foreach (var v in g)
 			{
-				r += n - counts[v.Color ? 1 : 0] - v.Edges.Count;
+				if (v.Color == 0) c0++;
+				else c1++;
 			}
+
+			r -= c0 * c0;
+			r -= c1 * c1;
 		}
 		return r / 2;
 	}

@@ -10,7 +10,7 @@ namespace CoderLib8.Graphs.Int.BipartiteGraph101
 	{
 		public int Id { get; }
 		public List<int> Edges { get; set; }
-		public bool Color { get; set; }
+		public int Color { get; set; } = -1;
 		public Vertex Parent { get; set; }
 		public Vertex Root { get; set; }
 		public Vertex(int id) { Id = id; }
@@ -42,14 +42,14 @@ namespace CoderLib8.Graphs.Int.BipartiteGraph101
 			var vs = new Vertex[VertexesCount];
 			for (int v = 0; v < vs.Length; ++v) vs[v] = new Vertex(v);
 
-			var u = new bool[vs.Length];
 			var q = new Queue<int>();
 
 			for (int sv = 0; sv < vs.Length; ++sv)
 			{
-				if (u[sv]) continue;
-				vs[sv].Root = vs[sv];
-				u[sv] = true;
+				var svo = vs[sv];
+				if (svo.Color != -1) continue;
+				svo.Color = 0;
+				svo.Root = svo;
 				q.Enqueue(sv);
 
 				while (q.Count > 0)
@@ -61,18 +61,15 @@ namespace CoderLib8.Graphs.Int.BipartiteGraph101
 					foreach (var nv in vo.Edges)
 					{
 						var nvo = vs[nv];
-						if (u[nv])
+						if (nvo.Color != -1)
 						{
 							if (nvo.Color == vo.Color) return null;
+							continue;
 						}
-						else
-						{
-							nvo.Color = !vo.Color;
-							nvo.Parent = vo;
-							nvo.Root = vs[sv];
-							u[nv] = true;
-							q.Enqueue(nv);
-						}
+						nvo.Color = 1 - vo.Color;
+						nvo.Parent = vo;
+						nvo.Root = svo;
+						q.Enqueue(nv);
 					}
 				}
 			}
