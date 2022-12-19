@@ -100,4 +100,76 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph401
 			return l;
 		}
 	}
+
+	[System.Diagnostics.DebuggerDisplay(@"\{{Id}: Cost = {Cost}\}")]
+	public class Vertex
+	{
+		public int Id { get; }
+		public List<int> Edges { get; set; }
+		public long Cost { get; set; } = long.MaxValue;
+		public bool IsConnected => Cost != long.MaxValue;
+		public Vertex Parent { get; set; }
+		public Vertex(int id) { Id = id; }
+	}
+
+	public static class UnweightedGraphEx
+	{
+		// 最短経路とは限りません。
+		// 連結性のみを判定する場合は、DFS または Union-Find を利用します。
+		public static Vertex[] ConnectivityByDFS(this UnweightedGraph graph, int sv, int ev = -1)
+		{
+			var vs = new Vertex[graph.VertexesCount];
+			for (int v = 0; v < vs.Length; ++v) vs[v] = new Vertex(v);
+
+			vs[sv].Cost = 0;
+			DFS(sv);
+			return vs;
+
+			bool DFS(int v)
+			{
+				if (v == ev) return true;
+				var vo = vs[v];
+				vo.Edges = graph.GetEdges(v);
+
+				foreach (var nv in vo.Edges)
+				{
+					var nvo = vs[nv];
+					if (nvo.Cost != long.MaxValue) continue;
+					nvo.Cost = vo.Cost + 1;
+					nvo.Parent = vo;
+					if (DFS(nv)) return true;
+				}
+				return false;
+			}
+		}
+
+		public static Vertex[] ShortestByBFS(this UnweightedGraph graph, int sv, int ev = -1)
+		{
+			var vs = new Vertex[graph.VertexesCount];
+			for (int v = 0; v < vs.Length; ++v) vs[v] = new Vertex(v);
+
+			vs[sv].Cost = 0;
+			var q = new Queue<int>();
+			q.Enqueue(sv);
+
+			while (q.Count > 0)
+			{
+				var v = q.Dequeue();
+				if (v == ev) return vs;
+				var vo = vs[v];
+				vo.Edges = graph.GetEdges(v);
+				var nc = vo.Cost + 1;
+
+				foreach (var nv in vo.Edges)
+				{
+					var nvo = vs[nv];
+					if (nvo.Cost <= nc) continue;
+					nvo.Cost = nc;
+					nvo.Parent = vo;
+					q.Enqueue(nv);
+				}
+			}
+			return vs;
+		}
+	}
 }
