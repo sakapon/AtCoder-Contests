@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CoderLib8.Graphs.Int.UnweightedTreeGraph101
+namespace CoderLib8.Graphs.Specialized.Int.UnweightedTreeGraph101
 {
 	[System.Diagnostics.DebuggerDisplay(@"\{{Id}: {Edges?.Count ?? -1} edges, Depth = {Depth}\}")]
 	public class Vertex
