@@ -110,6 +110,22 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph401
 		public bool IsConnected => Cost != long.MaxValue;
 		public Vertex Parent { get; set; }
 		public Vertex(int id) { Id = id; }
+
+		public int[] GetPathVertexes()
+		{
+			var path = new Stack<int>();
+			for (var v = this; v != null; v = v.Parent)
+				path.Push(v.Id);
+			return path.ToArray();
+		}
+
+		public (int, int)[] GetPathEdges()
+		{
+			var path = new Stack<(int, int)>();
+			for (var v = this; v.Parent != null; v = v.Parent)
+				path.Push((v.Parent.Id, v.Id));
+			return path.ToArray();
+		}
 	}
 
 	public static class UnweightedGraphEx
