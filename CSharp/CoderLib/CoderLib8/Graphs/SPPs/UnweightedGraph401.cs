@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// SPPs.Int.UnweightedGraph401 と同じ抽象グラフです。
 // 頂点 id として整数 [0, n) を使います。
-namespace CoderLib8.Graphs.Specialized.Int
+namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph401
 {
 	[System.Diagnostics.DebuggerDisplay(@"VertexesCount = {VertexesCount}")]
 	public abstract class UnweightedGraph
