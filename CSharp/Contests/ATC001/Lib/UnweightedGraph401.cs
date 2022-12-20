@@ -105,7 +105,6 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph401
 	public class Vertex
 	{
 		public int Id { get; }
-		public List<int> Edges { get; set; }
 		public long Cost { get; set; } = long.MaxValue;
 		public bool IsConnected => Cost != long.MaxValue;
 		public Vertex Parent { get; set; }
@@ -145,9 +144,8 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph401
 			{
 				if (v == ev) return true;
 				var vo = vs[v];
-				vo.Edges = graph.GetEdges(v);
 
-				foreach (var nv in vo.Edges)
+				foreach (var nv in graph.GetEdges(v))
 				{
 					var nvo = vs[nv];
 					if (nvo.Cost != long.MaxValue) continue;
@@ -173,10 +171,9 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph401
 				var v = q.Dequeue();
 				if (v == ev) return vs;
 				var vo = vs[v];
-				vo.Edges = graph.GetEdges(v);
 				var nc = vo.Cost + 1;
 
-				foreach (var nv in vo.Edges)
+				foreach (var nv in graph.GetEdges(v))
 				{
 					var nvo = vs[nv];
 					if (nvo.Cost <= nc) continue;

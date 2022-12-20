@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoderLib8.Graphs.SPPs.Int.UnweightedGraph411;
+using CoderLib8.Graphs.SPPs.Int.UnweightedGraph401;
 
-class A411
+class A401
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
@@ -23,6 +23,6 @@ class A411
 		var ev = grid.ToVertexId(ei, ej);
 
 		var r = grid.ShortestByBFS(sv, ev);
-		return r.Cost;
+		return r[ev].Cost;
 	}
 }
