@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoderLib8.Graphs.Specialized.Int.BipartiteGraph101;
+using CoderLib8.Graphs.Specialized.Int;
+using CoderLib8.Graphs.Specialized.Int.BipartiteGraph201;
 
 class D2
 {
@@ -13,7 +14,7 @@ class D2
 		var (n, m) = Read2();
 		var es = Array.ConvertAll(new bool[m], _ => Read2());
 
-		var graph = new BipartiteGraph(n + 1, es, true);
+		var graph = new ListUnweightedGraph(n + 1, es, true);
 		var vs = graph.BFSForest();
 		if (vs == null) return 0;
 

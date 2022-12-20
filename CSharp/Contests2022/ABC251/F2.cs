@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CoderLib8.Graphs.Specialized.Int.UnweightedTreeGraph101;
+using CoderLib8.Graphs.Specialized.Int;
+using CoderLib8.Graphs.Specialized.Int.UnweightedTreeGraph201;
 
 class F2
 {
@@ -14,7 +15,7 @@ class F2
 		var es = Array.ConvertAll(new bool[m], _ => Read2());
 		var sb = new StringBuilder();
 
-		var graph = new UnweightedTreeGraph(n + 1, es, true);
+		var graph = new ListUnweightedGraph(n + 1, es, true);
 		var dfs = graph.DFSTree(1);
 		var bfs = graph.BFSTree(1);
 
