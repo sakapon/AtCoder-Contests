@@ -5,13 +5,13 @@ using System.Collections.Generic;
 
 namespace CoderLib8.Graphs.Specialized.Int.UnweightedTreeGraph101
 {
-	[System.Diagnostics.DebuggerDisplay(@"\{{Id}: {Edges?.Count ?? -1} edges, Depth = {Depth}\}")]
+	[System.Diagnostics.DebuggerDisplay(@"\{{Id}: {Edges?.Count ?? -1} edges, Cost = {Cost}\}")]
 	public class Vertex
 	{
 		public int Id { get; }
 		public List<int> Edges { get; set; }
-		public long Depth { get; set; } = -1;
-		public bool IsConnected => Depth != -1;
+		public long Cost { get; set; } = -1;
+		public bool IsConnected => Cost != -1;
 		public Vertex Parent { get; set; }
 		public Vertex(int id) { Id = id; }
 	}
@@ -42,7 +42,7 @@ namespace CoderLib8.Graphs.Specialized.Int.UnweightedTreeGraph101
 			var vs = new Vertex[VertexesCount];
 			for (int v = 0; v < vs.Length; ++v) vs[v] = new Vertex(v);
 
-			vs[root].Depth = 0;
+			vs[root].Cost = 0;
 			DFS(root);
 			return vs;
 
@@ -54,8 +54,8 @@ namespace CoderLib8.Graphs.Specialized.Int.UnweightedTreeGraph101
 				foreach (var nv in vo.Edges)
 				{
 					var nvo = vs[nv];
-					if (nvo.Depth != -1) continue;
-					nvo.Depth = vo.Depth + 1;
+					if (nvo.Cost != -1) continue;
+					nvo.Cost = vo.Cost + 1;
 					nvo.Parent = vo;
 					DFS(nv);
 				}
@@ -67,7 +67,7 @@ namespace CoderLib8.Graphs.Specialized.Int.UnweightedTreeGraph101
 			var vs = new Vertex[VertexesCount];
 			for (int v = 0; v < vs.Length; ++v) vs[v] = new Vertex(v);
 
-			vs[root].Depth = 0;
+			vs[root].Cost = 0;
 			var q = new Queue<int>();
 			q.Enqueue(root);
 
@@ -80,8 +80,8 @@ namespace CoderLib8.Graphs.Specialized.Int.UnweightedTreeGraph101
 				foreach (var nv in vo.Edges)
 				{
 					var nvo = vs[nv];
-					if (nvo.Depth != -1) continue;
-					nvo.Depth = vo.Depth + 1;
+					if (nvo.Cost != -1) continue;
+					nvo.Cost = vo.Cost + 1;
 					nvo.Parent = vo;
 					q.Enqueue(nv);
 				}

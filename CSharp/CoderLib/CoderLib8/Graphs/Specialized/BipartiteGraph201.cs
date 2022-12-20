@@ -7,11 +7,10 @@ using System.Collections.Generic;
 // Root は連結成分の id を表します。
 namespace CoderLib8.Graphs.Specialized.Int.BipartiteGraph201
 {
-	[System.Diagnostics.DebuggerDisplay(@"\{{Id}: {Edges?.Count ?? -1} edges, Color = {Color}\}")]
+	[System.Diagnostics.DebuggerDisplay(@"\{{Id}: Color = {Color}\}")]
 	public class Vertex
 	{
 		public int Id { get; }
-		public List<int> Edges { get; set; }
 		public int Color { get; set; } = -1;
 		public Vertex Parent { get; set; }
 		public Vertex Root { get; set; }
@@ -39,9 +38,8 @@ namespace CoderLib8.Graphs.Specialized.Int.BipartiteGraph201
 				{
 					var v = q.Dequeue();
 					var vo = vs[v];
-					vo.Edges = graph.GetEdges(v);
 
-					foreach (var nv in vo.Edges)
+					foreach (var nv in graph.GetEdges(v))
 					{
 						var nvo = vs[nv];
 						if (nvo.Color != -1)
