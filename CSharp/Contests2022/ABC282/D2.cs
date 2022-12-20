@@ -15,7 +15,7 @@ class D2
 		var es = Array.ConvertAll(new bool[m], _ => Read2());
 
 		var graph = new ListUnweightedGraph(n + 1, es, true);
-		var vs = graph.BFSForest();
+		var vs = graph.BipartiteForest();
 		if (vs == null) return 0;
 
 		var r = (long)n * n - es.Length * 2;

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 // Root は連結成分の id を表します。
 namespace CoderLib8.Graphs.Specialized.Int.BipartiteGraph201
 {
-	[System.Diagnostics.DebuggerDisplay(@"\{{Id}: Color = {Color}\}")]
+	[System.Diagnostics.DebuggerDisplay(@"\{{Id}: Root = {Root.Id}, Color = {Color}\}")]
 	public class Vertex
 	{
 		public int Id { get; }
@@ -19,7 +19,8 @@ namespace CoderLib8.Graphs.Specialized.Int.BipartiteGraph201
 
 	public static class BipartiteGraphEx
 	{
-		public static Vertex[] BFSForest(this UnweightedGraph graph)
+		// 二部グラフにならない場合、null を返します。
+		public static Vertex[] BipartiteForest(this UnweightedGraph graph)
 		{
 			var vs = new Vertex[graph.VertexesCount];
 			for (int v = 0; v < vs.Length; ++v) vs[v] = new Vertex(v);
