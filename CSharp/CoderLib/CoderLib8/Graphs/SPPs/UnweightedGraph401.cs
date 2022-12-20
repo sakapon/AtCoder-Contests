@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// 頂点 id として整数 [0, n) を使います。
+// 頂点 id は整数 [0, n) とします。
+// GetEdges を抽象化します。
+// 実行結果は入力グラフから分離されます。
 namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph401
 {
 	[System.Diagnostics.DebuggerDisplay(@"VertexesCount = {VertexesCount}")]
@@ -130,7 +132,7 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph401
 	public static class UnweightedGraphEx
 	{
 		// 最短経路とは限りません。
-		// 連結性のみを判定する場合は、DFS または Union-Find を利用します。
+		// 連結性のみを判定する場合は、DFS、BFS または Union-Find を利用します。
 		public static Vertex[] ConnectivityByDFS(this UnweightedGraph graph, int sv, int ev = -1)
 		{
 			var vs = new Vertex[graph.VertexesCount];

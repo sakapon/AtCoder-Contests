@@ -14,7 +14,6 @@
     <Compile Include="..\ATC001\Lib\PathCore111.cs" Link="Lib\PathCore111.cs" />
     <Compile Include="..\ATC001\Lib\PathCore121.cs" Link="Lib\PathCore121.cs" />
     <Compile Include="..\ATC001\Lib\UnweightedGraph401.cs" Link="Lib\UnweightedGraph401.cs" />
-    <Compile Include="..\ATC001\Lib\UnweightedGraph411.cs" Link="Lib\UnweightedGraph411.cs" />
   </ItemGroup>
 
   <ItemGroup>

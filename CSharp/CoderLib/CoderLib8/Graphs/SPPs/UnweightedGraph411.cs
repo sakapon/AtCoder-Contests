@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
+// 頂点 id は整数 [0, n) とします。
 // GetEdges を抽象化します。
-// 頂点 id は整数とし、グリッドに拡張します。
+// 実行結果は入力グラフに含まれます。
 namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 {
 	[System.Diagnostics.DebuggerDisplay(@"\{{Id}: Cost = {Cost}\}")]
@@ -11,24 +12,24 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 		public int Id { get; }
 		public long Cost { get; set; } = long.MaxValue;
 		public bool IsConnected => Cost != long.MaxValue;
-		public Vertex Previous { get; set; }
+		public Vertex Parent { get; set; }
 		public Vertex(int id) { Id = id; }
 		public void ClearResult()
 		{
 			Cost = long.MaxValue;
-			Previous = null;
+			Parent = null;
 		}
 	}
 
 	[System.Diagnostics.DebuggerDisplay(@"VertexesCount = {VertexesCount}")]
-	public abstract class UnweightedGraphBase
+	public abstract class UnweightedGraph
 	{
 		public Vertex[] Vertexes { get; }
 		public int VertexesCount => Vertexes.Length;
 		public Vertex this[int v] => Vertexes[v];
 		public abstract List<int> GetEdges(int v);
 
-		protected UnweightedGraphBase(int vertexesCount)
+		protected UnweightedGraph(int vertexesCount)
 		{
 			Vertexes = new Vertex[vertexesCount];
 			for (int v = 0; v < vertexesCount; ++v) Vertexes[v] = new Vertex(v);
@@ -40,7 +41,7 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 		}
 
 		// 最短経路とは限りません。
-		// 連結性のみを判定する場合は、DFS または Union-Find を利用します。
+		// 連結性のみを判定する場合は、DFS、BFS または Union-Find を利用します。
 		public Vertex ConnectivityByDFS(int sv, int ev = -1)
 		{
 			var evo = ev != -1 ? Vertexes[ev] : null;
@@ -60,7 +61,7 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 					var nvo = Vertexes[nv];
 					if (nvo.Cost == 0) continue;
 					nvo.Cost = 0;
-					nvo.Previous = vo;
+					nvo.Parent = vo;
 					q.Push(nv);
 				}
 			}
@@ -83,7 +84,7 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 					var nvo = Vertexes[nv];
 					if (nvo.Cost == 0) continue;
 					nvo.Cost = 0;
-					nvo.Previous = vo;
+					nvo.Parent = vo;
 					if (DFS(nv)) return true;
 				}
 				return false;
@@ -110,7 +111,7 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 					var nvo = Vertexes[nv];
 					if (nvo.Cost <= nc) continue;
 					nvo.Cost = nc;
-					nvo.Previous = vo;
+					nvo.Parent = vo;
 					q.Enqueue(nv);
 				}
 			}
@@ -120,7 +121,7 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 		public int[] GetPathVertexes(int ev)
 		{
 			var path = new Stack<int>();
-			for (var v = Vertexes[ev]; v != null; v = v.Previous)
+			for (var v = Vertexes[ev]; v != null; v = v.Parent)
 				path.Push(v.Id);
 			return path.ToArray();
 		}
@@ -128,23 +129,24 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 		public (int, int)[] GetPathEdges(int ev)
 		{
 			var path = new Stack<(int, int)>();
-			for (var v = Vertexes[ev]; v.Previous != null; v = v.Previous)
-				path.Push((v.Previous.Id, v.Id));
+			for (var v = Vertexes[ev]; v.Parent != null; v = v.Parent)
+				path.Push((v.Parent.Id, v.Id));
 			return path.ToArray();
 		}
 	}
 
-	public class UnweightedGraph : UnweightedGraphBase
+	public class ListUnweightedGraph : UnweightedGraph
 	{
 		protected readonly List<int>[] map;
-		public List<int>[] Map => map;
+		public List<int>[] AdjacencyList => map;
 		public override List<int> GetEdges(int v) => map[v];
 
-		public UnweightedGraph(int vertexesCount) : base(vertexesCount)
+		public ListUnweightedGraph(List<int>[] map) : base(map.Length) { this.map = map; }
+		public ListUnweightedGraph(int vertexesCount) : base(vertexesCount)
 		{
 			map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int>());
 		}
-		public UnweightedGraph(int vertexesCount, IEnumerable<(int from, int to)> edges, bool twoWay) : this(vertexesCount)
+		public ListUnweightedGraph(int vertexesCount, IEnumerable<(int from, int to)> edges, bool twoWay) : this(vertexesCount)
 		{
 			foreach (var (from, to) in edges) AddEdge(from, to, twoWay);
 		}
@@ -156,7 +158,7 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 		}
 	}
 
-	public class UnweightedGrid : UnweightedGraphBase
+	public class UnweightedGrid : UnweightedGraph
 	{
 		protected readonly int h, w;
 		public int Height => h;
@@ -167,8 +169,8 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph411
 		public int ToVertexId(int i, int j) => w * i + j;
 		public (int i, int j) FromVertexId(int v) => (v / w, v % w);
 
-		public static (int, int)[] NextsDelta { get; } = new[] { (0, -1), (0, 1), (-1, 0), (1, 0) };
-		public static (int, int)[] NextsDelta8 { get; } = new[] { (0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1) };
+		public static (int di, int dj)[] NextsDelta { get; } = new[] { (0, -1), (0, 1), (-1, 0), (1, 0) };
+		public static (int di, int dj)[] NextsDelta8 { get; } = new[] { (0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1) };
 
 		public override List<int> GetEdges(int v) => GetAllNexts(v);
 		public List<int> GetAllNexts(int v)
