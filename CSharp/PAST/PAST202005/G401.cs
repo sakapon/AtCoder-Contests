@@ -30,11 +30,15 @@ public class UnweightedGridG : UnweightedGraph
 	public int Height => h;
 	public int Width => w;
 
-	readonly HashSet<(int, int)> pset;
+	readonly bool[] pset;
 
 	public UnweightedGridG((int, int)[] ps) : base(h * w)
 	{
-		pset = ps.ToHashSet();
+		pset = new bool[VertexesCount];
+		foreach (var (i, j) in ps)
+		{
+			pset[ToVertexId(i, j)] = true;
+		}
 	}
 
 	public int ToVertexId(int i, int j) => w * (i + oi) + j + oj;
@@ -49,7 +53,7 @@ public class UnweightedGridG : UnweightedGraph
 		foreach (var (di, dj) in NextsDelta)
 		{
 			var (ni, nj) = (i + di, j + dj);
-			if (0 <= ni && ni < h && 0 <= nj && nj < w && !pset.Contains((ni - oi, nj - oj))) l.Add(w * ni + nj);
+			if (0 <= ni && ni < h && 0 <= nj && nj < w && !pset[w * ni + nj]) l.Add(w * ni + nj);
 		}
 		return l;
 	}

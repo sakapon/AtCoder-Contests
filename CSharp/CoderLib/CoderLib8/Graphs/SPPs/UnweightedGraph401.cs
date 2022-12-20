@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
+// カスタマイズの例
+// Test: https://atcoder.jp/contests/past202005-open/tasks/past202005_g
+
 // 頂点 id は整数 [0, n) とします。
 // GetEdges を抽象化します。
 // 実行結果は入力グラフから分離されます。
