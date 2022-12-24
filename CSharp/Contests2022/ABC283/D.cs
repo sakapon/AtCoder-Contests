@@ -4,18 +4,41 @@ using System.Linq;
 
 class D
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
-	static object Solve()
+	static void Main() => Console.WriteLine(Solve() ? "Yes" : "No");
+	static bool Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
 		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var n = s.Length;
 
-		return string.Join(" ", a);
+		// 最後に箱に入れたときのインデックス
+		var u = new int[1 << 7];
+		Array.Fill(u, -1);
+		var q = new Stack<int>();
+
+		for (int i = 0; i < n; i++)
+		{
+			var c = s[i];
+			if (c == '(')
+			{
+				q.Push(i);
+			}
+			else if (c == ')')
+			{
+				var j = q.Pop();
+				for (char z = 'a'; z <= 'z'; z++)
+				{
+					if (u[z] > j)
+					{
+						u[z] = -1;
+					}
+				}
+			}
+			else
+			{
+				if (u[c] != -1) return false;
+				u[c] = i;
+			}
+		}
+		return true;
 	}
 }
