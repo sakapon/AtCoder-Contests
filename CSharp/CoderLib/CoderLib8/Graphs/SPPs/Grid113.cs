@@ -102,7 +102,7 @@ namespace CoderLib8.Graphs.SPPs.Arrays.Grid113
 			foreach (var (di, dj) in NextsDelta)
 			{
 				var (ni, nj) = (i + di, j + dj);
-				if (0 <= ni && ni < h && 0 <= nj && nj < w) l.Add(new[] { v, w * ni + nj, s[ni][nj] - '0' });
+				if (0 <= ni && ni < h && 0 <= nj && nj < w && s[ni][nj] != wall) l.Add(new[] { v, w * ni + nj, s[ni][nj] - '0' });
 			}
 			return l.ToArray();
 		}
