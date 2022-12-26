@@ -33,14 +33,7 @@ namespace EulerTest.Page002
 			var w = s[0].Length;
 			var n = h * w;
 
-			var graph = GetWeightedAdjacencyList(h, w, s);
-			var r = graph.Dijkstra(0, n - 1);
-			return s[0][0] + r[n - 1].Cost;
-		}
-
-		public static WeightedGraph GetWeightedAdjacencyList(int h, int w, int[][] s)
-		{
-			var graph = new ListWeightedGraph(h * w);
+			var graph = new ListWeightedGraph(n);
 			for (int i = 0; i < h; ++i)
 				for (int j = 1; j < w; ++j)
 				{
@@ -53,7 +46,9 @@ namespace EulerTest.Page002
 					var v = w * i + j;
 					graph.AddEdge(v - w, v, false, s[i][j]);
 				}
-			return graph;
+
+			var r = graph.Dijkstra(0, n - 1);
+			return s[0][0] + r[n - 1].Cost;
 		}
 
 		public static object P082()
@@ -66,7 +61,6 @@ namespace EulerTest.Page002
 			var n = h * w;
 
 			var graph = new ListWeightedGraph(n + 2);
-
 			for (int i = 0; i < h; ++i)
 				for (int j = 1; j < w; ++j)
 				{
