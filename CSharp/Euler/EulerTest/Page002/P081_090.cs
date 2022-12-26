@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoderLib8.Graphs.SPPs.Int.WeightedGraph211;
+using CoderLib8.Graphs.SPPs.Int.WeightedGraph401;
 using EulerLib8.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static EulerLib8.Common;
@@ -34,13 +34,13 @@ namespace EulerTest.Page002
 			var n = h * w;
 
 			var graph = GetWeightedAdjacencyList(h, w, s);
-			graph.Dijkstra(0, n - 1);
-			return s[0][0] + graph[n - 1].Cost;
+			var r = graph.Dijkstra(0, n - 1);
+			return s[0][0] + r[n - 1].Cost;
 		}
 
 		public static WeightedGraph GetWeightedAdjacencyList(int h, int w, int[][] s)
 		{
-			var graph = new WeightedGraph(h * w);
+			var graph = new ListWeightedGraph(h * w);
 			for (int i = 0; i < h; ++i)
 				for (int j = 1; j < w; ++j)
 				{
@@ -65,7 +65,7 @@ namespace EulerTest.Page002
 			var w = s[0].Length;
 			var n = h * w;
 
-			var graph = new WeightedGraph(n + 2);
+			var graph = new ListWeightedGraph(n + 2);
 
 			for (int i = 0; i < h; ++i)
 				for (int j = 1; j < w; ++j)
@@ -87,8 +87,8 @@ namespace EulerTest.Page002
 				graph.AddEdge(i * w + w - 1, n + 1, false, 0);
 			}
 
-			graph.Dijkstra(n, n + 1);
-			return graph[n + 1].Cost;
+			var r = graph.Dijkstra(n, n + 1);
+			return r[n + 1].Cost;
 		}
 
 		public static object P083()
@@ -96,14 +96,11 @@ namespace EulerTest.Page002
 			var s = GetText(Url083).Split('\n', StringSplitOptions.RemoveEmptyEntries)
 				.Select(l => Array.ConvertAll(l.Split(','), int.Parse))
 				.ToArray();
-			var h = s.Length;
-			var w = s[0].Length;
-			var n = h * w;
+			var grid = new IntWeightedGrid(s);
+			var n = grid.VertexesCount;
 
-			var grid = new WeightedGridHelper(h, w);
-			var graph = grid.GetWeightedAdjacencyList(s);
-			graph.Dijkstra(0, n - 1);
-			return s[0][0] + graph[n - 1].Cost;
+			var r = grid.Dijkstra(0, n - 1);
+			return s[0][0] + r[n - 1].Cost;
 		}
 
 		public static object P084()
