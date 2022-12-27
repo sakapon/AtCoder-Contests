@@ -12,18 +12,16 @@ class NumberOfSubsequences
 		var n = int.Parse(Console.ReadLine());
 		var a = Read();
 
+		var all = 1L;
 		var dp = new Dictionary<int, long>();
-		dp[-1] = 1;
 
 		foreach (var x in a)
 		{
-			var all = dp[-1];
-			var v = dp.GetValueOrDefault(x);
-
+			dp.TryGetValue(x, out var v);
 			dp[x] = all;
-			dp[-1] = (all * 2 - v + M) % M;
+			all = (all * 2 - v + M) % M;
 		}
-		return (dp[-1] - 1 + M) % M;
+		return (all - 1 + M) % M;
 	}
 
 	const long M = 998244353;
