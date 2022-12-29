@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 // Test: https://atcoder.jp/contests/abc251/tasks/abc251_f
+// SPPs.Int.UnweightedGraph401 と実質同じです。
 
 namespace CoderLib8.Graphs.Specialized.Int.UnweightedTreeGraph201
 {
