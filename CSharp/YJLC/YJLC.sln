@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGR001", "YGR001\YGR001.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGR005", "YGR005\YGR005.csproj", "{2F8EE130-BADB-4B78-98AC-FA03E6984CB4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoderLib8", "..\CoderLib\CoderLib8\CoderLib8.csproj", "{F8BAB882-8357-4839-97C5-BFD70D0584D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{2F8EE130-BADB-4B78-98AC-FA03E6984CB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F8EE130-BADB-4B78-98AC-FA03E6984CB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F8EE130-BADB-4B78-98AC-FA03E6984CB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8BAB882-8357-4839-97C5-BFD70D0584D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8BAB882-8357-4839-97C5-BFD70D0584D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8BAB882-8357-4839-97C5-BFD70D0584D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8BAB882-8357-4839-97C5-BFD70D0584D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
