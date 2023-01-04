@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CoderLib8.Graphs.SPPs.Typed.UnweightedGraph221;
 
-class C2
+class C221
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
