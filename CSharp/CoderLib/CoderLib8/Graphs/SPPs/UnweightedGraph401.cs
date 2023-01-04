@@ -135,10 +135,10 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph401
 
 	public static class UnweightedGraphEx
 	{
-		static Vertex[] CreateVertexes(int n)
+		static Vertex[] CreateVertexes(this UnweightedGraph graph)
 		{
-			var vs = new Vertex[n];
-			for (int v = 0; v < n; ++v) vs[v] = new Vertex(v);
+			var vs = new Vertex[graph.VertexesCount];
+			for (int v = 0; v < vs.Length; ++v) vs[v] = new Vertex(v);
 			return vs;
 		}
 
@@ -146,7 +146,7 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph401
 		// 連結性のみを判定する場合は、DFS、BFS または Union-Find を利用します。
 		public static Vertex[] ConnectivityByDFS(this UnweightedGraph graph, int sv, int ev = -1)
 		{
-			var vs = CreateVertexes(graph.VertexesCount);
+			var vs = graph.CreateVertexes();
 			vs[sv].Cost = 0;
 			DFS(sv);
 			return vs;
@@ -170,7 +170,7 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph401
 
 		public static Vertex[] ShortestByBFS(this UnweightedGraph graph, int sv, int ev = -1)
 		{
-			var vs = CreateVertexes(graph.VertexesCount);
+			var vs = graph.CreateVertexes();
 			vs[sv].Cost = 0;
 			var q = new Queue<int>();
 			q.Enqueue(sv);

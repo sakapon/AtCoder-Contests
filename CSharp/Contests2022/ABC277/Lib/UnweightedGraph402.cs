@@ -74,7 +74,7 @@ namespace CoderLib8.Graphs.SPPs.Typed.UnweightedGraph402
 
 	public static class UnweightedGraphEx
 	{
-		static Dictionary<T, Vertex<T>> CreateVertexes<T>(UnweightedGraph<T> graph)
+		static Dictionary<T, Vertex<T>> CreateVertexes<T>(this UnweightedGraph<T> graph)
 		{
 			var vs = new Dictionary<T, Vertex<T>>();
 			foreach (var v in graph.GetVertexes()) vs[v] = new Vertex<T>(v);
@@ -85,7 +85,7 @@ namespace CoderLib8.Graphs.SPPs.Typed.UnweightedGraph402
 		// 連結性のみを判定する場合は、DFS、BFS または Union-Find を利用します。
 		public static Dictionary<T, Vertex<T>> ConnectivityByDFS<T>(this UnweightedGraph<T> graph, T sv, T ev)
 		{
-			var vs = CreateVertexes(graph);
+			var vs = graph.CreateVertexes();
 			vs[sv].Cost = 0;
 			DFS(sv);
 			return vs;
@@ -109,7 +109,7 @@ namespace CoderLib8.Graphs.SPPs.Typed.UnweightedGraph402
 
 		public static Dictionary<T, Vertex<T>> ShortestByBFS<T>(this UnweightedGraph<T> graph, T sv, T ev)
 		{
-			var vs = CreateVertexes(graph);
+			var vs = graph.CreateVertexes();
 			vs[sv].Cost = 0;
 			var q = new Queue<T>();
 			q.Enqueue(sv);
