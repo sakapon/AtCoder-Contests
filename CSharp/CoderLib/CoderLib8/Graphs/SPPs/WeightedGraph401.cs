@@ -9,9 +9,10 @@ namespace CoderLib8.Graphs.SPPs.Int.WeightedGraph401
 	[System.Diagnostics.DebuggerDisplay(@"VertexesCount = {VertexesCount}")]
 	public abstract class WeightedGraph
 	{
-		public int VertexesCount { get; }
+		protected readonly int n;
+		public int VertexesCount => n;
 		public abstract List<(int to, long cost)> GetEdges(int v);
-		protected WeightedGraph(int vertexesCount) { VertexesCount = vertexesCount; }
+		protected WeightedGraph(int n) { this.n = n; }
 	}
 
 	public class ListWeightedGraph : WeightedGraph
@@ -21,15 +22,15 @@ namespace CoderLib8.Graphs.SPPs.Int.WeightedGraph401
 		public override List<(int to, long cost)> GetEdges(int v) => map[v];
 
 		public ListWeightedGraph(List<(int to, long cost)>[] map) : base(map.Length) { this.map = map; }
-		public ListWeightedGraph(int vertexesCount) : base(vertexesCount)
+		public ListWeightedGraph(int n) : base(n)
 		{
-			map = Array.ConvertAll(new bool[vertexesCount], _ => new List<(int to, long cost)>());
+			map = Array.ConvertAll(new bool[n], _ => new List<(int to, long cost)>());
 		}
-		public ListWeightedGraph(int vertexesCount, IEnumerable<(int from, int to, int cost)> edges, bool twoWay) : this(vertexesCount)
+		public ListWeightedGraph(int n, IEnumerable<(int from, int to, int cost)> edges, bool twoWay) : this(n)
 		{
 			foreach (var (from, to, cost) in edges) AddEdge(from, to, twoWay, cost);
 		}
-		public ListWeightedGraph(int vertexesCount, IEnumerable<(int from, int to, long cost)> edges, bool twoWay) : this(vertexesCount)
+		public ListWeightedGraph(int n, IEnumerable<(int from, int to, long cost)> edges, bool twoWay) : this(n)
 		{
 			foreach (var (from, to, cost) in edges) AddEdge(from, to, twoWay, cost);
 		}
