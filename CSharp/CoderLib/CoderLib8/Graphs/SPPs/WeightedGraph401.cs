@@ -145,11 +145,16 @@ namespace CoderLib8.Graphs.SPPs.Int.WeightedGraph401
 
 	public static class WeightedGraphEx
 	{
+		static Vertex[] CreateVertexes(int n)
+		{
+			var vs = new Vertex[n];
+			for (int v = 0; v < n; ++v) vs[v] = new Vertex(v);
+			return vs;
+		}
+
 		public static Vertex[] Dijkstra(this WeightedGraph graph, int sv, int ev = -1)
 		{
-			var vs = new Vertex[graph.VertexesCount];
-			for (int v = 0; v < vs.Length; ++v) vs[v] = new Vertex(v);
-
+			var vs = CreateVertexes(graph.VertexesCount);
 			vs[sv].Cost = 0;
 			var q = new SortedSet<(long, int)> { (0, sv) };
 
@@ -177,9 +182,7 @@ namespace CoderLib8.Graphs.SPPs.Int.WeightedGraph401
 		// Dijkstra 法の特別な場合です。
 		public static Vertex[] ShortestByModBFS(this WeightedGraph graph, int mod, int sv, int ev = -1)
 		{
-			var vs = new Vertex[graph.VertexesCount];
-			for (int v = 0; v < vs.Length; ++v) vs[v] = new Vertex(v);
-
+			var vs = CreateVertexes(graph.VertexesCount);
 			vs[sv].Cost = 0;
 			var qs = Array.ConvertAll(new bool[mod], _ => new Queue<int>());
 			qs[0].Enqueue(sv);
