@@ -12,9 +12,10 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph401
 	[System.Diagnostics.DebuggerDisplay(@"VertexesCount = {VertexesCount}")]
 	public abstract class UnweightedGraph
 	{
-		public int VertexesCount { get; }
+		protected readonly int n;
+		public int VertexesCount => n;
 		public abstract List<int> GetEdges(int v);
-		protected UnweightedGraph(int vertexesCount) { VertexesCount = vertexesCount; }
+		protected UnweightedGraph(int n) { this.n = n; }
 	}
 
 	public class ListUnweightedGraph : UnweightedGraph
@@ -24,11 +25,11 @@ namespace CoderLib8.Graphs.SPPs.Int.UnweightedGraph401
 		public override List<int> GetEdges(int v) => map[v];
 
 		public ListUnweightedGraph(List<int>[] map) : base(map.Length) { this.map = map; }
-		public ListUnweightedGraph(int vertexesCount) : base(vertexesCount)
+		public ListUnweightedGraph(int n) : base(n)
 		{
-			map = Array.ConvertAll(new bool[vertexesCount], _ => new List<int>());
+			map = Array.ConvertAll(new bool[n], _ => new List<int>());
 		}
-		public ListUnweightedGraph(int vertexesCount, IEnumerable<(int from, int to)> edges, bool twoWay) : this(vertexesCount)
+		public ListUnweightedGraph(int n, IEnumerable<(int from, int to)> edges, bool twoWay) : this(n)
 		{
 			foreach (var (from, to) in edges) AddEdge(from, to, twoWay);
 		}
