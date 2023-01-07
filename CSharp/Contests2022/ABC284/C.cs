@@ -10,12 +10,47 @@ class C
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (n, m) = Read2();
+		var es = Array.ConvertAll(new bool[m], _ => Read2());
 
-		return string.Join(" ", a);
+		var uf = new UF(n + 1);
+		foreach (var (u, v) in es)
+		{
+			uf.Unite(u, v);
+		}
+		return uf.GroupsCount - 1;
 	}
+}
+
+public class UF
+{
+	int[] p, sizes;
+	public int GroupsCount { get; private set; }
+
+	public UF(int n)
+	{
+		p = Array.ConvertAll(new bool[n], _ => -1);
+		sizes = Array.ConvertAll(p, _ => 1);
+		GroupsCount = n;
+	}
+
+	public int GetRoot(int x) => p[x] == -1 ? x : p[x] = GetRoot(p[x]);
+	public bool AreUnited(int x, int y) => GetRoot(x) == GetRoot(y);
+	public int GetSize(int x) => sizes[GetRoot(x)];
+
+	public bool Unite(int x, int y)
+	{
+		if ((x = GetRoot(x)) == (y = GetRoot(y))) return false;
+
+		if (sizes[x] < sizes[y]) Merge(y, x);
+		else Merge(x, y);
+		return true;
+	}
+	protected virtual void Merge(int x, int y)
+	{
+		p[y] = x;
+		sizes[x] += sizes[y];
+		--GroupsCount;
+	}
+	public ILookup<int, int> ToGroups() => Enumerable.Range(0, p.Length).ToLookup(GetRoot);
 }
