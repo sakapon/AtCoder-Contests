@@ -124,6 +124,34 @@ namespace CoderLib8.Graphs.Int.Trees.WeightedTree101
 
 	public static class WeightedPath2
 	{
+		// 木であることがわかっている場合は DFS・BFS を使えます。
+		public static PathResult BFSTree(this WeightedGraph graph, int sv, int ev = -1)
+		{
+			var r = new PathResult(graph.VertexesCount);
+			var vs = r.Vertexes;
+			vs[sv].Cost = 0;
+			var q = new Queue<int>();
+			q.Enqueue(sv);
+
+			while (q.Count > 0)
+			{
+				var v = q.Dequeue();
+				if (v == ev) return r;
+				var vo = vs[v];
+
+				foreach (var (nv, cost) in graph.GetEdges(v))
+				{
+					var nvo = vs[nv];
+					var nc = vo.Cost + cost;
+					if (nvo.Cost <= nc) continue;
+					nvo.Cost = nc;
+					nvo.Parent = vo;
+					q.Enqueue(nv);
+				}
+			}
+			return r;
+		}
+
 		public static PathResult DijkstraTree(this WeightedGraph graph, int sv, int ev = -1)
 		{
 			var r = new PathResult(graph.VertexesCount);

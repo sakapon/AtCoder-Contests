@@ -20,25 +20,28 @@ class F
 			g.AddEdge(v, n + v, true, d[v - 1]);
 		}
 
-		var tree = g.DijkstraTree(n + 1);
-		var root = tree.Vertexes[1..].FirstMax(v => v.Cost);
-		tree = g.DijkstraTree(root.Id);
-		var end = tree.Vertexes[1..].FirstMax(v => v.Cost);
-		var tree2 = g.DijkstraTree(end.Id);
+		var rn = Enumerable.Range(1, n).ToArray();
+		var rn2 = Enumerable.Range(1, n * 2).ToArray();
 
-		var r = Enumerable.Range(1, n).Select(v =>
+		var tree1 = g.BFSTree(n + 1);
+		var root = rn2.FirstMax(v => tree1[v].Cost);
+		tree1 = g.BFSTree(root);
+		var end = rn2.FirstMax(v => tree1[v].Cost);
+		var tree2 = g.BFSTree(end);
+
+		var r = rn.Select(v =>
 		{
-			if (n + v == root.Id)
+			if (n + v == root)
 			{
 				return tree2[v].Cost;
 			}
-			else if (n + v == end.Id)
+			else if (n + v == end)
 			{
-				return tree[v].Cost;
+				return tree1[v].Cost;
 			}
 			else
 			{
-				return Math.Max(tree[v].Cost, tree2[v].Cost);
+				return Math.Max(tree1[v].Cost, tree2[v].Cost);
 			}
 		});
 
