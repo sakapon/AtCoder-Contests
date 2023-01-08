@@ -1,4 +1,4 @@
-# powershell -ExecutionPolicy Unrestricted .\InitializeContest.ps1
+rem powershell -ExecutionPolicy Unrestricted .\InitializeContest.ps1
 
-# dotnet tool install -g dotnet-script
+rem dotnet tool install -g dotnet-script
 dotnet script .\InitializeContest.csx
