@@ -41,6 +41,30 @@ namespace CoderLib8.Graphs.Int.Trees.WeightedTree101
 
 	public static class WeightedPath1
 	{
+		// 木であることがわかっている場合は DFS・BFS を使えます。
+		public static long[] ShortestByBFS(this WeightedGraph graph, int sv, int ev = -1)
+		{
+			var costs = Array.ConvertAll(new bool[graph.VertexesCount], _ => long.MaxValue);
+			costs[sv] = 0;
+			var q = new Queue<int>();
+			q.Enqueue(sv);
+
+			while (q.Count > 0)
+			{
+				var v = q.Dequeue();
+				if (v == ev) return costs;
+
+				foreach (var (nv, cost) in graph.GetEdges(v))
+				{
+					var nc = costs[v] + cost;
+					if (costs[nv] <= nc) continue;
+					costs[nv] = nc;
+					q.Enqueue(nv);
+				}
+			}
+			return costs;
+		}
+
 		public static long[] Dijkstra(this WeightedGraph graph, int sv, int ev = -1)
 		{
 			var costs = Array.ConvertAll(new bool[graph.VertexesCount], _ => long.MaxValue);
