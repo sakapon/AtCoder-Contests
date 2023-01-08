@@ -17,7 +17,6 @@ class E
 
 		var r = 0;
 		var u = new bool[n + 1];
-		u[1] = true;
 		DFS(1);
 		return r;
 
