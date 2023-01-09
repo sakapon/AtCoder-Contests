@@ -10,38 +10,59 @@ class DR
 	{
 		var n = long.Parse(Console.ReadLine());
 
-		var (x, y) = Pollard(n);
-		if (IsPrime((long)x)) (x, y) = (y, x);
-		var (z, w) = Pollard(x);
-
-		if (y == z) return $"{y} {w}";
-		if (y == w) return $"{y} {z}";
-		return $"{z} {y}";
+		var r = Factorize(n);
+		return r[0] == r[1] ? $"{r[0]} {r[2]}" : $"{r[2]} {r[0]}";
 	}
 
-	// 素因数分解可能である前提の実装
-	public static (BigInteger, BigInteger) Pollard(BigInteger n)
+	// Pollard's rho algorithm
+	public static long[] Factorize(long n)
 	{
-		if ((n & 1) == 0) return (2, n >> 1);
-		BigInteger f(BigInteger x) => (x * x + 1) % n;
+		var ps = new List<long>();
+		while ((n & 1) == 0) { ps.Add(2); n >>= 1; }
 
-		for (BigInteger i = 1; ; i++)
+		var q = new Stack<long>();
+		if (n > 1) q.Push(n);
+
+		while (q.Count > 0)
 		{
-			var x = i;
-			var y = f(x);
-			var d = (BigInteger)1;
+			var x = q.Pop();
+			if (IsPrime(x))
+			{
+				ps.Add(x);
+			}
+			else
+			{
+				var d = Pollard(x);
+				q.Push(d);
+				q.Push(x / d);
+			}
+		}
+
+		var r = ps.ToArray();
+		Array.Sort(r);
+		return r;
+	}
+
+	// n: 奇数かつ合成数
+	static long Pollard(long n)
+	{
+		long f(BigInteger x) => (long)((x * x + 1) % n);
+
+		for (long i = 1; ; ++i)
+		{
+			long x = i, y = f(x), d = 1L;
 			while (d == 1)
 			{
-				d = Gcd(BigInteger.Abs(x - y), n);
+				d = Gcd(Math.Abs(x - y), n);
 				x = f(x);
 				y = f(f(y));
 			}
 			if (d == 0 || d == n) continue;
-			return (d, n / d);
+			return d;
 		}
 	}
 
-	static BigInteger Gcd(BigInteger a, BigInteger b) { if (b == 0) return a; for (BigInteger r; (r = a % b) > 0; a = b, b = r) ; return b; }
+	static long Gcd(long a, long b) { if (b == 0) return a; for (long r; (r = a % b) > 0; a = b, b = r) ; return b; }
 
 	// Miller-Rabin primality test
 	static readonly long[] MRBases = new[] { 2L, 325, 9375, 28178, 450775, 9780504, 1795265022 };
