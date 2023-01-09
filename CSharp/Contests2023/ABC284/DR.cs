@@ -44,27 +44,25 @@ class DR
 	static BigInteger Gcd(BigInteger a, BigInteger b) { if (b == 0) return a; for (BigInteger r; (r = a % b) > 0; a = b, b = r) ; return b; }
 
 	// Miller-Rabin primality test
-	static long[] MRBases = new[] { 2L, 325, 9375, 28178, 450775, 9780504, 1795265022 };
+	static readonly long[] MRBases = new[] { 2L, 325, 9375, 28178, 450775, 9780504, 1795265022 };
 	public static bool IsPrime(long n)
 	{
 		if (n <= 1) return false;
 		if (n == 2) return true;
 		if ((n & 1) == 0) return false;
 
+		var s = 0;
 		var d = n - 1;
-		while ((d & 1) == 0) d >>= 1;
+		while ((d & 1) == 0) { ++s; d >>= 1; }
+
 		foreach (var a in MRBases)
 		{
 			if (a % n == 0) return true;
-			if (BigInteger.ModPow(a, d, n) == 1) continue;
-			var comp = true;
-			var p = n - 1;
-			while ((p & 1) == 0)
-			{
-				p >>= 1;
-				if (BigInteger.ModPow(a, p, n) == n - 1) { comp = false; break; }
-			}
-			if (comp) return false;
+			var x = BigInteger.ModPow(a, d, n);
+			if (x == 1) continue;
+			var r = 0;
+			for (; r < s; ++r, x = x * x % n) if (x == n - 1) break;
+			if (r == s) return false;
 		}
 		return true;
 	}
