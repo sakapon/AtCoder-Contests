@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Numerics;
 
+// Test: https://algo-method.com/tasks/553
+// Test: https://atcoder.jp/contests/abc284/tasks/abc284_d
+
 namespace YJLib8.Numerics
 {
 	public static class RhoFactorization
@@ -70,7 +73,6 @@ namespace YJLib8.Numerics
 					q.Push(x / d);
 				}
 			}
-
 			var r = ps.ToArray();
 			Array.Sort(r);
 			return r;
