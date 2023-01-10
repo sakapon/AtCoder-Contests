@@ -7,4 +7,8 @@
     <StartupObject>A</StartupObject>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\YJLib8\YJLib8.csproj" />
+  </ItemGroup>
+
 </Project>
