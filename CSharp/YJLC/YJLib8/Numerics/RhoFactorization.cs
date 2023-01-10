@@ -38,7 +38,8 @@ namespace YJLib8.Numerics
 		{
 			long f(BigInteger x) => (long)((x * x + 1) % n);
 
-			for (long x0 = 1; ; ++x0)
+			// 初期値を変更すると速い場合があります。
+			for (long x0 = 100; ; ++x0)
 			{
 				var d = 1L;
 				for (long x = x0, y = f(x); d == 1; x = f(x), y = f(f(y)))
