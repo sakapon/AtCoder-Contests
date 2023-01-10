@@ -12,6 +12,10 @@ class P_Factorize
 		var qc = int.Parse(Console.ReadLine());
 		var a = Array.ConvertAll(new bool[qc], _ => long.Parse(Console.ReadLine()));
 
-		return string.Join("\n", a.Select(RhoFactorization.Factorize).Select(r => string.Join(" ", r.Prepend(r.Length))));
+		var d = new Dictionary<long, long[]>();
+		foreach (var x in a)
+			if (!d.ContainsKey(x)) d[x] = RhoFactorization.Factorize(x);
+
+		return string.Join("\n", a.Select(x => d[x]).Select(r => string.Join(" ", r.Prepend(r.Length))));
 	}
 }

@@ -30,7 +30,7 @@ namespace YJLib8.Numerics
 			return true;
 		}
 
-		static long Gcd(long a, long b) { if (b == 0) return a; for (long r; (r = a % b) > 0; a = b, b = r) ; return b; }
+		static long GCD(long a, long b) { if (b == 0) return a; for (long r; (r = a % b) > 0; a = b, b = r) ; return b; }
 
 		// Pollard's rho algorithm
 		// n: 奇数かつ合成数
@@ -42,7 +42,7 @@ namespace YJLib8.Numerics
 			{
 				var d = 1L;
 				for (long x = x0, y = f(x); d == 1; x = f(x), y = f(f(y)))
-					d = Gcd(x > y ? x - y : y - x, n);
+					d = GCD(x > y ? x - y : y - x, n);
 				if (d != n) return d;
 			}
 		}
