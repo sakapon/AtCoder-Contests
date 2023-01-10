@@ -32,26 +32,21 @@ namespace YJLib8.Numerics
 
 		static long Gcd(long a, long b) { if (b == 0) return a; for (long r; (r = a % b) > 0; a = b, b = r) ; return b; }
 
+		// Pollard's rho algorithm
 		// n: 奇数かつ合成数
 		static long PollardRho(long n)
 		{
 			long f(BigInteger x) => (long)((x * x + 1) % n);
 
-			for (long i = 1; ; ++i)
+			for (long x0 = 1; ; ++x0)
 			{
-				long x = i, y = f(x), d = 1L;
-				while (d == 1)
-				{
-					d = Gcd(Math.Abs(x - y), n);
-					x = f(x);
-					y = f(f(y));
-				}
-				if (d == n) continue;
-				return d;
+				var d = 1L;
+				for (long x = x0, y = f(x); d == 1; x = f(x), y = f(f(y)))
+					d = Gcd(x > y ? x - y : y - x, n);
+				if (d != n) return d;
 			}
 		}
 
-		// Pollard's rho algorithm
 		public static long[] Factorize(long n)
 		{
 			var ps = new List<long>();
