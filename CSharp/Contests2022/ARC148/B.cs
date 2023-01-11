@@ -4,18 +4,27 @@ using System.Linq;
 
 class B
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
 		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		var l = s.IndexOf('p');
+		if (l == -1) return s;
+		return Enumerable.Range(l, n - l + 1).Min(r => Convert(s, l, r));
+	}
+
+	static string Convert(string s, int l, int r)
+	{
+		var t = s[l..r];
+		var m = t.Length;
+
+		var ft = new char[m];
+		for (int i = 0; i < m; i++)
+		{
+			ft[i] = t[m - 1 - i] == 'd' ? 'p' : 'd';
+		}
+		return s[..l] + new string(ft) + s[r..];
 	}
 }
