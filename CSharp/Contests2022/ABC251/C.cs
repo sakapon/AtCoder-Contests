@@ -11,11 +11,13 @@ class C
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var ps = Array.ConvertAll(new bool[n], _ => Console.ReadLine().Split());
 
-		return string.Join(" ", a);
+		return ps
+			.Select((p, i) => (s: p[0], t: int.Parse(p[1]), i))
+			.GroupBy(p => p.s)
+			.Select(g => g.First())
+			.OrderByDescending(p => p.t)
+			.First().i + 1;
 	}
 }

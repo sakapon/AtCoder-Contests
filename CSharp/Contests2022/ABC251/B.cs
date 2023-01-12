@@ -10,12 +10,28 @@ class B
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
+		var (n, w) = Read2();
 		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		var u = new bool[3000000 + 1];
+
+		for (int i = 0; i < n; i++)
+		{
+			var ti = a[i];
+			u[ti] = true;
+
+			for (int j = i + 1; j < n; j++)
+			{
+				var tj = ti + a[j];
+				u[tj] = true;
+
+				for (int k = j + 1; k < n; k++)
+				{
+					var tk = tj + a[k];
+					u[tk] = true;
+				}
+			}
+		}
+		return u[..(w + 1)].Count(b => b);
 	}
 }
