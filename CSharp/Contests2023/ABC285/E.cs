@@ -5,17 +5,32 @@ using System.Linq;
 class E
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
 		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		// 次の休日が i 日後であるときの生産量
+		var d = new long[n + 1];
+		for (int i = 2; i <= n; i++)
+		{
+			d[i] = d[i - 1] + a[(i - 2) / 2];
+		}
+
+		// 初日は休日
+		var dp = new long[n + 1];
+
+		for (int i = 0; i < n; i++)
+		{
+			for (int j = 1; j <= n; j++)
+			{
+				if (i + j > n) break;
+				ChFirstMax(ref dp[i + j], dp[i] + d[j]);
+			}
+		}
+		return dp[n];
 	}
+
+	public static void ChFirstMax<T>(ref T o1, T o2) where T : IComparable<T> { if (o1.CompareTo(o2) < 0) o1 = o2; }
 }
