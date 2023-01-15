@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CoderLib8.Numerics;
 
 class C
 {
@@ -10,12 +11,19 @@ class C
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
 		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var n = s.Length;
 
-		return string.Join(" ", a);
+		var r = 0L;
+		var p = 1L;
+		for (int i = 1; i < n; i++)
+		{
+			p *= 26;
+			r += p;
+		}
+
+		// ライブラリ改造
+		r += s.ConvertFrom(26) + 1;
+		return r;
 	}
 }

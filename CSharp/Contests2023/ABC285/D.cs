@@ -4,18 +4,23 @@ using System.Linq;
 
 class D
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
-	static object Solve()
+	static void Main() => Console.WriteLine(Solve() ? "Yes" : "No");
+	static bool Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var ps = Array.ConvertAll(new bool[n], _ => Console.ReadLine().Split());
 
-		return string.Join(" ", a);
+		var map = ps.ToDictionary(p => p[0], p => p[1]);
+		var c = 0;
+
+		var svs = map.Keys.Except(map.Values);
+		foreach (var sv in svs)
+		{
+			for (var s = sv; map.ContainsKey(s); s = map[s])
+			{
+				c++;
+			}
+		}
+		return c == n;
 	}
 }
