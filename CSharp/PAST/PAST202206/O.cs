@@ -15,30 +15,29 @@ class O
 		var qs = Array.ConvertAll(new bool[qc], _ =>
 		{
 			var q = Console.ReadLine().Split();
-			return (add: q[0][0] == '+', x: int.Parse(q[1]), y: int.Parse(q[2]));
+			var x = int.Parse(q[1]);
+			var y = int.Parse(q[2]);
+			return (add: q[0][0] == '+', x, y, angle: Math.Atan2(y, x));
 		});
 
-		var ps = new List<(double angle, int qi)>();
-		var pmap = new Dictionary<(int, int), int>();
+		var ps = new List<double>();
+		var pmap = new Dictionary<double, int>();
 
 		for (int qi = 0; qi < qc; qi++)
 		{
-			var (add, x, y) = qs[qi];
+			var (add, _, _, angle) = qs[qi];
 			if (!add) continue;
-			if (pmap.ContainsKey((x, y))) continue;
+			if (pmap.ContainsKey(angle)) continue;
 
-			var angle = Math.Atan2(y, x);
-			ps.Add((angle, qi));
-			pmap[(x, y)] = -1;
+			ps.Add(angle);
+			pmap[angle] = -1;
 		}
 
 		var n = ps.Count;
 		ps.Sort();
 		for (int pi = 0; pi < n; pi++)
 		{
-			var qi = ps[pi].qi;
-			var (_, x, y) = qs[qi];
-			pmap[(x, y)] = pi;
+			pmap[ps[pi]] = pi;
 		}
 
 		var r = new long[qc];
@@ -48,9 +47,8 @@ class O
 
 		for (int qi = 0; qi < qc; qi++)
 		{
-			var (add, x, y) = qs[qi];
-			var pi = pmap[(x, y)];
-			var angle = Math.Atan2(y, x);
+			var (add, x, y, angle) = qs[qi];
+			var pi = pmap[angle];
 
 			if (add)
 			{
@@ -73,7 +71,7 @@ class O
 				if (y >= 0)
 				{
 					// 前
-					var pi1 = First(0, n, i => ps[i].angle >= angle - Math.PI);
+					var pi1 = First(0, n, i => ps[i] >= angle - Math.PI);
 					var sx1 = rsx[pi1, pi];
 					var sy1 = rsy[pi1, pi];
 					var sx2 = rsx.Sum - sx1;
@@ -83,7 +81,7 @@ class O
 				else
 				{
 					// 後
-					var pi2 = First(0, n, i => ps[i].angle >= angle + Math.PI);
+					var pi2 = First(0, n, i => ps[i] >= angle + Math.PI);
 					var sx2 = rsx[pi, pi2];
 					var sy2 = rsy[pi, pi2];
 					var sx1 = rsx.Sum - sx2;
