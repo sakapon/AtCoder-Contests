@@ -5,17 +5,32 @@ using System.Linq;
 class D
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
-	static object Solve()
+	static (int a, int b) Read2() { var a = Read(); return (a[0], a[1]); }
+	static void Main() => Console.WriteLine(Solve() ? "Yes" : "No");
+	static bool Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (n, x) = Read2();
+		var ps = Array.ConvertAll(new bool[n], _ => Read2())
+			.Select(p => Enumerable.Range(1, p.b).Select(j => p.a * j).ToArray())
+			.ToArray();
 
-		return string.Join(" ", a);
+		var dp = new bool[x + 1];
+		dp[0] = true;
+
+		foreach (var p in ps)
+		{
+			for (int i = x - 1; i >= 0; i--)
+			{
+				if (!dp[i]) continue;
+
+				foreach (var v in p)
+				{
+					var ni = i + v;
+					if (ni > x) break;
+					dp[ni] = true;
+				}
+			}
+		}
+		return dp[x];
 	}
 }

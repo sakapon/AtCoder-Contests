@@ -10,12 +10,17 @@ class A
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
+		var z = Read();
 		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		var b = (int[])a.Clone();
+
+		var length = z[2] - z[1] + 1;
+		for (int i = 0; i < length; i++)
+		{
+			b[z[1] - 1 + i] = a[z[3] - 1 + i];
+			b[z[3] - 1 + i] = a[z[1] - 1 + i];
+		}
+		return string.Join(" ", b);
 	}
 }
