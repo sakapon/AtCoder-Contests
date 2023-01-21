@@ -1,5 +1,4 @@
 from abc import ABCMeta, abstractmethod
-from typing import Generator
 from collections import deque
 from collections.abc import Iterable
 
@@ -11,7 +10,7 @@ class UnweightedGraph(metaclass=ABCMeta):
 
     # -> Iterable[int] と書くと、AtCoder で RE になります。
     @abstractmethod
-    def get_edges(self, v: int) -> Generator[int, None, None]:
+    def get_edges(self, v: int) -> Iterable:
         pass
 
     def connectivity_by_dfs(self, sv: int, ev=-1):
@@ -34,12 +33,12 @@ class UnweightedGraph(metaclass=ABCMeta):
 
     def shortest_by_bfs(self, sv: int, ev=-1):
         c = [1 << 30] * self.n
-        q = deque()
+        q: deque[int] = deque()
         c[sv] = 0
         q.append(sv)
 
         while q:
-            v: int = q.popleft()
+            v = q.popleft()
             if v == ev:
                 return c
 
@@ -71,7 +70,7 @@ class CharUnweightedGrid(UnweightedGraph):
     deltas = ((0, -1), (0, 1), (-1, 0), (1, 0))
 
     # s: list[str] と書くと、AtCoder で RE になります。
-    def __init__(self, s, wall='#'):
+    def __init__(self, s: list, wall='#'):
         self.h = len(s)
         self.w = len(s[0])
         super().__init__(self.h * self.w)

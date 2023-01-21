@@ -21,12 +21,12 @@ class UnweightedGraph_e(metaclass=ABCMeta):
 
     def shortest_by_bfs(self, sv: int, ev=-1):
         c = [1 << 30] * self.n
-        q = deque()
+        q: deque[int] = deque()
         c[sv] = 0
         q.append(sv)
 
         while q:
-            v: int = q.popleft()
+            v = q.popleft()
             if v == ev:
                 return c
 
