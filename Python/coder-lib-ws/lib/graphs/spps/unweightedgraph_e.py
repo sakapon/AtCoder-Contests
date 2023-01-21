@@ -43,7 +43,7 @@ class ListUnweightedGraph_e(UnweightedGraph_e):
 
     def __init__(self, n: int):
         super().__init__(n)
-        self.map = [[] for _ in range(n)]
+        self.map: list[list[Edge]] = [[] for _ in range(n)]
 
     def get_edges(self, v: int):
         return self.map[v]

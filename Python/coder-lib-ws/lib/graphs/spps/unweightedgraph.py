@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from typing import Generator
 from collections import deque
 from collections.abc import Iterable
 
@@ -8,8 +9,9 @@ class UnweightedGraph(metaclass=ABCMeta):
     def __init__(self, n: int):
         self.n = n
 
+    # -> Iterable[int] と書くと、AtCoder で RE になります。
     @abstractmethod
-    def get_edges(self, v: int) -> Iterable[int]:
+    def get_edges(self, v: int) -> Generator[int, None, None]:
         pass
 
     def shortest_by_bfs(self, sv: int, ev=-1):
@@ -35,7 +37,7 @@ class ListUnweightedGraph(UnweightedGraph):
 
     def __init__(self, n: int):
         super().__init__(n)
-        self.map = [[] for _ in range(n)]
+        self.map: list[list[int]] = [[] for _ in range(n)]
 
     def get_edges(self, v: int):
         return self.map[v]
@@ -50,6 +52,7 @@ class CharUnweightedGrid(UnweightedGraph):
 
     deltas = ((0, -1), (0, 1), (-1, 0), (1, 0))
 
+    # s: list[str] と書くと、AtCoder で RE になります。
     def __init__(self, s, wall='#'):
         self.h = len(s)
         self.w = len(s[0])

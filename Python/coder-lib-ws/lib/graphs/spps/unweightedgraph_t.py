@@ -35,7 +35,7 @@ class ListUnweightedGraph_t(UnweightedGraph_t):
 
     def __init__(self, n: int):
         super().__init__(n)
-        self.map = [[] for _ in range(n)]
+        self.map: list[list[tuple[int, int]]] = [[] for _ in range(n)]
 
     def get_edges(self, v: int):
         return self.map[v]
