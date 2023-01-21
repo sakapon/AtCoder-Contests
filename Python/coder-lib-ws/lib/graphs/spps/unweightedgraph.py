@@ -14,6 +14,24 @@ class UnweightedGraph(metaclass=ABCMeta):
     def get_edges(self, v: int) -> Generator[int, None, None]:
         pass
 
+    def connectivity_by_dfs(self, sv: int, ev=-1):
+        u = [False] * self.n
+        u[sv] = True
+
+        def dfs(v: int) -> bool:
+            if v == ev:
+                return True
+            for nv in self.get_edges(v):
+                if u[nv]:
+                    continue
+                u[nv] = True
+                if dfs(nv):
+                    return True
+            return False
+
+        dfs(sv)
+        return u
+
     def shortest_by_bfs(self, sv: int, ev=-1):
         c = [1 << 30] * self.n
         q = deque()
