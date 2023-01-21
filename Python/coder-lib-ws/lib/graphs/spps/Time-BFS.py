@@ -2,6 +2,7 @@ import time
 import random
 from unweightedgraph import ListUnweightedGraph
 from unweightedgraph_e import ListUnweightedGraph_e
+from unweightedgraph_t import ListUnweightedGraph_t
 
 n = 200000
 edges = []
