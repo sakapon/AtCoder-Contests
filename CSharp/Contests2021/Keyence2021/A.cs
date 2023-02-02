@@ -11,11 +11,22 @@ class A
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
 		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var b = Read();
 
-		return string.Join(" ", a);
+		var max_a = 0L;
+		var max = 0L;
+		var c = new long[n];
+
+		for (int i = 0; i < n; i++)
+		{
+			ChFirstMax(ref max_a, a[i]);
+			ChFirstMax(ref max, max_a * b[i]);
+			c[i] = max;
+		}
+
+		return string.Join("\n", c);
 	}
+
+	public static void ChFirstMax<T>(ref T o1, T o2) where T : IComparable<T> { if (o1.CompareTo(o2) < 0) o1 = o2; }
 }
