@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CoderLib8.Collections.Statics.Typed;
 
-class B
+class B2
 {
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
@@ -25,13 +26,7 @@ class B
 		l.Add(-1);
 		l.Reverse();
 
-		return string.Join("\n", ns.Select(n => l[Last(-1, l.Count - 1, x => l[x] <= n)]));
-	}
-
-	static int Last(int l, int r, Func<int, bool> f)
-	{
-		int m;
-		while (l < r) if (f(m = r - (r - l - 1) / 2)) l = m; else r = m - 1;
-		return l;
+		var set = new ArrayItemSet<long>(l.ToArray());
+		return string.Join("\n", ns.Select(set.GetLastLeq));
 	}
 }
