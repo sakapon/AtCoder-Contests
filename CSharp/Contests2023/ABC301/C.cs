@@ -1,21 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 class C
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
-	static object Solve()
+	static void Main() => Console.WriteLine(Solve() ? "Yes" : "No");
+	static bool Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
+		var atcoder = "atcoder";
 		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var t = Console.ReadLine();
 
-		return string.Join(" ", a);
+		var sl = s.ToLookup(c => c);
+		var tl = t.ToLookup(c => c);
+
+		var sc = 0;
+		var tc = 0;
+
+		for (var c = 'a'; c <= 'z'; c++)
+		{
+			if (atcoder.Contains(c))
+			{
+				var d = sl[c].Count() - tl[c].Count();
+				if (d >= 0) sc += d;
+				else tc += -d;
+			}
+			else
+			{
+				if (sl[c].Count() != tl[c].Count()) return false;
+			}
+		}
+		return sc <= tl['@'].Count() && tc <= sl['@'].Count();
 	}
 }
