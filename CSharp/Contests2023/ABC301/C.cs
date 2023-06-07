@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 class C
 {
@@ -10,25 +9,29 @@ class C
 		var s = Console.ReadLine();
 		var t = Console.ReadLine();
 
-		var sl = s.ToLookup(c => c);
-		var tl = t.ToLookup(c => c);
-
+		var ds = new int[1 << 7];
 		var sc = 0;
 		var tc = 0;
+
+		foreach (var c in s)
+			if (c == '@') sc++;
+			else ds[c]++;
+		foreach (var c in t)
+			if (c == '@') tc++;
+			else ds[c]--;
 
 		for (var c = 'a'; c <= 'z'; c++)
 		{
 			if (atcoder.Contains(c))
 			{
-				var d = sl[c].Count() - tl[c].Count();
-				if (d >= 0) sc += d;
-				else tc += -d;
+				if (ds[c] >= 0) tc -= ds[c];
+				else sc += ds[c];
 			}
 			else
 			{
-				if (sl[c].Count() != tl[c].Count()) return false;
+				if (ds[c] != 0) return false;
 			}
 		}
-		return sc <= tl['@'].Count() && tc <= sl['@'].Count();
+		return sc >= 0 && tc >= 0;
 	}
 }
