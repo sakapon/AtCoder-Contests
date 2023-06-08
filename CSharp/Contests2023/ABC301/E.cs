@@ -89,6 +89,7 @@ class E
 				for (int nj = 0; nj < n; nj++)
 				{
 					if ((s & (1 << nj)) == 0) continue;
+					if (map[j][nj] == long.MaxValue) continue;
 
 					var nc = dp[x][j] + map[j][nj];
 					if (dp[x | (1 << nj)][nj] <= nc) continue;
