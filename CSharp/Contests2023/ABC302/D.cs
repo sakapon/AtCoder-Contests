@@ -1,21 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CoderLib8.Collections.Statics.Typed;
 
 class D
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+	static (long, long, long) Read3L() { var a = ReadL(); return (a[0], a[1], a[2]); }
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (n, m, d) = Read3L();
+		var a = ReadL();
+		var b = ReadL();
 
-		return string.Join(" ", a);
+		Array.Sort(a);
+		var set = new ArrayItemSet<long>(a, long.MinValue);
+		return b
+			.Select(x =>
+			{
+				var sup = set.GetLastLeq(x + d);
+				if (sup < x - d) return -1;
+				return sup + x;
+			})
+			.Max(-1);
+	}
+}
+
+public static class EnumerableHelper
+{
+	public static long Max(this IEnumerable<long> source, long iv = long.MinValue)
+	{
+		foreach (var v in source) if (iv < v) iv = v;
+		return iv;
 	}
 }
