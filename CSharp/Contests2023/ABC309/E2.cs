@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using CoderLib8.Collections.Dynamics.Int;
 
-class E
+class E2
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
@@ -26,22 +25,18 @@ class E
 		}
 
 		var r = 0;
-		var set = new IntSegmentCountSet(n);
-		DFS(1, 0);
+		DFS(1, 0, -1);
 		return r;
 
-		void DFS(int v, int d)
+		void DFS(int v, int d, int yd)
 		{
-			var nd = Math.Min(d + ys[v], n - 1);
-			if (ys[v] > 0) set.Add(nd);
-			if (d <= set.GetAt(set.Count - 1)) r++;
+			if (ys[v] > 0) Chmax(ref yd, d + ys[v]);
+			if (d <= yd) r++;
 
 			foreach (var nv in map[v])
 			{
-				DFS(nv, d + 1);
+				DFS(nv, d + 1, yd);
 			}
-
-			if (ys[v] > 0) set.Remove(nd);
 		}
 	}
 
