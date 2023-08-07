@@ -59,8 +59,18 @@ class F
 					end = true;
 				}
 				var d2 = t1 * d;
-				r += (d1 + d2) * (t1 - t0) / 2;
-				if (end) return r;
+				try
+				{
+					checked
+					{
+						r += (d1 + d2) * (t1 - t0) / 2;
+					}
+					if (end) return r;
+				}
+				catch (OverflowException)
+				{
+					return 1L << 60;
+				}
 
 				if (t <= t2)
 				{
