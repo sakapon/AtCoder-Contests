@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WBTrees;
 
 class F
 {
@@ -21,48 +20,50 @@ class F
 
 		var costs = Array.ConvertAll(map, _ => (d: long.MaxValue, c: 0L));
 		var q = new SortedSet<(long d, long c, int v)>();
+		var q2 = new SortedSet<(long w, int v)>();
 		foreach (var sv in a)
 		{
 			costs[sv] = (0, 0);
 			q.Add((0, 0, sv));
 		}
 
-		var set = new WBSet<(long c, long d)>();
-		for (int d = 1; d <= D; d++)
+		for (int i = 0; i <= D; i++)
 		{
-			set.Add((x[d - 1], d));
-		}
-
-		while (q.Count > 0)
-		{
-			var (d, c, v) = q.Min;
-			q.Remove((d, c, v));
-
-			while (D - set.Count < d)
+			while (q2.Count > 0)
 			{
-				var d0 = D - set.Count + 1;
-				set.Remove((x[d0 - 1], d0));
+				var dist = x[i - 1];
+				var (w, nv) = q2.Min;
+				var nc = -dist + w;
+				if (nc > 0) break;
+				q2.Remove((w, nv));
+
+				if (costs[nv].CompareTo((i, nc)) <= 0) continue;
+				if (costs[nv] != (long.MaxValue, 0L)) q.Remove((costs[nv].d, costs[nv].c, nv));
+				q.Add((i, nc, nv));
+				costs[nv] = (i, nc);
 			}
 
-			foreach (var e in map[v])
+			while (q.Count > 0)
 			{
-				var nv = e[1];
-				var (nc, nd) = e[2] <= -c ? (c + e[2], d) : FindNextDay();
-				if (nd > D) continue;
+				var (d, c, v) = q.Min;
+				q.Remove((d, c, v));
 
-				// 次の日以降で e[2] 以上の距離がある最小の日 (WA)
-				(long c, long d) FindNextDay()
+				foreach (var e in map[v])
 				{
-					var node = set.GetFirst(x => x.CompareTo((e[2], d + 1)) >= 0);
-					if (node == null) return (0, D + 1);
-					var (nc, nd) = node.Item;
-					return (-nc + e[2], nd);
+					var nv = e[1];
+					var nc = c + e[2];
+					if (nc <= 0)
+					{
+						if (costs[nv].CompareTo((d, nc)) <= 0) continue;
+						if (costs[nv] != (long.MaxValue, 0L)) q.Remove((costs[nv].d, costs[nv].c, nv));
+						q.Add((d, nc, nv));
+						costs[nv] = (d, nc);
+					}
+					else
+					{
+						q2.Add((e[2], nv));
+					}
 				}
-
-				if (costs[nv].CompareTo((nd, nc)) <= 0) continue;
-				if (costs[nv] != (long.MaxValue, 0L)) q.Remove((costs[nv].d, costs[nv].c, nv));
-				q.Add((nd, nc, nv));
-				costs[nv] = (nd, nc);
 			}
 		}
 
