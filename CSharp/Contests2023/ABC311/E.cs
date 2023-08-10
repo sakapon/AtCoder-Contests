@@ -42,9 +42,5 @@ class E
 
 	static T[][] NewArray2<T>(int n1, int n2, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => v));
 
-	static long Min(long x, long y, long z)
-	{
-		if (x > y) x = y;
-		return x > z ? z : x;
-	}
+	public static long Min(long x, long y, long z) => x > (y = y > z ? z : y) ? y : x;
 }
