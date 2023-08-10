@@ -86,6 +86,8 @@ namespace CoderLib8.Numerics
 		public static int Min(int x, int y) => x > y ? y : x;
 		public static long Max(long x, long y) => x < y ? y : x;
 		public static long Min(long x, long y) => x > y ? y : x;
+		public static T Max<T>(T x, T y) where T : IComparable<T> => x.CompareTo(y) < 0 ? y : x;
+		public static T Min<T>(T x, T y) where T : IComparable<T> => x.CompareTo(y) > 0 ? y : x;
 
 		public static int Max(int x, int y, int z) => x < (y = y < z ? z : y) ? y : x;
 		public static int Min(int x, int y, int z) => x > (y = y > z ? z : y) ? y : x;
