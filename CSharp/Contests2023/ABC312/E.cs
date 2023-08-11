@@ -13,28 +13,28 @@ class E
 
 		const int m = 100;
 
-		var nexts = Array.ConvertAll(ps, _ => new HashSet<int>());
-		var xmap = NewArray3(m + 1, m, m, -1);
-		var ymap = NewArray3(m, m + 1, m, -1);
-		var zmap = NewArray3(m, m, m + 1, -1);
+		var nexts = Array.ConvertAll(new bool[n + 1], _ => new HashSet<int>());
+		var xmap = new int[m + 1, m, m];
+		var ymap = new int[m, m + 1, m];
+		var zmap = new int[m, m, m + 1];
 
-		void Add(int[][][] map, int x, int y, int z, int i)
+		void Add(int[,,] map, int x, int y, int z, int i)
 		{
-			if (map[x][y][z] == -1)
+			if (map[x, y, z] == 0)
 			{
-				map[x][y][z] = i;
+				map[x, y, z] = i;
 			}
 			else
 			{
-				var j = map[x][y][z];
+				var j = map[x, y, z];
 				nexts[i].Add(j);
 				nexts[j].Add(i);
 			}
 		}
 
-		for (int i = 0; i < n; i++)
+		for (int i = 1; i <= n; i++)
 		{
-			var p = ps[i];
+			var p = ps[i - 1];
 			var (x1, x2) = (p[0], p[3]);
 			var (y1, y2) = (p[1], p[4]);
 			var (z1, z2) = (p[2], p[5]);
@@ -67,8 +67,6 @@ class E
 			}
 		}
 
-		return string.Join("\n", nexts.Select(set => set.Count));
+		return string.Join("\n", nexts[1..].Select(set => set.Count));
 	}
-
-	static T[][][] NewArray3<T>(int n1, int n2, int n3, T v = default) => Array.ConvertAll(new bool[n1], _ => Array.ConvertAll(new bool[n2], __ => Array.ConvertAll(new bool[n3], ___ => v)));
 }
