@@ -1,21 +1,67 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 class F
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
 		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		const int all = 1 << 11;
+
+		var dp = new long[all];
+		var dt = new long[all];
+		dp[1] = 1;
+
+		for (int i = 0; i < n; i++)
+		{
+			for (int x = 0; x < all; x++)
+			{
+				if (dp[x] == 0) continue;
+
+				for (int v = Math.Min(10, a[i]); v > 0; v--)
+				{
+					var nx = x;
+					for (int s = 0; s <= 10; s++)
+					{
+						if ((x & (1 << s)) == 0) continue;
+						var ns = s + v;
+						if (ns > 10) continue;
+						nx |= 1 << ns;
+					}
+					dt[nx] += dp[x];
+					dt[nx] %= M;
+				}
+
+				if (a[i] > 10)
+				{
+					dt[x] += dp[x] * (a[i] - 10);
+					dt[x] %= M;
+				}
+			}
+
+			(dp, dt) = (dt, dp);
+			Array.Clear(dt, 0, dt.Length);
+		}
+
+		var r = dp[(1 << 10)..].Sum() % M;
+		foreach (int v in a)
+		{
+			r *= MInv(v);
+			r %= M;
+		}
+		return r;
 	}
+
+	const long M = 998244353;
+	static long MPow(long b, long i)
+	{
+		long r = 1;
+		for (; i != 0; b = b * b % M, i >>= 1) if ((i & 1) != 0) r = r * b % M;
+		return r;
+	}
+	static long MInv(long x) => MPow(x, M - 2);
 }
