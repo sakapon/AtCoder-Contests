@@ -31,16 +31,10 @@ class D3
 		// e: 最初の空の箱の番号
 		void DFS(int v, int e)
 		{
-			var t = v + r - n;
-			if (t == e)
-			{
-				p[v] = t;
-				if (v == n - 1) action(p);
-				else DFS(v + 1, e + 1);
-				return;
-			}
+			var i = v + r - n;
+			if (i != e) i = 0;
 
-			for (int i = 0; i < r; i++)
+			for (; i < r; ++i)
 			{
 				p[v] = i;
 				if (v == n - 1) action(p);
