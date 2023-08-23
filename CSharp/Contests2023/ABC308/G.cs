@@ -1,21 +1,76 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using WBTrees;
 
 class G
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var qc = int.Parse(Console.ReadLine());
+		var qs = Array.ConvertAll(new bool[qc], _ => Read());
 
-		return string.Join(" ", a);
+		var xset = new WBMultiSet<int>();
+		var xorset = new WBMultiSet<int>();
+
+		var r = new List<int>();
+
+		foreach (var q in qs)
+		{
+			if (q[0] == 1)
+			{
+				var x = q[1];
+				var node = xset.Add(x);
+
+				var n0 = node.GetPrevious();
+				var n1 = node.GetNext();
+
+				if (n0 != null && n1 != null)
+				{
+					xorset.Remove(n0.Item ^ n1.Item);
+				}
+
+				if (n0 != null)
+				{
+					xorset.Add(n0.Item ^ x);
+				}
+				if (n1 != null)
+				{
+					xorset.Add(n1.Item ^ x);
+				}
+			}
+			else if (q[0] == 2)
+			{
+				var x = q[1];
+				var node = xset.GetLast(x);
+
+				var n0 = node.GetPrevious();
+				var n1 = node.GetNext();
+
+				if (n0 != null && n1 != null)
+				{
+					xorset.Add(n0.Item ^ n1.Item);
+				}
+
+				if (n0 != null)
+				{
+					xorset.Remove(n0.Item ^ x);
+				}
+				if (n1 != null)
+				{
+					xorset.Remove(n1.Item ^ x);
+				}
+
+				xset.Remove(x);
+			}
+			else
+			{
+				r.Add(xorset.GetFirst().Item);
+			}
+		}
+
+		return string.Join("\n", r);
 	}
 }
