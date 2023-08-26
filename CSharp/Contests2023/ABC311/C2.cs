@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
-class C
+class C2
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static void Main() => Console.WriteLine(Solve());
@@ -10,18 +11,17 @@ class C
 		var n = int.Parse(Console.ReadLine());
 		var a = Read();
 
-		var u = new int[n + 1];
-		var i = 0;
-		var sv = DFS(1);
+		var v = 1;
+		var u = new bool[n + 1];
+		var l = new List<int>();
 
-		int DFS(int v)
+		for (; !u[v]; v = a[v - 1])
 		{
-			if (u[v] != 0) return v;
-			u[v] = ++i;
-			return DFS(a[v - 1]);
+			u[v] = true;
+			l.Add(v);
 		}
 
-		var r = Enumerable.Range(1, n).Where(v => u[v] >= u[sv]).OrderBy(v => u[v]).ToArray();
+		var r = l.SkipWhile(x => x != v).ToArray();
 		return $"{r.Length}\n" + string.Join(" ", r);
 	}
 }
