@@ -1,21 +1,45 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 class D
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
-	static object Solve()
+	static int Query(int[] x)
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		Console.WriteLine($"? {string.Join(" ", x)}");
+		return int.Parse(Console.ReadLine());
+	}
+	static void Main() => Console.WriteLine($"! {string.Join(" ", Solve())}");
+	static int[] Solve()
+	{
+		var (n, k) = Read2();
 
-		return string.Join(" ", a);
+		var a = new int[n];
+
+		for (int i = 0; i < k + 1; i++)
+		{
+			// i を除く k 個の和の偶奇
+			a[(i + k) % (k + 1)] = Query(Enumerable.Range(i, k).Select(j2 => j2 % (k + 1) + 1).ToArray());
+		}
+
+		var s = a.Sum() % 2;
+
+		for (int i = 0; i < k + 1; i++)
+		{
+			a[i] ^= s;
+		}
+
+		s ^= a[k];
+		s ^= a[k - 1];
+		var rk = Enumerable.Range(1, k).ToArray();
+
+		for (int i = k + 1; i < n; i++)
+		{
+			rk[^1] = i + 1;
+			a[i] = Query(rk) ^ s;
+		}
+
+		return a;
 	}
 }
