@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CoderLib8.Extra
+namespace CoderLib8.Combinatorics
 {
 	public static class CombinatoricsHelper
 	{
