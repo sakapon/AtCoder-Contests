@@ -65,5 +65,33 @@ namespace CoderLib8.Combinatorics
 				return false;
 			}
 		}
+
+		// n 個の要素から r 個を選ぶ方法を列挙します。
+		public static void Combination<T>(T[] a, int r, Func<Result<T>, bool> action)
+		{
+			var n = a.Length;
+			var o = new Result<T> { Values = new T[r], Selected = new bool[n] };
+			DFS(0, 0);
+
+			bool DFS(int v, int si)
+			{
+				if (v == r) return action(o);
+
+				for (int i = si; r - v <= n - i; ++i)
+				{
+					o.Values[v] = a[i];
+					o.Selected[i] = true;
+					if (DFS(v + 1, i + 1)) return true;
+					o.Selected[i] = false;
+				}
+				return false;
+			}
+		}
+
+		public class Result<T>
+		{
+			public T[] Values;
+			public bool[] Selected;
+		}
 	}
 }
