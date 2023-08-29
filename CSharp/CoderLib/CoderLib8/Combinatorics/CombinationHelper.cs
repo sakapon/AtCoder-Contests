@@ -5,7 +5,7 @@ namespace CoderLib8.Combinatorics
 	public static class CombinationHelper
 	{
 		// [0, n) から r 個を選ぶ方法を列挙します。
-		// 戻り値: 選ばれた r 個の要素。
+		// 戻り値: 選ばれた r 個の要素。辞書順。
 		public static void Combination(int n, int r, Action<int[]> action)
 		{
 			var p = new int[r];
@@ -44,27 +44,7 @@ namespace CoderLib8.Combinatorics
 		}
 
 		// n 個の要素から r 個を選ぶ方法を列挙します。
-		// 戻り値: 選ばれた r 個の要素。
-		public static void Combination<T>(T[] a, int r, Action<T[]> action)
-		{
-			var n = a.Length;
-			var p = new T[r];
-			DFS(0, 0);
-
-			void DFS(int v, int si)
-			{
-				if (v == r) { action(p); return; }
-
-				for (int i = si; r - v <= n - i; ++i)
-				{
-					p[v] = a[i];
-					DFS(v + 1, i + 1);
-				}
-			}
-		}
-
-		// n 個の要素から r 個を選ぶ方法を列挙します。
-		// 戻り値: 選ばれた r 個の要素。
+		// 戻り値: 選ばれた r 個の要素。辞書順。
 		public static void Combination<T>(T[] a, int r, Func<T[], bool> action)
 		{
 			var n = a.Length;
