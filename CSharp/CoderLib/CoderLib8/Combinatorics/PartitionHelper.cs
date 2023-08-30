@@ -8,7 +8,7 @@ namespace CoderLib8.Combinatorics
 	{
 		// 箱を区別する、0 個以上
 		// 戻り値: 各グループにおける要素数。辞書順。
-		public static void PartitionK0(int n, int k, Func<int[], bool> action)
+		public static void PartitionLabeled0(int n, int k, Func<int[], bool> action)
 		{
 			var p = new int[k];
 			DFS(0, n);
@@ -21,10 +21,10 @@ namespace CoderLib8.Combinatorics
 					return action(p);
 				}
 
-				for (int v = 0; v <= rem; ++v)
+				for (int c = 0; c <= rem; ++c)
 				{
-					p[i] = v;
-					if (DFS(i + 1, rem - v)) return true;
+					p[i] = c;
+					if (DFS(i + 1, rem - c)) return true;
 				}
 				return false;
 			}
@@ -32,7 +32,7 @@ namespace CoderLib8.Combinatorics
 
 		// 箱を区別する、1 個以上
 		// 戻り値: 各グループにおける要素数。辞書順。
-		public static void PartitionK1(int n, int k, Func<int[], bool> action)
+		public static void PartitionLabeled1(int n, int k, Func<int[], bool> action)
 		{
 			var p = new int[k];
 			DFS(0, n - k);
@@ -45,10 +45,10 @@ namespace CoderLib8.Combinatorics
 					return action(p);
 				}
 
-				for (int v = 0; v <= rem; ++v)
+				for (int c = 0; c <= rem; ++c)
 				{
-					p[i] = v + 1;
-					if (DFS(i + 1, rem - v)) return true;
+					p[i] = c + 1;
+					if (DFS(i + 1, rem - c)) return true;
 				}
 				return false;
 			}
@@ -65,10 +65,10 @@ namespace CoderLib8.Combinatorics
 			{
 				if (rem == 0) return action(p);
 
-				for (int v = rem <= max ? rem : max; rem <= v * (k - i); --v)
+				for (int c = rem <= max ? rem : max; rem <= c * (k - i); --c)
 				{
-					p[i] = v;
-					if (DFS(i + 1, rem - v, v)) return true;
+					p[i] = c;
+					if (DFS(i + 1, rem - c, c)) return true;
 				}
 				p[i] = 0;
 				return false;
@@ -87,10 +87,10 @@ namespace CoderLib8.Combinatorics
 			{
 				if (rem == 0) return action(p);
 
-				for (int v = rem <= max ? rem : max; rem <= v * (k - i); --v)
+				for (int c = rem <= max ? rem : max; rem <= c * (k - i); --c)
 				{
-					p[i] = v + 1;
-					if (DFS(i + 1, rem - v, v)) return true;
+					p[i] = c + 1;
+					if (DFS(i + 1, rem - c, c)) return true;
 				}
 				p[i] = 1;
 				return false;
