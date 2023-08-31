@@ -48,6 +48,25 @@ namespace CoderLib8.Combinatorics
 			}
 		}
 
+		public static void AssignForBalls0<T>(int n, T[] a, Func<T[], bool> action)
+		{
+			var k = a.Length;
+			var p = new T[n];
+			DFS(0);
+
+			bool DFS(int v)
+			{
+				if (v == n) return action(p);
+
+				for (int i = 0; i < k; i++)
+				{
+					p[v] = a[i];
+					if (DFS(v + 1)) return true;
+				}
+				return false;
+			}
+		}
+
 		#endregion
 
 		#region 1 個以上
