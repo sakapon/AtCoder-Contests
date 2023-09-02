@@ -56,16 +56,16 @@ namespace CoderLib8.Combinatorics
 
 		public static void Assign1(int n, int k, Func<List<int>[], bool> action)
 		{
+			if (n < k) return;
 			var b = Array.ConvertAll(new bool[k], _ => new List<int>());
 			DFS(0, 0);
 
 			// i0: 最初の空の箱の番号
 			bool DFS(int v, int i0)
 			{
-				if (n - v < k - i0) return false;
 				if (v == n) return action(b);
 
-				for (int i = 0; i < k; ++i)
+				for (int i = k - i0 < n - v ? 0 : i0; i < k; ++i)
 				{
 					b[i].Add(v);
 					if (DFS(v + 1, i < i0 ? i0 : i0 + 1)) return true;
@@ -78,16 +78,16 @@ namespace CoderLib8.Combinatorics
 
 		public static void Assign1ForBalls(int n, int k, Func<int[], bool> action)
 		{
+			if (n < k) return;
 			var p = new int[n];
 			DFS(0, 0);
 
 			// i0: 最初の空の箱の番号
 			bool DFS(int v, int i0)
 			{
-				if (n - v < k - i0) return false;
 				if (v == n) return action(p);
 
-				for (int i = 0; i < k; ++i)
+				for (int i = k - i0 < n - v ? 0 : i0; i < k; ++i)
 				{
 					p[v] = i;
 					if (DFS(v + 1, i < i0 ? i0 : i0 + 1)) return true;
