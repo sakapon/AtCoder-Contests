@@ -12,35 +12,35 @@ class D3
 		var ps = Array.ConvertAll(new bool[m], _ => Read2());
 
 		var r = 0;
-		Partition(n, t, p =>
+		Assign1ForBalls(n, t, p =>
 		{
 			foreach (var (a, b) in ps)
-				if (p[a - 1] == p[b - 1]) return;
+				if (p[a - 1] == p[b - 1]) return false;
 			r++;
+			return false;
 		});
 		return r;
 	}
 
-	// 区別する n 個の球を、区別しない r 個の箱に入れる
-	public static void Partition(int n, int r, Action<int[]> action)
+	// 区別する n 個の球を、区別しない k 個の箱に入れる
+	public static void Assign1ForBalls(int n, int k, Func<int[], bool> action)
 	{
-		// 各球に対して、入る箱の番号
+		if (n < k) return;
 		var p = new int[n];
 		DFS(0, 0);
 
-		// e: 最初の空の箱の番号
-		void DFS(int v, int e)
+		// i0: 最初の空の箱の番号
+		bool DFS(int v, int i0)
 		{
-			var i = v + r - n;
-			if (i != e) i = 0;
+			if (v == n) return action(p);
 
-			for (; i < r; ++i)
+			for (int i = k - i0 < n - v ? 0 : i0; i < k; ++i)
 			{
 				p[v] = i;
-				if (v == n - 1) action(p);
-				else DFS(v + 1, i == e ? e + 1 : e);
-				if (i == e) break;
+				if (DFS(v + 1, i < i0 ? i0 : i0 + 1)) return true;
+				if (i == i0) break;
 			}
+			return false;
 		}
 	}
 }

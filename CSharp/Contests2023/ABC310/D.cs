@@ -12,46 +12,38 @@ class D
 
 		var fs = Array.ConvertAll(ps, a => (1 << a[0] - 1) | (1 << a[1] - 1));
 		var r = 0;
-		Partition(n, t, p =>
+		Assign1(n, t, p =>
 		{
 			foreach (var x in p)
 				foreach (var f in fs)
-					if ((x & f) == f) return;
+					if ((x & f) == f) return false;
 			r++;
+			return false;
 		});
 		return r;
 	}
 
-	// 区別する n 個の球を、区別しない r 個の箱に入れる
+	// 区別する n 個の球を、区別しない k 個の箱に入れる
 	// 集合を bit で表現
-	public static void Partition(int n, int r, Action<int[]> action)
+	public static void Assign1(int n, int k, Func<int[], bool> action)
 	{
-		var p = new int[r];
-		DFS(0);
+		if (n < k) return;
+		var b = new int[k];
+		DFS(0, 0);
 
-		void DFS(int v)
+		// i0: 最初の空の箱の番号
+		bool DFS(int v, int i0)
 		{
-			var f = 1 << v;
+			if (v == n) return action(b);
 
-			var t = v + r - n;
-			if (t >= 0 && p[t] == 0)
+			for (int i = k - i0 < n - v ? 0 : i0; i < k; ++i)
 			{
-				p[t] |= f;
-				if (v == n - 1) action(p);
-				else DFS(v + 1);
-				p[t] &= ~f;
-				return;
+				b[i] |= 1 << v;
+				if (DFS(v + 1, i < i0 ? i0 : i0 + 1)) return true;
+				b[i] &= ~(1 << v);
+				if (i == i0) break;
 			}
-
-			var end = false;
-			for (int i = 0; !end && i < r; i++)
-			{
-				if (p[i] == 0) end = true;
-				p[i] |= f;
-				if (v == n - 1) action(p);
-				else DFS(v + 1);
-				p[i] &= ~f;
-			}
+			return false;
 		}
 	}
 }

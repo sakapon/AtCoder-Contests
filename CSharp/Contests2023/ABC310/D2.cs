@@ -13,43 +13,37 @@ class D2
 		var ps = Array.ConvertAll(new bool[m], _ => Read2());
 
 		var r = 0;
-		Partition(n, t, p =>
+		Assign1(n, t, p =>
 		{
 			foreach (var l in p)
 				foreach (var (a, b) in ps)
-					if (l.Contains(a - 1) && l.Contains(b - 1)) return;
+					if (l.Contains(a - 1) && l.Contains(b - 1)) return false;
 			r++;
+			return false;
 		});
 		return r;
 	}
 
-	// 区別する n 個の球を、区別しない r 個の箱に入れる
-	public static void Partition(int n, int r, Action<List<int>[]> action)
+	// 区別する n 個の球を、区別しない k 個の箱に入れる
+	public static void Assign1(int n, int k, Func<List<int>[], bool> action)
 	{
-		var p = Array.ConvertAll(new bool[r], _ => new List<int>());
-		DFS(0);
+		if (n < k) return;
+		var b = Array.ConvertAll(new bool[k], _ => new List<int>());
+		DFS(0, 0);
 
-		void DFS(int v)
+		// i0: 最初の空の箱の番号
+		bool DFS(int v, int i0)
 		{
-			var t = v + r - n;
-			if (t >= 0 && p[t].Count == 0)
-			{
-				p[t].Add(v);
-				if (v == n - 1) action(p);
-				else DFS(v + 1);
-				p[t].RemoveAt(p[t].Count - 1);
-				return;
-			}
+			if (v == n) return action(b);
 
-			var end = false;
-			for (int i = 0; !end && i < r; i++)
+			for (int i = k - i0 < n - v ? 0 : i0; i < k; ++i)
 			{
-				if (p[i].Count == 0) end = true;
-				p[i].Add(v);
-				if (v == n - 1) action(p);
-				else DFS(v + 1);
-				p[i].RemoveAt(p[i].Count - 1);
+				b[i].Add(v);
+				if (DFS(v + 1, i < i0 ? i0 : i0 + 1)) return true;
+				b[i].RemoveAt(b[i].Count - 1);
+				if (i == i0) break;
 			}
+			return false;
 		}
 	}
 }
