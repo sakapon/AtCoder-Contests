@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CoderLib8.Combinatorics
 {
@@ -124,5 +125,32 @@ namespace CoderLib8.Combinatorics
 		}
 
 		#endregion
+
+		public static class Test
+		{
+			public static void Assign_Test()
+			{
+				var r = 0;
+				Assign0(4, 3, gs =>
+				{
+					Console.WriteLine(string.Join(", ", gs.Select(g => string.Join(" ", g))));
+					r++;
+					return false;
+				});
+				Console.WriteLine(r);
+			}
+
+			public static void Assign_ForBalls_Test()
+			{
+				var r = 0;
+				Assign0ForBalls(4, 3, p =>
+				{
+					Console.WriteLine(string.Join(" ", p));
+					r++;
+					return false;
+				});
+				Console.WriteLine(r);
+			}
+		}
 	}
 }
