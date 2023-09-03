@@ -73,17 +73,19 @@ namespace CoderLib8.Combinatorics
 
 		public static void Assign1(int n, int k, Func<List<int>[], bool> action)
 		{
+			if (n < k) return;
 			var b = Array.ConvertAll(new bool[k], _ => new List<int>());
 			var c0 = k;
 			DFS(0);
 
 			bool DFS(int v)
 			{
-				if (n - v < c0) return false;
 				if (v == n) return action(b);
 
+				var f = n - v == c0;
 				for (int i = 0; i < k; ++i)
 				{
+					if (f && b[i].Count > 0) continue;
 					if (b[i].Count == 0) --c0;
 					b[i].Add(v);
 					if (DFS(v + 1)) return true;
