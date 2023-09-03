@@ -20,7 +20,7 @@ namespace CoderLib8.Combinatorics
 			{
 				if (v == n) return action(b);
 
-				for (int i = 0; i < k; i++)
+				for (int i = 0; i < k; ++i)
 				{
 					b[i].Add(v);
 					if (DFS(v + 1)) return true;
@@ -30,7 +30,7 @@ namespace CoderLib8.Combinatorics
 			}
 		}
 
-		public static void AssignForBalls0(int n, int k, Func<int[], bool> action)
+		public static void Assign0ForBalls(int n, int k, Func<int[], bool> action)
 		{
 			var p = new int[n];
 			DFS(0);
@@ -39,7 +39,7 @@ namespace CoderLib8.Combinatorics
 			{
 				if (v == n) return action(p);
 
-				for (int i = 0; i < k; i++)
+				for (int i = 0; i < k; ++i)
 				{
 					p[v] = i;
 					if (DFS(v + 1)) return true;
@@ -48,7 +48,7 @@ namespace CoderLib8.Combinatorics
 			}
 		}
 
-		public static void AssignForBalls0<T>(int n, T[] a, Func<T[], bool> action)
+		public static void Assign0ForBalls<T>(int n, T[] a, Func<T[], bool> action)
 		{
 			var k = a.Length;
 			var p = new T[n];
@@ -58,7 +58,7 @@ namespace CoderLib8.Combinatorics
 			{
 				if (v == n) return action(p);
 
-				for (int i = 0; i < k; i++)
+				for (int i = 0; i < k; ++i)
 				{
 					p[v] = a[i];
 					if (DFS(v + 1)) return true;
@@ -82,7 +82,7 @@ namespace CoderLib8.Combinatorics
 				if (n - v < c0) return false;
 				if (v == n) return action(b);
 
-				for (int i = 0; i < k; i++)
+				for (int i = 0; i < k; ++i)
 				{
 					if (b[i].Count == 0) --c0;
 					b[i].Add(v);
