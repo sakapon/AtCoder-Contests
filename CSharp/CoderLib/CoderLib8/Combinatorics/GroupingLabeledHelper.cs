@@ -151,6 +151,18 @@ namespace CoderLib8.Combinatorics
 				});
 				Console.WriteLine(r);
 			}
+
+			public static void Assign_ForBalls_T_Test()
+			{
+				var r = 0;
+				Assign0ForBalls(4, Enumerable.Range(1, 3).ToArray(), p =>
+				{
+					Console.WriteLine(string.Join(" ", p));
+					r++;
+					return false;
+				});
+				Console.WriteLine(r);
+			}
 		}
 	}
 }
