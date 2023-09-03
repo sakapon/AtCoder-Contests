@@ -30,6 +30,7 @@ namespace CoderLib8.Combinatorics
 			}
 		}
 
+		// 辞書順
 		public static void Assign0ForBalls(int n, int k, Func<int[], bool> action)
 		{
 			var p = new int[n];
@@ -91,6 +92,32 @@ namespace CoderLib8.Combinatorics
 					if (DFS(v + 1)) return true;
 					b[i].RemoveAt(b[i].Count - 1);
 					if (b[i].Count == 0) ++c0;
+				}
+				return false;
+			}
+		}
+
+		// 辞書順
+		public static void Assign1ForBalls(int n, int k, Func<int[], bool> action)
+		{
+			if (n < k) return;
+			var p = new int[n];
+			var c = new int[k];
+			var c0 = k;
+			DFS(0);
+
+			bool DFS(int v)
+			{
+				if (v == n) return action(p);
+
+				var f = n - v == c0;
+				for (int i = 0; i < k; ++i)
+				{
+					if (f && c[i] > 0) continue;
+					if (c[i]++ == 0) --c0;
+					p[v] = i;
+					if (DFS(v + 1)) return true;
+					if (--c[i] == 0) ++c0;
 				}
 				return false;
 			}
