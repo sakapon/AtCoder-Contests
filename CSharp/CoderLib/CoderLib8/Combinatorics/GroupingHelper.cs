@@ -59,6 +59,7 @@ namespace CoderLib8.Combinatorics
 		#endregion
 
 		#region 1 個以上
+		// Test: https://atcoder.jp/contests/abc310/tasks/abc310_d
 
 		public static void Assign1(int n, int k, Func<List<int>[], bool> action)
 		{
