@@ -104,6 +104,29 @@ namespace CoderLib8.Combinatorics
 			}
 		}
 
+		// 集合を bit で表現
+		public static void Assign1(int n, int k, Func<int[], bool> action)
+		{
+			if (n < k) return;
+			var b = new int[k];
+			DFS(0, 0);
+
+			// i0: 最初の空の箱の番号
+			bool DFS(int v, int i0)
+			{
+				if (v == n) return action(b);
+
+				for (int i = k - i0 < n - v ? 0 : i0; i < k; ++i)
+				{
+					b[i] |= 1 << v;
+					if (DFS(v + 1, i < i0 ? i0 : i0 + 1)) return true;
+					b[i] &= ~(1 << v);
+					if (i == i0) break;
+				}
+				return false;
+			}
+		}
+
 		#endregion
 
 		public static class Test
