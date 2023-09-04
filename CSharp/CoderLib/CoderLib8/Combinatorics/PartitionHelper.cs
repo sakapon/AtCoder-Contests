@@ -70,7 +70,7 @@ namespace CoderLib8.Combinatorics
 					return action(p);
 				}
 
-				for (int c = min; rem >= c * (k - i); ++c)
+				for (int c = min; (k - i) * c <= rem; ++c)
 				{
 					p[i] = c;
 					if (DFS(i + 1, rem - c, c)) return true;
@@ -90,7 +90,7 @@ namespace CoderLib8.Combinatorics
 			{
 				if (rem == 0) return action(p);
 
-				for (int c = rem <= max ? rem : max; rem <= c * (k - i); --c)
+				for (int c = rem <= max ? rem : max; (k - i) * c >= rem; --c)
 				{
 					p[i] = c;
 					if (DFS(i + 1, rem - c, c)) return true;
@@ -115,7 +115,7 @@ namespace CoderLib8.Combinatorics
 					return action(p);
 				}
 
-				for (int c = min; rem >= c * (k - i); ++c)
+				for (int c = min; (k - i) * c <= rem; ++c)
 				{
 					p[i] = c;
 					if (DFS(i + 1, rem - c, c)) return true;
@@ -136,7 +136,7 @@ namespace CoderLib8.Combinatorics
 			{
 				if (rem == 0) return action(p);
 
-				for (int c = rem <= max ? rem : max; rem <= c * (k - i); --c)
+				for (int c = rem <= max ? rem : max; (k - i) * c >= rem; --c)
 				{
 					p[i] = c + 1;
 					if (DFS(i + 1, rem - c, c)) return true;
