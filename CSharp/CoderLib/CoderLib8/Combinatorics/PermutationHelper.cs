@@ -23,6 +23,7 @@ namespace CoderLib8.Combinatorics
 			return true;
 		}
 
+		// Test: https://atcoder.jp/contests/abc276/tasks/abc276_c
 		// 値は何でもかまいません。重複可能。
 		public static bool PreviousPermutation(int[] p)
 		{
