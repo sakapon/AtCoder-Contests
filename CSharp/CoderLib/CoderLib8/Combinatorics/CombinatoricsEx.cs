@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using CoderLib8.Numerics;
 
-namespace CoderLib8.Numerics
+namespace CoderLib8.Combinatorics
 {
 	// 列挙時に配列の内容が変更されます (同一の配列を参照)。
-	public static class Combinatorics
+	public static class CombinatoricsEx
 	{
 		// 値は何でもかまいません。重複可能。
 		public static bool NextPermutation(int[] p)
