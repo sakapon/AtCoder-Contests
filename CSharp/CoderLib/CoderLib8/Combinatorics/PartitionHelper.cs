@@ -56,8 +56,32 @@ namespace CoderLib8.Combinatorics
 		}
 
 		// 箱を区別しない、0 個以上
-		// 戻り値: 各グループにおける要素数。逆辞書順。
+		// 戻り値: 各グループにおける要素数。辞書順。
 		public static void Partition0(int n, int k, Func<int[], bool> action)
+		{
+			var p = new int[k];
+			DFS(0, n, 0);
+
+			bool DFS(int i, int rem, int min)
+			{
+				if (i == k - 1)
+				{
+					p[i] = rem;
+					return action(p);
+				}
+
+				for (int c = min; rem >= c * (k - i); ++c)
+				{
+					p[i] = c;
+					if (DFS(i + 1, rem - c, c)) return true;
+				}
+				return false;
+			}
+		}
+
+		// 箱を区別しない、0 個以上
+		// 戻り値: 各グループにおける要素数。逆辞書順。
+		public static void Partition0Desc(int n, int k, Func<int[], bool> action)
 		{
 			var p = new int[k];
 			DFS(0, n, n);
@@ -77,8 +101,32 @@ namespace CoderLib8.Combinatorics
 		}
 
 		// 箱を区別しない、1 個以上
-		// 戻り値: 各グループにおける要素数。逆辞書順。
+		// 戻り値: 各グループにおける要素数。辞書順。
 		public static void Partition1(int n, int k, Func<int[], bool> action)
+		{
+			var p = new int[k];
+			DFS(0, n, 1);
+
+			bool DFS(int i, int rem, int min)
+			{
+				if (i == k - 1)
+				{
+					p[i] = rem;
+					return action(p);
+				}
+
+				for (int c = min; rem >= c * (k - i); ++c)
+				{
+					p[i] = c;
+					if (DFS(i + 1, rem - c, c)) return true;
+				}
+				return false;
+			}
+		}
+
+		// 箱を区別しない、1 個以上
+		// 戻り値: 各グループにおける要素数。逆辞書順。
+		public static void Partition1Desc(int n, int k, Func<int[], bool> action)
 		{
 			var p = new int[k];
 			Array.Fill(p, 1);
