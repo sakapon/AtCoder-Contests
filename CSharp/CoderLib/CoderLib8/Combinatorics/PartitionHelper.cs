@@ -2,6 +2,7 @@
 
 namespace CoderLib8.Combinatorics
 {
+	// 写像 12 相
 	// n 個の球を k 個の箱に入れる方法を列挙します。
 	// 球を区別しません。
 	public static class PartitionHelper
