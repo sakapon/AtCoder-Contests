@@ -85,5 +85,31 @@ namespace CoderLib8.Combinatorics
 				return false;
 			}
 		}
+
+		// n 個の要素から r 個を選ぶ方法を列挙します。
+		// 戻り値: 選ばれた r 個の要素。辞書順。
+		public static void Permutation<T>(T[] a, int r, Func<T[], bool> action)
+		{
+			var n = a.Length;
+			var p = new T[r];
+			var b = new int[n];
+			Array.Fill(b, -1);
+			DFS(0);
+
+			bool DFS(int v)
+			{
+				if (v == r) return action(p);
+
+				for (int i = 0; i < n; ++i)
+				{
+					if (b[i] != -1) continue;
+					p[v] = a[i];
+					b[i] = v;
+					if (DFS(v + 1)) return true;
+					b[i] = -1;
+				}
+				return false;
+			}
+		}
 	}
 }

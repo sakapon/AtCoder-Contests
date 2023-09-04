@@ -26,7 +26,7 @@ namespace CoderLib8.Combinatorics
 
 		// [0, n) から r 個を選ぶ方法を列挙します。
 		// 戻り値: n 個の各要素に対し、選択されたかどうか。
-		public static void CombinationByBool(int n, int r, Func<bool[], bool> action)
+		public static void CombinationForBoxes(int n, int r, Func<bool[], bool> action)
 		{
 			var u = new bool[n];
 			DFS(0, 0);
