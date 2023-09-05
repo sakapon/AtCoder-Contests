@@ -87,6 +87,34 @@ namespace CoderLib8.Combinatorics
 			}
 		}
 
+		// [0, n) から r 個を選ぶ方法を列挙します。
+		// 戻り値: 配列の先頭 r 個は、選ばれた r 個の要素。辞書順。
+		public static void Permutation2(int n, int r, Func<int[], bool> action)
+		{
+			var p = new int[n];
+			for (int i = 0; i < n; ++i) p[i] = i;
+			DFS(0);
+
+			bool DFS(int v)
+			{
+				if (v == r) return action(p);
+
+				for (int i = v; i < n; ++i)
+				{
+					(p[i], p[v]) = (p[v], p[i]);
+					if (DFS(v + 1)) return true;
+				}
+
+				var t = p[v];
+				for (int i = v + 1; i < n; ++i)
+				{
+					p[i - 1] = p[i];
+				}
+				p[^1] = t;
+				return false;
+			}
+		}
+
 		// n 個の要素から r 個を選ぶ方法を列挙します。
 		// 戻り値: 選ばれた r 個の要素。辞書順。
 		public static void Permutation<T>(T[] a, int r, Func<T[], bool> action)
