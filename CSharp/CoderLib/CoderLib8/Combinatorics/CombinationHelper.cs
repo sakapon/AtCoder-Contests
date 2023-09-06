@@ -45,6 +45,25 @@ namespace CoderLib8.Combinatorics
 			}
 		}
 
+		// [0, n) から r 個を選ぶ方法を列挙します。
+		// 戻り値: n 個の各要素に対し、選択されたかどうか。
+		// 集合を bit で表現
+		public static void CombinationForBoxes(int n, int r, Func<long, bool> action)
+		{
+			var x = (1L << r) - 1;
+			do action(x);
+			while (NextCombination(n, ref x));
+		}
+
+		public static bool NextCombination(int n, ref long x)
+		{
+			var l = -x & x;
+			x += l;
+			if ((x & ((1L << n) - 1)) == 0) return false;
+			x |= ((-x & x) / l >> 1) - 1;
+			return true;
+		}
+
 		// n 個の要素から r 個を選ぶ方法を列挙します。
 		// 戻り値: 選ばれた r 個の要素。辞書順。
 		public static void Combination<T>(T[] a, int r, Func<T[], bool> action)
