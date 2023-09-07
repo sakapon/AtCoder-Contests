@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-class E
+class E2
 {
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
@@ -12,20 +12,24 @@ class E
 		for (int i = 1; i < n; i++)
 			if (s[i - 1] != 1 && s[i] != 1) return -1;
 
-		// dp[i]: s[i..] が 0 文字になるまでの回数
-		var r = 1L;
+		// dp[i]: s[i..] が 1 文字になるまでの回数
+		var r = 0L;
 
 		for (int i = n - 2; i >= 0; i--)
 		{
 			if (s[i] == 1)
 			{
+				r++;
 				r *= s[i + 1];
-				r %= M;
 			}
-			r++;
+			else
+			{
+				r++;
+			}
+			r %= M;
 		}
 
-		return (r - 1 + M) % M;
+		return r;
 	}
 
 	const long M = 998244353;
