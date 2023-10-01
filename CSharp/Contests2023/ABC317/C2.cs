@@ -25,14 +25,10 @@ class C2
 			var s = 0;
 			for (int i = 1; i < n; i++)
 			{
-				if (map[p[i - 1]][p[i]] == -1)
-				{
-					Chmax(ref r, s);
-					return false;
-				}
+				if (map[p[i - 1]][p[i]] == -1) return false;
 				s += map[p[i - 1]][p[i]];
+				Chmax(ref r, s);
 			}
-			Chmax(ref r, s);
 			return false;
 		});
 
