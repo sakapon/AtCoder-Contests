@@ -43,8 +43,8 @@ namespace CoderLib8.Combinatorics
 			return true;
 		}
 
-		// [0, n) から n 個を選ぶ方法を列挙します。
-		// 戻り値: 選ばれた r 個の要素。辞書順。
+		// [0, n) から n 個を順に選ぶ方法を列挙します。
+		// 戻り値: 選ばれた n 個の要素。辞書順。
 		public static void Permutation(int n, Func<int[], bool> action)
 		{
 			var p = new int[n];
@@ -52,7 +52,7 @@ namespace CoderLib8.Combinatorics
 			while (!action(p) && NextPermutation(p)) ;
 		}
 
-		// [0, n) から r 個を選ぶ方法を列挙します。
+		// [0, n) から r 個を順に選ぶ方法を列挙します。
 		// 戻り値: n 個の各要素に対し、選択された順序。
 		public static void PermutationForBoxes(int n, int r, Func<int[], bool> action)
 		{
@@ -62,7 +62,7 @@ namespace CoderLib8.Combinatorics
 			while (!action(p) && NextPermutation(p)) ;
 		}
 
-		// [0, n) から r 個を選ぶ方法を列挙します。
+		// [0, n) から r 個を順に選ぶ方法を列挙します。
 		// 戻り値: 選ばれた r 個の要素。辞書順。
 		public static void Permutation(int n, int r, Func<int[], bool> action)
 		{
@@ -87,7 +87,7 @@ namespace CoderLib8.Combinatorics
 			}
 		}
 
-		// [0, n) から r 個を選ぶ方法を列挙します。
+		// [0, n) から r 個を順に選ぶ方法を列挙します。
 		// 戻り値: 配列の先頭 r 個は、選ばれた r 個の要素。辞書順。
 		public static void Permutation2(int n, int r, Func<int[], bool> action)
 		{
@@ -115,7 +115,7 @@ namespace CoderLib8.Combinatorics
 			}
 		}
 
-		// n 個の要素から r 個を選ぶ方法を列挙します。
+		// n 個の要素から r 個を順に選ぶ方法を列挙します。
 		// 戻り値: 選ばれた r 個の要素。辞書順。
 		public static void Permutation<T>(T[] a, int r, Func<T[], bool> action)
 		{
