@@ -17,7 +17,7 @@ class A2310
 		var ev = Array.IndexOf(sseq, 'g');
 
 		var map = GetUnweightedAdjacencyList(s);
-		var r = BFS(map, sv);
+		var r = ByBFS(map, sv);
 		return r[ev];
 	}
 
@@ -45,7 +45,7 @@ class A2310
 		return map;
 	}
 
-	public static bool[] BFS(List<int>[] map, int sv)
+	public static bool[] ByBFS(List<int>[] map, int sv)
 	{
 		var n = map.Length;
 		var u = new bool[n];
@@ -63,5 +63,61 @@ class A2310
 			}
 		}
 		return u;
+	}
+
+	public static bool[] ByBFS2(List<int>[] map, int sv)
+	{
+		var n = map.Length;
+		var u = new bool[n];
+		var q = new Queue<int>();
+		q.Enqueue(sv);
+
+		while (q.TryDequeue(out var v))
+		{
+			if (u[v]) continue;
+			u[v] = true;
+			foreach (var nv in map[v])
+			{
+				q.Enqueue(nv);
+			}
+		}
+		return u;
+	}
+
+	public static bool[] ByDFS(List<int>[] map, int sv)
+	{
+		var n = map.Length;
+		var u = new bool[n];
+		u[sv] = true;
+		DFS(sv);
+		return u;
+
+		void DFS(int v)
+		{
+			foreach (var nv in map[v])
+			{
+				if (u[nv]) continue;
+				u[nv] = true;
+				DFS(nv);
+			}
+		}
+	}
+
+	public static bool[] ByDFS2(List<int>[] map, int sv)
+	{
+		var n = map.Length;
+		var u = new bool[n];
+		DFS(sv);
+		return u;
+
+		void DFS(int v)
+		{
+			if (u[v]) return;
+			u[v] = true;
+			foreach (var nv in map[v])
+			{
+				DFS(nv);
+			}
+		}
 	}
 }
