@@ -79,8 +79,8 @@ class A231005
 		public static Point operator -(Point v1, Point v2) => new Point(v1.i - v2.i, v1.j - v2.j);
 
 		public readonly bool IsInRange(int h, int w) => 0 <= i && i < h && 0 <= j && j < w;
-		public readonly Point[] Nexts() => new[] { new Point(i, j - 1), new Point(i, j + 1), new Point(i - 1, j), new Point(i + 1, j) };
-		public static readonly Point[] NextsByDelta = new Point[] { (0, -1), (0, 1), (-1, 0), (1, 0) };
+		public readonly Point[] Nexts() => new[] { new Point(i, j + 1), new Point(i, j - 1), new Point(i + 1, j), new Point(i - 1, j) };
+		public static readonly Point[] NextsByDelta = new Point[] { (0, 1), (0, -1), (1, 0), (-1, 0) };
 	}
 
 	public class GridArray<T>
