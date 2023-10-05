@@ -59,9 +59,12 @@ class A231005
 
 		public int i, j;
 		public Point(int i, int j) { this.i = i; this.j = j; }
-		public readonly void Deconstruct(out long i, out long j) => (i, j) = (this.i, this.j);
+		public readonly void Deconstruct(out int i, out int j) => (i, j) = (this.i, this.j);
 		public override readonly string ToString() => $"{i} {j}";
+		public static Point Parse(string s) => Array.ConvertAll(s.Split(), int.Parse);
 
+		public static implicit operator Point(int[] v) => (v[0], v[1]);
+		public static explicit operator int[](Point v) => new[] { v.i, v.j };
 		public static implicit operator Point((int i, int j) v) => new Point(v.i, v.j);
 		public static explicit operator (int, int)(Point v) => (v.i, v.j);
 
@@ -87,6 +90,11 @@ class A231005
 		public int Height => a.Length;
 		public int Width => a.Length == 0 ? 0 : a[0].Length;
 
+		public T this[int i, int j]
+		{
+			get => a[i][j];
+			set => a[i][j] = value;
+		}
 		public T this[Point p]
 		{
 			get => a[p.i][p.j];
