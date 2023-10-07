@@ -1,21 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using WBTrees;
 
 class D
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+	static (long, long) Read2L() { var a = ReadL(); return (a[0], a[1]); }
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var ps = Array.ConvertAll(new bool[n], _ => Read2L());
 
-		return string.Join(" ", a);
+		var r = 0L;
+		var map = new WBMap<long, long>();
+		map.Initialize(ps);
+
+		while (map.Count > 0)
+		{
+			var (s, c) = map.RemoveFirst().Item;
+			if (c % 2 == 1) r++;
+			s <<= 1;
+			c >>= 1;
+			if (c == 0) continue;
+			if (map.ContainsKey(s))
+				map[s] += c;
+			else
+				map[s] = c;
+		}
+		return r;
 	}
 }
