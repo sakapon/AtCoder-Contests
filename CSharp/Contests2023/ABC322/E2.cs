@@ -40,7 +40,8 @@ class E2
 			dp = dt;
 		}
 
-		var pa = Enumerable.Repeat((long)p, k).ToArray();
+		var pa = new long[k];
+		Array.Fill(pa, p);
 		return dp.TryGetValue(pa, out var pc) ? pc : -1;
 	}
 }
