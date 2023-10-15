@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 class A
@@ -10,12 +9,16 @@ class A
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (n, m) = Read2();
+		var a = ReadL();
 
-		return string.Join(" ", a);
+		Array.Sort(a);
+		var b = a[(n - m)..];
+
+		for (int i = 0; i < n - m; i++)
+		{
+			b[n - m - 1 - i] += a[i];
+		}
+		return b.Sum(x => x * x);
 	}
 }

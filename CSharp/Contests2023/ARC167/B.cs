@@ -1,21 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 class B
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
+	static (long, long) Read2L() { var a = ReadL(); return (a[0], a[1]); }
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (a, b_) = Read2L();
+		BigInteger b = b_;
 
-		return string.Join(" ", a);
+		var cs = Factorize(a).GroupBy(p => p).Select(g => g.Count()).ToArray();
+		var pr = cs.Aggregate(b, (v, c) => (c * b + 1) * v);
+		return cs.Min(cm =>
+		{
+			var x = pr * cm / 2;
+			var rem = x % cm;
+			x -= rem;
+			return x / cm % M;
+		});
+	}
+
+	const long M = 998244353;
+
+	static long[] Factorize(long n)
+	{
+		var r = new List<long>();
+		for (long x = 2; x * x <= n && n > 1; ++x) while (n % x == 0) { r.Add(x); n /= x; }
+		if (n > 1) r.Add(n);
+		return r.ToArray();
 	}
 }
