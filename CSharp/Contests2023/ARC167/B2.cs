@@ -1,24 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 
-class B
+class B2
 {
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static (long, long) Read2L() { var a = ReadL(); return (a[0], a[1]); }
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var (a, b_) = Read2L();
-		BigInteger b = b_;
+		var (a, b) = Read2L();
 
+		var bm = b % M;
 		var cs = Factorize(a).GroupBy(p => p).Select(g => g.Count()).ToArray();
-		var r = cs.Aggregate(b, (v, c) => (c * b + 1) * v);
-		return r / 2 % M;
+		var r = cs.Aggregate(bm, (v, c) => (c * bm + 1) % M * v % M);
+
+		if (b % 2 == 1 && cs.All(c => c % 2 == 0)) r += M - 1;
+		return r * MHalf % M;
 	}
 
 	const long M = 998244353;
+	const long MHalf = (M + 1) / 2;
 
 	static long[] Factorize(long n)
 	{
