@@ -11,11 +11,10 @@ class A
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
 		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		if (a.Any(x => x == 0)) return '0';
+		var c = a.Count(x => x < 0);
+		return c % 2 == 0 ? '+' : '-';
 	}
 }

@@ -4,18 +4,66 @@ using System.Linq;
 
 class B
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
 		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var n = s.Length;
 
-		return string.Join(" ", a);
+		var r = 0D;
+
+		// 0: なし
+		// 1: A
+		// 2: AB
+		var dp = new double[3];
+		var dt = new double[3];
+		dp[0] = 1;
+
+		foreach (var c in s)
+		{
+			if (c == 'A')
+			{
+				dt[1] += dp[0];
+				dt[1] += dp[1];
+				dt[1] += dp[2];
+			}
+			else if (c == 'B')
+			{
+				dt[0] += dp[0];
+				dt[2] += dp[1];
+				dt[0] += dp[2];
+			}
+			else if (c == 'C')
+			{
+				r += dp[2];
+				dt[0] += dp[0];
+				dt[0] += dp[1];
+				dt[0] += dp[2];
+			}
+			else
+			{
+				{
+					dt[1] += dp[0] / 3;
+					dt[1] += dp[1] / 3;
+					dt[1] += dp[2] / 3;
+				}
+				{
+					dt[0] += dp[0] / 3;
+					dt[2] += dp[1] / 3;
+					dt[0] += dp[2] / 3;
+				}
+				{
+					r += dp[2] / 3;
+					dt[0] += dp[0] / 3;
+					dt[0] += dp[1] / 3;
+					dt[0] += dp[2] / 3;
+				}
+			}
+
+			(dp, dt) = (dt, dp);
+			Array.Clear(dt, 0, dt.Length);
+		}
+
+		return r;
 	}
 }
