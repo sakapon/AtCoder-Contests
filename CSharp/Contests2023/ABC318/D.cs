@@ -42,7 +42,8 @@ class D
 				return;
 			}
 
-			var v = rn.First(x => !u[x]);
+			var v = 0;
+			while (u[v]) v++;
 			u[v] = true;
 			for (int nv = v + 1; nv < n; nv++)
 			{
