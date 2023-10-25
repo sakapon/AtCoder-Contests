@@ -39,17 +39,19 @@ namespace CoderLib8.Collections
 		}
 
 		#region Convert
-		public static BInt ToBitSet32(this string s) => Convert.ToUInt32(s, 2);
-		public static string ToBitString(this BInt x, int n = Size) => Convert.ToString(x, 2).PadLeft(n, '0');
+		// 要素数が 0 の場合、"0"
+		public static uint ToBitSet32(this string s) => Convert.ToUInt32(s, 2);
+		public static ulong ToBitSet64(this string s) => Convert.ToUInt64(s, 2);
+		public static string ToBitString(this BInt x, int n = Size) => Convert.ToString(n == Size ? x : x & ((B1 << n) - 1), 2).PadLeft(n, '0');
 
 		public static BInt ToBitSet32(this bool[] b)
 		{
-			var x = 0U;
+			BInt x = 0;
 			for (int i = 0; i < b.Length; ++i)
 				if (b[i]) x |= B1 << i;
 			return x;
 		}
-		public static bool[] ToBitArray(this BInt x, int n)
+		public static bool[] ToBitArray(this BInt x, int n = Size)
 		{
 			var b = new bool[n];
 			for (int i = 0; i < n; ++i)
@@ -59,12 +61,12 @@ namespace CoderLib8.Collections
 
 		public static BInt ToBitSet32(this IEnumerable<int> s)
 		{
-			var x = 0U;
+			BInt x = 0;
 			foreach (var i in s)
 				x |= B1 << i;
 			return x;
 		}
-		public static IEnumerable<int> ToElements(this BInt x, int n)
+		public static IEnumerable<int> ToElements(this BInt x, int n = Size)
 		{
 			for (int i = 0; i < n; ++i)
 				if ((x & (B1 << i)) != 0) yield return i;
