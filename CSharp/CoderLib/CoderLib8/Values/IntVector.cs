@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+// Test: https://atcoder.jp/contests/abc322/tasks/abc322_e
 namespace CoderLib8.Values
 {
 	// 任意次元ベクトル

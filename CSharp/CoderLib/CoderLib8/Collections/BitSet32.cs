@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+// Test: https://atcoder.jp/contests/abc318/tasks/abc318_d
 namespace CoderLib8.Collections
 {
 	public struct BitSet32

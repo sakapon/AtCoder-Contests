@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BInt = System.UInt32;
 
+// Test: https://atcoder.jp/contests/abc318/tasks/abc318_d
 namespace CoderLib8.Collections
 {
 	public static class BitSetEx
