@@ -12,31 +12,30 @@ namespace CoderLib8.Collections
 		public static bool Contains(this BInt x, int i) => (x & (B1 << i)) != 0;
 		public static BInt Add(this BInt x, int i) => x | (B1 << i);
 		public static BInt Remove(this BInt x, int i) => x & ~(B1 << i);
+		public static BInt Set(this BInt x, int i, bool v) => v ? x | (B1 << i) : x & ~(B1 << i);
 
-		public static int Min(this BInt x, int n)
+		public static int Min(this BInt x, int n = Size)
 		{
 			var i = 0;
 			while (i < n && (x & (B1 << i)) == 0) ++i;
 			return i;
 		}
-
-		public static int Max(this BInt x, int n)
+		public static int Max(this BInt x, int n = Size)
 		{
 			var i = n - 1;
 			while (i >= 0 && (x & (B1 << i)) == 0) --i;
 			return i;
 		}
 
-		public static IEnumerable<BInt> NextSupersets(this BInt x, int n)
+		public static IEnumerable<BInt> NextSupersets(this BInt x, int n = Size)
 		{
-			for (var f = B1; f < (B1 << n); f <<= 1)
-				if ((x & f) == 0) yield return x | f;
+			for (int i = 0; i < n; ++i)
+				if ((x & (B1 << i)) == 0) yield return x | (B1 << i);
 		}
-
-		public static IEnumerable<BInt> NextSubsets(this BInt x, int n)
+		public static IEnumerable<BInt> NextSubsets(this BInt x, int n = Size)
 		{
-			for (var f = B1 << n - 1; f > 0; f >>= 1)
-				if ((x & f) != 0) yield return x & ~f;
+			for (int i = n - 1; i >= 0; --i)
+				if ((x & (B1 << i)) != 0) yield return x & ~(B1 << i);
 		}
 
 		#region Convert
