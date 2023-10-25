@@ -37,20 +37,14 @@ namespace CoderLib8.Collections
 
 		public IEnumerable<BitSet32> NextSuperSets(int n)
 		{
-			for (var f = 1U; f < (1U << n); f <<= 1)
-			{
-				var nv = Value | f;
-				if (nv != Value) yield return nv;
-			}
+			for (int i = 0; i < n; ++i)
+				if ((Value & (1U << i)) == 0) yield return Value | (1U << i);
 		}
 
 		public IEnumerable<BitSet32> NextSubSets(int n)
 		{
-			for (var f = 1U; f < (1U << n); f <<= 1)
-			{
-				var nv = Value & ~f;
-				if (nv != Value) yield return nv;
-			}
+			for (int i = n - 1; i >= 0; --i)
+				if ((Value & (1U << i)) != 0) yield return Value & ~(1U << i);
 		}
 	}
 }

@@ -40,7 +40,7 @@ class DB
 		else
 		{
 			BitSet32 f = (uint)dp.Length - 1;
-			return Enumerable.Range(0, n).Max(i => dp[f.Remove(i).Value]);
+			return f.NextSubSets(n).Max(x => dp[x.Value]);
 		}
 	}
 

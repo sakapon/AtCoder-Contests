@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CoderLib8.Collections;
+using BInt = System.UInt32;
 
 class D2
 {
