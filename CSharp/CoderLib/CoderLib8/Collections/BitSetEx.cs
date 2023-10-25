@@ -12,8 +12,6 @@ namespace CoderLib8.Collections
 		public static bool Contains(this BInt x, int i) => (x & (B1 << i)) != 0;
 		public static BInt Add(this BInt x, int i) => x | (B1 << i);
 		public static BInt Remove(this BInt x, int i) => x & ~(B1 << i);
-		public static string ToBitString(this BInt x, int n = Size) => Convert.ToString(x, 2).PadLeft(n, '0');
-		public static BInt ToBitSet32(this string s) => Convert.ToUInt32(s, 2);
 
 		public static int Min(this BInt x, int n)
 		{
@@ -41,13 +39,9 @@ namespace CoderLib8.Collections
 				if ((x & f) != 0) yield return x & ~f;
 		}
 
-		public static bool[] ToBitArray(this BInt x, int n)
-		{
-			var b = new bool[n];
-			for (int i = 0; i < n; ++i)
-				b[i] = (x & (B1 << i)) != 0;
-			return b;
-		}
+		#region Convert
+		public static BInt ToBitSet32(this string s) => Convert.ToUInt32(s, 2);
+		public static string ToBitString(this BInt x, int n = Size) => Convert.ToString(x, 2).PadLeft(n, '0');
 
 		public static BInt ToBitSet32(this bool[] b)
 		{
@@ -56,11 +50,12 @@ namespace CoderLib8.Collections
 				if (b[i]) x |= B1 << i;
 			return x;
 		}
-
-		public static IEnumerable<int> ToElements(this BInt x, int n)
+		public static bool[] ToBitArray(this BInt x, int n)
 		{
+			var b = new bool[n];
 			for (int i = 0; i < n; ++i)
-				if ((x & (B1 << i)) != 0) yield return i;
+				b[i] = (x & (B1 << i)) != 0;
+			return b;
 		}
 
 		public static BInt ToBitSet32(this IEnumerable<int> s)
@@ -70,5 +65,11 @@ namespace CoderLib8.Collections
 				x |= B1 << i;
 			return x;
 		}
+		public static IEnumerable<int> ToElements(this BInt x, int n)
+		{
+			for (int i = 0; i < n; ++i)
+				if ((x & (B1 << i)) != 0) yield return i;
+		}
+		#endregion
 	}
 }
