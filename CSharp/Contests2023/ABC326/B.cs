@@ -11,11 +11,12 @@ class B
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		for (int x = n; x <= 919; x++)
+		{
+			var s = x.ToString().Select(c => c - '0').ToArray();
+			if (s[0] * s[1] == s[2]) return x;
+		}
+		return -1;
 	}
 }
