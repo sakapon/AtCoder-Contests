@@ -11,6 +11,10 @@ class D
 		var r = Console.ReadLine();
 		var c = Console.ReadLine();
 
+		var rn = Enumerable.Range(0, n).ToArray();
+		var r3 = new[] { 0, 1, 2 };
+		const string ABC = "ABC";
+
 		var l = new List<int[]>();
 
 		var p = new int[n];
@@ -23,45 +27,46 @@ class D
 
 		// 同じ文字を書き込むパターン
 		var b = l.ToArray();
+
+		var b_inv = Array.ConvertAll(b, p =>
+		{
+			var q = new int[n];
+			for (int i = 0; i < n; i++) q[p[i]] = i;
+			return q;
+		});
+
 		var bs = new int[3][];
+		var bs_inv = new int[3][];
 
 		for (int i = 0; i < b.Length; i++)
 		{
 			bs[0] = b[i];
+			bs_inv[0] = b_inv[i];
 
 			for (int j = 0; j < b.Length; j++)
 			{
 				bs[1] = b[j];
+				bs_inv[1] = b_inv[j];
 				if (HasOverlap(bs[0], bs[1])) continue;
 
 				for (int k = 0; k < b.Length; k++)
 				{
 					bs[2] = b[k];
+					bs_inv[2] = b_inv[k];
 					if (HasOverlap(bs[0], bs[2])) continue;
 					if (HasOverlap(bs[1], bs[2])) continue;
 
-					var r2 = new (int c, int m)[n];
-					var c2 = new (int c, int m)[n];
-					Array.Fill(r2, ('.', n));
-					Array.Fill(c2, ('.', n));
+					var r2 = Array.ConvertAll(rn, ni => ABC[r3.MinBy(si => bs[si][ni], 1 << 30).arg]);
+					var c2 = Array.ConvertAll(rn, ni => ABC[r3.MinBy(si => bs_inv[si][ni], 1 << 30).arg]);
 
-					for (int t = 0; t < 3; t++)
-					{
-						for (int ti = 0; ti < n; ti++)
-						{
-							if (r2[ti].m > bs[t][ti]) r2[ti] = (t, bs[t][ti]);
-							if (c2[bs[t][ti]].m > ti) c2[bs[t][ti]] = (t, ti);
-						}
-					}
-
-					if (new string(r2.Select(p => (char)('A' + p.c)).ToArray()) == r && new string(c2.Select(p => (char)('A' + p.c)).ToArray()) == c)
+					if (new string(r2) == r && new string(c2) == c)
 					{
 						var cs = NewArray2(n, n, '.');
-						for (int t = 0; t < 3; t++)
+						for (int si = 0; si < 3; si++)
 						{
-							for (int ti = 0; ti < n; ti++)
+							for (int ni = 0; ni < n; ni++)
 							{
-								cs[ti][bs[t][ti]] = (char)('A' + t);
+								cs[ni][bs[si][ni]] = ABC[si];
 							}
 						}
 						return "Yes\n" + string.Join("\n", cs.Select(c => new string(c)));
@@ -100,5 +105,20 @@ class D
 		(p[i], p[j]) = (p[j], p[i]);
 		Array.Reverse(p, i + 1, n - i - 1);
 		return true;
+	}
+}
+
+public static class Enumerable2
+{
+	public static (T arg, TKey min) MinBy<T, TKey>(this IEnumerable<T> source, Func<T, TKey> toKey, TKey ik, IComparer<TKey> c = null)
+	{
+		c ??= Comparer<TKey>.Default;
+		T r = default;
+		foreach (var v in source)
+		{
+			var k = toKey(v);
+			if (c.Compare(ik, k) > 0) (r, ik) = (v, k);
+		}
+		return (r, ik);
 	}
 }
