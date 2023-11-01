@@ -56,6 +56,21 @@ class D2
 
 			foreach (var s in patterns[ri])
 			{
+				bool Check1()
+				{
+					for (int j = 0; j < n; j++)
+					{
+						if (s[j] == '.') continue;
+
+						for (int i = 0; i < ri; i++)
+						{
+							if (g[i][j] == s[j]) return false;
+						}
+					}
+					return true;
+				}
+
+				if (!Check1()) continue;
 				g[ri] = s;
 				if (DFS(ri + 1)) return true;
 			}
