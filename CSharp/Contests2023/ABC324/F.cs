@@ -12,15 +12,10 @@ class F
 		var es = Array.ConvertAll(new bool[m], _ => Read());
 
 		var map = Array.ConvertAll(new bool[n + 1], _ => new List<int[]>());
-		var indeg = new int[n + 1];
 		foreach (var e in es)
-		{
 			map[e[0]].Add(e);
-			++indeg[e[1]];
-		}
 
 		var dp = new double[n + 1];
-		var q = new Queue<int>();
 
 		// b-cx の和が 0 以上となるパスが存在するような最後の x を求めます。
 		return Last(0, 1 << 14, x =>
@@ -28,23 +23,9 @@ class F
 			Array.Fill(dp, -1 << 30);
 			dp[1] = 0;
 
-			for (int v = 1; v <= n; ++v)
-				if (indeg[v] == 0)
-					q.Enqueue(v);
-
-			var indeg2 = (int[])indeg.Clone();
-			while (q.Count > 0)
-			{
-				var v = q.Dequeue();
+			for (int v = 1; v < n; v++)
 				foreach (var e in map[v])
-				{
-					var nv = e[1];
-					Chmax(ref dp[nv], dp[v] + e[2] - e[3] * x);
-
-					if (--indeg2[nv] > 0) continue;
-					q.Enqueue(nv);
-				}
-			}
+					Chmax(ref dp[e[1]], dp[v] + e[2] - e[3] * x);
 			return dp[n] >= 0;
 		});
 	}
