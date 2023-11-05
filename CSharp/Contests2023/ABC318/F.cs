@@ -32,7 +32,7 @@ class F
 
 		bool Check(long k)
 		{
-			// 非 AOT では Array.Sort<long>() で TLE となるため、LINQ を利用します。
+			// 非 AOT では Array.Sort<long>(), List<long>.Sort() で TLE となるため、LINQ を利用します。
 			var d = x.Select(v => Math.Abs(v - k)).OrderBy(v => v).ToArray();
 			return Array.TrueForAll(rn, i => d[i] <= l[i]);
 		}
