@@ -4,18 +4,38 @@ using System.Linq;
 
 class F
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var x = ReadL();
+		var l = ReadL();
 
-		return string.Join(" ", a);
+		// 非 AOT では TLE。
+		var rn = Enumerable.Range(0, n).ToArray();
+		var set = new HashSet<long>();
+
+		for (int i = 0; i < n; i++)
+		{
+			for (int j = 0; j < n; j++)
+			{
+				var k = x[i] - l[j];
+				if (Check(k) && !Check(k - 1)) set.Add(k);
+
+				k = x[i] + l[j];
+				if (Check(k) && !Check(k + 1)) set.Add(k + 1);
+			}
+		}
+
+		var c = set.OrderBy(x => x).ToArray();
+		return Enumerable.Range(0, c.Length / 2).Sum(i => c[2 * i + 1] - c[2 * i]);
+
+		bool Check(long k)
+		{
+			var d = Array.ConvertAll(x, v => Math.Abs(v - k));
+			Array.Sort(d);
+			return Array.TrueForAll(rn, i => d[i] <= l[i]);
+		}
 	}
 }
