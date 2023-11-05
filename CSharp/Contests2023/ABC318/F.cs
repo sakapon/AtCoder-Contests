@@ -12,7 +12,6 @@ class F
 		var x = ReadL();
 		var l = ReadL();
 
-		// 非 AOT では TLE。
 		var rn = Enumerable.Range(0, n).ToArray();
 		var set = new HashSet<long>();
 
@@ -33,8 +32,8 @@ class F
 
 		bool Check(long k)
 		{
-			var d = Array.ConvertAll(x, v => Math.Abs(v - k));
-			Array.Sort(d);
+			// 非 AOT では Array.Sort<long>() で TLE となるため、LINQ を利用します。
+			var d = x.Select(v => Math.Abs(v - k)).OrderBy(v => v).ToArray();
 			return Array.TrueForAll(rn, i => d[i] <= l[i]);
 		}
 	}
