@@ -32,12 +32,26 @@ namespace CoderLib8.Collections
 			for (var i = 0; i < count; ++i) a[i] = start + i;
 			return a;
 		}
-
 		static int[] Range2(int l_in, int r_ex)
 		{
 			var a = new int[r_ex - l_in];
 			for (var i = l_in; i < r_ex; ++i) a[i - l_in] = i;
 			return a;
+		}
+
+		static bool ArrayEqual<T>(T[] a1, T[] a2) where T : IEquatable<T>
+		{
+			if (a1.Length != a2.Length) return false;
+			for (int i = 0; i < a1.Length; ++i)
+				if (!a1[i].Equals(a2[i])) return false;
+			return true;
+		}
+		static bool ArrayEqual0<T>(T[] a1, T[] a2)
+		{
+			if (a1.Length != a2.Length) return false;
+			for (int i = 0; i < a1.Length; ++i)
+				if (!Equals(a1[i], a2[i])) return false;
+			return true;
 		}
 
 		static (T, T) ToTuple2<T>(T[] a) => (a[0], a[1]);
