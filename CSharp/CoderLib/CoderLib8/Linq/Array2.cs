@@ -27,16 +27,6 @@ namespace CoderLib8.Linq
 		public static void Clear<T>(this T[] a) => Array.Clear(a, 0, a.Length);
 		public static void Fill<T>(this T[] a, T value) => Array.Fill(a, value);
 		public static void CopyTo<T>(this T[] a, int index, T[] dest, int destIndex, int length) => Array.Copy(a, index, dest, destIndex, length);
-
-		public static T[] Clone<T>(this T[] a, int newSize = -1)
-		{
-			if (newSize == -1) newSize = a.Length;
-			if (newSize <= a.Length) return a[..newSize];
-
-			var r = new T[newSize];
-			Array.Copy(a, r, a.Length);
-			return r;
-		}
 		#endregion
 
 		#region Accumulation
@@ -69,9 +59,27 @@ namespace CoderLib8.Linq
 			return a;
 		}
 
+		public static T[] Reverse<T>(this T[] a)
+		{
+			var r = a[..];
+			Array.Reverse(r);
+			return r;
+		}
+
 		public static TResult[] Select<TSource, TResult>(this TSource[] a, Func<TSource, TResult> selector) => Array.ConvertAll(a, v => selector(v));
 		public static (TSource v, TResult r)[] SelectWith<TSource, TResult>(this TSource[] a, Func<TSource, TResult> selector) => Array.ConvertAll(a, v => (v, selector(v)));
+
 		public static TSource[] Where<TSource>(this TSource[] a, Func<TSource, bool> predicate) => Array.FindAll(a, v => predicate(v));
+		public static TSource First<TSource>(this TSource[] a, Func<TSource, bool> predicate)
+		{
+			for (int i = 0; i < a.Length; ++i) if (predicate(a[i])) return a[i];
+			return default;
+		}
+		public static TSource Last<TSource>(this TSource[] a, Func<TSource, bool> predicate)
+		{
+			for (int i = a.Length; --i >= 0;) if (predicate(a[i])) return a[i];
+			return default;
+		}
 
 		public static TResult[] Cast<TResult>(this Array a)
 		{
@@ -85,6 +93,17 @@ namespace CoderLib8.Linq
 			return Array.ConvertAll(a, v => (TResult)Convert.ChangeType(v, typeof(TResult)));
 		}
 		#endregion
+
+		#region Convert
+		public static T[] Clone<T>(this T[] a, int newSize = -1)
+		{
+			if (newSize == -1) newSize = a.Length;
+			if (newSize <= a.Length) return a[..newSize];
+
+			var r = new T[newSize];
+			Array.Copy(a, r, a.Length);
+			return r;
+		}
 
 		public static TSource[][] Chunk<TSource>(this TSource[] a, int size)
 		{
@@ -132,5 +151,6 @@ namespace CoderLib8.Linq
 			for (int i = 0; i < r.Length; ++i) r[i] = (a[i], b[i]);
 			return r;
 		}
+		#endregion
 	}
 }
