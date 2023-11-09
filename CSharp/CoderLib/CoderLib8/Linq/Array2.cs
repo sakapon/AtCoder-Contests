@@ -38,6 +38,9 @@ namespace CoderLib8.Linq
 
 		public static bool All<TSource>(this TSource[] a, Func<TSource, bool> predicate) => a.Aggregate(true, (r, v) => r && predicate(v));
 		public static bool Any<TSource>(this TSource[] a, Func<TSource, bool> predicate) => a.Aggregate(false, (r, v) => r || predicate(v));
+		public static long Sum<TSource>(this TSource[] a, Func<TSource, long> selector) => a.Aggregate(0L, (r, v) => r + selector(v));
+		public static long Max<TSource>(this TSource[] a, Func<TSource, long> selector) => a.Aggregate(0L, (r, v) => Math.Max(r, selector(v)));
+		public static long Min<TSource>(this TSource[] a, Func<TSource, long> selector) => a.Aggregate(0L, (r, v) => Math.Min(r, selector(v)));
 		public static long Sum(this long[] a) => a.Aggregate(0L, (r, v) => r + v);
 		public static long Max(this long[] a) => a.Aggregate(long.MinValue, Math.Max);
 		public static long Min(this long[] a) => a.Aggregate(long.MaxValue, Math.Min);
@@ -120,6 +123,38 @@ namespace CoderLib8.Linq
 			}
 			if (a.Length != 0) l.Add((key, a[si..]));
 			return l.ToArray();
+		}
+
+		public static TResult[] Select<TSource, TResult>(this TSource[] a, Func<TSource, TResult> selector) => Array.ConvertAll(a, v => selector(v));
+		public static (TSource v, TResult r)[] SelectWith<TSource, TResult>(this TSource[] a, Func<TSource, TResult> selector) => Array.ConvertAll(a, v => (v, selector(v)));
+		public static TSource[] Where<TSource>(this TSource[] a, Func<TSource, bool> predicate) => Array.FindAll(a, v => predicate(v));
+		public static TSource[] ForEach<TSource>(this TSource[] a, Action<TSource> action)
+		{
+			Array.ForEach(a, action);
+			return a;
+		}
+
+		public static TResult[] Cast<TResult>(this Array a)
+		{
+			var r = new TResult[a.Length];
+			for (int i = 0; i < a.Length; ++i) r[i] = (TResult)Convert.ChangeType(a.GetValue(i), typeof(TResult));
+			return r;
+		}
+
+		public static TResult[] Cast<TSource, TResult>(this TSource[] a, TResult dummy)
+		{
+			return Array.ConvertAll(a, v => (TResult)Convert.ChangeType(v, typeof(TResult)));
+		}
+
+		public static TSource[] Concat<TSource>(this TSource[][] a)
+		{
+			var r = new TSource[a.Sum(b => b.Length)];
+			for (int i = 0, s = 0; i < a.Length; ++i)
+			{
+				Array.Copy(a, 0, r, s, a[i].Length);
+				s += a[i].Length;
+			}
+			return r;
 		}
 	}
 }
