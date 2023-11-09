@@ -7,6 +7,21 @@ namespace CoderLib8.Linq
 	public static class Array2
 	{
 		#region Initialization
+		public static T[] Create1ByFunc<T>(int n1, Func<T> newItem)
+		{
+			var a = new T[n1];
+			for (var i = 0; i < n1; ++i) a[i] = newItem();
+			return a;
+		}
+		public static T[] Create1<T>(int n1, T value = default)
+		{
+			var a = new T[n1];
+			Array.Fill(a, value);
+			return a;
+		}
+		public static T[][] Create2<T>(int n1, int n2, T value = default) => Create1ByFunc(n1, () => Create1(n2, value));
+		public static T[][][] Create3<T>(int n1, int n2, int n3, T value = default) => Create1ByFunc(n1, () => Create2(n2, n3, value));
+
 		public static T[] Repeat<T>(T value, int count)
 		{
 			var a = new T[count];
