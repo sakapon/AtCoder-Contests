@@ -27,6 +27,14 @@ namespace CoderLib8.Linq
 		public static void Clear<T>(this T[] a) => Array.Clear(a, 0, a.Length);
 		public static void Fill<T>(this T[] a, T value) => Array.Fill(a, value);
 		public static void CopyTo<T>(this T[] a, int index, T[] dest, int destIndex, int length) => Array.Copy(a, index, dest, destIndex, length);
+
+		public static bool ArrayEqual<T>(this T[] a, T[] b)
+		{
+			if (a.Length != b.Length) return false;
+			var c = EqualityComparer<T>.Default;
+			for (int i = 0; i < a.Length; ++i) if (!c.Equals(a[i], b[i])) return false;
+			return true;
+		}
 		#endregion
 
 		#region Accumulation
@@ -80,6 +88,16 @@ namespace CoderLib8.Linq
 			for (int i = a.Length; --i >= 0;) if (predicate(a[i])) return a[i];
 			return default;
 		}
+		public static int FirstIndex<TSource>(this TSource[] a, Func<TSource, bool> predicate)
+		{
+			for (int i = 0; i < a.Length; ++i) if (predicate(a[i])) return i;
+			return a.Length;
+		}
+		public static int LastIndex<TSource>(this TSource[] a, Func<TSource, bool> predicate)
+		{
+			for (int i = a.Length; --i >= 0;) if (predicate(a[i])) return i;
+			return -1;
+		}
 
 		public static TResult[] Cast<TResult>(this Array a)
 		{
@@ -95,6 +113,12 @@ namespace CoderLib8.Linq
 		#endregion
 
 		#region Convert
+		public static (T, T) ToTuple2<T>(this T[] a) => (a[0], a[1]);
+		public static (T, T, T) ToTuple3<T>(this T[] a) => (a[0], a[1], a[2]);
+
+		public static (T1, T2) ToTuple2<T1, T2>(this Array a) => ((T1)Convert.ChangeType(a.GetValue(0), typeof(T1)), (T2)Convert.ChangeType(a.GetValue(1), typeof(T2)));
+		public static (T1, T2, T3) ToTuple3<T1, T2, T3>(this Array a) => ((T1)Convert.ChangeType(a.GetValue(0), typeof(T1)), (T2)Convert.ChangeType(a.GetValue(1), typeof(T2)), (T3)Convert.ChangeType(a.GetValue(2), typeof(T3)));
+
 		public static T[] Clone<T>(this T[] a, int newSize = -1)
 		{
 			if (newSize == -1) newSize = a.Length;
@@ -117,13 +141,14 @@ namespace CoderLib8.Linq
 
 		public static (TKey key, TSource[] chunk)[] Chunk<TSource, TKey>(this TSource[] a, Func<TSource, TKey> toKey)
 		{
+			var c = EqualityComparer<TKey>.Default;
 			var l = new List<(TKey, TSource[])>();
 			TKey key = default;
 			var si = 0;
 			for (var i = 0; i < a.Length; ++i)
 			{
 				var k = toKey(a[i]);
-				if (!Equals(k, key))
+				if (!c.Equals(k, key))
 				{
 					if (i != 0) l.Add((key, a[si..i]));
 					key = k;
@@ -131,6 +156,26 @@ namespace CoderLib8.Linq
 				}
 			}
 			if (a.Length != 0) l.Add((key, a[si..]));
+			return l.ToArray();
+		}
+
+		public static (TKey key, int size)[] ChunkSizes<TSource, TKey>(this TSource[] a, Func<TSource, TKey> toKey)
+		{
+			var c = EqualityComparer<TKey>.Default;
+			var l = new List<(TKey, int)>();
+			TKey key = default;
+			var si = 0;
+			for (var i = 0; i < a.Length; ++i)
+			{
+				var k = toKey(a[i]);
+				if (!c.Equals(k, key))
+				{
+					if (i != 0) l.Add((key, i - si));
+					key = k;
+					si = i;
+				}
+			}
+			if (a.Length != 0) l.Add((key, a.Length - si));
 			return l.ToArray();
 		}
 
