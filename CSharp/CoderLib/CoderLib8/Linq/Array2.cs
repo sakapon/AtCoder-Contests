@@ -24,9 +24,19 @@ namespace CoderLib8.Linq
 		#endregion
 
 		#region Array
-		public static T[] ToArray<T>(this T[] a) => (T[])a.Clone();
 		public static void Clear<T>(this T[] a) => Array.Clear(a, 0, a.Length);
 		public static void Fill<T>(this T[] a, T value) => Array.Fill(a, value);
+		public static void CopyTo<T>(this T[] a, int index, T[] dest, int destIndex, int length) => Array.Copy(a, index, dest, destIndex, length);
+
+		public static T[] Clone<T>(this T[] a, int newSize = -1)
+		{
+			if (newSize == -1) newSize = a.Length;
+			if (newSize <= a.Length) return a[..newSize];
+
+			var r = new T[newSize];
+			Array.Copy(a, r, a.Length);
+			return r;
+		}
 		#endregion
 
 		#region Accumulation
@@ -36,14 +46,44 @@ namespace CoderLib8.Linq
 			return iv;
 		}
 
-		public static bool All<TSource>(this TSource[] a, Func<TSource, bool> predicate) => a.Aggregate(true, (r, v) => r && predicate(v));
-		public static bool Any<TSource>(this TSource[] a, Func<TSource, bool> predicate) => a.Aggregate(false, (r, v) => r || predicate(v));
-		public static long Sum<TSource>(this TSource[] a, Func<TSource, long> selector) => a.Aggregate(0L, (r, v) => r + selector(v));
-		public static long Max<TSource>(this TSource[] a, Func<TSource, long> selector) => a.Aggregate(0L, (r, v) => Math.Max(r, selector(v)));
-		public static long Min<TSource>(this TSource[] a, Func<TSource, long> selector) => a.Aggregate(0L, (r, v) => Math.Min(r, selector(v)));
-		public static long Sum(this long[] a) => a.Aggregate(0L, (r, v) => r + v);
-		public static long Max(this long[] a) => a.Aggregate(long.MinValue, Math.Max);
-		public static long Min(this long[] a) => a.Aggregate(long.MaxValue, Math.Min);
+		public static bool All<TSource>(this TSource[] a, Func<TSource, bool> predicate)
+		{
+			foreach (var v in a) if (!predicate(v)) return false;
+			return true;
+		}
+		public static bool Any<TSource>(this TSource[] a, Func<TSource, bool> predicate)
+		{
+			foreach (var v in a) if (predicate(v)) return true;
+			return false;
+		}
+
+		public static Num Max<TSource>(this TSource[] a, Func<TSource, Num> selector) => a.Aggregate(0L, (r, v) => Math.Max(r, selector(v)));
+		public static Num Min<TSource>(this TSource[] a, Func<TSource, Num> selector) => a.Aggregate(0L, (r, v) => Math.Min(r, selector(v)));
+		public static Num Sum<TSource>(this TSource[] a, Func<TSource, Num> selector) => a.Aggregate(0L, (r, v) => r + selector(v));
+		#endregion
+
+		#region Operations
+		public static TSource[] ForEach<TSource>(this TSource[] a, Action<TSource> action)
+		{
+			Array.ForEach(a, action);
+			return a;
+		}
+
+		public static TResult[] Select<TSource, TResult>(this TSource[] a, Func<TSource, TResult> selector) => Array.ConvertAll(a, v => selector(v));
+		public static (TSource v, TResult r)[] SelectWith<TSource, TResult>(this TSource[] a, Func<TSource, TResult> selector) => Array.ConvertAll(a, v => (v, selector(v)));
+		public static TSource[] Where<TSource>(this TSource[] a, Func<TSource, bool> predicate) => Array.FindAll(a, v => predicate(v));
+
+		public static TResult[] Cast<TResult>(this Array a)
+		{
+			var r = new TResult[a.Length];
+			for (int i = 0; i < a.Length; ++i) r[i] = (TResult)Convert.ChangeType(a.GetValue(i), typeof(TResult));
+			return r;
+		}
+
+		public static TResult[] Cast<TSource, TResult>(this TSource[] a, TResult dummy)
+		{
+			return Array.ConvertAll(a, v => (TResult)Convert.ChangeType(v, typeof(TResult)));
+		}
 		#endregion
 
 		public static TSource[][] Chunk<TSource>(this TSource[] a, int size)
@@ -75,27 +115,6 @@ namespace CoderLib8.Linq
 			return l.ToArray();
 		}
 
-		public static TResult[] Select<TSource, TResult>(this TSource[] a, Func<TSource, TResult> selector) => Array.ConvertAll(a, v => selector(v));
-		public static (TSource v, TResult r)[] SelectWith<TSource, TResult>(this TSource[] a, Func<TSource, TResult> selector) => Array.ConvertAll(a, v => (v, selector(v)));
-		public static TSource[] Where<TSource>(this TSource[] a, Func<TSource, bool> predicate) => Array.FindAll(a, v => predicate(v));
-		public static TSource[] ForEach<TSource>(this TSource[] a, Action<TSource> action)
-		{
-			Array.ForEach(a, action);
-			return a;
-		}
-
-		public static TResult[] Cast<TResult>(this Array a)
-		{
-			var r = new TResult[a.Length];
-			for (int i = 0; i < a.Length; ++i) r[i] = (TResult)Convert.ChangeType(a.GetValue(i), typeof(TResult));
-			return r;
-		}
-
-		public static TResult[] Cast<TSource, TResult>(this TSource[] a, TResult dummy)
-		{
-			return Array.ConvertAll(a, v => (TResult)Convert.ChangeType(v, typeof(TResult)));
-		}
-
 		public static TSource[] Concat<TSource>(this TSource[][] a)
 		{
 			var r = new TSource[a.Sum(b => b.Length)];
@@ -104,6 +123,13 @@ namespace CoderLib8.Linq
 				Array.Copy(a, 0, r, s, a[i].Length);
 				s += a[i].Length;
 			}
+			return r;
+		}
+
+		public static (T1, T2)[] Zip<T1, T2>(this T1[] a, T2[] b)
+		{
+			var r = new (T1, T2)[a.Length <= b.Length ? a.Length : b.Length];
+			for (int i = 0; i < r.Length; ++i) r[i] = (a[i], b[i]);
 			return r;
 		}
 	}
