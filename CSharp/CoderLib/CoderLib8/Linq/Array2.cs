@@ -75,6 +75,58 @@ namespace CoderLib8.Linq
 		public static Num Sum<TSource>(this TSource[] a, Func<TSource, Num> selector) => a.Aggregate(0L, (r, v) => r + selector(v));
 		#endregion
 
+		#region First, Last
+		// 存在しない場合は n
+		public static int FirstIndex<T>(this T[] a, Func<T, bool> f)
+		{
+			for (int i = 0; i < a.Length; ++i) if (f(a[i])) return i;
+			return a.Length;
+		}
+		// 存在しない場合は -1
+		public static int LastIndex<T>(this T[] a, Func<T, bool> f)
+		{
+			for (int i = a.Length; --i >= 0;) if (f(a[i])) return i;
+			return -1;
+		}
+
+		public static T First<T>(this T[] a, Func<T, bool> f, T v0 = default)
+		{
+			var i = FirstIndex(a, f);
+			return i == a.Length ? v0 : a[i];
+		}
+		public static T Last<T>(this T[] a, Func<T, bool> f, T v0 = default)
+		{
+			var i = LastIndex(a, f);
+			return i == -1 ? v0 : a[i];
+		}
+
+		// 存在しない場合は n
+		public static int FirstIndexByBS<T>(this T[] a, Func<T, bool> f)
+		{
+			int m, l = 0, r = a.Length;
+			while (l < r) if (f(a[m = l + (r - l) / 2])) r = m; else l = m + 1;
+			return r;
+		}
+		// 存在しない場合は -1
+		public static int LastIndexByBS<T>(this T[] a, Func<T, bool> f)
+		{
+			int m, l = 0, r = a.Length;
+			while (l < r) if (!f(a[m = l + (r - l) / 2])) r = m; else l = m + 1;
+			return r - 1;
+		}
+
+		public static T FirstByBS<T>(this T[] a, Func<T, bool> f, T max = default)
+		{
+			var i = FirstIndexByBS(a, f);
+			return i == a.Length ? max : a[i];
+		}
+		public static T LastByBS<T>(this T[] a, Func<T, bool> f, T min = default)
+		{
+			var i = LastIndexByBS(a, f);
+			return i == -1 ? min : a[i];
+		}
+		#endregion
+
 		#region Operations
 		public static TSource[] ForEach<TSource>(this TSource[] a, Action<TSource> action)
 		{
@@ -91,28 +143,7 @@ namespace CoderLib8.Linq
 
 		public static TResult[] Select<TSource, TResult>(this TSource[] a, Func<TSource, TResult> selector) => Array.ConvertAll(a, v => selector(v));
 		public static (TSource v, TResult r)[] SelectWith<TSource, TResult>(this TSource[] a, Func<TSource, TResult> selector) => Array.ConvertAll(a, v => (v, selector(v)));
-
 		public static TSource[] Where<TSource>(this TSource[] a, Func<TSource, bool> predicate) => Array.FindAll(a, v => predicate(v));
-		public static TSource First<TSource>(this TSource[] a, Func<TSource, bool> predicate)
-		{
-			for (int i = 0; i < a.Length; ++i) if (predicate(a[i])) return a[i];
-			return default;
-		}
-		public static TSource Last<TSource>(this TSource[] a, Func<TSource, bool> predicate)
-		{
-			for (int i = a.Length; --i >= 0;) if (predicate(a[i])) return a[i];
-			return default;
-		}
-		public static int FirstIndex<TSource>(this TSource[] a, Func<TSource, bool> predicate)
-		{
-			for (int i = 0; i < a.Length; ++i) if (predicate(a[i])) return i;
-			return a.Length;
-		}
-		public static int LastIndex<TSource>(this TSource[] a, Func<TSource, bool> predicate)
-		{
-			for (int i = a.Length; --i >= 0;) if (predicate(a[i])) return i;
-			return -1;
-		}
 
 		public static TResult[] Cast<TResult>(this Array a)
 		{
@@ -233,34 +264,6 @@ namespace CoderLib8.Linq
 			var r = new (T1, T2)[a.Length <= b.Length ? a.Length : b.Length];
 			for (int i = 0; i < r.Length; ++i) r[i] = (a[i], b[i]);
 			return r;
-		}
-		#endregion
-
-		#region Binary Search
-		// 存在しない場合は n
-		public static int FirstIndexByBS<T>(this T[] a, Func<T, bool> f)
-		{
-			int m, l = 0, r = a.Length;
-			while (l < r) if (f(a[m = l + (r - l) / 2])) r = m; else l = m + 1;
-			return r;
-		}
-		public static T FirstByBS<T>(this T[] a, Func<T, bool> f, T max = default)
-		{
-			var i = FirstIndexByBS(a, f);
-			return i == a.Length ? max : a[i];
-		}
-
-		// 存在しない場合は -1
-		public static int LastIndexByBS<T>(this T[] a, Func<T, bool> f)
-		{
-			int m, l = 0, r = a.Length;
-			while (l < r) if (!f(a[m = l + (r - l) / 2])) r = m; else l = m + 1;
-			return r - 1;
-		}
-		public static T LastByBS<T>(this T[] a, Func<T, bool> f, T min = default)
-		{
-			var i = LastIndexByBS(a, f);
-			return i == -1 ? min : a[i];
 		}
 		#endregion
 	}
