@@ -127,6 +127,29 @@ namespace CoderLib8.Linq
 		}
 		#endregion
 
+		#region Sort
+		// stable
+		public static (TSource value, int index)[] SortWithIndex<TSource>(this TSource[] a)
+		{
+			var r = new (TSource, int)[a.Length];
+			for (int i = 0; i < a.Length; ++i) r[i] = (a[i], i);
+			Array.Sort(r);
+			return r;
+		}
+
+		public static void Sort<TSource, TKey>(this TSource[] a, Func<TSource, TKey> toKey)
+		{
+			var keys = Array.ConvertAll(a, v => toKey(v));
+			Array.Sort(keys, a);
+		}
+
+		public static void Sort<TSource, TKey1, TKey2>(this TSource[] a, Func<TSource, TKey1> toKey1, Func<TSource, TKey2> toKey2)
+		{
+			var keys = Array.ConvertAll(a, v => (toKey1(v), toKey2(v)));
+			Array.Sort(keys, a);
+		}
+		#endregion
+
 		#region Convert
 		public static (T, T) ToTuple2<T>(this T[] a) => (a[0], a[1]);
 		public static (T, T, T) ToTuple3<T>(this T[] a) => (a[0], a[1], a[2]);
@@ -214,7 +237,6 @@ namespace CoderLib8.Linq
 		#endregion
 
 		#region Binary Search
-
 		// 存在しない場合は n
 		public static int FirstIndexByBS<T>(this T[] a, Func<T, bool> f)
 		{
@@ -232,7 +254,6 @@ namespace CoderLib8.Linq
 			return l;
 		}
 		public static T LastByBS<T>(this T[] a, Func<T, bool> f) => a[LastIndexByBS(a, f)];
-
 		#endregion
 	}
 }
