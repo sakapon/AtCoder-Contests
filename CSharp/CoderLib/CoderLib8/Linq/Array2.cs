@@ -53,9 +53,9 @@ namespace CoderLib8.Linq
 		#endregion
 
 		#region Accumulation
-		public static TResult Aggregate<TSource, TResult>(this TSource[] a, TResult iv, Func<TResult, TSource, TResult> func)
+		public static TResult Aggregate<TSource, TResult>(this TSource[] a, TResult iv, Func<TResult, TSource, TResult> f)
 		{
-			foreach (var v in a) iv = func(iv, v);
+			foreach (var v in a) iv = f(iv, v);
 			return iv;
 		}
 
@@ -211,6 +211,28 @@ namespace CoderLib8.Linq
 			for (int i = 0; i < r.Length; ++i) r[i] = (a[i], b[i]);
 			return r;
 		}
+		#endregion
+
+		#region Binary Search
+
+		// 存在しない場合は n
+		public static int FirstIndexByBS<T>(this T[] a, Func<T, bool> f)
+		{
+			int m, l = 0, r = a.Length;
+			while (l < r) if (f(a[m = l + (r - l - 1) / 2])) r = m; else l = m + 1;
+			return r;
+		}
+		public static T FirstByBS<T>(this T[] a, Func<T, bool> f) => a[FirstIndexByBS(a, f)];
+
+		// 存在しない場合は -1
+		public static int LastIndexByBS<T>(this T[] a, Func<T, bool> f)
+		{
+			int m, l = -1, r = a.Length - 1;
+			while (l < r) if (f(a[m = r - (r - l - 1) / 2])) l = m; else r = m - 1;
+			return l;
+		}
+		public static T LastByBS<T>(this T[] a, Func<T, bool> f) => a[LastIndexByBS(a, f)];
+
 		#endregion
 	}
 }
