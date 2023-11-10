@@ -241,19 +241,27 @@ namespace CoderLib8.Linq
 		public static int FirstIndexByBS<T>(this T[] a, Func<T, bool> f)
 		{
 			int m, l = 0, r = a.Length;
-			while (l < r) if (f(a[m = l + (r - l - 1) / 2])) r = m; else l = m + 1;
+			while (l < r) if (f(a[m = l + (r - l) / 2])) r = m; else l = m + 1;
 			return r;
 		}
-		public static T FirstByBS<T>(this T[] a, Func<T, bool> f) => a[FirstIndexByBS(a, f)];
+		public static T FirstByBS<T>(this T[] a, Func<T, bool> f, T max = default)
+		{
+			var i = FirstIndexByBS(a, f);
+			return i == a.Length ? max : a[i];
+		}
 
 		// 存在しない場合は -1
 		public static int LastIndexByBS<T>(this T[] a, Func<T, bool> f)
 		{
-			int m, l = -1, r = a.Length - 1;
-			while (l < r) if (f(a[m = r - (r - l - 1) / 2])) l = m; else r = m - 1;
-			return l;
+			int m, l = 0, r = a.Length;
+			while (l < r) if (!f(a[m = l + (r - l) / 2])) r = m; else l = m + 1;
+			return r - 1;
 		}
-		public static T LastByBS<T>(this T[] a, Func<T, bool> f) => a[LastIndexByBS(a, f)];
+		public static T LastByBS<T>(this T[] a, Func<T, bool> f, T min = default)
+		{
+			var i = LastIndexByBS(a, f);
+			return i == -1 ? min : a[i];
+		}
 		#endregion
 	}
 }
