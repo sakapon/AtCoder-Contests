@@ -79,33 +79,4 @@ namespace CoderLib8.Collections
 		static T[][][] NewArray3<T>(int n1, int n2, int n3, T v = default) => NewArrayByFunc(n1, () => NewArray2(n2, n3, v));
 		static T[][][][] NewArray4<T>(int n1, int n2, int n3, int n4, T v = default) => NewArrayByFunc(n1, () => NewArray3(n2, n3, n4, v));
 	}
-
-	// 2次元配列に1次元インデックスでアクセスします。
-	class SeqArray2<T>
-	{
-		int n1, n2;
-		public T[][] a;
-		public SeqArray2(int _n1, int _n2)
-		{
-			n1 = _n1;
-			n2 = _n2;
-			a = Array.ConvertAll(new bool[n1], _ => new T[n2]);
-		}
-
-		public T this[int i]
-		{
-			get => a[i / n2][i % n2];
-			set => a[i / n2][i % n2] = value;
-		}
-		public T this[int i, int j]
-		{
-			get => a[i][j];
-			set => a[i][j] = value;
-		}
-		public T this[(int i, int j) p]
-		{
-			get => a[p.i][p.j];
-			set => a[p.i][p.j] = value;
-		}
-	}
 }
