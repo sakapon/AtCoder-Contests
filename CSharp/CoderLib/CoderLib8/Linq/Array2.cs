@@ -142,7 +142,7 @@ namespace CoderLib8.Linq
 		}
 
 		public static TResult[] Select<TSource, TResult>(this TSource[] a, Func<TSource, TResult> selector) => Array.ConvertAll(a, v => selector(v));
-		public static (TSource v, TResult r)[] SelectWith<TSource, TResult>(this TSource[] a, Func<TSource, TResult> selector) => Array.ConvertAll(a, v => (v, selector(v)));
+		public static (TSource value, TResult selected)[] SelectWith<TSource, TResult>(this TSource[] a, Func<TSource, TResult> selector) => Array.ConvertAll(a, v => (v, selector(v)));
 		public static TSource[] Where<TSource>(this TSource[] a, Func<TSource, bool> predicate) => Array.FindAll(a, v => predicate(v));
 
 		public static TResult[] Cast<TResult>(this Array a)
@@ -266,19 +266,17 @@ namespace CoderLib8.Linq
 		{
 			var c = EqualityComparer<TKey>.Default;
 			var l = new List<(TKey, TSource[])>();
-			TKey key = default;
+			if (a.Length == 0) return l.ToArray();
+			TKey key = toKey(a[0]), k;
 			var si = 0;
-			for (var i = 0; i < a.Length; ++i)
+			for (var i = 1; i < a.Length; ++i)
 			{
-				var k = toKey(a[i]);
-				if (!c.Equals(k, key))
-				{
-					if (i != 0) l.Add((key, a[si..i]));
-					key = k;
-					si = i;
-				}
+				if (c.Equals(k = toKey(a[i]), key)) continue;
+				l.Add((key, a[si..i]));
+				key = k;
+				si = i;
 			}
-			if (a.Length != 0) l.Add((key, a[si..]));
+			l.Add((key, a[si..]));
 			return l.ToArray();
 		}
 
@@ -286,19 +284,17 @@ namespace CoderLib8.Linq
 		{
 			var c = EqualityComparer<TKey>.Default;
 			var l = new List<(TKey, int)>();
-			TKey key = default;
+			if (a.Length == 0) return l.ToArray();
+			TKey key = toKey(a[0]), k;
 			var si = 0;
-			for (var i = 0; i < a.Length; ++i)
+			for (var i = 1; i < a.Length; ++i)
 			{
-				var k = toKey(a[i]);
-				if (!c.Equals(k, key))
-				{
-					if (i != 0) l.Add((key, i - si));
-					key = k;
-					si = i;
-				}
+				if (c.Equals(k = toKey(a[i]), key)) continue;
+				l.Add((key, i - si));
+				key = k;
+				si = i;
 			}
-			if (a.Length != 0) l.Add((key, a.Length - si));
+			l.Add((key, a.Length - si));
 			return l.ToArray();
 		}
 
@@ -307,7 +303,7 @@ namespace CoderLib8.Linq
 			var r = new TSource[a.Sum(b => b.Length)];
 			for (int i = 0, s = 0; i < a.Length; ++i)
 			{
-				Array.Copy(a, 0, r, s, a[i].Length);
+				Array.Copy(a[i], 0, r, s, a[i].Length);
 				s += a[i].Length;
 			}
 			return r;
