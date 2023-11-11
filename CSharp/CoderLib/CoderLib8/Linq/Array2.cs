@@ -173,11 +173,65 @@ namespace CoderLib8.Linq
 			var keys = Array.ConvertAll(a, v => toKey(v));
 			Array.Sort(keys, a);
 		}
-
 		public static void Sort<TSource, TKey1, TKey2>(this TSource[] a, Func<TSource, TKey1> toKey1, Func<TSource, TKey2> toKey2)
 		{
 			var keys = Array.ConvertAll(a, v => (toKey1(v), toKey2(v)));
 			Array.Sort(keys, a);
+		}
+
+		public static void MergeSort<T>(this T[] a, IComparer<T> c = null)
+		{
+			var n = a.Length;
+			var t = new T[n];
+			c = c ?? Comparer<T>.Default;
+
+			for (int k = 1; k < n; k <<= 1)
+			{
+				var ti = 0;
+				for (int L = 0; L < n; L += k << 1)
+				{
+					int R1 = L | k, R2 = R1 + k;
+					if (R2 > n) R2 = n;
+					int i1 = L, i2 = R1;
+					while (ti < R2) t[ti++] = (i2 >= R2 || i1 < R1 && i2 < R2 && c.Compare(a[i1], a[i2]) <= 0) ? a[i1++] : a[i2++];
+				}
+				Array.Copy(t, a, n);
+			}
+		}
+
+		public static int[] MergeSortForIndex<T>(this T[] a, IComparer<T> c = null)
+		{
+			var n = a.Length;
+			var b = Range(0, n);
+			var t = new int[n];
+			c = c ?? Comparer<T>.Default;
+
+			for (int k = 1; k < n; k <<= 1)
+			{
+				var ti = 0;
+				for (int L = 0; L < n; L += k << 1)
+				{
+					int R1 = L | k, R2 = R1 + k;
+					if (R2 > n) R2 = n;
+					int i1 = L, i2 = R1;
+					while (ti < R2) t[ti++] = (i2 >= R2 || i1 < R1 && i2 < R2 && c.Compare(a[b[i1]], a[b[i2]]) <= 0) ? b[i1++] : b[i2++];
+				}
+				Array.Copy(t, b, n);
+			}
+			return b;
+		}
+
+		public static (T value, int index)[] MergeSortWithIndex<T>(this T[] a, IComparer<T> c = null) => Array.ConvertAll(a.MergeSortForIndex(c), i => (a[i], i));
+
+		public static TSource[] MergeSort<TSource, TKey>(this TSource[] a, Func<TSource, TKey> toKey)
+		{
+			var keys = Array.ConvertAll(a, v => toKey(v));
+			return Array.ConvertAll(keys.MergeSortForIndex(), i => a[i]);
+		}
+		public static TSource[] MergeSort<TSource, TKey1, TKey2>(this TSource[] a, Func<TSource, TKey1> toKey1, Func<TSource, TKey2> toKey2)
+		{
+			var keys = Array.ConvertAll(a, v => (toKey1(v), toKey2(v)));
+			return Array.ConvertAll(keys.MergeSortForIndex(), i => a[i]);
 		}
 		#endregion
 
