@@ -4,7 +4,7 @@ using Num = System.Int64;
 
 namespace CoderLib8.Linq
 {
-	public static class Array2
+	public static class ArrayEx
 	{
 		#region Initialization
 		public static T[] Create1ByFunc<T>(int n1, Func<T> newItem)
