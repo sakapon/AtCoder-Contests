@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CoderLib8.Linq;
+using Num = System.Int64;
 
 class E
 {
@@ -10,7 +11,7 @@ class E
 	static object Solve()
 	{
 		var (n, m, k) = ReadL().ToTuple3<int, int, long>();
-		var es = Array.ConvertAll(new bool[m], _ => ReadL().ToTuple3<int, int, long>());
+		var es = Array2.Create1ByFunc(m, () => ReadL().ToTuple3<int, int, long>());
 
 		var r = 1L << 60;
 		Combination(m, n - 1, p =>

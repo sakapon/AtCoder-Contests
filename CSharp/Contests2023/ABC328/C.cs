@@ -15,8 +15,7 @@ class C
 		var qs = Array.ConvertAll(new bool[qc], _ => Read2());
 
 		var a = Array2.Range(0, n - 1)
-			.Select(i => s[i] == s[i + 1] ? 1 : 0)
-			.Cast<long>();
+			.Select(i => s[i] == s[i + 1] ? 1 : 0L);
 		var rsq = new StaticRSQ1(a);
 
 		var res = qs.Select(q => rsq.GetSum(q.l - 1, q.r - 1));
