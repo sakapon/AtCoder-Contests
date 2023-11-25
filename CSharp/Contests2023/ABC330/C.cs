@@ -1,21 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 class C
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var d = long.Parse(Console.ReadLine());
 
-		return string.Join(" ", a);
+		long f(long x, long y) => x * x + y * y - d;
+
+		var r = 1L << 60;
+
+		for (int x = 1; x < 1500000; x++)
+		{
+			var y1 = First(0, 1500000, y => f(x, y) >= 0);
+			r = Math.Min(r, f(x, y1));
+			if (y1 > 0) r = Math.Min(r, -f(x, y1 - 1));
+		}
+		return r;
+	}
+
+	static int First(int l, int r, Func<int, bool> f)
+	{
+		int m;
+		while (l < r) if (f(m = l + (r - l - 1) / 2)) r = m; else l = m + 1;
+		return r;
 	}
 }
