@@ -14,10 +14,8 @@ class B
 
 		for (int i = 0; i < n; i++)
 		{
-			if (a[i] < l) a[i] = l;
-			if (a[i] > r) a[i] = r;
+			a[i] = Math.Clamp(a[i], l, r);
 		}
-
 		return string.Join(" ", a);
 	}
 }
