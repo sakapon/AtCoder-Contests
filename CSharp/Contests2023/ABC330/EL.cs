@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AlgorithmLib10.Collections.MexMultiSet101;
 
 class EL
 {
@@ -11,64 +12,21 @@ class EL
 	{
 		var (n, qc) = Read2();
 		var a = Read();
-		var qs = Array.ConvertAll(new bool[qc], _ => Read2());
+		var qs = Array.ConvertAll(new bool[qc], _ => Read());
 
-		var set = new MexMultiset();
+		var set = new MexMultiSet(200000);
 		foreach (var x in a)
 		{
 			set.Add(x);
 		}
+		return string.Join("\n", qs.Select(q => Query(q[0] - 1, q[1])));
 
-		var r = new List<int>();
-
-		foreach (var q in qs)
+		int Query(int i, int x)
 		{
-			var i = q.Item1 - 1;
-			var x = q.Item2;
-
 			set.Remove(a[i]);
 			a[i] = x;
 			set.Add(a[i]);
-			r.Add(set.Mex);
+			return set.Mex;
 		}
-		return string.Join("\n", r);
-	}
-}
-
-[System.Diagnostics.DebuggerDisplay(@"Mex = {Mex}")]
-public class MexMultiset
-{
-	readonly int max;
-	readonly int[] counts;
-	readonly SortedSet<int> set;
-
-	public MexMultiset(int max = 1 << 18)
-	{
-		this.max = max;
-		counts = new int[max];
-		set = new SortedSet<int>(Enumerable.Range(0, max));
-	}
-
-	public int Mex => set.Count == 0 ? max : set.Min;
-
-	public bool Add(int value)
-	{
-		if (value < 0 || max <= value) return false;
-		if (counts[value]++ == 0) set.Remove(value);
-		return true;
-	}
-
-	public bool Remove(int value)
-	{
-		if (value < 0 || max <= value) return false;
-		if (counts[value] == 0) return false;
-		if (--counts[value] == 0) set.Add(value);
-		return true;
-	}
-
-	public int GetCount(int value)
-	{
-		if (value < 0 || max <= value) return -1;
-		return counts[value];
 	}
 }
