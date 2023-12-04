@@ -11,7 +11,7 @@ class C
 
 		var r = 1L << 60;
 
-		for (int x = 1; x < 1500000; x++)
+		for (int x = 0; x < 1500000; x++)
 		{
 			var y1 = First(0, 1500000, y => f(x, y) >= 0);
 			r = Math.Min(r, f(x, y1));
