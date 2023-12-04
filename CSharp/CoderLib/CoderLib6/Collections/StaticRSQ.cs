@@ -33,6 +33,7 @@ namespace CoderLib6.Collections
 	//public long GetSum(Range r) => GetSum(r.Start.GetOffset(s.Length - 1), r.End.GetOffset(s.Length - 1));
 
 	// Test: https://atcoder.jp/contests/typical90/tasks/typical90_cc
+	// Test: https://atcoder.jp/contests/abc331/tasks/abc331_d
 	public class StaticRSQ2
 	{
 		long[,] s;
