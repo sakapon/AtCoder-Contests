@@ -13,7 +13,7 @@ class D
 		var (n, qc) = Read2();
 		var s = Array.ConvertAll(new bool[n], _ => Console.ReadLine());
 
-		var n2 = n * 2 + 5;
+		var n2 = n * 2;
 		var p = new int[n2, n2];
 		for (int i = 0; i < n2; i++)
 			for (int j = 0; j < n2; j++)
@@ -28,50 +28,23 @@ class D
 			c++;
 			d++;
 
-			var ag = a / n;
-			var bg = b / n;
-			var cg = c / n;
-			var dg = d / n;
+			var ac = (c - a) / n;
+			var bd = (d - b) / n;
 
 			a %= n;
 			b %= n;
 			c %= n;
 			d %= n;
 
-			if (ag == cg)
-			{
-				if (bg == dg)
-				{
-					return rsq.GetSum(a, b, c, d);
-				}
-				else
-				{
-					// 横長
-					var r = rsq.GetSum(a, b, c, d + n);
-					r += rsq.GetSum(a, 0, c, n) * (dg - bg - 1);
-					return r;
-				}
-			}
-			else
-			{
-				if (bg == dg)
-				{
-					// 縦長
-					var r = rsq.GetSum(a, b, c + n, d);
-					r += rsq.GetSum(0, b, n, d) * (cg - ag - 1);
-					return r;
-				}
-				else
-				{
-					var r = rsq.GetSum(a, b, c + n, d + n);
-					r += rsq.GetSum(0, 0, n, n) * (cg - ag - 1) * (dg - bg - 1);
-					r += rsq.GetSum(a, 0, n, n) * (dg - bg - 1);
-					r += rsq.GetSum(0, 0, c, n) * (dg - bg - 1);
-					r += rsq.GetSum(0, b, n, n) * (cg - ag - 1);
-					r += rsq.GetSum(0, 0, n, d) * (cg - ag - 1);
-					return r;
-				}
-			}
+			if (a > c) c += n;
+			if (b > d) d += n;
+
+			var r = 0L;
+			r += rsq.GetSum(a, b, c, d);
+			r += rsq.GetSum(0, 0, n, n) * ac * bd;
+			r += rsq.GetSum(a, 0, c, n) * bd;
+			r += rsq.GetSum(0, b, n, d) * ac;
+			return r;
 		}
 	}
 }
