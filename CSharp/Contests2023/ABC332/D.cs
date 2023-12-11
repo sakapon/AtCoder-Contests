@@ -9,34 +9,74 @@
 		var a = Array.ConvertAll(new bool[h], _ => Read());
 		var b = Array.ConvertAll(new bool[h], _ => Read());
 
-		var r0 = SolveYoko();
-		if (r0 == -1) return -1;
+		var sv = ToString(a);
+		var ev = ToString(b);
 
-		a = Transpose(a);
-		b = Transpose(b);
-
-		var r1 = SolveYoko();
-		if (r1 == -1) return -1;
-
-		return r0 + r1;
-
-		int SolveYoko()
+		return BFS(s =>
 		{
-			var aset = a.Select(c => string.Join(" ", c.OrderBy(x => x))).ToList();
-			var bset = b.Select(c => string.Join(" ", c.OrderBy(x => x))).ToArray();
-
-			var r = 0;
-			foreach (var s in bset)
+			var m = Parse(s);
+			var nexts = new List<string>();
+			for (int i = 0; i < m.Length - 1; i++)
 			{
-				var i = aset.IndexOf(s);
-				if (i == -1) return -1;
-				aset.RemoveAt(i);
-				r += i;
+				SwapYoko(m, i);
+				nexts.Add(ToString(m));
+				SwapYoko(m, i);
 			}
-			return r;
+			for (int j = 0; j < m[0].Length - 1; j++)
+			{
+				SwapTate(m, j);
+				nexts.Add(ToString(m));
+				SwapTate(m, j);
+			}
+			return nexts.ToArray();
+		}, sv, ev);
+	}
+
+	static string ToString(int[][] a)
+	{
+		return string.Join("\n", a.Select(c => string.Join(" ", c)));
+	}
+	static int[][] Parse(string s)
+	{
+		return s.Split('\n').Select(t => Array.ConvertAll(t.Split(), int.Parse)).ToArray();
+	}
+
+	static void SwapYoko(int[][] a, int i)
+	{
+		(a[i], a[i + 1]) = (a[i + 1], a[i]);
+	}
+	static void SwapTate(int[][] a, int j)
+	{
+		for (int i = 0; i < a.Length; i++)
+		{
+			(a[i][j], a[i][j + 1]) = (a[i][j + 1], a[i][j]);
 		}
 	}
 
 	public static int[] GetColumn(int[][] m, int c) => Array.ConvertAll(m, r => r[c]);
 	public static int[][] Transpose(int[][] m) => m[0].Select((x, c) => GetColumn(m, c)).ToArray();
+
+	public static int BFS(Func<string, string[]> nexts, string sv, string ev)
+	{
+		var costs = new Dictionary<string, int>();
+		var q = new Queue<string>();
+		costs[sv] = 0;
+		if (sv == ev) return costs[sv];
+		q.Enqueue(sv);
+
+		while (q.Count > 0)
+		{
+			var v = q.Dequeue();
+			var nc = costs[v] + 1;
+
+			foreach (var nv in nexts(v))
+			{
+				if (costs.ContainsKey(nv)) continue;
+				costs[nv] = nc;
+				if (nv == ev) return costs[nv];
+				q.Enqueue(nv);
+			}
+		}
+		return -1;
+	}
 }
