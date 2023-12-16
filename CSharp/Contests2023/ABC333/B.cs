@@ -1,17 +1,19 @@
 ﻿class B
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
-	static object Solve()
+	static void Main() => Console.WriteLine(Solve() ? "Yes" : "No");
+	static bool Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
 		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var t = Console.ReadLine();
 
-		return string.Join(" ", a);
+		var ds = Math.Abs(s[0] - s[1]);
+		var dt = Math.Abs(t[0] - t[1]);
+
+		if (ds == 4) ds = 1;
+		if (ds == 3) ds = 2;
+		if (dt == 4) dt = 1;
+		if (dt == 3) dt = 2;
+
+		return ds == dt;
 	}
 }
