@@ -9,11 +9,7 @@
 		var ds = Math.Abs(s[0] - s[1]);
 		var dt = Math.Abs(t[0] - t[1]);
 
-		if (ds == 4) ds = 1;
-		if (ds == 3) ds = 2;
-		if (dt == 4) dt = 1;
-		if (dt == 3) dt = 2;
-
-		return ds == dt;
+		var a14 = new[] { 1, 4 };
+		return a14.Contains(ds) == a14.Contains(dt);
 	}
 }

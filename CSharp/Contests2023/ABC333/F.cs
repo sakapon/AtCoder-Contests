@@ -5,6 +5,8 @@
 	{
 		var n = int.Parse(Console.ReadLine());
 
+		var half = new MInt(1) / 2;
+
 		var dp = new SeqArray2<MInt>(n + 1, n + 1);
 		dp[1, 1] = 1;
 
@@ -21,7 +23,7 @@
 
 			for (int j = 2; j <= i; j++)
 			{
-				dp[i, j] += dp[i, j - 1] / 2 + dp[i - 1, j - 1] / 2;
+				dp[i, j] = (dp[i, j - 1] + dp[i - 1, j - 1]) * half;
 			}
 		}
 		return string.Join(" ", dp[n][1..]);
