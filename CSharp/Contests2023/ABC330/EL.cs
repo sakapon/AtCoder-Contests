@@ -14,10 +14,10 @@ class EL
 		var a = Read();
 		var qs = Array.ConvertAll(new bool[qc], _ => Read());
 
-		var set = new MexMultiSet(200000);
-		foreach (var x in a)
+		var set = new MexMultiSet(n);
+		foreach (var v in a)
 		{
-			set.Add(x);
+			set.Add(v);
 		}
 		return string.Join("\n", qs.Select(q => Query(q[0] - 1, q[1])));
 
