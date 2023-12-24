@@ -38,6 +38,9 @@ namespace CoderLib6.Values
 		static long MMul(long x, long y) => MInt(x * y);
 		static long MDiv(long x, long y) => MInt(x * MInv(y));
 
+		static long LowerMultiple(long x) => x - MInt(x);
+		static long UpperMultiple(long x) { var r = MInt(x); return r == 0 ? x : x + M - r; }
+
 		static long[] MPows(long b, int n)
 		{
 			var p = new long[n + 1];
