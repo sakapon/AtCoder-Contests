@@ -2,7 +2,6 @@
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
@@ -10,44 +9,43 @@
 		var s = Array.ConvertAll(new bool[h], _ => Console.ReadLine());
 
 		var n = h * w;
-		var sseq = new SeqArray2<bool>(h, w, s.SelectMany(r => r.Select(c => c == '#')).ToArray());
-		int ToVertexId(int i, int j) => w * i + j;
+		var b = s.SelectMany(r => r.Select(c => c == '#')).ToArray();
 
-		var uf = new UF(h * w);
+		var uf = new UF(n);
 		for (int i = 0; i < h; ++i)
 			for (int j = 1; j < w; ++j)
 			{
 				var v = w * i + j;
-				if (sseq.a[v] && sseq.a[v - 1]) uf.Unite(v, v - 1);
+				if (b[v] && b[v - 1]) uf.Unite(v, v - 1);
 			}
 		for (int j = 0; j < w; ++j)
 			for (int i = 1; i < h; ++i)
 			{
 				var v = w * i + j;
-				if (sseq.a[v] && sseq.a[v - w]) uf.Unite(v, v - w);
+				if (b[v] && b[v - w]) uf.Unite(v, v - w);
 			}
 
 		var red = 0;
-		var delta = 0L;
+		var delta = 0;
 		var l = new List<int>();
 
 		for (int i = 0; i < h; ++i)
 			for (int j = 0; j < w; ++j)
 			{
-				if (sseq[i, j]) continue;
+				var v = w * i + j;
+				if (b[v]) continue;
 
 				red++;
 
-				l.Clear();
-				if (i > 0 && sseq[i - 1, j]) l.Add(uf.GetRoot(ToVertexId(i - 1, j)));
-				if (j > 0 && sseq[i, j - 1]) l.Add(uf.GetRoot(ToVertexId(i, j - 1)));
-				if (i + 1 < h && sseq[i + 1, j]) l.Add(uf.GetRoot(ToVertexId(i + 1, j)));
-				if (j + 1 < w && sseq[i, j + 1]) l.Add(uf.GetRoot(ToVertexId(i, j + 1)));
+				if (i > 0 && b[v - w]) l.Add(uf.GetRoot(v - w));
+				if (j > 0 && b[v - 1]) l.Add(uf.GetRoot(v - 1));
+				if (i + 1 < h && b[v + w]) l.Add(uf.GetRoot(v + w));
+				if (j + 1 < w && b[v + 1]) l.Add(uf.GetRoot(v + 1));
 				delta += 1 - l.Distinct().Count();
+				l.Clear();
 			}
 
-		var red_inv = MInv(red);
-		return ((long)(uf.GroupsCount - red) * red + delta) % M * red_inv % M;
+		return (uf.GroupsCount - red + MInt(delta * MInv(red))) % M;
 	}
 
 	const long M = 998244353;
@@ -59,25 +57,7 @@
 		return r;
 	}
 	static long MInv(long x) => MPow(x, M - 2);
-}
-
-public class SeqArray2<T>
-{
-	public readonly int n1, n2;
-	public readonly T[] a;
-	public SeqArray2(int _n1, int _n2, T[] _a = null) => (n1, n2, a) = (_n1, _n2, _a ?? new T[_n1 * _n2]);
-	public SeqArray2(int _n1, int _n2, T iv) : this(_n1, _n2, default(T[])) => Array.Fill(a, iv);
-
-	public T this[int i, int j]
-	{
-		get => a[n2 * i + j];
-		set => a[n2 * i + j] = value;
-	}
-	public T[] this[int i] => a[(n2 * i)..(n2 * (i + 1))];
-	public ArraySegment<T> GetSegment(int i) => new ArraySegment<T>(a, n2 * i, n2);
-
-	public void Fill(T v) => Array.Fill(a, v);
-	public void Fill(int i, T v) => Array.Fill(a, v, n2 * i, n2);
+	static long MInt(long x) => (x %= M) < 0 ? x + M : x;
 }
 
 public class UF

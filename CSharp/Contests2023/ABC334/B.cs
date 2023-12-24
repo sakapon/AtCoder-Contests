@@ -9,13 +9,14 @@
 
 		l -= a;
 		r -= a;
-
-		if (l % M != 0) l += M - MInt(l);
-		r -= MInt(r);
+		l = UpperMultiple(l);
+		r = LowerMultiple(r);
 		l /= M;
 		r /= M;
 		return r - l + 1;
 
 		long MInt(long x) => (x %= M) < 0 ? x + M : x;
+		long LowerMultiple(long x) => x - MInt(x);
+		long UpperMultiple(long x) { var r = MInt(x); return r == 0 ? x : x + M - r; }
 	}
 }
