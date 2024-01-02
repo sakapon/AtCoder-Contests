@@ -32,12 +32,26 @@ namespace CoderLib8.Collections
 			for (var i = 0; i < count; ++i) a[i] = start + i;
 			return a;
 		}
-
 		static int[] Range2(int l_in, int r_ex)
 		{
 			var a = new int[r_ex - l_in];
 			for (var i = l_in; i < r_ex; ++i) a[i - l_in] = i;
 			return a;
+		}
+
+		static bool ArrayEqual<T>(T[] a1, T[] a2) where T : IEquatable<T>
+		{
+			if (a1.Length != a2.Length) return false;
+			for (int i = 0; i < a1.Length; ++i)
+				if (!a1[i].Equals(a2[i])) return false;
+			return true;
+		}
+		static bool ArrayEqual0<T>(T[] a1, T[] a2)
+		{
+			if (a1.Length != a2.Length) return false;
+			for (int i = 0; i < a1.Length; ++i)
+				if (!Equals(a1[i], a2[i])) return false;
+			return true;
 		}
 
 		static (T, T) ToTuple2<T>(T[] a) => (a[0], a[1]);
@@ -64,34 +78,5 @@ namespace CoderLib8.Collections
 		static T[][] NewArray2<T>(int n1, int n2, T v = default) => NewArrayByFunc(n1, () => NewArray1(n2, v));
 		static T[][][] NewArray3<T>(int n1, int n2, int n3, T v = default) => NewArrayByFunc(n1, () => NewArray2(n2, n3, v));
 		static T[][][][] NewArray4<T>(int n1, int n2, int n3, int n4, T v = default) => NewArrayByFunc(n1, () => NewArray3(n2, n3, n4, v));
-	}
-
-	// 2次元配列に1次元インデックスでアクセスします。
-	class SeqArray2<T>
-	{
-		int n1, n2;
-		public T[][] a;
-		public SeqArray2(int _n1, int _n2)
-		{
-			n1 = _n1;
-			n2 = _n2;
-			a = Array.ConvertAll(new bool[n1], _ => new T[n2]);
-		}
-
-		public T this[int i]
-		{
-			get => a[i / n2][i % n2];
-			set => a[i / n2][i % n2] = value;
-		}
-		public T this[int i, int j]
-		{
-			get => a[i][j];
-			set => a[i][j] = value;
-		}
-		public T this[(int i, int j) p]
-		{
-			get => a[p.i][p.j];
-			set => a[p.i][p.j] = value;
-		}
 	}
 }

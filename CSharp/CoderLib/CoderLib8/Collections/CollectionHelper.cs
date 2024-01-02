@@ -7,6 +7,14 @@ namespace CoderLib8.Collections
 	{
 		public static TV GetValue<TK, TV>(this Dictionary<TK, TV> d, TK k, TV v0 = default) => d.ContainsKey(k) ? d[k] : v0;
 
+		public static List<T> Merge<T>(List<T> l1, List<T> l2)
+		{
+			if (l1.Count < l2.Count) (l1, l2) = (l2, l1);
+			foreach (var v in l2)
+				l1.Add(v);
+			return l1;
+		}
+
 		// 項目数が大きいほうにマージします。
 		public static Dictionary<TK, int> Merge<TK>(Dictionary<TK, int> d1, Dictionary<TK, int> d2)
 		{

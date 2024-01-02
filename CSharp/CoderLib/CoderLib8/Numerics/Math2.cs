@@ -77,10 +77,47 @@ namespace CoderLib8.Numerics
 		}
 		public static long Ncr(int n, int r) => n < r ? 0 : n - r < r ? Ncr(n, n - r) : Npr(n, r) / Factorial(r);
 
-		static int Chmax(ref int x, int v) => x < v ? x = v : x;
-		static int Chmin(ref int x, int v) => x > v ? x = v : x;
-		static long Chmax(ref long x, long v) => x < v ? x = v : x;
-		static long Chmin(ref long x, long v) => x > v ? x = v : x;
+		public static int Chmax(ref int x, int v) => x < v ? x = v : x;
+		public static int Chmin(ref int x, int v) => x > v ? x = v : x;
+		public static long Chmax(ref long x, long v) => x < v ? x = v : x;
+		public static long Chmin(ref long x, long v) => x > v ? x = v : x;
+
+		public static int Max(int x, int y) => x < y ? y : x;
+		public static int Min(int x, int y) => x > y ? y : x;
+		public static long Max(long x, long y) => x < y ? y : x;
+		public static long Min(long x, long y) => x > y ? y : x;
+		public static T Max<T>(T x, T y) where T : IComparable<T> => x.CompareTo(y) < 0 ? y : x;
+		public static T Min<T>(T x, T y) where T : IComparable<T> => x.CompareTo(y) > 0 ? y : x;
+
+		public static int Max(int x, int y, int z) => x < (y = y < z ? z : y) ? y : x;
+		public static int Min(int x, int y, int z) => x > (y = y > z ? z : y) ? y : x;
+		public static long Max(long x, long y, long z) => x < (y = y < z ? z : y) ? y : x;
+		public static long Min(long x, long y, long z) => x > (y = y > z ? z : y) ? y : x;
+
+		public static int Max(params int[] a)
+		{
+			var r = int.MinValue;
+			foreach (var v in a) if (r < v) r = v;
+			return r;
+		}
+		public static int Min(params int[] a)
+		{
+			var r = int.MaxValue;
+			foreach (var v in a) if (r > v) r = v;
+			return r;
+		}
+		public static long Max(params long[] a)
+		{
+			var r = long.MinValue;
+			foreach (var v in a) if (r < v) r = v;
+			return r;
+		}
+		public static long Min(params long[] a)
+		{
+			var r = long.MaxValue;
+			foreach (var v in a) if (r > v) r = v;
+			return r;
+		}
 
 		// From: https://github.com/atcoder/ac-library/blob/master/atcoder/internal_math.hpp
 		// Test: https://atcoder.jp/contests/practice2/tasks/practice2_c
