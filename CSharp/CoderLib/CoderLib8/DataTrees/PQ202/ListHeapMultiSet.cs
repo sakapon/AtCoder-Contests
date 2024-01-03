@@ -11,8 +11,8 @@ namespace AlgorithmLib10.DataTrees.PQ202
 		readonly IComparer<T> c;
 		readonly int s;
 		readonly List<T> l = new List<T>();
-		int n;
 		readonly Dictionary<T, int> counts = new Dictionary<T, int>();
+		int n;
 
 		public ListHeapMultiSet(IEnumerable<T> items = null, IComparer<T> comparer = null, bool descending = false)
 		{
@@ -29,8 +29,8 @@ namespace AlgorithmLib10.DataTrees.PQ202
 		public void Clear()
 		{
 			l.Clear();
-			n = 0;
 			counts.Clear();
+			n = 0;
 		}
 
 		public int GetCount(T item) => counts.GetValueOrDefault(item);
@@ -49,8 +49,8 @@ namespace AlgorithmLib10.DataTrees.PQ202
 		{
 			l.Add(item);
 			UpHeap();
-			++n;
 			counts[item] = counts.GetValueOrDefault(item) + 1;
+			++n;
 		}
 
 		public bool RemoveFirst()
@@ -61,19 +61,18 @@ namespace AlgorithmLib10.DataTrees.PQ202
 
 		public bool Remove(T item)
 		{
-			var count = counts.GetValueOrDefault(item);
-			if (count == 0) return false;
-			--n;
+			if (!counts.TryGetValue(item, out var count)) return false;
 			if (--count == 0) counts.Remove(item); else counts[item] = count;
+			--n;
 			EnsureFirst();
 			return true;
 		}
 
 		void EnsureFirst()
 		{
-			while (l.Count != 0 && counts.GetValueOrDefault(l[0]) == 0)
+			while (l.Count != 0 && !counts.ContainsKey(l[0]))
 			{
-				while (l.Count != 0 && counts.GetValueOrDefault(l[l.Count - 1]) == 0) l.RemoveAt(l.Count - 1);
+				while (l.Count != 0 && !counts.ContainsKey(l[l.Count - 1])) l.RemoveAt(l.Count - 1);
 				if (l.Count == 0) break;
 				l[0] = l[l.Count - 1];
 				l.RemoveAt(l.Count - 1);
