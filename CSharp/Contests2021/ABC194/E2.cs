@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-class E
+class E2
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
@@ -12,22 +12,18 @@ class E
 		var (n, m) = Read2();
 		var a = Read();
 
-		var map = Array.ConvertAll(new bool[n + 1], _ => new List<int> { -1 });
-		for (int i = 0; i < n; i++)
-		{
-			map[a[i]].Add(i);
-		}
+		var c = new int[n + 1];
+		for (int i = 0; i < m; i++)
+			c[a[i]]++;
 
-		for (int k = 0; k <= n; k++)
-		{
-			var l = map[k];
-			l.Add(n);
+		var r = 0;
+		while (c[r] != 0) r++;
 
-			for (int i = 1; i < l.Count; i++)
-			{
-				if (l[i] - l[i - 1] > m) return k;
-			}
+		for (int i = 0; i < n - m; i++)
+		{
+			c[a[i + m]]++;
+			if (--c[a[i]] == 0) r = Math.Min(r, a[i]);
 		}
-		return -1;
+		return r;
 	}
 }
