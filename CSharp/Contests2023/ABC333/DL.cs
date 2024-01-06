@@ -9,10 +9,11 @@
 
 		var map = Tree.ToMap(n + 1, es, true);
 		var tree = new Tree(map, 1);
-		return n - tree[1].Children.Max(node => node.Count);
+		return n - tree.Root.Children.Max(node => node.Count);
 	}
 }
 
+[System.Diagnostics.DebuggerDisplay(@"Root = {Root.Id}, Count = {Count}")]
 public class Tree
 {
 	public static int[][] ToMap(int n, int[][] es, bool twoway) => ToMap(n, Array.ConvertAll(es, e => (e[0], e[1])), twoway);
@@ -27,23 +28,30 @@ public class Tree
 		return Array.ConvertAll(map, l => l.ToArray());
 	}
 
+	[System.Diagnostics.DebuggerDisplay(@"Id = {Id}, Count = {Count}")]
 	public class Node
 	{
-		public int Id, Depth, Count = 1;
+		public int Id, Depth = -1, Count = 1;
 		public Node Parent;
 		public List<Node> Children = new List<Node>();
+		public bool IsLeaf => Children.Count == 0;
+		public bool IsRootLeaf => Parent == null && Children.Count == 1;
 	}
 
 	Node[] nodes;
 	public Node[] Nodes => nodes;
 	public Node this[int id] => nodes[id];
+	public int Count => nodes.Length;
+	public Node Root { get; }
 
 	public Tree(int[][] map, int root)
 	{
 		var n = map.Length;
 		nodes = new Node[n];
 		for (int id = 0; id < n; ++id) nodes[id] = new Node { Id = id };
-		DFS(nodes[root], null);
+		Root = nodes[root];
+		Root.Depth = 0;
+		DFS(Root, null);
 
 		void DFS(Node v, Node pv)
 		{
