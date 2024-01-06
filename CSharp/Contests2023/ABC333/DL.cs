@@ -1,0 +1,62 @@
+﻿class DL
+{
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static void Main() => Console.WriteLine(Solve());
+	static object Solve()
+	{
+		var n = int.Parse(Console.ReadLine());
+		var es = Array.ConvertAll(new bool[n - 1], _ => Read());
+
+		var map = Tree.ToMap(n + 1, es, true);
+		var tree = new Tree(map, 1);
+		return n - tree[1].Children.Max(node => node.Count);
+	}
+}
+
+public class Tree
+{
+	public static int[][] ToMap(int n, int[][] es, bool twoway) => ToMap(n, Array.ConvertAll(es, e => (e[0], e[1])), twoway);
+	public static int[][] ToMap(int n, (int u, int v)[] es, bool twoway)
+	{
+		var map = Array.ConvertAll(new bool[n], _ => new List<int>());
+		foreach (var (u, v) in es)
+		{
+			map[u].Add(v);
+			if (twoway) map[v].Add(u);
+		}
+		return Array.ConvertAll(map, l => l.ToArray());
+	}
+
+	public class Node
+	{
+		public int Id, Depth, Count = 1;
+		public Node Parent;
+		public List<Node> Children = new List<Node>();
+	}
+
+	Node[] nodes;
+	public Node[] Nodes => nodes;
+	public Node this[int id] => nodes[id];
+
+	public Tree(int[][] map, int root)
+	{
+		var n = map.Length;
+		nodes = new Node[n];
+		for (int id = 0; id < n; ++id) nodes[id] = new Node { Id = id };
+		DFS(nodes[root], null);
+
+		void DFS(Node v, Node pv)
+		{
+			foreach (var nid in map[v.Id])
+			{
+				var nv = nodes[nid];
+				if (nv == pv) continue;
+				v.Children.Add(nv);
+				nv.Parent = v;
+				nv.Depth = v.Depth + 1;
+				DFS(nv, v);
+				v.Count += nv.Count;
+			}
+		}
+	}
+}
