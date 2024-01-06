@@ -9,21 +9,21 @@ namespace AlgorithmLib10.Collections.MexMultiSet101
 	{
 		readonly int max;
 		readonly int[] counts;
-		readonly SortedSet<int> set;
+		readonly SortedSet<int> ex;
 
 		public MexMultiSet(int max)
 		{
 			this.max = max;
 			counts = new int[max];
-			set = new SortedSet<int>(Enumerable.Range(0, max));
+			ex = new SortedSet<int>(Enumerable.Range(0, max));
 		}
 
-		public int Mex => set.Count == 0 ? max : set.Min;
+		public int Mex => ex.Count == 0 ? max : ex.Min;
 
 		public bool Add(int value)
 		{
 			if (value < 0 || max <= value) return false;
-			if (counts[value]++ == 0) set.Remove(value);
+			if (counts[value]++ == 0) ex.Remove(value);
 			return true;
 		}
 
@@ -31,7 +31,7 @@ namespace AlgorithmLib10.Collections.MexMultiSet101
 		{
 			if (value < 0 || max <= value) return false;
 			if (counts[value] == 0) return false;
-			if (--counts[value] == 0) set.Add(value);
+			if (--counts[value] == 0) ex.Add(value);
 			return true;
 		}
 	}
