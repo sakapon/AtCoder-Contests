@@ -6,8 +6,9 @@
 		var n = int.Parse(Console.ReadLine());
 
 		var s = new SeqArray2<string>(n, n);
-		s.a[n * n / 2] = "T";
-		s.a[0] = "1";
+		var a = s.a;
+		a[n * n / 2] = "T";
+		a[0] = "1";
 
 		var v = 0;
 		var d = 1;
@@ -18,7 +19,7 @@
 
 			if (Math.Abs(d) == 1)
 			{
-				if (v / n != nv / n || s.a[nv] != null)
+				if (v / n != nv / n || a[nv] != null)
 				{
 					d = Rotate(d);
 					nv = v + d;
@@ -26,17 +27,17 @@
 			}
 			else
 			{
-				if (!(0 <= nv && nv < n * n) || s.a[nv] != null)
+				if (!(0 <= nv && nv < n * n) || a[nv] != null)
 				{
 					d = Rotate(d);
 					nv = v + d;
 				}
 			}
 
-			s.a[v = nv] = k.ToString();
+			a[v = nv] = k.ToString();
 		}
 
-		return string.Join("\n", Enumerable.Range(0, n).Select(i => string.Join(" ", s[i])));
+		return string.Join("\n", s.Select(r => string.Join(" ", r)));
 
 		int Rotate(int d)
 		{
