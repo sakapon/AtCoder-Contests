@@ -19,11 +19,12 @@ class C
 			{
 				var c = z[1];
 				var v = dq.First;
-				if (c == "R") v += (1, 0);
-				else if (c == "L") v -= (1, 0);
-				else if (c == "U") v += (0, 1);
-				else v -= (0, 1);
+				if (c == "R") v += IntV.UnitX;
+				else if (c == "L") v -= IntV.UnitX;
+				else if (c == "U") v += IntV.UnitY;
+				else v -= IntV.UnitY;
 				dq.AddFirst(v);
+				dq.PopLast();
 			}
 			else
 			{
