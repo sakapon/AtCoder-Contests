@@ -1,6 +1,6 @@
 ﻿using CoderLib8.Collections;
 
-class E
+class E2
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
@@ -17,14 +17,17 @@ class E
 		{
 			var s = ((uint)x).ToElements(n).Sum(i => w[i]);
 			dp[x, 1] = s * s;
+		}
 
-			AllSubsets(n, x, y =>
+		for (int x = 1; x < 1 << n; x++)
+		{
+			AllSupersets(n, x, z =>
 			{
-				var z = x & ~y;
-				for (int k = 2; k <= d; k++)
+				var y = z & ~x;
+				for (int k = 1; k < d; k++)
 				{
-					var nv = dp[y, 1] + dp[z, k - 1];
-					if (dp[x, k] > nv) dp[x, k] = nv;
+					var nv = dp[x, k] + dp[y, 1];
+					if (dp[z, k + 1] > nv) dp[z, k + 1] = nv;
 				}
 				return false;
 			});
@@ -34,12 +37,11 @@ class E
 		return (double)(dp.a[^1] * d - sum * sum) / (d * d);
 	}
 
-	public static void AllSubsets(int n, int s, Func<int, bool> action)
+	public static void AllSupersets(int n, int s, Func<int, bool> action)
 	{
-		for (int x = 0; ; x = (x - s) & s)
+		for (int x = s; x < 1 << n; x = (x + 1) | s)
 		{
 			if (action(x)) break;
-			if (x == s) break;
 		}
 	}
 }
