@@ -45,6 +45,31 @@ namespace CoderLib8.Extra
 			//return dp[n, m];
 		}
 
+		// Test: https://onlinejudge.u-aizu.ac.jp/courses/library/3/DSL/3/DSL_3_D
+		public static IEnumerable<int> SlideMin(int[] a, int k)
+		{
+			var b = new int[a.Length];
+			for (int i = 0, l = 0, r = -1; i < a.Length; ++i)
+			{
+				while (l <= r && a[b[r]] > a[i]) --r;
+				b[++r] = i;
+				if (b[l] == i - k) ++l;
+				if (i >= k - 1) yield return a[b[l]];
+			}
+		}
+
+		public static IEnumerable<int> SlideMax(int[] a, int k)
+		{
+			var b = new int[a.Length];
+			for (int i = 0, l = 0, r = -1; i < a.Length; ++i)
+			{
+				while (l <= r && a[b[r]] < a[i]) --r;
+				b[++r] = i;
+				if (b[l] == i - k) ++l;
+				if (i >= k - 1) yield return a[b[l]];
+			}
+		}
+
 		// Test: https://onlinejudge.u-aizu.ac.jp/courses/lesson/1/ALDS1/5/ALDS1_5_D
 		// merge sort を利用します。
 		public static long InversionNumber<T>(T[] a, IComparer<T> c = null)
