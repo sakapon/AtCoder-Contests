@@ -36,11 +36,30 @@ namespace CoderLib8.Values
 
 		public bool IsInRange(int i, int j) => 0 <= i && i < n1 && 0 <= j && j < n2;
 
+		public Grid2<T> SwapRows(int i1, int i2)
+		{
+			var r = new Grid2<T>(n1, n2, (T[])a.Clone());
+			Array.Copy(a, n2 * i2, r.a, n2 * i1, n2);
+			Array.Copy(a, n2 * i1, r.a, n2 * i2, n2);
+			return r;
+		}
+
+		public Grid2<T> SwapColumns(int j1, int j2)
+		{
+			var r = new Grid2<T>(n1, n2, (T[])a.Clone());
+			for (int i = 0; i < n1; ++i)
+			{
+				r[i, j1] = this[i, j2];
+				r[i, j2] = this[i, j1];
+			}
+			return r;
+		}
+
 		public Grid2<T> Rotate180()
 		{
-			var b = (T[])a.Clone();
-			Array.Reverse(b);
-			return new Grid2<T>(n1, n2, b);
+			var r = new Grid2<T>(n1, n2, (T[])a.Clone());
+			Array.Reverse(r.a);
+			return r;
 		}
 
 		public Grid2<T> RotateLeft()
@@ -67,6 +86,22 @@ namespace CoderLib8.Values
 			for (int i = 0; i < n2; ++i)
 				for (int j = 0; j < n1; ++j)
 					r[i, j] = this[j, i];
+			return r;
+		}
+
+		public static bool Equals(T[] a1, T[] a2)
+		{
+			if (a1.Length != a2.Length) return false;
+			var c = EqualityComparer<T>.Default;
+			for (int i = 0; i < a1.Length; ++i)
+				if (!c.Equals(a1[i], a2[i])) return false;
+			return true;
+		}
+
+		public static int GetHashCode(T[] a)
+		{
+			var r = 0;
+			for (int i = 0; i < a.Length; ++i) r ^= a[i].GetHashCode();
 			return r;
 		}
 	}
