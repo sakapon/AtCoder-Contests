@@ -4,68 +4,68 @@ using System.Collections.Generic;
 namespace CoderLib8.Graphs.SPPs.SPPs101
 {
 	// テンプレートとして使えます。
-	public static class UnweightedPathCore
+	public static class UnweightedPathCoreTyped
 	{
 		// 最短経路とは限りません。
 		// 連結性のみを判定する場合は、DFS、BFS または Union-Find を利用します。
-		public static bool[] ConnectivityByDFS(int n, Func<int, int[]> nexts, int sv, int ev = -1)
+		public static HashSet<T> ConnectivityByDFS<T>(Func<T, T[]> nexts, T sv, T ev)
 		{
-			var u = new bool[n];
-			u[sv] = true;
+			var u = new HashSet<T>();
+			u.Add(sv);
 			DFS(sv);
 			return u;
 
-			bool DFS(int v)
+			bool DFS(T v)
 			{
-				if (v == ev) return true;
+				if (u.Comparer.Equals(v, ev)) return true;
 				foreach (var nv in nexts(v))
 				{
-					if (u[nv]) continue;
-					u[nv] = true;
+					if (u.Contains(nv)) continue;
+					u.Add(nv);
 					if (DFS(nv)) return true;
 				}
 				return false;
 			}
 		}
 
-		public static bool[] ConnectivityByDFS0(int n, Func<int, int[]> nexts, int sv, int ev = -1)
+		public static HashSet<T> ConnectivityByDFS0<T>(Func<T, T[]> nexts, T sv, T ev)
 		{
-			var u = new bool[n];
-			var q = new Stack<int>();
-			u[sv] = true;
+			var u = new HashSet<T>();
+			var q = new Stack<T>();
+			u.Add(sv);
 			q.Push(sv);
 
 			while (q.Count > 0)
 			{
 				var v = q.Pop();
-				if (v == ev) return u;
+				if (u.Comparer.Equals(v, ev)) return u;
 
 				foreach (var nv in nexts(v))
 				{
-					if (u[nv]) continue;
-					u[nv] = true;
+					if (u.Contains(nv)) continue;
+					u.Add(nv);
 					q.Push(nv);
 				}
 			}
 			return u;
 		}
 
-		public static long[] ShortestByBFS(int n, Func<int, int[]> nexts, int sv, int ev = -1)
+		public static Dictionary<T, long> ShortestByBFS<T>(Func<T, T[]> nexts, T sv, T ev)
 		{
-			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
-			var q = new Queue<int>();
+			var costs = new Dictionary<T, long>();
+			var q = new Queue<T>();
 			costs[sv] = 0;
 			q.Enqueue(sv);
 
 			while (q.Count > 0)
 			{
 				var v = q.Dequeue();
-				if (v == ev) return costs;
+				if (costs.Comparer.Equals(v, ev)) return costs;
 				var nc = costs[v] + 1;
 
 				foreach (var nv in nexts(v))
 				{
-					if (costs[nv] <= nc) continue;
+					if (costs.ContainsKey(nv)) continue;
 					costs[nv] = nc;
 					q.Enqueue(nv);
 				}
