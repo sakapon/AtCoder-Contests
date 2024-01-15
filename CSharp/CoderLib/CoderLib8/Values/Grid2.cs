@@ -29,40 +29,41 @@ namespace CoderLib8.Values
 		public void Fill(int i, T v) => Array.Fill(a, v, n2 * i, n2);
 		public void Fill(T v) => Array.Fill(a, v);
 		public void Clear() => Array.Clear(a, 0, a.Length);
+		public Grid2<T> Clone() => new Grid2<T>(n1, n2, (T[])a.Clone());
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 		public IEnumerator<ArraySegment<T>> GetEnumerator() { for (int i = 0; i < n1; ++i) yield return this[i]; }
 
 		public bool IsInRange(int i, int j) => 0 <= i && i < n1 && 0 <= j && j < n2;
 
-		public SeqArray2<T> Rotate180()
+		public Grid2<T> Rotate180()
 		{
 			var b = (T[])a.Clone();
 			Array.Reverse(b);
-			return new SeqArray2<T>(n1, n2, b);
+			return new Grid2<T>(n1, n2, b);
 		}
 
-		public SeqArray2<T> RotateLeft()
+		public Grid2<T> RotateLeft()
 		{
-			var r = new SeqArray2<T>(n2, n1);
+			var r = new Grid2<T>(n2, n1);
 			for (int i = 0; i < n2; ++i)
 				for (int j = 0; j < n1; ++j)
 					r[i, j] = this[j, n2 - 1 - i];
 			return r;
 		}
 
-		public SeqArray2<T> RotateRight()
+		public Grid2<T> RotateRight()
 		{
-			var r = new SeqArray2<T>(n2, n1);
+			var r = new Grid2<T>(n2, n1);
 			for (int i = 0; i < n2; ++i)
 				for (int j = 0; j < n1; ++j)
 					r[i, j] = this[n1 - 1 - j, i];
 			return r;
 		}
 
-		public SeqArray2<T> Transpose()
+		public Grid2<T> Transpose()
 		{
-			var r = new SeqArray2<T>(n2, n1);
+			var r = new Grid2<T>(n2, n1);
 			for (int i = 0; i < n2; ++i)
 				for (int j = 0; j < n1; ++j)
 					r[i, j] = this[j, i];

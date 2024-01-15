@@ -31,6 +31,7 @@ namespace CoderLib8.Values
 		public void Fill(int i, T v) => Array.Fill(a, v, n2 * i, n2);
 		public void Fill(T v) => Array.Fill(a, v);
 		public void Clear() => Array.Clear(a, 0, a.Length);
+		public SeqArray2<T> Clone() => new SeqArray2<T>(n1, n2, (T[])a.Clone());
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 		public IEnumerator<ArraySegment<T>> GetEnumerator() { for (int i = 0; i < n1; ++i) yield return this[i]; }
@@ -57,5 +58,6 @@ namespace CoderLib8.Values
 		public void Fill(int i, T v) => Array.Fill(a, v, n3 * n2 * i, n3 * n2);
 		public void Fill(T v) => Array.Fill(a, v);
 		public void Clear() => Array.Clear(a, 0, a.Length);
+		public SeqArray3<T> Clone() => new SeqArray3<T>(n1, n2, n3, (T[])a.Clone());
 	}
 }
