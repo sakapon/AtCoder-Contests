@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CoderLib8.Collections
+namespace CoderLib8.Values
 {
 	// 1 次元配列に 2 次元インデックスでアクセスします。
 	public class SeqArray2<T> : IEnumerable<ArraySegment<T>>
