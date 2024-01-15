@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CoderLib8.Values
 {
-	public class Grid2<T> : IEnumerable<ArraySegment<T>>
+	public class Grid2<T> : IEnumerable<ArraySegment<T>>, IEquatable<Grid2<T>>
 	{
 		public readonly int n1, n2;
 		public readonly T[] a;
@@ -33,6 +33,31 @@ namespace CoderLib8.Values
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 		public IEnumerator<ArraySegment<T>> GetEnumerator() { for (int i = 0; i < n1; ++i) yield return this[i]; }
+
+		#region Equality Operators
+		public bool Equals(Grid2<T> other) => !(other is null) && Equals(a, other.a);
+		public static bool Equals(Grid2<T> v1, Grid2<T> v2) => v1?.Equals(v2) ?? (v2 is null);
+		public static bool operator ==(Grid2<T> v1, Grid2<T> v2) => Equals(v1, v2);
+		public static bool operator !=(Grid2<T> v1, Grid2<T> v2) => !Equals(v1, v2);
+		public override bool Equals(object obj) => Equals(obj as Grid2<T>);
+		public override int GetHashCode() => GetHashCode(a);
+
+		public static bool Equals(T[] a1, T[] a2)
+		{
+			if (a1.Length != a2.Length) return false;
+			var c = EqualityComparer<T>.Default;
+			for (int i = 0; i < a1.Length; ++i)
+				if (!c.Equals(a1[i], a2[i])) return false;
+			return true;
+		}
+
+		public static int GetHashCode(T[] a)
+		{
+			var r = 0;
+			for (int i = 0; i < a.Length; ++i) r ^= a[i].GetHashCode();
+			return r;
+		}
+		#endregion
 
 		public bool IsInRange(int i, int j) => 0 <= i && i < n1 && 0 <= j && j < n2;
 
@@ -86,22 +111,6 @@ namespace CoderLib8.Values
 			for (int i = 0; i < n2; ++i)
 				for (int j = 0; j < n1; ++j)
 					r[i, j] = this[j, i];
-			return r;
-		}
-
-		public static bool Equals(T[] a1, T[] a2)
-		{
-			if (a1.Length != a2.Length) return false;
-			var c = EqualityComparer<T>.Default;
-			for (int i = 0; i < a1.Length; ++i)
-				if (!c.Equals(a1[i], a2[i])) return false;
-			return true;
-		}
-
-		public static int GetHashCode(T[] a)
-		{
-			var r = 0;
-			for (int i = 0; i < a.Length; ++i) r ^= a[i].GetHashCode();
 			return r;
 		}
 	}
