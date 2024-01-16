@@ -79,7 +79,7 @@
 public class ZobristGrid2<T> : IEquatable<ZobristGrid2<T>>
 {
 	// 下位ビットが分散するようにハッシュを生成します。
-	static int CreateHash(int id, T value) => id * 1000003 + value.GetHashCode() * 10007;
+	static int CreateHash(int id, T value) => id * 1000003 + value.GetHashCode() * 10000019;
 
 	public readonly int n1, n2;
 	public readonly T[] a;
