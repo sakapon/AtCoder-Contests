@@ -52,7 +52,9 @@ namespace CoderLib8.Values
 		}
 		public static int GetHashCode(T[] a)
 		{
-			return string.Join(" ", a).GetHashCode();
+			var h = 0;
+			for (int i = 0; i < a.Length; ++i) h = h * 10000019 + a[i].GetHashCode();
+			return h;
 		}
 		#endregion
 

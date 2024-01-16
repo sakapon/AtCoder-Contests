@@ -50,7 +50,7 @@ namespace CoderLib8.Graphs.SPPs.SPPs101
 			return u;
 		}
 
-		public static long[] ShortestByBFS(int n, Func<int, int[]> nexts, int sv, int ev = -1)
+		public static long[] ShortestByBFS(int n, Func<int, int[]> nexts, int sv, int ev = -1, long maxCost = long.MaxValue)
 		{
 			var costs = Array.ConvertAll(new bool[n], _ => long.MaxValue);
 			var q = new Queue<int>();
@@ -62,6 +62,7 @@ namespace CoderLib8.Graphs.SPPs.SPPs101
 				var v = q.Dequeue();
 				if (v == ev) return costs;
 				var nc = costs[v] + 1;
+				if (nc > maxCost) return costs;
 
 				foreach (var nv in nexts(v))
 				{

@@ -50,7 +50,7 @@ namespace CoderLib8.Graphs.SPPs.SPPs101
 			return u;
 		}
 
-		public static Dictionary<T, long> ShortestByBFS<T>(Func<T, T[]> nexts, T sv, T ev)
+		public static Dictionary<T, long> ShortestByBFS<T>(Func<T, T[]> nexts, T sv, T ev, long maxCost = long.MaxValue)
 		{
 			var costs = new Dictionary<T, long>();
 			var q = new Queue<T>();
@@ -62,6 +62,7 @@ namespace CoderLib8.Graphs.SPPs.SPPs101
 				var v = q.Dequeue();
 				if (costs.Comparer.Equals(v, ev)) return costs;
 				var nc = costs[v] + 1;
+				if (nc > maxCost) return costs;
 
 				foreach (var nv in nexts(v))
 				{
