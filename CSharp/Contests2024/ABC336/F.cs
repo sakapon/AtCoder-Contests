@@ -10,8 +10,14 @@
 
 		var sv = new ZobristGrid2<int>(h, w, s.SelectMany(x => x).ToArray());
 		var ev = new ZobristGrid2<int>(h, w, Enumerable.Range(1, h * w).ToArray());
-		var r = ShortestByBFS(GetNexts, sv, ev, 20);
-		return r.GetValueOrDefault(ev, -1);
+
+		var d1 = ShortestByBFS(GetNexts, sv, null, 10);
+		var d2 = ShortestByBFS(GetNexts, ev, null, 10);
+
+		var vs = d1.Keys.ToHashSet();
+		vs.IntersectWith(d2.Keys);
+		if (vs.Count == 0) return -1;
+		return vs.Min(v => d1[v] + d2[v]);
 
 		ZobristGrid2<int>[] GetNexts(ZobristGrid2<int> v)
 		{
@@ -73,7 +79,7 @@
 public class ZobristGrid2<T> : IEquatable<ZobristGrid2<T>>
 {
 	// 下位ビットが分散するようにハッシュを生成します。
-	static int CreateHash(int id, T value) => id * 1000003 + value.GetHashCode();
+	static int CreateHash(int id, T value) => id * 1000003 + value.GetHashCode() * 10007;
 
 	public readonly int n1, n2;
 	public readonly T[] a;
