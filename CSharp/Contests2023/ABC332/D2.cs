@@ -28,22 +28,25 @@ class D2
 			return nexts.ToArray();
 		}, sv, ev);
 
-		if (!r.ContainsKey(ev)) return -1;
-		return r[ev];
+		return r.GetValueOrDefault(ev, -1);
 	}
 }
 
 public class ZobristGrid2<T> : IEquatable<ZobristGrid2<T>>
 {
+	// 下位ビットが分散するようにハッシュを生成します。
+	static int CreateHash(int id, T value) => id * 1000003 + value.GetHashCode();
+
 	public readonly int n1, n2;
 	public readonly T[] a;
 	int hash;
+
+	public ZobristGrid2(int _n1, int _n2, T[] _a, int _hash) => (n1, n2, a, hash) = (_n1, _n2, _a ?? new T[_n1 * _n2], _hash);
 	public ZobristGrid2(int _n1, int _n2, T[] _a = null) : this(_n1, _n2, _a, 0)
 	{
 		for (int id = 0; id < a.Length; ++id)
-			hash ^= id * 1000000 + a[id].GetHashCode();
+			hash ^= CreateHash(id, a[id]);
 	}
-	public ZobristGrid2(int _n1, int _n2, T[] _a, int _hash) => (n1, n2, a, hash) = (_n1, _n2, _a ?? new T[_n1 * _n2], _hash);
 
 	public T this[int i, int j]
 	{
@@ -51,9 +54,9 @@ public class ZobristGrid2<T> : IEquatable<ZobristGrid2<T>>
 		set
 		{
 			var id = n2 * i + j;
-			hash ^= id * 1000000 + a[id].GetHashCode();
+			hash ^= CreateHash(id, a[id]);
+			hash ^= CreateHash(id, value);
 			a[id] = value;
-			hash ^= id * 1000000 + a[id].GetHashCode();
 		}
 	}
 
