@@ -7,21 +7,28 @@ class Q027A
 	{
 		var n = int.Parse(Console.ReadLine());
 
-		var f = 1 << 18;
-		var map = new List<string>[f];
-		f--;
+		var map = new List<string>[f + 1];
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		for (int i = 1; i <= n; i++)
 		{
 			var s = Console.ReadLine();
-			var h = s.GetHashCode() & f;
+			var h = Hash(s) & f;
 			var l = map[h];
-			if (l?.Contains(s) ?? false) continue;
-			if (l is null) map[h] = new List<string> { s };
+			if (l != null && l.Contains(s)) continue;
+			if (l == null) map[h] = new List<string> { s };
 			else l.Add(s);
 			Console.WriteLine(i);
 		}
 		Console.Out.Flush();
+	}
+
+	const int f = (1 << 18) - 1;
+
+	static int Hash(string s)
+	{
+		var h = 0;
+		foreach (var c in s) h = h * 11111117 + c;
+		return h;
 	}
 }
