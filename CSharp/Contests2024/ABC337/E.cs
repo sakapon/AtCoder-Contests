@@ -1,17 +1,35 @@
-﻿class E
+﻿using System.Numerics;
+using CoderLib8.Collections;
+
+class E
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		var m = n;
+		while (m != (m & -m)) m += m & -m;
+		m = BitOperations.Log2((uint)m);
+
+		var ls = Array.ConvertAll(new bool[m], _ => new List<uint>());
+
+		for (uint i = 0; i < n; i++)
+		{
+			foreach (var j in i.ToElements(m))
+			{
+				ls[j].Add(i + 1);
+			}
+		}
+
+		Console.WriteLine(m);
+		foreach (var l in ls)
+		{
+			Console.WriteLine($"{l.Count} " + string.Join(" ", l));
+		}
+
+		var s = Console.ReadLine();
+		s = new string(s.Reverse().ToArray());
+		return Convert.ToInt32(s, 2) + 1;
 	}
 }
