@@ -9,13 +9,8 @@
 
 		var r = new List<int>();
 		var i = Enumerable.Range(1, n).Except(a).Single();
-		r.Add(i);
-
-		for (; a[i - 1] != -1; i = a[i - 1])
-		{
-			r.Add(a[i - 1]);
-		}
-
+		for (; i != -1; i = a[i - 1])
+			r.Add(i);
 		r.Reverse();
 		return string.Join(" ", r);
 	}
