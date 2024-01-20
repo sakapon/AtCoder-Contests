@@ -9,13 +9,13 @@ class Q027B
 		var n = int.Parse(Console.ReadLine());
 
 		const int f = (1 << 18) - 1;
-		var map = Array.ConvertAll(new bool[f + 1], _ => new List<string>());
+		var table = Array.ConvertAll(new bool[f + 1], _ => new List<string>());
 		var r = new List<int>();
 
 		for (int i = 1; i <= n; i++)
 		{
 			var s = Console.ReadLine();
-			var l = map[Hash(s) & f];
+			var l = table[Hash(s) & f];
 			if (l.Contains(s)) continue;
 			l.Add(s);
 			r.Add(i);

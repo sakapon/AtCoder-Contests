@@ -7,16 +7,16 @@ class Q027A
 	{
 		var n = int.Parse(Console.ReadLine());
 
-		var map = new List<string>[f + 1];
+		var table = new List<string>[f + 1];
 
 		Console.SetOut(new System.IO.StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 		for (int i = 1; i <= n; i++)
 		{
 			var s = Console.ReadLine();
 			var h = Hash(s) & f;
-			var l = map[h];
+			var l = table[h];
 			if (l != null && l.Contains(s)) continue;
-			if (l == null) map[h] = new List<string> { s };
+			if (l == null) table[h] = new List<string> { s };
 			else l.Add(s);
 			Console.WriteLine(i);
 		}
