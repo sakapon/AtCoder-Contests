@@ -8,6 +8,14 @@ namespace CoderLib8.Values
 	// 任意次元ベクトル
 	public class IntVector : IEquatable<IntVector>
 	{
+		// 下位ビットが分散するようにハッシュを生成します。
+		public static int GetHashCode(long[] a)
+		{
+			var h = 0;
+			for (int i = 0; i < a.Length; ++i) h = h * 10000019 + a[i].GetHashCode();
+			return h;
+		}
+
 		readonly long[] v;
 		public long[] Raw => v;
 		public long this[int i] => v[i];
@@ -34,13 +42,7 @@ namespace CoderLib8.Values
 		public static bool operator ==(IntVector v1, IntVector v2) => Equals(v1, v2);
 		public static bool operator !=(IntVector v1, IntVector v2) => !Equals(v1, v2);
 		public override bool Equals(object obj) => Equals(obj as IntVector);
-		public override int GetHashCode() =>
-			v.Length == 0 ? 0 :
-			v.Length == 1 ? v[0].GetHashCode() :
-			v.Length == 2 ? HashCode.Combine(v[0], v[1]) :
-			v.Length == 3 ? HashCode.Combine(v[0], v[1], v[2]) :
-			v.Length == 4 ? HashCode.Combine(v[0], v[1], v[2], v[3]) :
-			HashCode.Combine(v[0], v[1], v[2], v[3], v[4]);
+		public override int GetHashCode() => GetHashCode(v);
 		#endregion
 
 		public static IntVector operator -(IntVector v) => Array.ConvertAll(v.v, x => -x);
