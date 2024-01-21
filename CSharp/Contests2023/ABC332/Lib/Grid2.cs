@@ -1,10 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 
+// Test: https://atcoder.jp/contests/abc332/tasks/abc332_d
+// Test: https://atcoder.jp/contests/abc336/tasks/abc336_f
 namespace CoderLib8.Values
 {
 	public class Grid2<T> : IEnumerable<ArraySegment<T>>, IEquatable<Grid2<T>>
 	{
+		// 下位ビットが分散するようにハッシュを生成します。
+		public static int GetHashCode(T[] a)
+		{
+			var h = 0;
+			for (int i = 0; i < a.Length; ++i) h = h * 10000019 + a[i].GetHashCode();
+			return h;
+		}
+
 		public readonly int n1, n2;
 		public readonly T[] a;
 		public Grid2(int _n1, int _n2, T[] _a = null) => (n1, n2, a) = (_n1, _n2, _a ?? new T[_n1 * _n2]);
@@ -49,10 +59,6 @@ namespace CoderLib8.Values
 			for (int i = 0; i < a1.Length; ++i)
 				if (!c.Equals(a1[i], a2[i])) return false;
 			return true;
-		}
-		public static int GetHashCode(T[] a)
-		{
-			return string.Join(" ", a).GetHashCode();
 		}
 		#endregion
 
