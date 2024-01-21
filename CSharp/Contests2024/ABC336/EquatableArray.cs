@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
+// Test: https://atcoder.jp/contests/abc322/tasks/abc322_e
 // Test: https://atcoder.jp/contests/abc332/tasks/abc332_d
 // Test: https://atcoder.jp/contests/abc336/tasks/abc336_f
+// ハッシュをキャッシュする実装にしてもよいですが、いずれにしても生成に O(n) かかります。
 namespace CoderLib8.Values
 {
 	public class EquatableArray<T> : IEnumerable<T>, IEquatable<EquatableArray<T>>
@@ -11,7 +13,7 @@ namespace CoderLib8.Values
 		public static int GetHashCode(T[] a)
 		{
 			var h = 0;
-			for (int i = 0; i < a.Length; ++i) h = h * 10000019 + a[i].GetHashCode();
+			for (int i = 0; i < a.Length; ++i) h = h * 987654323 + a[i].GetHashCode();
 			return h;
 		}
 
