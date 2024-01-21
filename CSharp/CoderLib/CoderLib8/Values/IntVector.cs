@@ -44,25 +44,28 @@ namespace CoderLib8.Values
 		#endregion
 
 		public static IntVector operator -(IntVector v) => Array.ConvertAll(v.v, x => -x);
-		public static IntVector operator +(IntVector v1, IntVector v2)
-		{
-			var r = new long[v1.v.Length];
-			for (int i = 0; i < v1.v.Length; ++i)
-				r[i] = v1.v[i] + v2.v[i];
-			return new IntVector(r);
-		}
-		public static IntVector operator -(IntVector v1, IntVector v2)
-		{
-			var r = new long[v1.v.Length];
-			for (int i = 0; i < v1.v.Length; ++i)
-				r[i] = v1.v[i] - v2.v[i];
-			return new IntVector(r);
-		}
+		public static IntVector operator +(IntVector v1, IntVector v2) => new IntVector(Add(v1.v, v2.v));
+		public static IntVector operator -(IntVector v1, IntVector v2) => new IntVector(Subtract(v1.v, v2.v));
 
 		public long NormL1 => v.Sum(x => Math.Abs(x));
 		public double Norm => Math.Sqrt(v.Sum(x => x * x));
 
 		public static long Dot(IntVector v1, IntVector v2) => v1.v.Zip(v2.v, (x, y) => x * y).Sum();
 		public static bool IsOrthogonal(IntVector v1, IntVector v2) => Dot(v1, v2) == 0;
+
+		static long[] Add(long[] v1, long[] v2)
+		{
+			var r = new long[v1.Length];
+			for (int i = 0; i < v1.Length; ++i)
+				r[i] = v1[i] + v2[i];
+			return r;
+		}
+		static long[] Subtract(long[] v1, long[] v2)
+		{
+			var r = new long[v1.Length];
+			for (int i = 0; i < v1.Length; ++i)
+				r[i] = v1[i] - v2[i];
+			return r;
+		}
 	}
 }
