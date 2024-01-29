@@ -32,13 +32,11 @@ class F
 				var l = int.Parse(q[1]) - 1;
 				var r = int.Parse(q[2]);
 				var c = (r - l) / 2;
-				b.Add(st1.Hash(l, l + c) % M == st2.Hash(n - r, n - r + c) % M);
+				b.Add(st1.Hash(l, l + c) == st2.Hash(n - r, n - r + c));
 			}
 		}
 		return string.Join("\n", b.Select(b => b ? "Yes" : "No"));
 	}
-
-	const long M = 998244353;
 }
 
 public class SBTHash
@@ -58,7 +56,7 @@ public class SBTHash
 	readonly MergeSBT<long> st;
 	readonly long[] pow, pow_;
 
-	public SBTHash(string s)
+	public SBTHash(string s, long b = B)
 	{
 		n = s.Length;
 		st = new MergeSBT<long>(n, Monoid.Int64_Add);
@@ -67,11 +65,11 @@ public class SBTHash
 		pow_ = new long[n + 1];
 		pow[0] = 1;
 		pow_[0] = 1;
-		var binv = MInv(B);
+		var binv = MInv(b);
 
 		for (int i = 0; i < n; ++i)
 		{
-			pow[i + 1] = pow[i] * B % M;
+			pow[i + 1] = pow[i] * b % M;
 			pow_[i + 1] = pow_[i] * binv % M;
 			this[i] = s[i];
 		}
@@ -82,5 +80,5 @@ public class SBTHash
 		set => st[i] = value * pow[i] % M;
 	}
 
-	public long Hash(int l, int r) => st[l, r] * pow_[l] % M;
+	public long Hash(int l, int r) => st[l, r] % M * pow_[l] % M;
 }
