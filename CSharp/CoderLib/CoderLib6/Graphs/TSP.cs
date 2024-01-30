@@ -17,18 +17,18 @@ namespace CoderLib6.Graphs
 
 			for (uint x = 0; x < 1U << n; ++x)
 			{
-				for (int j = 0; j < n; ++j)
+				for (int v = 0; v < n; ++v)
 				{
-					if (dp[x][j] == long.MaxValue) continue;
+					if (dp[x][v] == long.MaxValue) continue;
 
-					for (int nj = 0; nj < n; ++nj)
+					for (int nv = 0; nv < n; ++nv)
 					{
-						var nx = x | (1U << nj);
+						var nx = x | (1U << nv);
 						if (nx == x) continue;
-						if (d[j][nj] == long.MaxValue) continue;
+						if (d[v][nv] == long.MaxValue) continue;
 
-						var nv = dp[x][j] + d[j][nj];
-						if (dp[nx][nj] > nv) dp[nx][nj] = nv;
+						var nd = dp[x][v] + d[v][nv];
+						if (dp[nx][nv] > nd) dp[nx][nv] = nd;
 					}
 				}
 			}
