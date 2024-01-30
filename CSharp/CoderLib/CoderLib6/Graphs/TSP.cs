@@ -27,8 +27,9 @@ namespace CoderLib6.Graphs
 						if (nx == x) continue;
 						if (d[v][nv] == long.MaxValue) continue;
 
-						var nd = dp[x][v] + d[v][nv];
-						if (dp[nx][nv] > nd) dp[nx][nv] = nd;
+						var nc = dp[x][v] + d[v][nv];
+						if (dp[nx][nv] <= nc) continue;
+						dp[nx][nv] = nc;
 					}
 				}
 			}
