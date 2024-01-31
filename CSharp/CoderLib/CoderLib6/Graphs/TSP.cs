@@ -11,7 +11,7 @@ namespace CoderLib6.Graphs
 		public static long[][] ToAdjacencyMatrix(int n, long[][] es)
 		{
 			var d = NewArray2(n, n, long.MaxValue);
-			foreach (var e in es) d[e[0]][e[1]] = e[2];
+			foreach (var e in es) if (d[e[0]][e[1]] > e[2]) d[e[0]][e[1]] = e[2];
 			return d;
 		}
 
