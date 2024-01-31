@@ -20,7 +20,8 @@ class E
 			}
 		}
 
-		var dp = TSP.Execute(n, 0, d);
-		return Enumerable.Range(1, n - 1).Min(v => dp[^1][v] + d[v][0]);
+		var sv = 0;
+		var dp = TSP.Execute(n, sv, d);
+		return dp[^1][sv];
 	}
 }
