@@ -24,6 +24,7 @@ namespace CoderLib6.Graphs
 			dp[0][sv] = 0;
 
 			// 始点の次の訪問地で初期化する方法です。
+			// d を拡張して、sv の情報を含めることができます。
 			//for (int v = 0; v < n; ++v)
 			//	dp[1 << v][v] = d[sv][v];
 

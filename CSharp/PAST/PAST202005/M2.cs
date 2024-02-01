@@ -23,7 +23,7 @@ class M2
 			map[v].Add(u);
 		}
 
-		var ts = t.Prepend(s).ToArray();
+		var ts = t.Append(s).ToArray();
 		var d = ts
 			.Select(sv =>
 			{
@@ -32,8 +32,8 @@ class M2
 			})
 			.ToArray();
 
-		var dp = TSP.Execute(k + 1, 0, d);
-		return dp[(1 << k + 1) - 2].Min();
+		var dp = TSP.Execute(k + 1, k, d);
+		return dp[(1 << k) - 1].Min();
 	}
 
 	public static long[] ShortestByBFS(int n, Func<int, int[]> nexts, int sv, int ev = -1, long maxCost = long.MaxValue)

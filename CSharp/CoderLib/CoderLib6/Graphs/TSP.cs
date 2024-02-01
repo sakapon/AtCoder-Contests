@@ -19,8 +19,14 @@ namespace CoderLib6.Graphs
 		{
 			// dp[訪問済の頂点集合][最後に訪問した頂点]: 最短距離
 			var dp = NewArray2(1 << n, n, long.MaxValue);
-			// ここでは、始点を未訪問とします。
+
+			// 始点を未訪問とする方法です。
 			dp[0][sv] = 0;
+
+			// 始点の次の訪問地で初期化する方法です。
+			// d を拡張して、sv の情報を含めることができます。
+			//for (int v = 0; v < n; ++v)
+			//	dp[1 << v][v] = d[sv][v];
 
 			for (uint x = 0; x < 1U << n; ++x)
 			{
