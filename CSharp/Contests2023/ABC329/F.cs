@@ -24,16 +24,10 @@ class F
 			a--;
 			b--;
 
-			var da = bs[a];
-			var db = bs[b];
+			Merge(ref bs[b], ref bs[a]);
+			bs[a].Clear();
 
-			Merge(ref db, ref da);
-			da.Clear();
-
-			bs[a] = da;
-			bs[b] = db;
-
-			r.Add(db.Count);
+			r.Add(bs[b].Count);
 		}
 
 		return string.Join("\n", r);
