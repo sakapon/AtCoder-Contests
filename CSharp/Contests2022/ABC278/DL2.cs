@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 class DL2
 {
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main()
+	static void Main() => Console.WriteLine(Solve());
+	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
 		var a = ReadL();
 		var qc = int.Parse(Console.ReadLine());
 
-		var sb = new StringBuilder();
-		var c = new ClearableArray<long>(a, 0);
+		var r = new List<long>();
+		var c = new ClearableArray<long>(a);
 
 		while (qc-- > 0)
 		{
 			var q = ReadL();
+
 			if (q[0] == 1)
 			{
-				c.Clear(q[1]);
+				c.Fill(q[1]);
 			}
 			else if (q[0] == 2)
 			{
@@ -30,36 +30,30 @@ class DL2
 			else
 			{
 				var i = (int)q[1] - 1;
-				sb.Append(c[i]).AppendLine();
+				r.Add(c[i]);
 			}
 		}
-		Console.Write(sb);
+		return string.Join("\n", r);
 	}
 }
 
+// Clear, Fill が O(1) でできる配列
 public class ClearableArray<T>
 {
-	// クエリ番号を管理します。
 	readonly T[] a;
+	// クエリ番号を管理します。
 	readonly int[] q;
 	T v0;
-	int q0, qi;
+	int q0 = -1, qi;
 
-	public ClearableArray(T[] a, T v0)
+	public ClearableArray(T[] a)
 	{
 		this.a = a;
 		q = new int[a.Length];
-		this.v0 = v0;
-		q0 = -1;
-		qi = 0;
 	}
-	public ClearableArray(int n, T v0)
+	public ClearableArray(int n, T iv) : this(new T[n])
 	{
-		a = new T[n];
-		q = new int[a.Length];
-		this.v0 = v0;
-		q0 = 1;
-		qi = 1;
+		Fill(iv);
 	}
 
 	public T this[int i]
@@ -72,9 +66,10 @@ public class ClearableArray<T>
 		}
 	}
 
-	public void Clear(T v0)
+	public void Clear() => Fill(default(T));
+	public void Fill(T v)
 	{
-		this.v0 = v0;
+		v0 = v;
 		q0 = ++qi;
 	}
 }

@@ -1,31 +1,25 @@
 ﻿using System;
 
 // Test: https://atcoder.jp/contests/abc278/tasks/abc278_d
+// Clear, Fill が O(1) でできる配列
 namespace CoderLib8.Collections
 {
 	public class ClearableArray<T>
 	{
-		// クエリ番号を管理します。
 		readonly T[] a;
+		// クエリ番号を管理します。
 		readonly int[] q;
 		T v0;
-		int q0, qi;
+		int q0 = -1, qi;
 
-		public ClearableArray(T[] a, T v0)
+		public ClearableArray(T[] a)
 		{
 			this.a = a;
 			q = new int[a.Length];
-			this.v0 = v0;
-			q0 = -1;
-			qi = 0;
 		}
-		public ClearableArray(int n, T v0)
+		public ClearableArray(int n, T iv) : this(new T[n])
 		{
-			a = new T[n];
-			q = new int[a.Length];
-			this.v0 = v0;
-			q0 = 1;
-			qi = 1;
+			Fill(iv);
 		}
 
 		public T this[int i]
@@ -38,9 +32,10 @@ namespace CoderLib8.Collections
 			}
 		}
 
-		public void Clear(T v0)
+		public void Clear() => Fill(default(T));
+		public void Fill(T v)
 		{
-			this.v0 = v0;
+			v0 = v;
 			q0 = ++qi;
 		}
 	}
