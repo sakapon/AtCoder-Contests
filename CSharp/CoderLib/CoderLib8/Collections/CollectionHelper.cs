@@ -26,12 +26,33 @@ namespace CoderLib8.Collections
 		}
 
 		// XOR の場合。SymmetricExceptWith メソッドでも可。
-		public static HashSet<int> Merge(HashSet<int> s1, HashSet<int> s2)
+		public static HashSet<int> MergeXor(HashSet<int> s1, HashSet<int> s2)
 		{
 			if (s1.Count < s2.Count) (s1, s2) = (s2, s1);
 			foreach (var v in s2)
 				if (!s1.Add(v)) s1.Remove(v);
 			return s1;
+		}
+
+		public static void Move<T>(ref List<T> from, ref List<T> to)
+		{
+			if (to.Count < from.Count) (to, from) = (from, to);
+			foreach (var v in from) to.Add(v);
+			from.Clear();
+		}
+
+		public static void Move<T>(ref HashSet<T> from, ref HashSet<T> to)
+		{
+			if (to.Count < from.Count) (to, from) = (from, to);
+			foreach (var v in from) to.Add(v);
+			from.Clear();
+		}
+
+		public static void Move<TK>(ref Dictionary<TK, int> from, ref Dictionary<TK, int> to)
+		{
+			if (to.Count < from.Count) (to, from) = (from, to);
+			foreach (var (k, v) in from) to[k] = to.GetValueOrDefault(k) + v;
+			from.Clear();
 		}
 	}
 }
