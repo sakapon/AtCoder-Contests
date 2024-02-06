@@ -64,6 +64,23 @@ namespace CoderLib8.Values
 
 		public bool IsInRange(int i, int j) => 0 <= i && i < n1 && 0 <= j && j < n2;
 
+		public IEnumerable<(int i, int j)> GetNexts(int i, int j)
+		{
+			if (i > 0) yield return (i - 1, j);
+			if (j > 0) yield return (i, j - 1);
+			if (i + 1 < n1) yield return (i + 1, j);
+			if (j + 1 < n2) yield return (i, j + 1);
+		}
+
+		public IEnumerable<int> GetNexts(int v)
+		{
+			var i = Math.DivRem(v, n2, out var j);
+			if (i > 0) yield return v - n2;
+			if (j > 0) yield return v - 1;
+			if (i + 1 < n1) yield return v + n2;
+			if (j + 1 < n2) yield return v + 1;
+		}
+
 		public Grid2<T> SwapRows(int i1, int i2)
 		{
 			var r = new Grid2<T>(n1, n2, (T[])a.Clone());
