@@ -11,11 +11,7 @@
 
 		foreach (var c in s)
 		{
-			var f = 1 << c - '0';
-
-			if ((x & f) == 0) x |= f;
-			else x &= ~f;
-
+			x ^= 1 << c - '0';
 			counts[x]++;
 		}
 		return counts.Sum(c => c * (c - 1) / 2);
