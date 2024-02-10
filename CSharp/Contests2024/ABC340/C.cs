@@ -1,17 +1,47 @@
-﻿class C
+﻿using AlgorithmLab.Collections.Arrays301;
+
+class C
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var n = long.Parse(Console.ReadLine());
 
-		return string.Join(" ", a);
+		var r = 0L;
+
+		var map = new ArrayHashMap<long, long>();
+		var mapt = new ArrayHashMap<long, long>();
+		map[n] = 1;
+
+		while (map.Count > 0)
+		{
+			foreach (var (k, v) in map)
+			{
+				r += k * v;
+
+				if (k % 2 == 0)
+				{
+					if (k == 2) continue;
+					mapt[k / 2] += v * 2;
+				}
+				else
+				{
+					if (k == 3)
+					{
+						mapt[2] += v;
+					}
+					else
+					{
+						mapt[k / 2] += v;
+						mapt[k / 2 + 1] += v;
+					}
+				}
+			}
+
+			(map, mapt) = (mapt, map);
+			mapt.Clear();
+		}
+
+		return r;
 	}
 }
