@@ -2,16 +2,22 @@
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var p = Read();
+		var qc = int.Parse(Console.ReadLine());
+		var qs = Array.ConvertAll(new bool[qc], _ => Read2());
 
-		return string.Join(" ", a);
+		var r = new List<int>();
+
+		foreach (var (a, b) in qs)
+		{
+			var ai = Array.IndexOf(p, a);
+			var bi = Array.IndexOf(p, b);
+			r.Add(ai < bi ? a : b);
+		}
+		return string.Join("\n", r);
 	}
 }
