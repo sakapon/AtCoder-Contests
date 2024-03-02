@@ -1,17 +1,18 @@
 ﻿class C
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var n = long.Parse(Console.ReadLine());
+		return Enumerable.Range(1, 1000000).Select(x => (long)x * x * x).Where(IsPali).Last(x => x <= n);
+	}
 
-		return string.Join(" ", a);
+	static bool IsPali(long x)
+	{
+		var s = x.ToString();
+		var cs = s.ToCharArray();
+		Array.Reverse(cs);
+		var sr = new string(cs);
+		return s == sr;
 	}
 }
