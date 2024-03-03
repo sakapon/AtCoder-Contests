@@ -1,6 +1,4 @@
-﻿using AlgorithmLab.Collections.Arrays301;
-
-class D
+﻿class D
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
@@ -14,13 +12,14 @@ class D
 
 		var c = 1;
 		var s = new long[n + 1];
-		var d = new ArrayHashMap<long, int>();
+		var d = new Dictionary<long, int>();
 		d[0] = n;
 
 		foreach (var (a, b) in ps)
 		{
 			var p0 = s[a];
 			var p1 = s[a] += b;
+			if (!d.ContainsKey(p1)) d[p1] = 0;
 
 			if (--d[p0] == 0) c--;
 			if (d[p1]++ == 0) c++;
