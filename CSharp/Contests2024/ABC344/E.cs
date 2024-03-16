@@ -1,17 +1,37 @@
 ﻿class E
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
 		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var qc = int.Parse(Console.ReadLine());
+		var qs = Array.ConvertAll(new bool[qc], _ => Read());
 
-		return string.Join(" ", a);
+		var l = new LinkedList<int>();
+		var d = new Dictionary<int, LinkedListNode<int>>();
+
+		foreach (var x in a)
+		{
+			d[x] = l.AddLast(x);
+		}
+
+		foreach (var q in qs)
+		{
+			var x = q[1];
+
+			if (q[0] == 1)
+			{
+				var y = q[2];
+				d[y] = l.AddAfter(d[x], y);
+			}
+			else
+			{
+				l.Remove(d[x]);
+			}
+		}
+
+		return string.Join(" ", l);
 	}
 }
