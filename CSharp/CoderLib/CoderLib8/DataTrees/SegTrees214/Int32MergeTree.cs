@@ -1,4 +1,6 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+
 namespace AlgorithmLib10.SegTrees.SegTrees214
 {
 	public class Int32MergeTree<TValue>

@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace AlgorithmLib10.SegTrees.SegTrees214
 {
 	public static class Monoid

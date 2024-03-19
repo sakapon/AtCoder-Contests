@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace AlgorithmLib10.SegTrees.SegTrees111
 {
 	public class RAQTree
