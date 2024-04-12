@@ -14,10 +14,7 @@
 
 		var rv = 1;
 		DFS1(rv, -1);
-		foreach (var v in map[rv])
-		{
-			DFS2(v, rv, c[rv] - c[v], r[rv] - r[v] - c[v]);
-		}
+		DFS2(rv, -1, 0, 0);
 		return r[1..].Min();
 
 		void DFS1(int v, int pv)
