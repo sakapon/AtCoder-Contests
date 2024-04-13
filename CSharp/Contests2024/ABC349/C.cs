@@ -1,17 +1,15 @@
-﻿class C
-{
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
-	static object Solve()
-	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+﻿using System.Text.RegularExpressions;
 
-		return string.Join(" ", a);
+class C
+{
+	static void Main() => Console.WriteLine(Solve() ? "Yes" : "No");
+	static bool Solve()
+	{
+		var s = Console.ReadLine();
+		var t = Console.ReadLine().ToLower();
+
+		var p2 = $@"\w*{t[0]}\w*{t[1]}\w*";
+		var p3 = $@"\w*{t[0]}\w*{t[1]}\w*{t[2]}\w*";
+		return Regex.IsMatch(s, p3) || t[2] == 'x' && Regex.IsMatch(s, p2);
 	}
 }
