@@ -8,8 +8,8 @@ class C
 		var s = Console.ReadLine();
 		var t = Console.ReadLine().ToLower();
 
-		var p2 = $@"\w*{t[0]}\w*{t[1]}\w*";
-		var p3 = $@"\w*{t[0]}\w*{t[1]}\w*{t[2]}\w*";
+		var p2 = $"{t[0]}.*{t[1]}";
+		var p3 = $"{t[0]}.*{t[1]}.*{t[2]}";
 		return Regex.IsMatch(s, p3) || t[2] == 'x' && Regex.IsMatch(s, p2);
 	}
 }
