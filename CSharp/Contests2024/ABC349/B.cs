@@ -4,6 +4,6 @@
 	static bool Solve()
 	{
 		var s = Console.ReadLine();
-		return s.GroupBy(c => c).GroupBy(g => g.Count(), g => g.Key).All(g => g.Count() == 2);
+		return s.GroupBy(c => c).GroupBy(g => g.Count()).All(g => g.Count() == 2);
 	}
 }
