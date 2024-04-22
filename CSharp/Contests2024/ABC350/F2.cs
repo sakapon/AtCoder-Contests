@@ -37,13 +37,7 @@ class F2
 				i = parens[i];
 				d *= -1;
 			}
-			else if (s[i] == '(')
-			{
-				ps.Push(i);
-				i = parens[i];
-				d *= -1;
-			}
-			else if (s[i] == ')')
+			else if (char.IsPunctuation(s[i]))
 			{
 				ps.Push(i);
 				i = parens[i];
