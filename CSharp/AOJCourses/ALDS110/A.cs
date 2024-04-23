@@ -11,21 +11,26 @@ class A
 	// 貰う
 	static long Fibonacci1(int n)
 	{
-		var f = new long[n + 1];
-		f[1] = f[0] = 1;
+		var dp = new long[n + 1];
+		dp[1] = dp[0] = 1;
 		for (int i = 2; i <= n; i++)
-			f[i] = f[i - 1] + f[i - 2];
-		return f[n];
+		{
+			dp[i] = dp[i - 1] + dp[i - 2];
+		}
+		return dp[n];
 	}
 
 	// 配る
 	static long Fibonacci2(int n)
 	{
-		var f = new long[n + 1];
-		f[1] = f[0] = 1;
-		for (int i = 1; i < n; i++)
-			f[i + 1] = f[i] + f[i - 1];
-		return f[n];
+		var dp = new long[n + 2];
+		dp[0] = 1;
+		for (int i = 0; i < n; i++)
+		{
+			dp[i + 1] += dp[i];
+			dp[i + 2] += dp[i];
+		}
+		return dp[n];
 	}
 
 	// メモリ節約

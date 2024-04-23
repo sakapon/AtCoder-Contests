@@ -6,16 +6,16 @@ class A3
 	{
 		var n = int.Parse(Console.ReadLine());
 
-		f = new long[n + 1];
+		dp = new long[n + 1];
 		Console.WriteLine(Rec(n));
 	}
 
 	// TLE
-	static long[] f;
+	static long[] dp;
 	static long Rec(int n)
 	{
 		if (n <= 1) return 1;
-		return f[n] = Rec(n - 1) + Rec(n - 2);
+		return dp[n] = Rec(n - 1) + Rec(n - 2);
 	}
 
 	// TLE
