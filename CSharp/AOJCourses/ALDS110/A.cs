@@ -33,7 +33,7 @@ class A
 		return dp[n];
 	}
 
-	// メモリ節約
+	// 貰う (メモリ節約)
 	static long Fibonacci3(int n)
 	{
 		if (n <= 1) return 1;
@@ -44,6 +44,20 @@ class A
 			v0 = v1;
 			v1 = v2;
 		}
-		return v2;
+		return v1;
+	}
+
+	// 配る (メモリ節約)
+	static long Fibonacci4(int n)
+	{
+		if (n <= 1) return 1;
+		long v0 = 1, v1 = 0, v2 = 0;
+		for (int i = 0; i < n; i++)
+		{
+			v2 = v0;
+			v0 += v1;
+			v1 = v2;
+		}
+		return v0;
 	}
 }
