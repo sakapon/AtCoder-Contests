@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-class D
+class D0
 {
 	static void Main()
 	{
