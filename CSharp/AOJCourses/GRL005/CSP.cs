@@ -14,23 +14,23 @@ class CSP
 		var qc = int.Parse(Console.ReadLine());
 		var qs = Array.ConvertAll(new bool[qc], _ => Read());
 
-		tour = new List<(int depth, int v)>();
+		tour = new List<(int, int)>();
 		first = new int[n];
 		DFS(0, 0);
 
-		var monoid = new Monoid<(int depth, int v)>((x, y) => x.depth <= y.depth ? x : y, (int.MaxValue, -1));
-		var st = new SparseTable<(int depth, int v)>(tour.ToArray(), monoid);
+		var monoid = new Monoid<(int, int)>((x, y) => x.Item1 <= y.Item1 ? x : y, (int.MaxValue, -1));
+		var st = new SparseTable<(int, int)>(tour.ToArray(), monoid);
 
 		return string.Join("\n", qs.Select(q =>
 		{
 			var l = first[q[0]];
 			var r = first[q[1]];
-			return l <= r ? st[l, r + 1].v : st[r, l + 1].v;
+			return l <= r ? st[l, r + 1].Item2 : st[r, l + 1].Item2;
 		}));
 	}
 
 	static int[][] map;
-	static List<(int depth, int v)> tour;
+	static List<(int, int)> tour;
 	static int[] first;
 
 	static void DFS(int v, int depth)
