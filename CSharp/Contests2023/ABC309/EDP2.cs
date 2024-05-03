@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-class E2
+class EDP2
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
@@ -13,29 +13,30 @@ class E2
 		var xys = Array.ConvertAll(new bool[m], _ => Read2());
 
 		var map = Array.ConvertAll(new bool[n + 1], _ => new List<int>());
-		for (int i = 2; i <= n; i++)
+		for (int v = 2; v <= n; v++)
 		{
-			map[p[i - 2]].Add(i);
+			map[p[v - 2]].Add(v);
 		}
 
 		var ys = new int[n + 1];
+		Array.Fill(ys, -1);
 		foreach (var (x, y) in xys)
 		{
 			Chmax(ref ys[x], y);
 		}
 
 		var r = 0;
-		DFS(1, 0, -1);
+		DFS(1, -1);
 		return r;
 
-		void DFS(int v, int d, int yd)
+		void DFS(int v, int d)
 		{
-			if (ys[v] > 0) Chmax(ref yd, d + ys[v]);
-			if (d <= yd) r++;
+			if (d < ys[v]) d = ys[v];
+			if (d >= 0) r++;
 
 			foreach (var nv in map[v])
 			{
-				DFS(nv, d + 1, yd);
+				DFS(nv, d - 1);
 			}
 		}
 	}
