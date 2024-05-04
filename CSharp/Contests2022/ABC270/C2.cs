@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-class C
+class C2
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int, int) Read3() { var a = Read(); return (a[0], a[1], a[2]); }
@@ -12,24 +12,27 @@ class C
 		var (n, x, y) = Read3();
 		var es = Array.ConvertAll(new bool[n - 1], _ => Read());
 
-		var root = x;
+		var root = y;
 		var map = ToMap(n + 1, es, true);
 
 		var path = new List<int>();
 		DFS(root, -1);
+		path.Add(root);
 		return string.Join(" ", path);
 
 		bool DFS(int v, int pv)
 		{
-			path.Add(v);
-			if (v == y) return true;
+			if (v == x) return true;
 
 			foreach (var nv in map[v])
 			{
 				if (nv == pv) continue;
-				if (DFS(nv, v)) return true;
+				if (DFS(nv, v))
+				{
+					path.Add(nv);
+					return true;
+				}
 			}
-			path.RemoveAt(path.Count - 1);
 			return false;
 		}
 	}
