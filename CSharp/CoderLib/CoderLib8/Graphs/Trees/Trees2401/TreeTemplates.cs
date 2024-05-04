@@ -145,5 +145,46 @@ namespace CoderLib8.Graphs.Trees.Trees2401
 				return false;
 			}
 		}
+
+		static object SolveW()
+		{
+			var n = int.Parse(Console.ReadLine());
+			var es = Array.ConvertAll(new bool[n - 1], _ => Read3());
+			var qc = int.Parse(Console.ReadLine());
+			var qs = Array.ConvertAll(new bool[qc], _ => Read2());
+
+			var root = 1;
+			var map = Array.ConvertAll(new bool[n + 1], _ => new List<(int to, int w)>());
+			foreach (var (u, v, w) in es)
+			{
+				map[u].Add((v, w));
+				map[v].Add((u, w));
+			}
+
+			var costs = new int[n];
+			var parents = new int[n];
+			Array.Fill(costs, -1);
+			Array.Fill(parents, -1);
+			costs[root] = 0;
+			DFS(root, -1);
+
+			return string.Join("\n", qs.Select(q =>
+			{
+				var (u, v) = q;
+				return 0;
+			}));
+
+			void DFS(int v, int pv)
+			{
+				foreach (var (nv, w) in map[v])
+				{
+					if (nv == pv) continue;
+					if (costs[nv] != -1) continue;
+					costs[nv] = costs[v] + w;
+					parents[nv] = v;
+					DFS(nv, v);
+				}
+			}
+		}
 	}
 }
