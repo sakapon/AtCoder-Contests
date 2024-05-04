@@ -18,7 +18,7 @@ namespace CoderLib8.Graphs.Trees.Trees2401
 			var qs = Array.ConvertAll(new bool[qc], _ => Read2());
 
 			var root = 1;
-			var map = ToMap(n, es, true);
+			var map = ToMap(n + 1, es, true);
 
 			var depths = new int[n];
 			var parents = new int[n];
@@ -92,12 +92,17 @@ namespace CoderLib8.Graphs.Trees.Trees2401
 		static object Solve2()
 		{
 			var n = int.Parse(Console.ReadLine());
-			var es = Array.ConvertAll(new bool[n - 1], _ => Read());
+			var es = Array.ConvertAll(new bool[n - 1], _ => Read2());
 			var qc = int.Parse(Console.ReadLine());
 			var qs = Array.ConvertAll(new bool[qc], _ => Read2());
 
 			var root = 1;
-			var map = ToMap(n, es, true);
+			var map = Array.ConvertAll(new bool[n + 1], _ => new List<int>());
+			foreach (var (u, v) in es)
+			{
+				map[u].Add(v);
+				map[v].Add(u);
+			}
 
 			var path = new List<int>();
 			var depths = new int[n];
