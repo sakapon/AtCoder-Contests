@@ -16,30 +16,41 @@ class F
 		var map = ToMap(n + 1, es, true);
 
 		var r = new int[n + 1];
-		var lis = new int[n];
-		var history = new Stack<(int i, int x)>();
-		Array.Fill(r, -1);
-		Array.Fill(lis, max);
-		DFS(root, -1);
-
+		var lis = new List<int>();
+		DFS(root);
 		return string.Join("\n", r[1..]);
 
-		void DFS(int v, int pv)
+		void DFS(int v)
 		{
 			var x = a[v - 1];
-			var i = First(0, n, i => lis[i] >= x);
-			history.Push((i, lis[i]));
-			lis[i] = x;
-			r[v] = First(0, n, i => lis[i] == max);
+			var i = First(0, lis.Count, i => lis[i] >= x);
+			var x0 = 0;
+			if (i < lis.Count)
+			{
+				x0 = lis[i];
+				lis[i] = x;
+			}
+			else
+			{
+				x0 = max;
+				lis.Add(x);
+			}
+			r[v] = lis.Count;
 
 			foreach (var nv in map[v])
 			{
-				if (nv == pv) continue;
-				DFS(nv, v);
+				if (r[nv] != 0) continue;
+				DFS(nv);
 			}
 
-			var (i0, x0) = history.Pop();
-			lis[i0] = x0;
+			if (x0 != max)
+			{
+				lis[i] = x0;
+			}
+			else
+			{
+				lis.RemoveAt(i);
+			}
 		}
 	}
 
