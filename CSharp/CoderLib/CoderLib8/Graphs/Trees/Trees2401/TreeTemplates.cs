@@ -20,8 +20,8 @@ namespace CoderLib8.Graphs.Trees.Trees2401
 			var root = 1;
 			var map = ToMap(n + 1, es, true);
 
-			var depths = new int[n];
-			var parents = new int[n];
+			var depths = new int[n + 1];
+			var parents = new int[n + 1];
 			Array.Fill(depths, -1);
 			Array.Fill(parents, -1);
 			depths[root] = 0;
@@ -105,8 +105,8 @@ namespace CoderLib8.Graphs.Trees.Trees2401
 			}
 
 			var path = new List<int>();
-			var depths = new int[n];
-			var parents = new int[n];
+			var depths = new int[n + 1];
+			var parents = new int[n + 1];
 			Array.Fill(depths, -1);
 			Array.Fill(parents, -1);
 			depths[root] = 0;
@@ -161,8 +161,8 @@ namespace CoderLib8.Graphs.Trees.Trees2401
 				map[v].Add((u, w));
 			}
 
-			var costs = new int[n];
-			var parents = new int[n];
+			var costs = new int[n + 1];
+			var parents = new int[n + 1];
 			Array.Fill(costs, -1);
 			Array.Fill(parents, -1);
 			costs[root] = 0;
