@@ -7,16 +7,16 @@
 		var n = int.Parse(Console.ReadLine());
 		var a = ReadL();
 
-		var pq = new PriorityQueue<(long, long), (long, long)>();
+		var pq = new PriorityQueue<long, long>();
 		foreach (var v in a)
-			pq.Enqueue((3 * v, v), (3 * v, v));
+			pq.Enqueue(v, 3 * v);
 
 		var r = a.Sum();
 		for (int i = 0; i < n - 2; i++)
 		{
-			var (x, v) = pq.Dequeue();
+			pq.TryDequeue(out var v, out var x);
 			r += x;
-			pq.Enqueue((x + 2 * v, v), (x + 2 * v, v));
+			pq.Enqueue(v, x + 2 * v);
 		}
 		return r;
 	}
