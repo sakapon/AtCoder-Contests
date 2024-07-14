@@ -10,22 +10,17 @@
 
 		var sMin = ps.Sum(p => p.l);
 		var sMax = ps.Sum(p => p.r);
-
 		if (sMin > 0 || sMax < 0) return "No";
 
-		var x = ps.Select(p => p.l).ToArray();
-		var d = ps.Select(p => p.r - p.l).ToArray();
-		var e = -sMin;
+		var x = new long[n];
 
 		for (int i = 0; i < n; i++)
 		{
-			if (e == 0) break;
-
-			var v = Math.Min(d[i], e);
-			x[i] += v;
-			e -= v;
+			var (l, r) = ps[i];
+			var v = Math.Min(r - l, -sMin);
+			x[i] = l + v;
+			sMin += v;
 		}
-
 		return "Yes\n" + string.Join(" ", x);
 	}
 }
