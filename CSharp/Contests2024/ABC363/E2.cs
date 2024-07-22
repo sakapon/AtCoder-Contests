@@ -65,7 +65,6 @@
 
 						if (a[nv] <= k)
 						{
-							a[nv] = k;
 							s--;
 							u[nv] = true;
 							q.Enqueue(nv);
