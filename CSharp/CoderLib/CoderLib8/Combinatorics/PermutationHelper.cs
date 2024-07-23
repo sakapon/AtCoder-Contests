@@ -4,7 +4,9 @@ namespace CoderLib8.Combinatorics
 {
 	public static class PermutationHelper
 	{
+		// do-while ステートメントで利用します。
 		// 値は何でもかまいません。重複可能。
+		// 値が重複する場合、n! 通りではありません。
 		public static bool NextPermutation(int[] p)
 		{
 			var n = p.Length;
@@ -24,7 +26,9 @@ namespace CoderLib8.Combinatorics
 		}
 
 		// Test: https://atcoder.jp/contests/abc276/tasks/abc276_c
+		// do-while ステートメントで利用します。
 		// 値は何でもかまいません。重複可能。
+		// 値が重複する場合、n! 通りではありません。
 		public static bool PreviousPermutation(int[] p)
 		{
 			var n = p.Length;
