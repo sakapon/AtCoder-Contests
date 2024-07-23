@@ -18,7 +18,7 @@
 			var ok = true;
 			for (int i = 0; i + k <= n; i++)
 			{
-				if (IsPalindrome(s, i, k))
+				if (IsPalindrome(s, i, i + k))
 				{
 					ok = false;
 					break;
@@ -49,9 +49,9 @@
 		return true;
 	}
 
-	static bool IsPalindrome(char[] s, int start, int count)
+	static bool IsPalindrome(char[] s, int l, int r)
 	{
-		for (int i = 0; i < count; ++i) if (s[start + i] != s[start + count - 1 - i]) return false;
+		for (--l; ++l < --r;) if (s[l] != s[r]) return false;
 		return true;
 	}
 }
