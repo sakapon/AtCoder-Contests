@@ -26,6 +26,7 @@ namespace CoderLib8.Extra
 			return Shuffle(a);
 		}
 
+		#region Trees
 		public static (int u, int v)[] CreateTree(int n, bool from1 = true)
 		{
 			var a = new int[n];
@@ -42,5 +43,45 @@ namespace CoderLib8.Extra
 			var ess = string.Join("\n", es.Select(e => $"{e.u} {e.v}"));
 			Console.Write($"{n} {n - 1}\n{ess}\n");
 		}
+		#endregion
+
+		#region Rationals
+		const int M = 998244353;
+		static int Gcd(int a, int b) { if (b == 0) return a; for (int r; (r = a % b) > 0; a = b, b = r) ; return b; }
+
+		// 真分数を復元します。
+		// maxDenom < M
+		public static void WriteProperRationals(long q, int maxDenom = 1 << 24)
+		{
+			if (q < 0 || M <= q)
+			{
+				Console.WriteLine("Out of range.");
+				return;
+			}
+
+			for (var d = 1; d <= maxDenom; ++d)
+			{
+				var n = (int)(q * d % M);
+				if (n < d && Gcd(n, d) == 1) Console.WriteLine($"{n} / {d}");
+			}
+		}
+
+		// 仮分数を復元します。
+		// maxDenom < M
+		public static void WriteRationals(long q, int maxDenom = 1 << 24, long maxValue = 1 << 10)
+		{
+			if (q < 0 || M <= q)
+			{
+				Console.WriteLine("Out of range.");
+				return;
+			}
+
+			for (var d = 1; d <= maxDenom; ++d)
+			{
+				var n = (int)(q * d % M);
+				if (n <= maxValue * d && Gcd(n, d) == 1) Console.WriteLine($"{n} / {d}");
+			}
+		}
+		#endregion
 	}
 }
