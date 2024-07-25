@@ -68,7 +68,7 @@ namespace CoderLib8.Extra
 
 		// 仮分数を復元します。
 		// maxDenom < M
-		public static void WriteRationals(long q, int maxDenom = 1 << 24, long maxValue = 1 << 10)
+		public static void WriteRationals(long q, int maxDenom = 1 << 24, long maxValue = 1 << 10, int maxCount = 10)
 		{
 			if (q < 0 || M <= q)
 			{
@@ -76,10 +76,14 @@ namespace CoderLib8.Extra
 				return;
 			}
 
-			for (var d = 1; d <= maxDenom; ++d)
+			for (int d = 1, c = 0; d <= maxDenom && c < maxCount; ++d)
 			{
 				var n = (int)(q * d % M);
-				if (n <= maxValue * d && Gcd(n, d) == 1) Console.WriteLine($"{n} / {d}");
+				if (n <= maxValue * d && Gcd(n, d) == 1)
+				{
+					++c;
+					Console.WriteLine($"{n} / {d}");
+				}
 			}
 		}
 		#endregion
