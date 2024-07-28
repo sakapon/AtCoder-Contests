@@ -86,6 +86,21 @@ namespace CoderLib8.Extra
 				}
 			}
 		}
+
+		public static void WriteRationals(double q, int maxDenom = 1 << 24, int maxCount = 10)
+		{
+			for (int d = 1, c = 0; d <= maxDenom && c < maxCount; ++d)
+			{
+				var nd = q * d;
+				var n = (int)Math.Round(nd);
+
+				if (Math.Abs(nd - n) <= 0.000001 && Gcd(Math.Abs(n), d) == 1)
+				{
+					++c;
+					Console.WriteLine($"{n} / {d}");
+				}
+			}
+		}
 		#endregion
 	}
 }
