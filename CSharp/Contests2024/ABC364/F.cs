@@ -15,10 +15,11 @@ class F
 		Array.Fill(counts, 1);
 
 		var sum = 0L;
-		var set1 = new IntSegmentCountSet(n, counts);
-		var set2 = new IntSegmentCountSet(n);
-		var rs = new int[n];
-		Array.Fill(rs, -1);
+		// 区間を管理します。
+		// 右端
+		var set = new IntSegmentCountSet(n, counts);
+		// 左端
+		var ls = Enumerable.Range(0, n).ToArray();
 
 		foreach (var q in qs.OrderBy(q => q.Item3))
 		{
@@ -26,38 +27,27 @@ class F
 			l--;
 			r--;
 
-			while (true)
-			{
-				var i = set1.GetFirstGeq(l);
-				if (i > r) break;
-				set1.Remove(i);
-				sum += c;
-			}
-
-			var l2 = set2.GetLastLeq(l - 1);
-			var r2 = l2 != -1 ? rs[l2] : -1;
-			if (r2 < l) l2 = l;
-			if (l2 < l)
-			{
-				set2.Remove(l2);
-				sum += c;
-			}
+			var r2 = set.GetFirstGeq(l);
+			var nl = ls[r2];
+			var nr = r2;
+			set.Remove(r2);
+			sum += c;
 
 			while (true)
 			{
-				var i = set2.GetFirstGeq(l2);
-				if (i > r) break;
-				set2.Remove(i);
+				r2 = set.GetFirstGeq(l);
+				if (r2 >= n) break;
+				if (r < ls[r2]) break;
+				nr = r2;
+				set.Remove(r2);
 				sum += c;
-				r2 = rs[i];
 			}
-			if (r2 < r) r2 = r;
 
-			set2.Add(l2);
-			rs[l2] = r2;
+			set.Add(nr);
+			ls[nr] = nl;
 		}
 
-		if (set2.Count == 1 && set2.GetAt(0) == 0 && rs[0] == n - 1) return sum;
+		if (set.Count == 1 && set.GetAt(0) == n - 1 && ls[^1] == 0) return sum;
 		return -1;
 	}
 }
