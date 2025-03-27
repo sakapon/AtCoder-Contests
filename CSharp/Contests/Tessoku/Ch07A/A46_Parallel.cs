@@ -16,20 +16,21 @@ class A46_Parallel
 			Thread.Sleep(980);
 			o.end = true;
 		});
-		Parallel.For(0, 1000, _ => o.Solve());
+		Parallel.For(0, 100, o.Solve);
 
 		var (score, r) = o.results.MaxBy(p => p.score);
 		Console.WriteLine(string.Join("\n", r.Select(i => i + 1)));
 		//Console.WriteLine(score);
-		//Console.WriteLine(o.k);
+		//Console.WriteLine(o.loops);
 	}
 
 	readonly int n;
 	readonly double[,] d;
 
 	bool end;
-	int k;
-	readonly List<(double score, int[])> results = new List<(double, int[])>();
+	int loops;
+	readonly int[] path0;
+	readonly (double score, int[])[] results = new (double, int[])[100];
 
 	A46_Parallel()
 	{
@@ -47,28 +48,30 @@ class A46_Parallel
 				d[i, j] = Math.Sqrt(dx * dx + dy * dy);
 			}
 		}
+
+		path0 = Enumerable.Range(0, n + 1).ToArray();
+		path0[^1] = 0;
 	}
 
-	void Solve()
+	void Solve(int k)
 	{
 		var score = 0.0;
-		var t = Enumerable.Range(0, n + 1).ToArray();
-		t[^1] = 0;
+		var path = (int[])path0.Clone();
+		Shuffle(path);
 
-		for (; !end; ++k)
+		for (; !end; ++loops)
 		{
 			var (i, j) = NextInt2();
-			Array.Reverse(t, i + 1, j - i);
+			Array.Reverse(path, i + 1, j - i);
 
-			var s = GetScore(t);
+			var s = GetScore(path);
 			if (score < s)
 				score = s;
 			else
-				Array.Reverse(t, i + 1, j - i);
+				Array.Reverse(path, i + 1, j - i);
 		}
 
-		lock (results)
-			results.Add((score, t));
+		results[k] = (score, path);
 	}
 
 	double GetScore(int[] sol)
@@ -88,6 +91,15 @@ class A46_Parallel
 			var n2 = random.Next(n);
 			if (n1 == n2) continue;
 			return n1 < n2 ? (n1, n2) : (n2, n1);
+		}
+	}
+
+	void Shuffle<T>(T[] a)
+	{
+		for (int i = 1; i < n; ++i)
+		{
+			var j = random.Next(n - i);
+			(a[j + 1], a[^(i + 1)]) = (a[^(i + 1)], a[j + 1]);
 		}
 	}
 }
