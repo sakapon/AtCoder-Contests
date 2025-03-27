@@ -10,27 +10,26 @@ class A46_Parallel
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static void Main()
 	{
+		var results = new (double score, int[])[ThreadsCount];
 		var o = new A46_Parallel();
-		Task.Run(() =>
-		{
-			Thread.Sleep(980);
-			o.end = true;
-		});
-		Parallel.For(0, 100, o.Solve);
+		o.StartTime = DateTime.Now;
+		Parallel.For(0, ThreadsCount, i => results[i] = o.Solve());
 
-		var (score, r) = o.results.MaxBy(p => p.score);
+		var (score, r) = results.MaxBy(p => p.score);
 		Console.WriteLine(string.Join("\n", r.Select(i => i + 1)));
 		//Console.WriteLine(score);
 		//Console.WriteLine(o.loops);
 	}
 
+	const int Timeout = 990;
+	const int ThreadsCount = 100;
+	DateTime StartTime;
+
 	readonly int n;
 	readonly double[,] d;
 
-	bool end;
 	int loops;
 	readonly int[] path0;
-	readonly (double score, int[])[] results = new (double, int[])[100];
 
 	A46_Parallel()
 	{
@@ -53,25 +52,26 @@ class A46_Parallel
 		path0[^1] = 0;
 	}
 
-	void Solve(int k)
+	(double, int[]) Solve()
 	{
-		var score = 0.0;
 		var path = (int[])path0.Clone();
 		Shuffle(path);
+		var score = GetScore(path);
 
-		for (; !end; ++loops)
+		for (double t; (t = (DateTime.Now - StartTime).TotalMilliseconds) < Timeout; ++loops)
 		{
 			var (i, j) = NextInt2();
 			Array.Reverse(path, i + 1, j - i);
 
 			var s = GetScore(path);
-			if (score < s)
+			var p = s >= score ? 1.0 : Math.Exp(1000 * (s - score) / score * Timeout / (Timeout - t));
+			if (random.NextDouble() < p)
 				score = s;
 			else
 				Array.Reverse(path, i + 1, j - i);
 		}
 
-		results[k] = (score, path);
+		return (score, path);
 	}
 
 	double GetScore(int[] sol)
