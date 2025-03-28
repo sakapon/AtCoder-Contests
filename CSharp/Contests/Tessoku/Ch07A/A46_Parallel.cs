@@ -1,40 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-class A46_Parallel
+﻿class A46_Parallel
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
+	const int ThreadsCount = 1 << 4;
 	static void Main()
 	{
 		var results = new (double score, int[])[ThreadsCount];
-		var o = new A46_Parallel();
-		o.StartTime = DateTime.Now;
+		var o = new A46_Annealing2();
 		Parallel.For(0, ThreadsCount, i => results[i] = o.Solve());
-
 		var (score, r) = results.MaxBy(p => p.score);
-		Console.WriteLine(string.Join("\n", r.Select(i => i + 1)));
-		//Console.WriteLine(score);
-		//Console.WriteLine(o.loops);
-	}
 
+		Console.WriteLine(string.Join("\n", r.Select(i => i + 1)));
+#if DEBUG
+		Console.WriteLine(score);
+		Console.WriteLine(o.Loops);
+		Console.WriteLine($"{(int)o.CurrentTime} ms");
+#endif
+	}
+}
+
+class A46_Annealing2
+{
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
+
+	const int TrialsCount = 300000;
 	const int Timeout = 990;
-	const int ThreadsCount = 100;
-	DateTime StartTime;
+	readonly DateTime startTime;
+	public double CurrentTime => (DateTime.Now - startTime).TotalMilliseconds;
+	public int Loops;
 
 	readonly int n;
 	readonly double[,] d;
-
-	int loops;
 	readonly int[] path0;
 
-	A46_Parallel()
+	public A46_Annealing2()
 	{
 		n = int.Parse(Console.ReadLine());
 		var ps = Array.ConvertAll(new bool[n], _ => Read2());
+		startTime = DateTime.Now;
 
 		d = new double[n, n];
 		for (int i = 0; i < n; i++)
@@ -52,26 +54,37 @@ class A46_Parallel
 		path0[^1] = 0;
 	}
 
-	(double, int[]) Solve()
+	public (double, int[]) Solve()
 	{
 		var path = (int[])path0.Clone();
-		Shuffle(path);
-		var score = GetScore(path);
+		var maxScore = 0.0;
+		var maxPath = path;
 
-		for (double t; (t = (DateTime.Now - StartTime).TotalMilliseconds) < Timeout; ++loops)
+		while (CurrentTime < Timeout)
 		{
-			var (i, j) = NextInt2();
-			Array.Reverse(path, i + 1, j - i);
+			Shuffle(path, 1, n - 1);
+			var score = GetScore(path);
 
-			var s = GetScore(path);
-			var p = s >= score ? 1.0 : Math.Exp(1000 * (s - score) / score * Timeout / (Timeout - t));
-			if (random.NextDouble() < p)
-				score = s;
-			else
+			for (int c = 0; c < TrialsCount && CurrentTime < Timeout; ++c, ++Loops)
+			{
+				var (i, j) = NextInt2();
 				Array.Reverse(path, i + 1, j - i);
+
+				var s = GetScore(path);
+				if (IsValid(score, s, c))
+					score = s;
+				else
+					Array.Reverse(path, i + 1, j - i);
+			}
+
+			if (maxScore < score)
+			{
+				maxScore = score;
+				maxPath = path.ToArray();
+			}
 		}
 
-		return (score, path);
+		return (maxScore, maxPath);
 	}
 
 	double GetScore(int[] sol)
@@ -83,6 +96,13 @@ class A46_Parallel
 	}
 
 	static readonly Random random = new Random();
+
+	static bool IsValid(double oldScore, double newScore, int c)
+	{
+		if (newScore >= oldScore) return true;
+		return random.NextDouble() < Math.Exp(500 * (newScore - oldScore) / oldScore * TrialsCount / (TrialsCount - c));
+	}
+
 	(int, int) NextInt2()
 	{
 		var n1 = random.Next(n);
@@ -94,12 +114,13 @@ class A46_Parallel
 		}
 	}
 
-	void Shuffle<T>(T[] a)
+	static void Shuffle<T>(T[] a) => Shuffle(a, 0, a.Length);
+	static void Shuffle<T>(T[] a, int start, int count)
 	{
-		for (int i = 1; i < n; ++i)
+		for (int i = count - 1; i > 0; --i)
 		{
-			var j = random.Next(n - i);
-			(a[j + 1], a[^(i + 1)]) = (a[^(i + 1)], a[j + 1]);
+			var j = random.Next(i + 1);
+			(a[start + i], a[start + j]) = (a[start + j], a[start + i]);
 		}
 	}
 }
