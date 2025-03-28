@@ -1,30 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-class A46_Single
+﻿class A46_Single
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static void Main()
 	{
 		var o = new A46_Single();
-		Task.Run(() => o.Solve());
-		Thread.Sleep(990);
+		o.Start();
+		var (score, r) = o.Solve();
 
-		Console.WriteLine(string.Join("\n", o.result.Select(i => i + 1)));
-		//Console.WriteLine(o.score);
-		//Console.WriteLine(o.k);
+		Console.WriteLine(string.Join("\n", r.Select(i => i + 1)));
+		//Console.WriteLine(score);
+		//Console.WriteLine(o.loops);
+		//Console.WriteLine($"{(int)o.CurrentTime} ms");
 	}
+
+	const int Timeout = 990;
+	DateTime StartTime;
+	void Start() => StartTime = DateTime.Now;
+	double CurrentTime => (DateTime.Now - StartTime).TotalMilliseconds;
 
 	readonly int n;
 	readonly double[,] d;
-
-	int k;
-	double score;
-	int[] result;
+	readonly int[] path0;
+	int loops;
 
 	A46_Single()
 	{
@@ -42,20 +40,30 @@ class A46_Single
 				d[i, j] = Math.Sqrt(dx * dx + dy * dy);
 			}
 		}
+
+		path0 = Enumerable.Range(0, n + 1).ToArray();
+		path0[^1] = 0;
 	}
 
-	object Solve()
+	(double, int[]) Solve()
 	{
-		var t = Enumerable.Range(0, n + 1).ToArray();
-		t[^1] = 0;
+		var path = (int[])path0.Clone();
+		Shuffle(path);
+		var score = GetScore(path);
 
-		for (; ; ++k)
+		for (double t; (t = CurrentTime) < Timeout; ++loops)
 		{
 			var (i, j) = NextInt2();
-			Array.Reverse(t, i + 1, j - i);
-			if (!Maximize(t))
-				Array.Reverse(t, i + 1, j - i);
+			Array.Reverse(path, i + 1, j - i);
+
+			var s = GetScore(path);
+			if (IsValid(score, s, t))
+				score = s;
+			else
+				Array.Reverse(path, i + 1, j - i);
 		}
+
+		return (score, path);
 	}
 
 	double GetScore(int[] sol)
@@ -66,16 +74,14 @@ class A46_Single
 		return 1000000 / s;
 	}
 
-	bool Maximize(int[] sol)
+	static readonly Random random = new Random();
+
+	static bool IsValid(double oldScore, double newScore, double t)
 	{
-		var s = GetScore(sol);
-		if (score >= s) return false;
-		score = s;
-		result = (int[])sol.Clone();
-		return true;
+		if (newScore >= oldScore) return true;
+		return random.NextDouble() < Math.Exp(1000 * (newScore - oldScore) / oldScore * Timeout / (Timeout - t));
 	}
 
-	static readonly Random random = new Random();
 	(int, int) NextInt2()
 	{
 		var n1 = random.Next(n);
@@ -84,6 +90,15 @@ class A46_Single
 			var n2 = random.Next(n);
 			if (n1 == n2) continue;
 			return n1 < n2 ? (n1, n2) : (n2, n1);
+		}
+	}
+
+	void Shuffle<T>(T[] a)
+	{
+		for (int i = 1; i < n; ++i)
+		{
+			var j = random.Next(n - i);
+			(a[j + 1], a[^(i + 1)]) = (a[^(i + 1)], a[j + 1]);
 		}
 	}
 }
