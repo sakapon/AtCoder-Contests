@@ -6,9 +6,30 @@
 		var (score, r) = o.Solve();
 
 		Console.WriteLine(string.Join("\n", r.Select(i => i + 1)));
-		//Console.WriteLine(score);
-		//Console.WriteLine(o.Loops);
-		//Console.WriteLine($"{(int)o.CurrentTime} ms");
+#if DEBUG
+		Console.WriteLine(score);
+		Console.WriteLine(o.Loops);
+		Console.WriteLine($"{(int)o.CurrentTime} ms");
+#endif
+	}
+}
+
+class A46_Ann_Parallel
+{
+	const int ThreadsCount = 1 << 6;
+	static void Main()
+	{
+		var results = new (double score, int[])[ThreadsCount];
+		var o = new A46_Annealing();
+		Parallel.For(0, ThreadsCount, i => results[i] = o.Solve());
+		var (score, r) = results.MaxBy(p => p.score);
+
+		Console.WriteLine(string.Join("\n", r.Select(i => i + 1)));
+#if DEBUG
+		Console.WriteLine(score);
+		Console.WriteLine(o.Loops);
+		Console.WriteLine($"{(int)o.CurrentTime} ms");
+#endif
 	}
 }
 
