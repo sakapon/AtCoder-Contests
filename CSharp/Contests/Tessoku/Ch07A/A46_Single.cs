@@ -1,33 +1,36 @@
 ﻿class A46_Single
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 	static void Main()
 	{
-		var o = new A46_Single();
-		o.Start();
+		var o = new A46_Annealing();
 		var (score, r) = o.Solve();
 
 		Console.WriteLine(string.Join("\n", r.Select(i => i + 1)));
 		//Console.WriteLine(score);
-		//Console.WriteLine(o.loops);
+		//Console.WriteLine(o.Loops);
 		//Console.WriteLine($"{(int)o.CurrentTime} ms");
 	}
+}
+
+class A46_Annealing
+{
+	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
+	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 
 	const int Timeout = 990;
-	DateTime StartTime;
-	void Start() => StartTime = DateTime.Now;
-	double CurrentTime => (DateTime.Now - StartTime).TotalMilliseconds;
+	readonly DateTime startTime;
+	public double CurrentTime => (DateTime.Now - startTime).TotalMilliseconds;
+	public int Loops;
 
 	readonly int n;
 	readonly double[,] d;
 	readonly int[] path0;
-	int loops;
 
-	A46_Single()
+	public A46_Annealing()
 	{
 		n = int.Parse(Console.ReadLine());
 		var ps = Array.ConvertAll(new bool[n], _ => Read2());
+		startTime = DateTime.Now;
 
 		d = new double[n, n];
 		for (int i = 0; i < n; i++)
@@ -45,13 +48,13 @@
 		path0[^1] = 0;
 	}
 
-	(double, int[]) Solve()
+	public (double, int[]) Solve()
 	{
 		var path = (int[])path0.Clone();
-		Shuffle(path);
+		Shuffle(path, 1, n - 1);
 		var score = GetScore(path);
 
-		for (double t; (t = CurrentTime) < Timeout; ++loops)
+		for (double t; (t = CurrentTime) < Timeout; ++Loops)
 		{
 			var (i, j) = NextInt2();
 			Array.Reverse(path, i + 1, j - i);
@@ -93,12 +96,13 @@
 		}
 	}
 
-	void Shuffle<T>(T[] a)
+	static void Shuffle<T>(T[] a) => Shuffle(a, 0, a.Length);
+	static void Shuffle<T>(T[] a, int start, int count)
 	{
-		for (int i = 1; i < n; ++i)
+		for (int i = count - 1; i > 0; --i)
 		{
-			var j = random.Next(n - i);
-			(a[j + 1], a[^(i + 1)]) = (a[^(i + 1)], a[j + 1]);
+			var j = random.Next(i + 1);
+			(a[start + i], a[start + j]) = (a[start + j], a[start + i]);
 		}
 	}
 }
