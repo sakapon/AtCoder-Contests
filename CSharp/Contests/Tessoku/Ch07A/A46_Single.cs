@@ -38,7 +38,7 @@ class A46_Annealing
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 
-	const int AnnealingConst = 1000;
+	const int AnnealingRate = 1000;
 	const int Timeout = 990;
 	readonly DateTime startTime;
 	public double CurrentTime => (DateTime.Now - startTime).TotalMilliseconds;
@@ -104,7 +104,7 @@ class A46_Annealing
 	static bool IsValid(double oldScore, double newScore, double t)
 	{
 		if (newScore >= oldScore) return true;
-		return random.NextDouble() < Math.Exp(AnnealingConst * (newScore - oldScore) / oldScore * Timeout / (Timeout - t));
+		return random.NextDouble() < Math.Exp(AnnealingRate * (newScore - oldScore) / oldScore * Timeout / (Timeout - t));
 	}
 
 	(int, int) NextInt2()

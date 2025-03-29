@@ -23,7 +23,7 @@ class A46_Annealing2
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 
 	const int TrialsCount = 300000;
-	const int AnnealingConst = 500;
+	const int AnnealingRate = 500;
 	const int Timeout = 990;
 	readonly DateTime startTime;
 	public double CurrentTime => (DateTime.Now - startTime).TotalMilliseconds;
@@ -101,7 +101,7 @@ class A46_Annealing2
 	static bool IsValid(double oldScore, double newScore, int c)
 	{
 		if (newScore >= oldScore) return true;
-		return random.NextDouble() < Math.Exp(AnnealingConst * (newScore - oldScore) / oldScore * TrialsCount / (TrialsCount - c));
+		return random.NextDouble() < Math.Exp(AnnealingRate * (newScore - oldScore) / oldScore * TrialsCount / (TrialsCount - c));
 	}
 
 	(int, int) NextInt2()
