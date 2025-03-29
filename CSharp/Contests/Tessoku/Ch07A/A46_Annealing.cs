@@ -1,4 +1,4 @@
-﻿class A46_Single
+﻿class A46_Annealing_Single
 {
 	static void Main()
 	{
@@ -14,7 +14,7 @@
 	}
 }
 
-class A46_Ann_Parallel
+class A46_Annealing_Parallel
 {
 	const int ThreadsCount = 1 << 6;
 	static void Main()
