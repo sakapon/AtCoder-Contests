@@ -57,35 +57,42 @@ class A46_Annealing2
 
 	public (double, int[]) Solve()
 	{
-		var path = (int[])path0.Clone();
 		var maxScore = 0.0;
-		var maxPath = path;
+		var maxPath = path0;
 
 		while (CurrentTime < Timeout)
 		{
-			Shuffle(path, 1, n - 1);
-			var score = GetScore(path);
-
-			for (int c = 0; c < TrialsCount && CurrentTime < Timeout; ++c, ++Loops)
-			{
-				var (i, j) = NextInt2();
-				Array.Reverse(path, i + 1, j - i);
-
-				var s = GetScore(path);
-				if (IsValid(score, s, c))
-					score = s;
-				else
-					Array.Reverse(path, i + 1, j - i);
-			}
+			var (score, path) = SolveOne();
 
 			if (maxScore < score)
 			{
 				maxScore = score;
-				maxPath = path.ToArray();
+				maxPath = path;
 			}
 		}
 
 		return (maxScore, maxPath);
+	}
+
+	public (double, int[]) SolveOne()
+	{
+		var path = (int[])path0.Clone();
+		Shuffle(path, 1, n - 1);
+		var score = GetScore(path);
+
+		for (int c = 0; c < TrialsCount && CurrentTime < Timeout; ++c, ++Loops)
+		{
+			var (i, j) = NextInt2();
+			Array.Reverse(path, i + 1, j - i);
+
+			var s = GetScore(path);
+			if (IsValid(score, s, c))
+				score = s;
+			else
+				Array.Reverse(path, i + 1, j - i);
+		}
+
+		return (score, path);
 	}
 
 	double GetScore(int[] sol)
