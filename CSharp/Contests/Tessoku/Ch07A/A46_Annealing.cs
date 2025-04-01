@@ -84,11 +84,9 @@ class A46_Annealing
 		{
 			var (i, j) = NextInt2();
 
-			var d_delta = 0.0;
-			d_delta -= d[path[i], path[i + 1]];
-			d_delta -= d[path[j], path[j + 1]];
-			d_delta += d[path[i], path[j]];
-			d_delta += d[path[i + 1], path[j + 1]];
+			var d_delta
+				= d[path[i], path[j]] + d[path[i + 1], path[j + 1]]
+				- d[path[i], path[i + 1]] - d[path[j], path[j + 1]];
 			var newScore = 1000000 / (d_sum + d_delta);
 
 			if (IsValidForScore(score, newScore, t))
@@ -105,11 +103,7 @@ class A46_Annealing
 	static readonly Random random = new Random();
 
 	static bool IsValidForScore(double oldScore, double newScore, double t) => IsValidForDelta(oldScore, newScore - oldScore, t);
-	static bool IsValidForDelta(double oldScore, double delta, double t)
-	{
-		if (delta >= 0) return true;
-		return random.NextDouble() < Math.Exp(AnnealingRate * delta / oldScore * Timeout / (Timeout - t));
-	}
+	static bool IsValidForDelta(double oldScore, double delta, double t) => delta >= 0 || random.NextDouble() < Math.Exp(AnnealingRate * delta / oldScore * Timeout / (Timeout - t));
 
 	(int, int) NextInt2()
 	{

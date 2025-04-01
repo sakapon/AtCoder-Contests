@@ -22,7 +22,7 @@ class A46_Annealing2
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 
-	const int TrialsCount = 300000;
+	const int TrialsCount = 500000;
 	const int AnnealingRate = 500;
 	const int Timeout = 990;
 	readonly DateTime startTime;
@@ -88,11 +88,9 @@ class A46_Annealing2
 		{
 			var (i, j) = NextInt2();
 
-			var d_delta = 0.0;
-			d_delta -= d[path[i], path[i + 1]];
-			d_delta -= d[path[j], path[j + 1]];
-			d_delta += d[path[i], path[j]];
-			d_delta += d[path[i + 1], path[j + 1]];
+			var d_delta
+				= d[path[i], path[j]] + d[path[i + 1], path[j + 1]]
+				- d[path[i], path[i + 1]] - d[path[j], path[j + 1]];
 			var newScore = 1000000 / (d_sum + d_delta);
 
 			if (IsValidForScore(score, newScore, c))
@@ -109,11 +107,7 @@ class A46_Annealing2
 	static readonly Random random = new Random();
 
 	static bool IsValidForScore(double oldScore, double newScore, int c) => IsValidForDelta(oldScore, newScore - oldScore, c);
-	static bool IsValidForDelta(double oldScore, double delta, int c)
-	{
-		if (delta >= 0) return true;
-		return random.NextDouble() < Math.Exp(AnnealingRate * delta / oldScore * TrialsCount / (TrialsCount - c));
-	}
+	static bool IsValidForDelta(double oldScore, double delta, int c) => delta >= 0 || random.NextDouble() < Math.Exp(AnnealingRate * delta / oldScore * TrialsCount / (TrialsCount - c));
 
 	(int, int) NextInt2()
 	{
