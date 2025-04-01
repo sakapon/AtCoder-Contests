@@ -38,7 +38,7 @@ class A46_Annealing
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
 
-	const int AnnealingRate = 1000;
+	const int AnnealingRate = 500;
 	const int Timeout = 990;
 	readonly DateTime startTime;
 	public double CurrentTime => (DateTime.Now - startTime).TotalMilliseconds;
@@ -74,37 +74,41 @@ class A46_Annealing
 	{
 		var path = (int[])path0.Clone();
 		Shuffle(path, 1, n - 1);
-		var score = GetScore(path);
+
+		var d_sum = 0.0;
+		for (int i = 0; i < n; ++i)
+			d_sum += d[path[i], path[i + 1]];
+		var score = 1000000 / d_sum;
 
 		for (double t; (t = CurrentTime) < Timeout; ++Loops)
 		{
 			var (i, j) = NextInt2();
-			Array.Reverse(path, i + 1, j - i);
 
-			var s = GetScore(path);
-			if (IsValid(score, s, t))
-				score = s;
-			else
+			var d_delta = 0.0;
+			d_delta -= d[path[i], path[i + 1]];
+			d_delta -= d[path[j], path[j + 1]];
+			d_delta += d[path[i], path[j]];
+			d_delta += d[path[i + 1], path[j + 1]];
+			var newScore = 1000000 / (d_sum + d_delta);
+
+			if (IsValidForScore(score, newScore, t))
+			{
 				Array.Reverse(path, i + 1, j - i);
+				d_sum += d_delta;
+				score = newScore;
+			}
 		}
 
 		return (score, path);
 	}
 
-	double GetScore(int[] sol)
-	{
-		var s = 0.0;
-		for (int i = 0; i < n; ++i)
-			s += d[sol[i], sol[i + 1]];
-		return 1000000 / s;
-	}
-
 	static readonly Random random = new Random();
 
-	static bool IsValid(double oldScore, double newScore, double t)
+	static bool IsValidForScore(double oldScore, double newScore, double t) => IsValidForDelta(oldScore, newScore - oldScore, t);
+	static bool IsValidForDelta(double oldScore, double delta, double t)
 	{
-		if (newScore >= oldScore) return true;
-		return random.NextDouble() < Math.Exp(AnnealingRate * (newScore - oldScore) / oldScore * Timeout / (Timeout - t));
+		if (delta >= 0) return true;
+		return random.NextDouble() < Math.Exp(AnnealingRate * delta / oldScore * Timeout / (Timeout - t));
 	}
 
 	(int, int) NextInt2()
@@ -113,8 +117,9 @@ class A46_Annealing
 		while (true)
 		{
 			var n2 = random.Next(n);
-			if (n1 == n2) continue;
-			return n1 < n2 ? (n1, n2) : (n2, n1);
+			if (n1 > n2) (n1, n2) = (n2, n1);
+			if (n2 - n1 < 2) continue;
+			return (n1, n2);
 		}
 	}
 

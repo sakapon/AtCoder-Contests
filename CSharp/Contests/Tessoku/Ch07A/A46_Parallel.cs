@@ -78,37 +78,41 @@ class A46_Annealing2
 	{
 		var path = (int[])path0.Clone();
 		Shuffle(path, 1, n - 1);
-		var score = GetScore(path);
+
+		var d_sum = 0.0;
+		for (int i = 0; i < n; ++i)
+			d_sum += d[path[i], path[i + 1]];
+		var score = 1000000 / d_sum;
 
 		for (int c = 0; c < TrialsCount && CurrentTime < Timeout; ++c, ++Loops)
 		{
 			var (i, j) = NextInt2();
-			Array.Reverse(path, i + 1, j - i);
 
-			var s = GetScore(path);
-			if (IsValid(score, s, c))
-				score = s;
-			else
+			var d_delta = 0.0;
+			d_delta -= d[path[i], path[i + 1]];
+			d_delta -= d[path[j], path[j + 1]];
+			d_delta += d[path[i], path[j]];
+			d_delta += d[path[i + 1], path[j + 1]];
+			var newScore = 1000000 / (d_sum + d_delta);
+
+			if (IsValidForScore(score, newScore, c))
+			{
 				Array.Reverse(path, i + 1, j - i);
+				d_sum += d_delta;
+				score = newScore;
+			}
 		}
 
 		return (score, path);
 	}
 
-	double GetScore(int[] sol)
-	{
-		var s = 0.0;
-		for (int i = 0; i < n; ++i)
-			s += d[sol[i], sol[i + 1]];
-		return 1000000 / s;
-	}
-
 	static readonly Random random = new Random();
 
-	static bool IsValid(double oldScore, double newScore, int c)
+	static bool IsValidForScore(double oldScore, double newScore, int c) => IsValidForDelta(oldScore, newScore - oldScore, c);
+	static bool IsValidForDelta(double oldScore, double delta, int c)
 	{
-		if (newScore >= oldScore) return true;
-		return random.NextDouble() < Math.Exp(AnnealingRate * (newScore - oldScore) / oldScore * TrialsCount / (TrialsCount - c));
+		if (delta >= 0) return true;
+		return random.NextDouble() < Math.Exp(AnnealingRate * delta / oldScore * TrialsCount / (TrialsCount - c));
 	}
 
 	(int, int) NextInt2()
@@ -117,8 +121,9 @@ class A46_Annealing2
 		while (true)
 		{
 			var n2 = random.Next(n);
-			if (n1 == n2) continue;
-			return n1 < n2 ? (n1, n2) : (n2, n1);
+			if (n1 > n2) (n1, n2) = (n2, n1);
+			if (n2 - n1 < 2) continue;
+			return (n1, n2);
 		}
 	}
 
