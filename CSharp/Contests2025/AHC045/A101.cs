@@ -11,7 +11,7 @@
 	public static double CurrentTime => (DateTime.Now - startTime).TotalMilliseconds;
 	public static int Loops;
 
-	static int n, m, qc, l, w;
+	static int n, m, Q, L, W;
 	static int[] gcs;
 
 	static int[] rn0;
@@ -20,7 +20,7 @@
 	static void Main()
 	{
 		var z = Read();
-		(n, m, qc, l, w) = (z[0], z[1], z[2], z[3], z[4]);
+		(n, m, Q, L, W) = (z[0], z[1], z[2], z[3], z[4]);
 		gcs = Read();
 		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
@@ -46,24 +46,36 @@
 		Parallel.For(0, ThreadsCount, i => results[i] = SolveOne());
 		var (score, gmap) = results.MaxBy(p => p.score);
 
-#if DEBUG
-		var outFileName = $"{DateTime.Now:yyyyMMdd-HHmmss}.txt";
-		Console.SetOut(File.CreateText(outFileName));
-#endif
-		Console.WriteLine("!");
-		foreach (var g in rn0.GroupBy(i => gmap[i]).OrderBy(g => g.Key))
+		var gs = rn0.GroupBy(i => gmap[i]).OrderBy(g => g.Key).Select(g => g.ToArray()).ToArray();
+		var ges = gs.Select(g => Enumerable.Range(0, g.Length - 1).Select(j => (g[j], g[j + 1])).ToArray()).ToArray();
+
+#if !DEBUG
+		for (int gi = 0; gi < m; gi++)
 		{
-			var gis = g.ToArray();
-			Console.WriteLine(string.Join(" ", gis));
-			for (int j = 1; j < gis.Length; j++)
-				Console.WriteLine($"{gis[j - 1]} {gis[j]}");
+			if (3 <= gs[gi].Length && gs[gi].Length <= L)
+				ges[gi] = Query(gs[gi]);
 		}
+#endif
+
 #if DEBUG
 		Console.WriteLine(score);
 		Console.WriteLine(Loops);
 		Console.WriteLine($"{(int)CurrentTime} ms");
-		Console.Out.Flush();
+
+		var outFileName = $"{DateTime.Now:yyyyMMdd-HHmmss}.txt";
+		using var outWriter = File.CreateText(outFileName);
+		Console.SetOut(outWriter);
 #endif
+		Console.WriteLine("!");
+		for (int gi = 0; gi < m; gi++)
+		{
+			Console.WriteLine(string.Join(" ", gs[gi]));
+			for (int j = 0; j < ges[gi].Length; j++)
+			{
+				var (u, v) = ges[gi][j];
+				Console.WriteLine($"{u} {v}");
+			}
+		}
 	}
 
 	// Annealing
@@ -74,12 +86,8 @@
 
 		var gmap = new int[n];
 		for (int gi = 0, i = -1; gi < m; gi++)
-		{
 			for (int j = 0; j < gcs[gi]; j++)
-			{
 				gmap[rn[++i]] = gi;
-			}
-		}
 
 		var score = GetScore(gmap);
 
@@ -97,6 +105,13 @@
 		}
 
 		return (score, gmap);
+	}
+
+	static (int, int)[] Query(int[] gis)
+	{
+		var l = gis.Length;
+		Console.WriteLine($"? {l} " + string.Join(" ", gis));
+		return Array.ConvertAll(new bool[l - 1], _ => Read2());
 	}
 
 	static double GetScore(int[] gmap)
