@@ -12,7 +12,8 @@
 
 	static int[] rn0;
 	static (double, double)[] ps;
-	static int[,] d;
+	static int[,] dMatrix;
+	static PriorityQueue<(int, int), int> pq = new PriorityQueue<(int, int), int>();
 
 	class Group
 	{
@@ -32,7 +33,7 @@
 		rn0 = Enumerable.Range(0, n).ToArray();
 		ps = Array.ConvertAll(ps0, p => ((p[0] + p[1]) / 2.0, (p[2] + p[3]) / 2.0));
 
-		d = new int[n, n];
+		dMatrix = new int[n, n];
 		for (int i = 0; i < n; i++)
 		{
 			var (xi, yi) = ps[i];
@@ -40,7 +41,7 @@
 			{
 				var (xj, yj) = ps[j];
 				xj -= xi; yj -= yi;
-				d[i, j] = (int)Math.Sqrt(xj * xj + yj * yj);
+				dMatrix[i, j] = (int)Math.Sqrt(xj * xj + yj * yj);
 			}
 		}
 
@@ -48,49 +49,33 @@
 		var ids0 = rn0.ToList();
 		Shuffle(ids0);
 		var u = new bool[n];
-		var pq = new PriorityQueue<(int, int), int>();
 
 		foreach (var gi in Enumerable.Range(0, m).OrderBy(j => -gcs[j]))
 		{
-			var g = new Group();
-			groups[gi] = g;
+			var min_d = int.MaxValue;
+			Group min_g = null;
+			List<int> min_ids0 = null;
+			bool[] min_u = null;
 
-			var ids = new List<int>();
-			var edges = new List<(int, int)>();
-
-			var c = gcs[gi];
-			while (c-- > 0)
+			var trials = gcs[gi];
+			while (trials-- > 0)
 			{
-				var id = GetCityId();
-				ids0.Remove(id);
-				u[id] = true;
-				ids.Add(id);
-
-				foreach (var id2 in ids0)
-					pq.Enqueue((id, id2), d[id, id2]);
-
-				int GetCityId()
+				var id0 = ids0[random.Next(ids0.Count)];
+				var ids2 = ids0.ToList();
+				var u2 = (bool[])u.Clone();
+				var (d, g) = CreateGroup(ids2, u2, id0, gcs[gi]);
+				if (min_d > d)
 				{
-					if (pq.Count == 0)
-					{
-						return ids0[^1];
-					}
-					else
-					{
-						while (true)
-						{
-							var (v1, v2) = pq.Dequeue();
-							if (u[v2]) continue;
-							edges.Add((v1, v2));
-							return v2;
-						}
-					}
+					min_d = d;
+					min_g = g;
+					min_ids0 = ids2;
+					min_u = u2;
 				}
 			}
 
-			g.CityIds = ids.ToArray();
-			g.Edges = edges.ToArray();
-			pq.Clear();
+			groups[gi] = min_g;
+			ids0 = min_ids0;
+			u = min_u;
 		}
 
 		if (!Array.TrueForAll(u, b => b)) throw new InvalidOperationException();
@@ -117,6 +102,52 @@
 			foreach (var (v1, v2) in g.Edges)
 				Console.WriteLine($"{v1} {v2}");
 		}
+	}
+
+	static (int, Group) CreateGroup(List<int> ids0, bool[] u, int id0, int count)
+	{
+		var d_sum = 0;
+		var ids = new List<int>();
+		var edges = new List<(int, int)>();
+
+		while (count-- > 0)
+		{
+			var id = GetCityId();
+			ids0.Remove(id);
+			u[id] = true;
+			ids.Add(id);
+
+			foreach (var id2 in ids0)
+				pq.Enqueue((id, id2), dMatrix[id, id2]);
+
+			int GetCityId()
+			{
+				if (pq.Count == 0)
+				{
+					return id0;
+				}
+				else
+				{
+					while (true)
+					{
+						pq.TryDequeue(out var p, out var d);
+						var (v1, v2) = p;
+						if (u[v2]) continue;
+						d_sum += d;
+						edges.Add((v1, v2));
+						return v2;
+					}
+				}
+			}
+		}
+
+		pq.Clear();
+		var g = new Group
+		{
+			CityIds = ids.ToArray(),
+			Edges = edges.ToArray()
+		};
+		return (d_sum, g);
 	}
 
 	static (int, int)[] Query(int[] gis)
