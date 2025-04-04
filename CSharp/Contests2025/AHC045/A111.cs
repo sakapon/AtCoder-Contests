@@ -46,39 +46,39 @@
 		}
 
 		var groups = new Group[m];
-		var ids0 = rn0.ToList();
-		Shuffle(ids0);
 		var u = new bool[n];
+		var ids0 = rn0.ToList();
 
 		foreach (var gi in Enumerable.Range(0, m).OrderBy(j => -gcs[j]))
 		{
 			var min_d = int.MaxValue;
 			Group min_g = null;
-			List<int> min_ids0 = null;
 			bool[] min_u = null;
 
-			var trials = gcs[gi];
+			var trials = 20;
 			while (trials-- > 0)
 			{
 				var id0 = ids0[random.Next(ids0.Count)];
-				var ids2 = ids0.ToList();
-				var u2 = (bool[])u.Clone();
-				var (d, g) = CreateGroup(ids2, u2, id0, gcs[gi]);
+				var (d, g) = CreateGroup(u, id0, gcs[gi]);
 				if (min_d > d)
 				{
 					min_d = d;
 					min_g = g;
-					min_ids0 = ids2;
-					min_u = u2;
+					min_u = (bool[])u.Clone();
 				}
+
+				foreach (var id in g.CityIds)
+					u[id] = false;
 			}
 
 			groups[gi] = min_g;
-			ids0 = min_ids0;
 			u = min_u;
+			foreach (var id in min_g.CityIds)
+				ids0.Remove(id);
 		}
 
 		if (!Array.TrueForAll(u, b => b)) throw new InvalidOperationException();
+		if (ids0.Count > 0) throw new InvalidOperationException();
 
 #if !DEBUG
 		for (int gi = 0; gi < m; gi++)
@@ -104,7 +104,7 @@
 		}
 	}
 
-	static (int, Group) CreateGroup(List<int> ids0, bool[] u, int id0, int count)
+	static (int d_sum, Group) CreateGroup(bool[] u, int id0, int count)
 	{
 		var d_sum = 0;
 		var ids = new List<int>();
@@ -113,30 +113,25 @@
 		while (count-- > 0)
 		{
 			var id = GetCityId();
-			ids0.Remove(id);
 			u[id] = true;
 			ids.Add(id);
 
-			foreach (var id2 in ids0)
-				pq.Enqueue((id, id2), dMatrix[id, id2]);
+			for (int id2 = 0; id2 < n; id2++)
+				if (!u[id2])
+					pq.Enqueue((id, id2), dMatrix[id, id2]);
 
 			int GetCityId()
 			{
-				if (pq.Count == 0)
+				if (pq.Count == 0) return id0;
+
+				while (true)
 				{
-					return id0;
-				}
-				else
-				{
-					while (true)
-					{
-						pq.TryDequeue(out var p, out var d);
-						var (v1, v2) = p;
-						if (u[v2]) continue;
-						d_sum += d;
-						edges.Add((v1, v2));
-						return v2;
-					}
+					pq.TryDequeue(out var p, out var d);
+					var (v1, v2) = p;
+					if (u[v2]) continue;
+					d_sum += d;
+					edges.Add((v1, v2));
+					return v2;
 				}
 			}
 		}
