@@ -6,12 +6,12 @@
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var (x, y) = Read2();
 
-		return string.Join(" ", a);
+		var c = 0;
+		for (int i = 1; i <= 6; i++)
+			for (int j = 1; j <= 6; j++)
+				if (i + j >= x || Math.Abs(i - j) >= y) c++;
+		return c / 36.0;
 	}
 }
