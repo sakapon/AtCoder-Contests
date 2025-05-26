@@ -6,11 +6,7 @@
 		var s = Console.ReadLine();
 		var n = s.Length;
 
-		var r = n;
 		s += "0";
-
-		for (int i = 0; i < n; i++)
-			r += (s[i] - s[i + 1] + 10) % 10;
-		return r;
+		return n + Enumerable.Range(0, n).Sum(i => (s[i] - s[i + 1] + 10) % 10);
 	}
 }
