@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.TreeSet;
 import java.util.stream.IntStream;
@@ -7,15 +6,6 @@ import java.util.stream.IntStream;
 public class D {
 
 	static Scanner sc = new Scanner(System.in);
-
-	static Object[] read2(int n) {
-		return Arrays.stream(new int[n]).mapToObj(i -> {
-			var a = new int[2];
-			a[0] = sc.nextInt();
-			a[1] = sc.nextInt();
-			return a;
-		}).toArray();
-	}
 
 	public static void main(String[] args) {
 		System.out.println(solve());
