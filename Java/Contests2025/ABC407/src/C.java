@@ -1,18 +1,19 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.stream.IntStream;
 
 public class C {
-	static Scanner sc = new Scanner(System.in);
+	static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		System.out.println(solve());
 	}
 
-	static Object solve() {
-		var s = sc.next();
-		var n = s.length();
+	static Object solve() throws IOException {
+		var s = in.readLine() + "0";
+		var n = s.length() - 1;
 
-		var t = s + "0";
-		return n + IntStream.range(0, n).map(i -> (t.charAt(i) - t.charAt(i + 1) + 10) % 10).sum();
+		return n + IntStream.range(0, n).map(i -> (s.charAt(i) - s.charAt(i + 1) + 10) % 10).sum();
 	}
 }
