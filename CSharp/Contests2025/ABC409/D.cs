@@ -1,17 +1,21 @@
 ﻿class D
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
+	static void Main() => Console.WriteLine(string.Join("\n", new int[int.Parse(Console.ReadLine())].Select(_ => Solve())));
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var s = Console.ReadLine().ToCharArray();
 
-		return string.Join(" ", a);
+		var i = 0;
+		while (i < n - 1 && s[i] <= s[i + 1])
+		{
+			i++;
+		}
+		while (i < n - 1 && s[i] >= s[i + 1])
+		{
+			(s[i], s[i + 1]) = (s[i + 1], s[i]);
+			i++;
+		}
+		return new string(s);
 	}
 }
