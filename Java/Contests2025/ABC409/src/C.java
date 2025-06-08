@@ -2,19 +2,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class C {
-	static class Tuple {
-		public int u, v;
-
-		public Tuple(int u, int v) {
-			this.u = u;
-			this.v = v;
-		}
-	}
 
 	static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
@@ -30,36 +19,32 @@ public class C {
 		return Arrays.stream(readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
 	}
 
-	static long[] readL() {
-		return Arrays.stream(readLine().split(" ")).mapToLong(Long::parseLong).toArray();
-	}
-
-	static int[] read(int n) {
-		return IntStream.range(0, n).map(i -> Integer.parseInt(readLine())).toArray();
-	}
-
-	static Tuple[] readTuple(int n) {
-		var r = new Tuple[n];
-		for (int i = 0; i < n; i++) {
-			var a = read();
-			r[i] = new Tuple(a[0], a[1]);
-		}
-		return r;
-	}
-
-	static List<String> mapToString(int[] a) {
-		return Arrays.stream(a).mapToObj(Integer::toString).collect(Collectors.toList());
-	}
-
 	public static void main(String[] args) {
 		System.out.println(solve());
 	}
 
 	static Object solve() {
-		var n = Integer.parseInt(readLine());
-		var s = readLine();
-		var a = read();
+		var z = read();
+		var l = z[1];
+		var d = read();
 
-		return String.join("\n", mapToString(a));
+		if (l % 3 != 0)
+			return 0;
+
+		var x = 0;
+		var cs = new long[l];
+		cs[x]++;
+
+		for (var y : d) {
+			x += y;
+			x %= l;
+			cs[x]++;
+		}
+
+		l /= 3;
+		var r = 0L;
+		for (int i = 0; i < l; i++)
+			r += cs[i] * cs[i + l] * cs[i + 2 * l];
+		return r;
 	}
 }
