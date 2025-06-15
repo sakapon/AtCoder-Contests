@@ -40,8 +40,8 @@ public interface Enumerable<T> {
 }
 
 class ArrayEnumerable<T> implements Enumerable<T> {
-	T[] source;
-	int i = -1;
+	private T[] source;
+	private int i = -1;
 
 	public ArrayEnumerable(T[] source) {
 		this.source = source;
@@ -59,8 +59,8 @@ class ArrayEnumerable<T> implements Enumerable<T> {
 }
 
 class ListEnumerable<T> implements Enumerable<T> {
-	List<T> source;
-	int i = -1;
+	private List<T> source;
+	private int i = -1;
 
 	public ListEnumerable(List<T> source) {
 		this.source = source;
@@ -78,8 +78,8 @@ class ListEnumerable<T> implements Enumerable<T> {
 }
 
 class FilterEnumerable<T> implements Enumerable<T> {
-	Enumerable<T> source;
-	Predicate<T> func;
+	private Enumerable<T> source;
+	private Predicate<T> func;
 
 	public FilterEnumerable(Enumerable<T> source, Predicate<T> func) {
 		this.source = source;
@@ -101,8 +101,8 @@ class FilterEnumerable<T> implements Enumerable<T> {
 }
 
 class MapEnumerable<T, R> implements Enumerable<R> {
-	Enumerable<T> source;
-	Function<T, R> func;
+	private Enumerable<T> source;
+	private Function<T, R> func;
 
 	public MapEnumerable(Enumerable<T> source, Function<T, R> func) {
 		this.source = source;
