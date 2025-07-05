@@ -1,17 +1,22 @@
 ﻿class E
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
+	static void Main() => Console.WriteLine(string.Join("\n", new int[int.Parse(Console.ReadLine())].Select(_ => Solve())));
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var p = Read();
 
-		return string.Join(" ", a);
+		for (int len = 1 << n; len > 1; len >>= 1)
+		{
+			var sec = (1 << n) / len;
+			for (int a = 0; a < sec; a++)
+			{
+				var mi = Enumerable.Range(a * len, len).MinBy(i => p[i]);
+				if (mi >= a * len + len / 2)
+					Array.Reverse(p, a * len, len);
+			}
+		}
+		return string.Join(" ", p);
 	}
 }
