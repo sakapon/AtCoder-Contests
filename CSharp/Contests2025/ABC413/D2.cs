@@ -1,4 +1,6 @@
-﻿class D
+﻿using CoderLib8.Values;
+
+class D2
 {
 	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(string.Join("\n", new int[int.Parse(Console.ReadLine())].Select(_ => Solve() ? "Yes" : "No")));
@@ -16,7 +18,7 @@
 			return Math.Abs(n - 2 * c0) <= 1;
 		}
 
-		var r = Enumerable.Range(0, n - 1).Select(i => (n: a[i + 1], d: a[i])).ToArray();
-		return Enumerable.Range(0, n - 2).All(i => r[i].n * r[i + 1].d == r[i].d * r[i + 1].n);
+		var r = Enumerable.Range(0, n - 1).Select(i => new Rational(a[i + 1], a[i])).ToArray();
+		return r.All(q => q == r[0]);
 	}
 }

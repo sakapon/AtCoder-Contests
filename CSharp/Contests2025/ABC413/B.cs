@@ -1,21 +1,19 @@
 ﻿class B
 {
-	static void Main()
+	static void Main() => Console.WriteLine(Solve());
+	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var s = new int[n].Select(_ => Console.ReadLine()).ToArray();
+		var s = Array.ConvertAll(new bool[n], _ => Console.ReadLine());
 
 		var set = new HashSet<string>();
 
 		for (int i = 0; i < n; i++)
-		{
-			for (int j = 0; j < n; j++)
+			for (int j = i + 1; j < n; j++)
 			{
-				if (i == j) continue;
-
 				set.Add(s[i] + s[j]);
+				set.Add(s[j] + s[i]);
 			}
-		}
-		Console.WriteLine(set.Count);
+		return set.Count;
 	}
 }
