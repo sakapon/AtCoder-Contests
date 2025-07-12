@@ -1,17 +1,27 @@
-﻿class E
+﻿using CoderLib6.Values;
+
+class E
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var n = long.Parse(Console.ReadLine());
 
-		return string.Join(" ", a);
+		var r = new MInt(n) * (n + 1) / 2;
+		var max = n;
+
+		for (int i = 2; i <= 1000000; i++)
+		{
+			var q = n / i;
+			r -= new MInt(max - q) * (i - 1);
+			max = q;
+		}
+
+		for (; max > 0; max--)
+		{
+			r -= n / max;
+		}
+
+		return r;
 	}
 }
