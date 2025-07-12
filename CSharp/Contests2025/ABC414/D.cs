@@ -10,6 +10,6 @@
 		var a = ReadL();
 
 		Array.Sort(a);
-		return a[^1] - a[0] - Enumerable.Range(0, n - 1).Select(i => a[i + 1] - a[i]).OrderBy(x => -x).Take(m - 1).Sum();
+		return Enumerable.Range(0, n - 1).Select(i => a[i + 1] - a[i]).OrderBy(x => x).Take(n - m).Sum();
 	}
 }
