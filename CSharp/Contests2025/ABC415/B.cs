@@ -1,17 +1,24 @@
 ﻿class B
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
 	static void Main() => Console.WriteLine(Solve());
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
 		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var n = s.Length;
 
-		return string.Join(" ", a);
+		var a = Enumerable.Range(1, n).Where(i => s[i - 1] == '#').ToArray();
+		var g = new SeqArray2<int>(a.Length / 2, 2, a);
+		return string.Join("\n", g.Select(r => string.Join(",", r)));
 	}
+}
+
+public class SeqArray2<T> : IEnumerable<ArraySegment<T>>
+{
+	public readonly int n1, n2;
+	public readonly T[] a;
+	public SeqArray2(int _n1, int _n2, T[] _a = null) => (n1, n2, a) = (_n1, _n2, _a ?? new T[_n1 * _n2]);
+
+	public ArraySegment<T> this[int i] => new ArraySegment<T>(a, n2 * i, n2);
+	System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+	public IEnumerator<ArraySegment<T>> GetEnumerator() { for (int i = 0; i < n1; ++i) yield return this[i]; }
 }
