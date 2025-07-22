@@ -51,6 +51,14 @@
 	}
 }
 
+public static class ValuesEx
+{
+	public static int Chmax(ref this int x, int v) => x < v ? x = v : x;
+	public static int Chmin(ref this int x, int v) => x > v ? x = v : x;
+	public static long Chmax(ref this long x, long v) => x < v ? x = v : x;
+	public static long Chmin(ref this long x, long v) => x > v ? x = v : x;
+}
+
 public record struct Point(int i, int j)
 {
 	public static Point Parse(string s)
@@ -82,15 +90,13 @@ public class SeqGrid<T> : IEnumerable<ArraySegment<T>>
 	public SeqGrid(int _h, int _w, T iv) : this(_h, _w, default(T[])) => Array.Fill(a, iv);
 	public SeqGrid(T[][] g) : this(g.Length, g.Length > 0 ? g[0].Length : 0, g.SelectMany(r => r).ToArray()) { }
 
-	public T this[int i, int j]
+	public ref T this[int i, int j]
 	{
-		get => a[w * i + j];
-		set => a[w * i + j] = value;
+		get => ref a[w * i + j];
 	}
-	public T this[Point p]
+	public ref T this[Point p]
 	{
-		get => a[w * p.i + p.j];
-		set => a[w * p.i + p.j] = value;
+		get => ref a[w * p.i + p.j];
 	}
 	public ArraySegment<T> this[int i] => new(a, w * i, w);
 

@@ -26,8 +26,8 @@
 					dp[i, j] += a[i, j] - p[i + j];
 					if (dp[i, j] < 0) continue;
 
-					dp[i + 1, j] = Math.Max(dp[i + 1, j], dp[i, j]);
-					dp[i, j + 1] = Math.Max(dp[i, j + 1], dp[i, j]);
+					dp[i + 1, j].Chmax(dp[i, j]);
+					dp[i, j + 1].Chmax(dp[i, j]);
 				}
 			return dp[ep] >= 0;
 		}
