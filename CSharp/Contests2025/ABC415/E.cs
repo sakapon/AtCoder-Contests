@@ -9,37 +9,32 @@
 		var a = new SeqGrid<int>(Array.ConvertAll(new bool[h], _ => Read()));
 		var p = Read();
 
+		var dp = new SeqGrid<long>(h + 1, w + 1);
+		Point ep = (h - 1, w - 1);
+		Point delta = (-1, 1);
 		return First(0, 1L << 50, Check);
 
 		bool Check(long x)
 		{
-			var dp = new SeqGrid<long>(h, w, long.MinValue);
+			dp.Fill(long.MinValue);
 			dp[0, 0] = x;
-
-			Point pr = (0, 1);
-			Point pd = (1, 0);
-			Point delta = (-1, 1);
-			Point end = (h - 1, w - 1);
 
 			for (int k = 0; k < h + w - 1; k++)
 			{
-				var si = Math.Min(h - 1, k);
-				for (Point c = (si, k - si); c.i >= 0; c += delta)
+				var off = Math.Max(k - h + 1, 0);
+				for (Point c = (k, 0) + delta * off; c.i >= 0 && c.j < w; c += delta)
 				{
 					var (i, j) = c;
-					if (j >= w) break;
-					if (dp[c] == long.MinValue) continue;
+					if (dp[i, j] < 0) continue;
 
-					var nv = dp[i, j] + a[i, j] - p[k];
-					dp[c] = nv;
-					if (nv < 0) continue;
+					dp[i, j] += a[i, j] - p[k];
+					if (dp[i, j] < 0) continue;
 
-					if (i + 1 < h) dp[i + 1, j] = Math.Max(dp[i + 1, j], nv);
-					if (j + 1 < w) dp[i, j + 1] = Math.Max(dp[i, j + 1], nv);
-					if (c == end) return nv >= 0;
+					dp[i + 1, j].Chmax(dp[i, j]);
+					dp[i, j + 1].Chmax(dp[i, j]);
 				}
 			}
-			return dp[end] >= 0;
+			return dp[ep] >= 0;
 		}
 	}
 
