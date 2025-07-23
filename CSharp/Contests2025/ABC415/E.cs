@@ -48,10 +48,10 @@
 
 public static class ValuesEx
 {
-	public static int Chmax(ref this int x, int v) => x < v ? x = v : x;
-	public static int Chmin(ref this int x, int v) => x > v ? x = v : x;
-	public static long Chmax(ref this long x, long v) => x < v ? x = v : x;
-	public static long Chmin(ref this long x, long v) => x > v ? x = v : x;
+	public static int Chmax(this ref int x, int v) => x < v ? x = v : x;
+	public static int Chmin(this ref int x, int v) => x > v ? x = v : x;
+	public static T Chmax<T>(this ref T x, T v) where T : struct, IComparable<T> => x.CompareTo(v) < 0 ? x = v : x;
+	public static T Chmin<T>(this ref T x, T v) where T : struct, IComparable<T> => x.CompareTo(v) > 0 ? x = v : x;
 }
 
 public record struct Point(int i, int j)
@@ -79,20 +79,18 @@ public record struct Point(int i, int j)
 
 public class SeqGrid<T> : IEnumerable<ArraySegment<T>>
 {
-	public readonly int h, w;
-	public readonly T[] a;
+	readonly int h, w;
+	readonly T[] a;
+	public int Height => h;
+	public int Width => w;
+	public T[] Raw => a;
+
 	public SeqGrid(int _h, int _w, T[] _a = null) => (h, w, a) = (_h, _w, _a ?? new T[_h * _w]);
 	public SeqGrid(int _h, int _w, T iv) : this(_h, _w, default(T[])) => Array.Fill(a, iv);
 	public SeqGrid(T[][] g) : this(g.Length, g.Length > 0 ? g[0].Length : 0, g.SelectMany(r => r).ToArray()) { }
 
-	public ref T this[int i, int j]
-	{
-		get => ref a[w * i + j];
-	}
-	public ref T this[Point p]
-	{
-		get => ref a[w * p.i + p.j];
-	}
+	public ref T this[int i, int j] => ref a[w * i + j];
+	public ref T this[Point p] => ref a[w * p.i + p.j];
 	public ArraySegment<T> this[int i] => new(a, w * i, w);
 
 	public T[] GetRow(int i) => a[(w * i)..(w * (i + 1))];
@@ -116,7 +114,8 @@ public class SeqGrid<T> : IEnumerable<ArraySegment<T>>
 	}
 
 	public void Fill(T v) => Array.Fill(a, v);
-	public void Fill(int i, T v) => Array.Fill(a, v, w * i, w);
+	public void FillRow(int i, T v) => Array.Fill(a, v, w * i, w);
+	public void FillColumn(int j, T v) { for (int i = 0; i < h; ++i) a[w * i + j] = v; }
 	public void Clear() => Array.Clear(a, 0, a.Length);
 	public SeqGrid<T> Clone() => new(h, w, (T[])a.Clone());
 
