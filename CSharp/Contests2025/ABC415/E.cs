@@ -113,12 +113,15 @@ public class SeqGrid<T> : IEnumerable<ArraySegment<T>>
 		return r;
 	}
 
+	System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+	public IEnumerator<ArraySegment<T>> GetEnumerator() { for (int i = 0; i < h; ++i) yield return this[i]; }
+
 	public void Fill(T v) => Array.Fill(a, v);
 	public void FillRow(int i, T v) => Array.Fill(a, v, w * i, w);
 	public void FillColumn(int j, T v) { for (int i = 0; i < h; ++i) a[w * i + j] = v; }
 	public void Clear() => Array.Clear(a, 0, a.Length);
 	public SeqGrid<T> Clone() => new(h, w, (T[])a.Clone());
 
-	System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
-	public IEnumerator<ArraySegment<T>> GetEnumerator() { for (int i = 0; i < h; ++i) yield return this[i]; }
+	public bool IsInside(int i, int j) => 0 <= i && i < h && 0 <= j && j < w;
+	public bool IsInside(Point p) => IsInside(p.i, p.j);
 }
