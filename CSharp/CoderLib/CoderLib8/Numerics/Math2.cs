@@ -2,6 +2,14 @@
 
 namespace CoderLib8.Numerics
 {
+	public static class MathEx
+	{
+		public static int Chmax(this ref int x, int v) => x < v ? x = v : x;
+		public static int Chmin(this ref int x, int v) => x > v ? x = v : x;
+		public static T Chmax<T>(this ref T x, T v) where T : struct, IComparable<T> => x.CompareTo(v) < 0 ? x = v : x;
+		public static T Chmin<T>(this ref T x, T v) where T : struct, IComparable<T> => x.CompareTo(v) > 0 ? x = v : x;
+	}
+
 	static class Math2
 	{
 		// mod 2^64 と考えてもよい。
