@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CoderLib8.Linq
 {
@@ -69,6 +70,27 @@ namespace CoderLib8.Linq
 				if (c.Compare(ik, k) > 0) (v0, ik) = (v, k);
 			}
 			return (v0, ik);
+		}
+	}
+
+	public static class CharEnumerable
+	{
+		public static string ToString(this IEnumerable<char> source)
+		{
+			return new string(source is char[] cs ? cs : source.ToArray());
+		}
+
+		public static string Reverse(this string s)
+		{
+			var cs = s.ToCharArray();
+			Array.Reverse(cs);
+			return new string(cs);
+		}
+
+		public static IEnumerable<string> Chunk(this string s, int size)
+		{
+			for (int i = 0; i < s.Length; i += size)
+				yield return s[i..Math.Min(i + size, s.Length)];
 		}
 	}
 }
