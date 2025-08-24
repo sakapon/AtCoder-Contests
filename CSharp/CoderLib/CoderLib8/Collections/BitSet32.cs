@@ -47,5 +47,11 @@ namespace CoderLib8.Collections
 			for (int i = n - 1; i >= 0; --i)
 				if ((Value & (1U << i)) != 0) yield return Value & ~(1U << i);
 		}
+
+		public IEnumerable<int> ToElements(int n)
+		{
+			for (int i = 0; i < n; ++i)
+				if ((Value & (1U << i)) != 0) yield return i;
+		}
 	}
 }

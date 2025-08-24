@@ -24,9 +24,11 @@ namespace CoderLib8.Extra
 			return new string(c);
 		}
 
-		static bool IsPalindrome(string s)
+		// char[], ReadOnlySpan<char> でも可。
+		static bool IsPalindrome(string s) => IsPalindrome(s, 0, s.Length);
+		static bool IsPalindrome(string s, int l, int r)
 		{
-			for (int i = 0; i < s.Length; ++i) if (s[i] != s[s.Length - 1 - i]) return false;
+			for (--l; ++l < --r;) if (s[l] != s[r]) return false;
 			return true;
 		}
 

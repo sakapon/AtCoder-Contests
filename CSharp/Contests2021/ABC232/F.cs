@@ -12,25 +12,27 @@ class F
 		var a = ReadL();
 		var b = ReadL();
 
+		// 集合 s を数列の前方に移動・一致させるための費用
 		var dp = new long[1 << n];
-		Array.Fill(dp, 1L << 60);
+		Array.Fill(dp, long.MaxValue);
 		dp[0] = 0;
 
 		for (uint s = 0; s < 1U << n; s++)
 		{
-			var i = BitOperations.PopCount(s);
+			var c = BitOperations.PopCount(s);
 
-			for (int j = 0; j < n; j++)
+			for (int i = 0; i < n; i++)
 			{
-				var ns = s | (1U << j);
+				var ns = s | (1U << i);
 				if (ns == s) continue;
 
-				// j はフラグ 0 のビットのうち何番目か
-				var k = j - BitOperations.PopCount(s & ((1U << j) - 1));
-				dp[ns] = Math.Min(dp[ns], dp[s] + y * k + x * Math.Abs(a[j] - b[i]));
+				// 移動量
+				var d = BitOperations.PopCount(((1U << i) - 1) & ~s);
+
+				var nv = dp[s] + d * y + Math.Abs(a[i] - b[c]) * x;
+				if (dp[ns] > nv) dp[ns] = nv;
 			}
 		}
-
 		return dp[^1];
 	}
 }

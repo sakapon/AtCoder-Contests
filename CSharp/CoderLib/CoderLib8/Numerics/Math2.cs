@@ -2,6 +2,15 @@
 
 namespace CoderLib8.Numerics
 {
+	public static class RefEx
+	{
+		public static void Swap<T>(ref T x, ref T y) => (x, y) = (y, x);
+		public static int Chmax(this ref int x, int v) => x < v ? x = v : x;
+		public static int Chmin(this ref int x, int v) => x > v ? x = v : x;
+		public static T Chmax<T>(this ref T x, T v) where T : struct, IComparable<T> => x.CompareTo(v) < 0 ? x = v : x;
+		public static T Chmin<T>(this ref T x, T v) where T : struct, IComparable<T> => x.CompareTo(v) > 0 ? x = v : x;
+	}
+
 	static class Math2
 	{
 		// mod 2^64 と考えてもよい。
@@ -144,8 +153,8 @@ namespace CoderLib8.Numerics
 		}
 
 		// 最下位・最上位ビット
-		static int MinBit(int x) => -x & x;
-		static int MaxBit(int x)
+		public static int MinBit(int x) => -x & x;
+		public static int MaxBit(int x)
 		{
 			x |= x >> 1;
 			x |= x >> 2;
@@ -153,6 +162,27 @@ namespace CoderLib8.Numerics
 			x |= x >> 8;
 			x |= x >> 16;
 			return x ^ (x >> 1);
+		}
+
+		public static uint MaxBit0(uint x)
+		{
+			if ((x & 0xFFFF0000) != 0) x &= 0xFFFF0000;
+			if ((x & 0xFF00FF00) != 0) x &= 0xFF00FF00;
+			if ((x & 0xF0F0F0F0) != 0) x &= 0xF0F0F0F0;
+			if ((x & 0xCCCCCCCC) != 0) x &= 0xCCCCCCCC;
+			if ((x & 0xAAAAAAAA) != 0) x &= 0xAAAAAAAA;
+			return x;
+		}
+
+		public static int Log2(uint x)
+		{
+			var c = 0;
+			if ((x >> 16) != 0) { x >>= 16; c |= 16; }
+			if ((x >> 8) != 0) { x >>= 8; c |= 8; }
+			if ((x >> 4) != 0) { x >>= 4; c |= 4; }
+			if ((x >> 2) != 0) { x >>= 2; c |= 2; }
+			if ((x >> 1) != 0) { x >>= 1; c |= 1; }
+			return c;
 		}
 
 		const ulong m1 = 0x5555555555555555;
