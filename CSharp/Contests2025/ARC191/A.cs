@@ -10,7 +10,7 @@
 		var t = Console.ReadLine();
 
 		var q = new Queue<int>(Enumerable.Range(0, m).OrderBy(i => -t[i]));
-		var mj = -1;
+		var useLast = false;
 
 		for (int i = 0; i < n; i++)
 		{
@@ -19,14 +19,10 @@
 			if (s[i] >= t[j]) continue;
 			s[i] = t[j];
 			q.Dequeue();
-			if (mj < j) mj = j;
+			if (j == m - 1) useLast = true;
 		}
 
-		if (q.Count > 0)
-		{
-			var qj = q.Max();
-			if (mj < qj) s[n - 1] = t[qj];
-		}
+		if (!useLast && !s.Contains(t[^1])) s[^1] = t[^1];
 		return new string(s);
 	}
 }
