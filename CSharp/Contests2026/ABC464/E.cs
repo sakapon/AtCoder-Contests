@@ -17,8 +17,8 @@
 			var c = int.Parse(q[1]);
 			var x = q[2][0];
 
-			var si = First(0, h, i => cursors[i] < c);
-			for (int i = si; i < r; i++)
+			var i = First(0, h, x => cursors[x] < c);
+			for (; i < r; i++)
 				for (ref int j = ref cursors[i]; j < c; j++)
 					s[i][j] = x;
 		}

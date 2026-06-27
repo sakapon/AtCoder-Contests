@@ -6,7 +6,6 @@
 		var s = Console.ReadLine();
 
 		var w = s.Count(c => c == 'W');
-		var e = s.Length - w;
-		return w < e;
+		return 2 * w < s.Length;
 	}
 }
