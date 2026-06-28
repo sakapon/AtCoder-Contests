@@ -1,4 +1,6 @@
-﻿class C
+﻿using WBTrees;
+
+class C2
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
 	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
@@ -11,15 +13,21 @@
 		var ts = Read();
 
 		var r = new int[qc];
-		var qq = new Queue<(int t, int qi)>(ts.Select((t, qi) => (t, qi)).OrderBy(p => p.t));
+		var set = new WBMultiSet<int>();
+		var qq = ts.Select((t, qi) => (t, qi, -1)).ToList();
 
-		foreach (var (h, l) in ps.OrderBy(p => -p.Item1))
+		foreach (var (h, l) in ps)
 		{
-			while (qq.Count > 0 && qq.Peek().t < l)
-			{
-				var (_, qi) = qq.Dequeue();
-				r[qi] = h;
-			}
+			set.Add(h);
+			qq.Add((l, -1, h));
+		}
+
+		foreach (var (t, qi, h) in qq.Order())
+		{
+			if (qi < 0)
+				set.Remove(h);
+			else
+				r[qi] = set.GetLast().Item;
 		}
 		return string.Join("\n", r);
 	}
