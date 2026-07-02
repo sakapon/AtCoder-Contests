@@ -1,17 +1,40 @@
-﻿class C
+﻿using CoderLib8.Collections.Dynamics.Int;
+
+class C
 {
 	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
+	static void Main() => Console.WriteLine(string.Join("\n", new int[int.Parse(Console.ReadLine())].Select(_ => Solve())));
 	static object Solve()
 	{
 		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
 		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
 
-		return string.Join(" ", a);
+		if (a.DistinctBy(x => x % n).Count() != n) return 0;
+
+		var r = 1L;
+		var p = 1L;
+
+		for (long i = 2; i < n; i++)
+		{
+			p *= i;
+			p %= n;
+			r *= p;
+			r %= n;
+		}
+		if (r == 0) return 0;
+
+		Array.Sort(a);
+		Array.Reverse(a);
+
+		var count = 0L;
+		var set = new IntSegmentCountSet(n, Enumerable.Repeat(1L, n).ToArray());
+
+		foreach (var x in a)
+		{
+			var xn = x % n;
+			count += set.GetCountGeq(xn + 1);
+			set.Remove(xn);
+		}
+		return count % 2 == 0 ? r : n - r;
 	}
 }
