@@ -1,17 +1,30 @@
 ﻿class B
 {
-	static int[] Read() => Array.ConvertAll(Console.ReadLine().Split(), int.Parse);
-	static (int, int) Read2() { var a = Read(); return (a[0], a[1]); }
-	static long[] ReadL() => Array.ConvertAll(Console.ReadLine().Split(), long.Parse);
-	static void Main() => Console.WriteLine(Solve());
+	static void Main() => Console.WriteLine(string.Join("\n", new int[int.Parse(Console.ReadLine())].Select(_ => Solve())));
 	static object Solve()
 	{
-		var n = int.Parse(Console.ReadLine());
-		var (n2, m) = Read2();
-		var s = Console.ReadLine();
-		var a = Read();
-		var ps = Array.ConvertAll(new bool[n], _ => Read());
+		var n = long.Parse(Console.ReadLine());
 
-		return string.Join(" ", a);
+		var n2 = Last(1, 1 << 30, x => x * x <= n);
+
+		var r = n2 * (n2 - 1) * 2;
+		var rem = n - n2 * n2;
+		if (rem > n2)
+		{
+			r += n2 + n2 - 1;
+			rem -= n2;
+		}
+		if (rem > 0)
+		{
+			r += rem + rem - 1;
+		}
+		return r;
+	}
+
+	static long Last(long l, long r, Func<long, bool> f)
+	{
+		long m;
+		while (l < r) if (f(m = r - (r - l - 1) / 2)) l = m; else r = m - 1;
+		return l;
 	}
 }
