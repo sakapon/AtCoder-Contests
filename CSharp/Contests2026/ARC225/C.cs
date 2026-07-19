@@ -24,9 +24,6 @@ class C
 			uf.Union(u, v);
 		}
 
-		if (k > eCount1) return -1;
-		if (k < uf.GroupsCount - 2) return -1;
-
 		for (int ei = 1; ei <= m; ei++)
 		{
 			var (u, v, c) = es[ei - 1];
@@ -42,6 +39,7 @@ class C
 				es1.Enqueue(ei);
 			}
 		}
+		if (r.Count > k) return -1;
 
 		while (r.Count < k)
 		{
